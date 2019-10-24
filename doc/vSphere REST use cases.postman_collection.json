@@ -1,0 +1,1024 @@
+{
+	"info": {
+		"_postman_id": "2097b74b-0b76-46a2-8d0e-e3e808c53b62",
+		"name": "vSphere REST use cases",
+		"description": "Each folder will provide a description of what APIs it will show how to use. Along the way, some environment variables will be set as part of some response processing done using Javascript. As well, some environment varialbes will be required, such as the host ip, username and password, etc. Many of the samples will reuse previously set environment variables, so if a request within a sample doesnt work, check the description of the request or the request url, headers and body for any {{ }} tokens and make sure they are available in the selected environment. Below are the environment variables needed to be preset for the samples to work.\n\n* vc - the IP or URL of the host VC\n* user - the user name to log in with\n* password - the password to log in with\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Deploy VM onto Host with Defaults",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Datastore",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1215b9d8-2475-4cb0-96cc-409882e0d1f6",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('datastore', jsonData.value[0].datastore);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/datastore?filter.datastores.1=datastore-10",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"datastore"
+							],
+							"query": [
+								{
+									"key": "filter.datastores.1",
+									"value": "datastore-10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Host",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c45068cc-2459-43d4-8c7f-a167384a76ff",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('host', jsonData.value[0].host);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/host?filter.hosts.1=host-9",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"host"
+							],
+							"query": [
+								{
+									"key": "filter.hosts.1",
+									"value": "host-9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find ResourcePool for Host",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d27f3ed3-223d-4ae6-9f52-b7d1a188319d",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('resource-pool', jsonData.value[0].resource_pool);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/resource-pool?filter.names.1=Resources&filter.hosts.1={{host}}",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"resource-pool"
+							],
+							"query": [
+								{
+									"key": "filter.names.1",
+									"value": "Resources"
+								},
+								{
+									"key": "filter.hosts.1",
+									"value": "{{host}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find VM folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3ae2d6b9-20b4-4cee-b7a2-eae0c8931ace",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('vm-folder', jsonData.value[0].folder);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/folder?filter.type=VIRTUAL_MACHINE",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"folder"
+							],
+							"query": [
+								{
+									"key": "filter.type",
+									"value": "VIRTUAL_MACHINE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create VM with defaults",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7f38439-775e-43ac-936e-cf44d82c2ae9",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    var vm = jsonData.value; ",
+									"    postman.setEnvironmentVariable('vm', jsonData.value);",
+									"    ",
+									"    if (vm !== null) {",
+									"        postman.setNextRequest('Get VM Details');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"spec\": {\n        \"guest_OS\": \"RHEL_7_64\",\n        \"placement\" : {\n            \"datastore\": \"{{datastore}}\",\n            \"folder\": \"{{vm-folder}}\",\n            \"resource_pool\": \"{{resource-pool}}\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VM Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bc483545-fd37-4af2-97b7-ccdf30f83114",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var vm = jsonData.value; ",
+									"if (vm !== null && vm.length == 1) {",
+									"    // Found the VM by name, lets figure out its current state, and set the next request to be",
+									"    // called.",
+									"    if (vm[0].power_state === 'POWERED_OFF') {",
+									"        postman.setNextRequest('Power on');",
+									"        console.log('Powered on');",
+									"    } ",
+									"} else {",
+									"    // could not find VM",
+									"    postman.setNextRequest(null);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm?filter.vms.1={{vm}}",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							],
+							"query": [
+								{
+									"key": "filter.vms.1",
+									"value": "{{vm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Power on",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm/{{vm}}/power/start",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm",
+								"{{vm}}",
+								"power",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This sample will show the API resource calls (with details) to make in order to deploy a VM as simply as possible. It will use the VM sensible defaults for all other details not provided. Their are only 3 environment variables needed. The datastore, the vm folder, and the resource pool",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Deploy VM onto Host with Custom Details",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Datastore",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1215b9d8-2475-4cb0-96cc-409882e0d1f6",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('datastore', jsonData.value[0].datastore);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/datastore?filter.datastores.1=datastore-10",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"datastore"
+							],
+							"query": [
+								{
+									"key": "filter.datastores.1",
+									"value": "datastore-10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Host",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c45068cc-2459-43d4-8c7f-a167384a76ff",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('host', jsonData.value[0].host);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/host?filter.hosts.1=host-9",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"host"
+							],
+							"query": [
+								{
+									"key": "filter.hosts.1",
+									"value": "host-9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find ResourcePool for Host",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d27f3ed3-223d-4ae6-9f52-b7d1a188319d",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('resource-pool', jsonData.value[0].resource_pool);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/resource-pool?filter.names.1=Resources&filter.hosts.1={{host}}",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"resource-pool"
+							],
+							"query": [
+								{
+									"key": "filter.names.1",
+									"value": "Resources"
+								},
+								{
+									"key": "filter.hosts.1",
+									"value": "{{host}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find VM folder",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3ae2d6b9-20b4-4cee-b7a2-eae0c8931ace",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    postman.setEnvironmentVariable('vm-folder', jsonData.value[0].folder);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/folder?filter.type=VIRTUAL_MACHINE",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"folder"
+							],
+							"query": [
+								{
+									"key": "filter.type",
+									"value": "VIRTUAL_MACHINE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create VM with details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7f38439-775e-43ac-936e-cf44d82c2ae9",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    var vm = jsonData.value; ",
+									"    postman.setEnvironmentVariable('vm', jsonData.value);",
+									"    ",
+									"    if (vm !== null) {",
+									"        postman.setNextRequest('Get VM Details');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"spec\": {\n        \"guest_OS\": \"RHEL_7_64\",\n        \"placement\" : {\n            \"datastore\": \"{{datastore}}\",\n            \"folder\": \"{{vm-folder}}\",\n            \"resource_pool\": \"{{resource-pool}}\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VM Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bc483545-fd37-4af2-97b7-ccdf30f83114",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var vm = jsonData.value; ",
+									"if (vm !== null && vm.length == 1) {",
+									"    // Found the VM by name, lets figure out its current state, and set the next request to be",
+									"    // called.",
+									"    if (vm[0].power_state === 'POWERED_OFF') {",
+									"        postman.setNextRequest('Power on');",
+									"        console.log('Powered on');",
+									"    } ",
+									"} else {",
+									"    // could not find VM",
+									"    postman.setNextRequest(null);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm?filter.vms.1={{vm}}",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							],
+							"query": [
+								{
+									"key": "filter.vms.1",
+									"value": "{{vm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Power on",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm/{{vm}}/power/start",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm",
+								"{{vm}}",
+								"power",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This collection of requests will show how to gather data that is then applied to the VM create resource for more specific VM creation. Storage, resource poolls, hosts, and more will be retrieved.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "81bddd8a-9a4b-4b26-a1d7-e659cf551750",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "842c4f46-6921-4c68-a181-896c94c0ad7e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Destroy VM",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if VM Exists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bc483545-fd37-4af2-97b7-ccdf30f83114",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var vm = jsonData.value; ",
+									"if (vm !== null && vm.length == 1) {",
+									"    // Found the VM by name, lets figure out its current state, and set the next request to be",
+									"    // called.",
+									"    if (vm[0].power_state === 'POWERED_OFF') {",
+									"        postman.setNextRequest('Power on');",
+									"        console.log('Powered on');",
+									"    } ",
+									"} else {",
+									"    // could not find VM",
+									"    postman.setNextRequest(null);",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm?filter.vms.1={{vm}}",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							],
+							"query": [
+								{
+									"key": "filter.vms.1",
+									"value": "{{vm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Power off",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm/{{vm}}/power/start",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm",
+								"{{vm}}",
+								"power",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove VM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a7f38439-775e-43ac-936e-cf44d82c2ae9",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (undefined !== jsonData && null !== jsonData) {",
+									"    console.log(jsonData.value);",
+									"    var vm = jsonData.value; ",
+									"    postman.setEnvironmentVariable('vm', jsonData.value);",
+									"    ",
+									"    if (vm !== null) {",
+									"        postman.setNextRequest('Get VM Details');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"spec\": {\n        \"guest_OS\": \"RHEL_7_64\",\n        \"placement\" : {\n            \"datastore\": \"{{datastore}}\",\n            \"folder\": \"{{vm-folder}}\",\n            \"resource_pool\": \"{{resource-pool}}\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "https://{{vc}}/rest/vcenter/vm",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"vcenter",
+								"vm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{vc}}/rest/com/vmware/cis/session",
+							"protocol": "https",
+							"host": [
+								"{{vc}}"
+							],
+							"path": [
+								"rest",
+								"com",
+								"vmware",
+								"cis",
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This set of requests will show how to remove a vm from a host. It will use the {{vm}} pre configured environment variable, removing it from the host if it exists. ",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "81bddd8a-9a4b-4b26-a1d7-e659cf551750",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "842c4f46-6921-4c68-a181-896c94c0ad7e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
