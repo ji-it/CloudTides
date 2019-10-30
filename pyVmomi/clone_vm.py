@@ -12,7 +12,6 @@ import atexit
 import argparse
 import getpass
 
-from add_nic_to_vm import add_nic
 
 
 def get_args():
@@ -107,9 +106,9 @@ def get_args():
                         action='store_true',
                         help='power on the VM after creation')
 
-    parser.add_argument('--opaque-network',
+    parser.add_argument('-g', '--guest',
                         required=False,
-                        help='Name of the opaque network to add to the VM')
+                        help='Name of the guest customization specification')
 
     args = parser.parse_args()
 
@@ -155,7 +154,7 @@ def get_obj(content, vimtype, name):
 def clone_vm(
         content, template, vm_name, si,
         datacenter_name, vm_folder, datastore_name,
-        cluster_name, resource_pool, power_on, datastorecluster_name):
+        cluster_name, resource_pool, power_on, datastorecluster_name, guest_customization_spec):
     """
     Clone a VM from a template/VM, datacenter_name, vm_folder, datastore_name
     cluster_name, resource_pool, and power_on are all optional.
@@ -212,9 +211,11 @@ def clone_vm(
     relospec.datastore = datastore
     relospec.pool = resource_pool
 
-    clonespec = vim.vm.CloneSpec()
-    clonespec.location = relospec
-    clonespec.powerOn = power_on
+    clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec, customization=guest_customization_spec.spec)
+    #clonespec = vim.vm.CloneSpec()
+    #clonespec.location = relospec
+    #clonespec.powerOn = power_on
+    #clonespec.customization_spec = guest_customization_spec.spec
 
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
@@ -248,16 +249,13 @@ def main():
     template = None
 
     template = get_obj(content, [vim.VirtualMachine], args.template)
-
+    guest_customization_spec = si.content.customizationSpecManager.GetCustomizationSpec(name=args.guest)
     if template:
         clone_vm(
             content, template, args.vm_name, si,
             args.datacenter_name, args.vm_folder,
             args.datastore_name, args.cluster_name,
-            args.resource_pool, args.power_on, args.datastorecluster_name)
-        if args.opaque_network:
-            vm = get_obj(content, [vim.VirtualMachine], args.vm_name)
-            add_nic(si, vm, args.opaque_network)
+            args.resource_pool, args.power_on, args.datastorecluster_name, guest_customization_spec)
     else:
         print("template not found")
 
