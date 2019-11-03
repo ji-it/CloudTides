@@ -1,19 +1,16 @@
 '''
-Copyright 2013-2014 Reubenur Rahman
-All Rights Reserved
-@author: reuben.13@gmail.com
+Written by Zhe Shen, 19-11-3
+Suspend and resume VM.
 '''
 
 import atexit
 import argparse
-import sys
-import time
 import ssl
 import getpass
 
-from pyVmomi import vim, vmodl
+from pyVmomi import vim
 from pyVim import connect
-from pyVim.connect import Disconnect, SmartConnect, GetSi, SmartConnectNoSSL
+from pyVim.connect import Disconnect, SmartConnect, SmartConnectNoSSL
 
 
 def get_args():
@@ -45,7 +42,7 @@ def get_args():
     parser.add_argument('-v', '--vm-name',
                         required=True,
                         action='store',
-                        help='Name of the VM you wish to make')
+                        help='Name of the VM you wish to operate on')
 
     parser.add_argument('--no-ssl',
                         action='store_true',
@@ -71,66 +68,22 @@ def get_args():
 
 
 def get_obj(content, vimtype, name):
-    """
-     Get the vsphere object associated with a given text name
-    """    
+
     obj = None
-    container = content.viewManager.CreateContainerView(content.rootFolder, vimtype, True)
+    container = content.viewManager.CreateContainerView(
+        content.rootFolder, vimtype, True)
     for c in container.view:
-        if c.name == name:
+        if name:
+            if c.name == name:
+                obj = c
+                break
+        else:
             obj = c
             break
+
+    container.Destroy()
     return obj
-'''
-def wait_for_task(task, raiseOnError=True, si=None, pc=None):
-    if si is None:
-        si = GetSi()
 
-    if pc is None:
-        sc = si.RetrieveContent()
-        pc = sc.propertyCollector
-
-    # First create the object specification as the task object.
-    objspec = vmodl.query.PropertyCollector.ObjectSpec()
-    objspec.SetObj(task)
-
-    # Next, create the property specification as the state.
-    propspec = vmodl.query.PropertyCollector.PropertySpec()
-    propspec.SetType(vim.Task);
-    propspec.SetPathSet(["info.state"]);
-    propspec.SetAll(True)
-
-    # Create a filter spec with the specified object and property spec.
-    filterspec = vmodl.query.PropertyCollector.FilterSpec()
-    filterspec.SetObjectSet([objspec])
-    filterspec.SetPropSet([propspec])
-
-    # Create the filter
-    filter = pc.CreateFilter(filterspec, True)
-    
-    # Loop looking for updates till the state moves to a completed state.
-    taskName = task.GetInfo().GetName()
-    update = pc.WaitForUpdates(None)
-    state = task.GetInfo().GetState()
-    while state != vim.TaskInfo.State.success and \
-            state != vim.TaskInfo.State.error:
-        if (state == 'running') and (taskName.info.name != "Destroy"):
-            # check to see if VM needs to ask a question, thow exception
-            vm = task.GetInfo().GetEntity()
-            if vm is not None and isinstance(vm, vim.VirtualMachine):
-                qst = vm.GetRuntime().GetQuestion()
-            if qst is not None:
-                raise Exception("Task blocked, User Intervention required")
-      
-    update = pc.WaitForUpdates(update.GetVersion())
-    state = task.GetInfo().GetState()
-         
-    filter.Destroy()
-    if state == "error" and raiseOnError:
-        raise task.GetInfo().GetError()
-      
-    return state
-'''
 
 def invoke_and_track(func, *args, **kw):
     try :
@@ -156,43 +109,43 @@ def main():
                 user=args.user,
                 pwd=args.password,
                 port=args.port)
-        # disconnect this thing
-        atexit.register(Disconnect, si)
-
-        print("Connected to VCENTER SERVER !")
-        
-        content = si.RetrieveContent()
-
-        if args.operation == 'stop' or args.operation == 'suspend':
-            force = args.force
-   
-        vm = get_obj(content, [vim.VirtualMachine], args.vm_name)
-
-        #current_state = vm.runtime.powerState
-        
-        if args.operation == 'start':
-            invoke_and_track(vm.PowerOn, None)
-
-        elif args.operation == 'stop':
-            if not force:
-                invoke_and_track(vm.ShutdownGuest)
-            else:
-                invoke_and_track(vm. PowerOff)
-        
-        elif args.operation == 'suspend':
-            if not force:
-                invoke_and_track(vm.StandbyGuest)
-            else:
-                invoke_and_track(vm. Suspend)
-
-        else:
-            print("Wrong operation!")
-            exit(0)
-                
-        #wait_for_task(task, si)        
-        
     except:
-        raise
+        print("Connection failed.")
+    # disconnect this thing
+    atexit.register(Disconnect, si)
+
+    print("Connected to VCENTER SERVER !")
+        
+    content = si.RetrieveContent()
+
+    if args.operation == 'stop' or args.operation == 'suspend':
+        force = args.force
+    
+    vm = get_obj(content, [vim.VirtualMachine], args.vm_name)
+
+    #current_state = vm.runtime.powerState
+        
+    if args.operation == 'start':
+        invoke_and_track(vm.PowerOn, None)
+
+    elif args.operation == 'stop':
+        if not force:
+            invoke_and_track(vm.ShutdownGuest)
+        else:
+            invoke_and_track(vm.PowerOff)
+        
+    elif args.operation == 'suspend':
+        if not force:
+            invoke_and_track(vm.StandbyGuest)
+        else:
+            invoke_and_track(vm.Suspend)
+
+    else:
+        print("Wrong operation!")
+        exit()
+                
+    #wait_for_task(task, si)        
+        
     
 # Start program
 if __name__ == "__main__":
