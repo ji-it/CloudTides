@@ -1,58 +1,62 @@
-#!/usr/bin/env python
-# Copyright 2015 Michael Rice <michael@michaelrice.org>
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
+'''
+Written by Zhe Shen, 19-11-3
+Destroy VM in vSphere.
+'''
 
 from __future__ import print_function
-
 import atexit
-
 from pyVim import connect
-
 from pyVmomi import vim
-
-from tools import cli
-from tools import tasks
+import argparse
 
 
-def setup_args():
+def get_args():
 
-    """Adds additional ARGS to allow the vm name or uuid to
-    be set.
-    """
-    parser = cli.build_arg_parser()
-    # using j here because -u is used for user
+    parser = argparse.ArgumentParser(
+        description='Arguments for talking to vCenter')
+
+    parser.add_argument('-s', '--host',
+                        required=True,
+                        action='store',
+                        help='vSpehre service to connect to')
+
+    parser.add_argument('-o', '--port',
+                        type=int,
+                        default=443,
+                        action='store',
+                        help='Port to connect on')
+
+    parser.add_argument('-u', '--user',
+                        required=True,
+                        action='store',
+                        help='Username to use')
+
+    parser.add_argument('-p', '--password',
+                        required=False,
+                        action='store',
+                        help='Password to use')
+    
     parser.add_argument('-j', '--uuid',
-                        help='BIOS UUID of the VirtualMachine you want '
-                             'to destroy.')
-    parser.add_argument('-n', '--name',
-                        help='DNS Name of the VirtualMachine you want to '
-                             'destroy.')
+                        action='store',
+                        help='BIOS UUID of the virtual machine')
+    
+    parser.add_argument('-d', '--dns',
+                        action='store',
+                        help='DNS name of the virtual machine')
+    
     parser.add_argument('-i', '--ip',
-                        help='IP Address of the VirtualMachine you want to '
-                             'destroy')
-    parser.add_argument('-v', '--vm',
-                        help='VM name of the VirtualMachine you want '
-                             'to destroy.')
+                        help='IP address of the virtual machine')
+    
+    parser.add_argument('-n', '--name',
+                        help='VM name of the virtual machine')
 
-    my_args = parser.parse_args()
+    args = parser.parse_args()
 
-    return cli.prompt_for_password(my_args)
+    return args
 
 
 def get_obj(content, vimtype, name):
 
-    """Create contrainer view and search for object in it"""
     obj = None
     container = content.viewManager.CreateContainerView(
         content.rootFolder, vimtype, True)
@@ -68,49 +72,39 @@ def get_obj(content, vimtype, name):
     container.Destroy()
     return obj
 
-ARGS = setup_args()
-SI = None
+
+args = get_args()
+si = None
 try:
-    SI = connect.SmartConnectNoSSL(host=ARGS.host,
-                                   user=ARGS.user,
-                                   pwd=ARGS.password,
-                                   port=ARGS.port)
-    atexit.register(connect.Disconnect, SI)
-except (IOError, vim.fault.InvalidLogin):
-    pass
+    si = connect.SmartConnectNoSSL(host=args.host,
+                                   user=args.user,
+                                   pwd=args.password,
+                                   port=args.port)
+    atexit.register(connect.Disconnect, si)
+except:
+    print("Failed to connect")
+    exit()
 
-if not SI:
-    raise SystemExit("Unable to connect to host with supplied credentials.")
+vm = None
+if args.name:
+    vm = get_obj(si.content, [vim.VirtualMachine], args.name)
+elif args.uuid:
+    vm = si.content.searchIndex.FindByUuid(None, args.uuid, True, False)
+elif args.dns:
+    vm = si.content.searchIndex.FindByDnsName(None, args.name, True)
+elif args.ip:
+    vm = si.content.searchIndex.FindByIp(None, args.ip, True)
+else:
+    print("Lack identifier of VM.")
+    exit()
 
-VM = None
-if ARGS.vm:
-    VM = get_obj(SI.content, [vim.VirtualMachine], ARGS.vm)
-elif ARGS.uuid:
-    VM = SI.content.searchIndex.FindByUuid(None, ARGS.uuid,
-                                           True,
-                                           False)
-elif ARGS.name:
-    VM = SI.content.searchIndex.FindByDnsName(None, ARGS.name,
-                                              True)
-elif ARGS.ip:
-    VM = SI.content.searchIndex.FindByIp(None, ARGS.ip, True)
-
-if VM is None:
-    raise SystemExit(
-        "Unable to locate VirtualMachine. Arguments given: "
-        "vm - {0} , uuid - {1} , name - {2} , ip - {3}"
-        .format(ARGS.vm, ARGS.uuid, ARGS.name, ARGS.ip)
-        )
-
-print("Found: {0}".format(VM.name))
-print("The current powerState is: {0}".format(VM.runtime.powerState))
-if format(VM.runtime.powerState) == "poweredOn":
-    print("Attempting to power off {0}".format(VM.name))
-    TASK = VM.PowerOffVM_Task()
-    tasks.wait_for_tasks(SI, [TASK])
-    print("{0}".format(TASK.info.state))
+print("Found VM: {0}".format(vm.name))
+print("The current power state is: {0}".format(vm.runtime.powerState))
+if format(vm.runtime.powerState) == "poweredOn":
+    print("Attempting to power off {0}".format(vm.name))
+    task = vm.PowerOffVM_Task()
+    print("{0}".format(task.info.state))
 
 print("Destroying VM from vSphere.")
-TASK = VM.Destroy_Task()
-tasks.wait_for_tasks(SI, [TASK])
+task = vm.Destroy_Task()
 print("Done.")

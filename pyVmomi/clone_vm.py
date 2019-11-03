@@ -1,11 +1,8 @@
-#!/usr/bin/env python
-"""
-Written by Dann Bohn
-Github: https://github.com/whereismyjetpack
-Email: dannbohn@gmail.com
+'''
+Written by Zhe Shen, 19-11-2
+Deploy a VM from a speficied template.
+'''
 
-Clone a VM from template example
-"""
 from pyVmomi import vim
 from pyVim.connect import SmartConnect, SmartConnectNoSSL, Disconnect
 import atexit
@@ -105,11 +102,8 @@ def get_args():
                         dest='power_on',
                         action='store_true',
                         help='power on the VM after creation')
-
-    parser.add_argument('-g', '--guest',
-                        required=False,
-                        help='Name of the guest customization specification')
-
+    
+    
     args = parser.parse_args()
 
     if not args.password:
@@ -120,7 +114,7 @@ def get_args():
 
 
 def wait_for_task(task):
-    """ wait for a vCenter task to finish """
+    ''' wait for a vCenter task to finish '''
     task_done = False
     while not task_done:
         if task.info.state == 'success':
@@ -132,10 +126,7 @@ def wait_for_task(task):
 
 
 def get_obj(content, vimtype, name):
-    """
-    Return an object by name, if name is None the
-    first found object is returned
-    """
+
     obj = None
     container = content.viewManager.CreateContainerView(
         content.rootFolder, vimtype, True)
@@ -148,19 +139,20 @@ def get_obj(content, vimtype, name):
             obj = c
             break
 
+    container.Destroy()
     return obj
 
 
 def clone_vm(
         content, template, vm_name, si,
         datacenter_name, vm_folder, datastore_name,
-        cluster_name, resource_pool, power_on, datastorecluster_name, guest_customization_spec):
-    """
+        cluster_name, resource_pool, power_on, datastorecluster_name):
+    '''
     Clone a VM from a template/VM, datacenter_name, vm_folder, datastore_name
     cluster_name, resource_pool, and power_on are all optional.
-    """
+    '''
 
-    # if none git the first one
+    # if none get the first one
     datacenter = get_obj(content, [vim.Datacenter], datacenter_name)
 
     if vm_folder:
@@ -211,7 +203,7 @@ def clone_vm(
     relospec.datastore = datastore
     relospec.pool = resource_pool
 
-    clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec, customization=guest_customization_spec.spec)
+    clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec)
     #clonespec = vim.vm.CloneSpec()
     #clonespec.location = relospec
     #clonespec.powerOn = power_on
@@ -223,9 +215,7 @@ def clone_vm(
 
 
 def main():
-    """
-    Let this thing fly
-    """
+    
     args = get_args()
 
     # connect this thing
@@ -249,13 +239,13 @@ def main():
     template = None
 
     template = get_obj(content, [vim.VirtualMachine], args.template)
-    guest_customization_spec = si.content.customizationSpecManager.GetCustomizationSpec(name=args.guest)
+    
     if template:
         clone_vm(
             content, template, args.vm_name, si,
             args.datacenter_name, args.vm_folder,
             args.datastore_name, args.cluster_name,
-            args.resource_pool, args.power_on, args.datastorecluster_name, guest_customization_spec)
+            args.resource_pool, args.power_on, args.datastorecluster_name)
     else:
         print("template not found")
 
