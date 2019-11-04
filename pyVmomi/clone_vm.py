@@ -1,6 +1,6 @@
 '''
 Written by Zhe Shen, 19-11-2
-Deploy a VM from a speficied template.
+Deploy a VM from a specified template.
 '''
 
 from pyVmomi import vim
@@ -59,29 +59,6 @@ def get_args():
                         help='Name of the Datacenter you\
                             wish to use. If omitted, the first\
                             datacenter will be used.')
-
-    parser.add_argument('--vm-folder',
-                        required=False,
-                        action='store',
-                        default=None,
-                        help='Name of the VMFolder you wish\
-                            the VM to be dumped in. If left blank\
-                            The datacenter VM folder will be used')
-
-    parser.add_argument('--datastore-name',
-                        required=False,
-                        action='store',
-                        default=None,
-                        help='Datastore you wish the VM to end up on\
-                            If left blank, VM will be put on the same \
-                            datastore as the template')
-
-    parser.add_argument('--datastorecluster-name',
-                        required=False,
-                        action='store',
-                        default=None,
-                        help='Datastorecluster (DRS Storagepod) you wish the VM to end up on \
-                            Will override the datastore-name parameter.')
 
     parser.add_argument('--cluster-name',
                         required=False,
@@ -143,28 +120,12 @@ def get_obj(content, vimtype, name):
     return obj
 
 
-def clone_vm(
-        content, template, vm_name, si,
-        datacenter_name, vm_folder, datastore_name,
-        cluster_name, resource_pool, power_on, datastorecluster_name):
-    '''
-    Clone a VM from a template/VM, datacenter_name, vm_folder, datastore_name
-    cluster_name, resource_pool, and power_on are all optional.
-    '''
+def clone_vm(content, template, vm_name, si, datacenter_name,
+        cluster_name, resource_pool, power_on):
 
     # if none get the first one
     datacenter = get_obj(content, [vim.Datacenter], datacenter_name)
-
-    if vm_folder:
-        destfolder = get_obj(content, [vim.Folder], vm_folder)
-    else:
-        destfolder = datacenter.vmFolder
-
-    if datastore_name:
-        datastore = get_obj(content, [vim.Datastore], datastore_name)
-    else:
-        datastore = get_obj(
-            content, [vim.Datastore], template.datastore[0].info.name)
+    destfolder = datacenter.vmFolder
 
     # if None, get the first one
     cluster = get_obj(content, [vim.ClusterComputeResource], cluster_name)
@@ -176,42 +137,17 @@ def clone_vm(
 
     vmconf = vim.vm.ConfigSpec()
 
-    if datastorecluster_name:
-        podsel = vim.storageDrs.PodSelectionSpec()
-        pod = get_obj(content, [vim.StoragePod], datastorecluster_name)
-        podsel.storagePod = pod
-
-        storagespec = vim.storageDrs.StoragePlacementSpec()
-        storagespec.podSelectionSpec = podsel
-        storagespec.type = 'create'
-        storagespec.folder = destfolder
-        storagespec.resourcePool = resource_pool
-        storagespec.configSpec = vmconf
-
-        try:
-            rec = content.storageResourceManager.RecommendDatastores(
-                storageSpec=storagespec)
-            rec_action = rec.recommendations[0].action[0]
-            real_datastore_name = rec_action.destination.name
-        except:
-            real_datastore_name = template.datastore[0].info.name
-
-        datastore = get_obj(content, [vim.Datastore], real_datastore_name)
-
     # set relospec
     relospec = vim.vm.RelocateSpec()
-    relospec.datastore = datastore
+    relospec.datastore = None
     relospec.pool = resource_pool
 
     clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec)
-    #clonespec = vim.vm.CloneSpec()
-    #clonespec.location = relospec
-    #clonespec.powerOn = power_on
-    #clonespec.customization_spec = guest_customization_spec.spec
 
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
+    print("Done.")
 
 
 def main():
@@ -241,11 +177,8 @@ def main():
     template = get_obj(content, [vim.VirtualMachine], args.template)
     
     if template:
-        clone_vm(
-            content, template, args.vm_name, si,
-            args.datacenter_name, args.vm_folder,
-            args.datastore_name, args.cluster_name,
-            args.resource_pool, args.power_on, args.datastorecluster_name)
+        clone_vm(content, template, args.vm_name, si, args.datacenter_name,
+            args.cluster_name, args.resource_pool, args.power_on)
     else:
         print("template not found")
 
