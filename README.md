@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- All tutorials require [Docker](https://docs.docker.com/docker-for-mac/install/)
+- All tutorials require [Docker](https://docs.docker.com/install/)
 
 ## Setting up the app
 
