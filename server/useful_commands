@@ -1,0 +1,5 @@
+python manage.py graph_models -a -g -o reactdj_models.png
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+python manage.py createsuperuser

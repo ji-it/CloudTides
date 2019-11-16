@@ -1,0 +1,7 @@
+client/node_modules
+client/public/bundle
+cloud-tides.css
+package-lock.json
+stats.json
+**/__pycache__/
+db.sqlite3
