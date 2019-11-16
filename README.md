@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-- All tutorials require [Docker](https://docs.docker.com/install/)
+Setup requires [Docker](https://docs.docker.com/install/)
 
 ## Setting up the app
 
