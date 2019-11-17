@@ -1,0 +1,41 @@
+// Shards variables overrides.
+@import "overrides";
+// Base Shards UI Kit
+@import "../../../node_modules/shards-ui/src/scss/shards";
+/* Shards Dashboards Lite Styles */
+// Core
+@import "variables";
+// Components
+@import "reboot";
+@import "buttons";
+@import "button-group";
+@import "navbar";
+@import "badge";
+@import "alert";
+@import "input-group";
+@import "custom-forms";
+@import "custom-sliders";
+@import "images";
+@import "icons";
+@import "dropdown";
+@import "card";
+@import "utilities";
+// Blocks
+@import "blocks/main-navbar";
+@import "blocks/main-sidebar";
+@import "blocks/main-content";
+@import "blocks/main-footer";
+@import "blocks/page-header";
+// Templates
+@import "templates/common";
+@import "templates/margins";
+@import "templates/paddings";
+// Required common styles for all pages.
+@import "templates/dashboard";
+@import "templates/blog-add-new-post";
+// Plugins
+@import "plugins/quill";
+// Components
+@import "components/card-post";
+@import "components/error";
+@import "components/auth";

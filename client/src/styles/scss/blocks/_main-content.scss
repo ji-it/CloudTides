@@ -1,0 +1,11 @@
+// Main content adjustments
+
+.main-content > .main-content-container.container-fluid {
+  min-height: calc(100vh - #{$main-navbar-height + $main-footer-height});
+}
+
+.main-content {
+  @media (min-width: 768px) {
+    margin-left: 260px;
+  }
+}
