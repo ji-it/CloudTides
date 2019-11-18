@@ -3,6 +3,7 @@ export default function () {
         {
             name: "Dashboard",
             to: "/home",
+            to1: "/manage-resources",
             htmlBefore: '<i class="icon icon-dashboard tides-fw tides-white"></i>',
             htmlAfter: "",
             show: true,

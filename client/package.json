@@ -47,6 +47,7 @@
   "dependencies": {
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.32",
     "axios": "^0.18.0",
     "chart.js": "^2.9.2",
     "classnames": "latest",
