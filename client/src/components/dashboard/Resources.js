@@ -1,85 +1,68 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {Row, Col, Card, CardHeader, CardBody, Button} from "shards-react";
-
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    Button,
+} from "shards-react";
+import MUIDataTable from "mui-datatables"
+import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ModalAddResource from "../common/ModalAddResource";
+import SuccessNotificationModal from "../common/SuccessNotificationModal";
 
 class Resources extends React.Component {
+    state = {};
+    toggleModal = state => {
+        this.setState({
+            [state]: !this.state[state]
+        });
+    };
+
+    myCallBack = (data, showNotif) => {
+        this.toggleModal(data);
+        if (showNotif)
+            this.successmodal.toggleModal("notificationModal");
+    };
+
+    getMuiTheme = () => createMuiTheme({
+        overrides: this.props.tableStyle
+    });
+
     render() {
-        const {title} = this.props;
+        const {title, columns, data, options} = this.props;
         return (
-            <Card small className="h-100">
-                <CardHeader className="border-bottom">
-                    <h6 className="m-0">{title}</h6>
+            <Card small className="blog-comments">
+                <CardHeader className="m-2 mb-0">
+                    <div>
+                        <div style={{display: "inline-block"}}>
+                            <h6 className="m-0 font-weight-bold">{title}</h6>
+                        </div>
+                        <div style={{display: "inline-block", float: "right"}}>
+                            <Button
+                                className="shadow-sm"
+                                onClick={() => this.toggleModal("addModal")}
+                            >
+                                <span className="text text-uppercase">Add Resource</span>
+                            </Button>
+                            <ModalAddResource onExit={this.myCallBack}
+                                              toggleState={this.state.addModal}/>
+                            <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardBody className="p-0 pb-3">
-                    <table className="table mb-0">
-                        <thead className="bg-light">
-                        <tr>
-                            <th scope="col" className="border-0">
-                                Name
-                            </th>
-                            <th scope="col" className="border-0">
-                                Status
-                            </th>
-                            <th scope="col" className="border-0">
-                                IP Address
-                            </th>
-                            <th scope="col" className="border-0">
-                                CPU
-                            </th>
-                            <th scope="col" className="border-0">
-                                RAM
-                            </th>
-                            <th scope="col" className="border-0">
-                                Disk
-                            </th>
-                            <th scope="col" className="border-0">
-                                Jobs Done
-                            </th>
-                            <th scope="col" className="border-0">
-                                Project
-                            </th>
-                            <th scope="col" className="border-0">
-                                Active
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>New York Datacenter</td>
-                            <td>Idle</td>
-                            <td>192.168.0.1</td>
-                            <td>60%</td>
-                            <td>6/10GB</td>
-                            <td>10/25GB</td>
-                            <td>20</td>
-                            <td>SETI@home</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>Old York Datacenter</td>
-                            <td>Busy</td>
-                            <td>192.168.0.1</td>
-                            <td>60%</td>
-                            <td>6/10GB</td>
-                            <td>10/25GB</td>
-                            <td>20</td>
-                            <td>SETI@home</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr>
-                            <td>LA Datacenter</td>
-                            <td>Contributing</td>
-                            <td>192.168.0.1</td>
-                            <td>60%</td>
-                            <td>6/10GB</td>
-                            <td>10/25GB</td>
-                            <td>20</td>
-                            <td>SETI@home</td>
-                            <td>Yes</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <CardBody className="p-0">
+                    <MuiThemeProvider theme={this.getMuiTheme()}>
+                        <MUIDataTable
+                            data={data}
+                            columns={columns}
+                            options={options}
+                        />
+                    </MuiThemeProvider>
                 </CardBody>
             </Card>
         );
@@ -87,111 +70,173 @@ class Resources extends React.Component {
 }
 
 Resources.propTypes = {
-    /**
+    /**1
      * The component's title.
      */
     title: PropTypes.string,
     /**
      * The table dataset.
      */
-    tableData: PropTypes.object,
+    columns: PropTypes.array,
+    data: PropTypes.array,
+    tableStyle: PropTypes.object,
+    options: PropTypes.object,
 };
 
 Resources.defaultProps = {
     title: "Resources",
-    tableData: {
-        labels: Array.from(new Array(30), (_, i) => (i === 0 ? 1 : i)),
-        datasets: [
-            {
-                label: "Current Month",
-                fill: "start",
-                data: [
-                    500,
-                    800,
-                    320,
-                    180,
-                    240,
-                    320,
-                    230,
-                    650,
-                    590,
-                    1200,
-                    750,
-                    940,
-                    1420,
-                    1200,
-                    960,
-                    1450,
-                    1820,
-                    2800,
-                    2102,
-                    1920,
-                    3920,
-                    3202,
-                    3140,
-                    2800,
-                    3200,
-                    3200,
-                    3400,
-                    2910,
-                    3100,
-                    4250
-                ],
-                backgroundColor: "rgba(0,123,255,0.1)",
-                borderColor: "rgba(0,123,255,1)",
-                pointBackgroundColor: "#ffffff",
-                pointHoverBackgroundColor: "rgb(0,123,255)",
-                borderWidth: 1.5,
-                pointRadius: 0,
-                pointHoverRadius: 3
-            },
-            {
-                label: "Past Month",
-                fill: "start",
-                data: [
-                    380,
-                    430,
-                    120,
-                    230,
-                    410,
-                    740,
-                    472,
-                    219,
-                    391,
-                    229,
-                    400,
-                    203,
-                    301,
-                    380,
-                    291,
-                    620,
-                    700,
-                    300,
-                    630,
-                    402,
-                    320,
-                    380,
-                    289,
-                    410,
-                    300,
-                    530,
-                    630,
-                    720,
-                    780,
-                    1200
-                ],
-                backgroundColor: "rgba(255,65,105,0.1)",
-                borderColor: "rgba(255,65,105,1)",
-                pointBackgroundColor: "#ffffff",
-                pointHoverBackgroundColor: "rgba(255,65,105,1)",
-                borderDash: [3, 3],
-                borderWidth: 1,
-                pointRadius: 0,
-                pointHoverRadius: 2,
-                pointBorderColor: "rgba(255,65,105,1)"
+    columns: [
+        {
+            name: "Name",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return <b>{value}</b>;
+                }
             }
-        ]
-    }
+        },
+        {
+            name: "Status",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const style = "tides-" + value.toLowerCase();
+                    return (
+                        <span className={style + " border small status-border"}
+                              data-task-status={value.toLowerCase()}
+                        >
+                            {value}
+                        </span>
+                    );
+                }
+            }
+        },
+        "IP Address",
+        {
+            name: "CPU",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const nf = new Intl.NumberFormat('en-US', {
+                        style: 'percent',
+                    });
+                    return (
+                        <div>
+                            {nf.format(value)}
+                            {
+                                (value == 0.4) ?
+                                    <ArrowDropUpIcon className="text-success"/>
+                                    :
+                                    <ArrowDropDownIcon className="text-danger"/>
+                            }
+                        </div>
+                    );
+                }
+            }
+        },
+        {
+            name: "RAM",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div>
+                            {value}
+                            {
+                                (value == 0.4) ?
+                                    <ArrowDropUpIcon className="text-success"/>
+                                    :
+                                    <ArrowDropDownIcon className="text-danger"/>
+                            }
+                        </div>
+                    );
+                }
+            }
+        },
+        {
+            name: "Disk",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <div>
+                            {value}
+                            {
+                                (value == 0.4) ?
+                                    <ArrowDropUpIcon className="text-success"/>
+                                    :
+                                    <ArrowDropDownIcon className="text-danger"/>
+                            }
+                        </div>
+                    );
+                }
+            }
+        },
+        "Jobs Done",
+        {
+            name: "Project",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return <b>{value}</b>;
+                }
+            }
+        },
+        {
+            name: "Active",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <FormControlLabel
+                            label={value ? "Yes" : "No"}
+                            value={value ? "Yes" : "No"}
+                            control={
+                                <Switch color="primary" checked={value} value={value ? "Yes" : "No"}/>
+                            }
+                            onChange={event => {
+                                updateValue(event.target.value === "Yes" ? false : true);
+                            }}
+                        />
+                    );
+
+                }
+            }
+        },
+        // {name: "", options: { filter: false,sort: false,empty: true,customBodyRender: (value, tableMeta, updateValue) => {return ();}}},
+    ],
+    data: [
+        ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
+        ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
+    ],
+    tableStyle: {
+        MUIDataTableSelectCell: {
+            headerCell: {
+                backgroundColor: "#E9EDF6",
+            }
+        },
+        MUIDataTableHeadCell: {
+            fixedHeader: {
+                backgroundColor: "#E9EDF6",
+            },
+            data: {
+                margin: "auto"
+            }
+        },
+        MUIDataTableBodyCell: {
+            root: {
+                textAlign: "center",
+            }
+        }
+    },
+    options: {
+        filterType: 'checkbox',
+        customToolbarSelect: () => {
+        },
+        elevation: 0,
+        filter: false,
+        responsive: "scrollMaxHeight",
+    },
 };
 
 export default Resources;
