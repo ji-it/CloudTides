@@ -3,25 +3,25 @@ import PropTypes from "prop-types";
 import {Container, Row, Col} from "shards-react";
 
 import PageTitle from "./../components/common/PageTitle";
-import PoliciesTable from "../components/contribution/PoliciesTable";
+import TemplatesTable from "../components/templates/TemplatesTable";
 
-const Contribution = () => (
+const Templates = () => (
     <Container fluid className="main-content-container px-4">
         {/* Page Header */}
         <Row noGutters className="page-header py-4">
-            <PageTitle title="Contribution" subtitle="Manage Policies" className="text-sm-left mb-3"/>
+            <PageTitle title="Templates" subtitle="Manage Templates" className="text-sm-left mb-3"/>
         </Row>
         <Row>
             {/* Resources */}
             <Col className="col-lg mb-4">
-                <PoliciesTable/>
+                <TemplatesTable/>
             </Col>
         </Row>
     </Container>
 );
 
-Contribution.propTypes = {};
+Templates.propTypes = {};
 
-Contribution.defaultProps = {};
+Templates.defaultProps = {};
 
-export default Contribution;
+export default Templates;

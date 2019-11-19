@@ -36,25 +36,21 @@ class RightSidebarNavItems extends React.Component {
         const isManageResources = (selectedItem.to === "/manage-resources");
         const data = [
             {
-                name: "Applications",
+                name: "New York Datacenter",
                 children:
                     [
-                        {name: 'app.js'},
-                        {name: 'data.js'},
-                        {name: 'index.html'},
-                        {name: 'styles.js'},
-                        {name: 'webpack.config.js'}
+                        {name: 've450 Cluster 1'},
+                        {name: 've450 Cluster 2'},
+                        {name: 've450 Cluster 3'},
                     ]
             },
             {
-                name: "Material",
+                name: "LA Datacenter",
                 children:
                     [
-                        {name: 'app.js'},
-                        {name: 'data.js'},
-                        {name: 'index.html'},
-                        {name: 'styles.js'},
-                        {name: 'webpack.config.js'}
+                        {name: 'vv216 Cluster 1'},
+                        {name: 'vv216 Cluster 2'},
+                        {name: 'vv216 Cluster 3'},
                     ]
             },
         ];

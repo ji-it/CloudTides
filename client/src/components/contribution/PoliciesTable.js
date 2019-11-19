@@ -12,10 +12,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ModalAddResource from "../common/ModalAddResource";
+import ModalAddPolicy from "../contribution/ModalAddPolicy";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
+import ModalAddResource from "../common/ModalAddResource";
 
-class Policies extends React.Component {
+class PoliciesTable extends React.Component {
     state = {};
     toggleModal = state => {
         this.setState({
@@ -49,8 +50,8 @@ class Policies extends React.Component {
                             >
                                 <span className="text text-uppercase">Add Policy</span>
                             </Button>
-                            <ModalAddResource onExit={this.myCallBack}
-                                              toggleState={this.state.addModal}/>
+                            <ModalAddPolicy onExit={this.myCallBack}
+                                            toggleState={this.state.addModal}/>
                             <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
                         </div>
                     </div>
@@ -69,7 +70,7 @@ class Policies extends React.Component {
     }
 }
 
-Policies.propTypes = {
+PoliciesTable.propTypes = {
     /**1
      * The component's title.
      */
@@ -83,7 +84,7 @@ Policies.propTypes = {
     options: PropTypes.object,
 };
 
-Policies.defaultProps = {
+PoliciesTable.defaultProps = {
     title: "Contribution Policies",
     columns: [
         {
@@ -119,41 +120,14 @@ Policies.defaultProps = {
                 }
             }
         },
-        {
-            name: "Stop %",
-            options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    const nf = new Intl.NumberFormat('en-US', {
-                        style: 'percent',
-                    });
-                    return (
-                        "C   PU = " + nf.format(value)
-                    );
-                }
-            }
-        },
-        {
-            name: "Destroy %",
-            options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    const nf = new Intl.NumberFormat('en-US', {
-                        style: 'percent',
-                    });
-                    return (
-                        "CPU = " + nf.format(value)
-                    );
-                }
-            }
-        },
+        "Stop/Destroy",
         "Hosts Assigned",
 
         // {name: "", options: { filter: false,sort: false,empty: true,customBodyRender: (value, tableMeta, updateValue) => {return ();}}},
     ],
     data: [
-        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.3, 0.4, 0.2, 200],
-        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.3, 0.4, 0.2, 200],
+        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.3, "Destroy", 200],
+        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.45, "Stop", 10],
     ],
     tableStyle: {
         MUIDataTableSelectCell: {
@@ -185,4 +159,4 @@ Policies.defaultProps = {
     },
 };
 
-export default Policies;
+export default PoliciesTable;
