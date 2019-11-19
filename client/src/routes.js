@@ -9,6 +9,7 @@ import {STATE_LOGIN, STATE_SIGNUP} from "./components/auth/AuthForn";
 import AuthPage from "./views/AuthPage";
 import Dashboard from "./views/Dashboard";
 import ManageResources from "./views/ManageResources";
+import Contribution from "./views/Contribution";
 import Errors from "./views/Errors";
 import EmptyLayout from "./layouts/Empty";
 // import UserProfileLite from "./views/UserProfileLite";
@@ -48,6 +49,11 @@ export default [
         path: "/manage-resources",
         layout: DefaultLayout,
         component: ManageResources
+    },
+    {
+        path: "/contribution",
+        layout: DefaultLayout,
+        component: Contribution
     },
     {
         path: "/errors",

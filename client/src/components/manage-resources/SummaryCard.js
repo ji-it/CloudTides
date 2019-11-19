@@ -83,7 +83,7 @@ class SummaryCard extends React.Component {
                                         labelPlacement="start"
                                         value={value ? "Yes" : "No"}
                                         control={
-                                            <Switch color="primary" size="small" checked={value}
+                                            <Switch color="primary" size="small" checked={true}
                                                     value={value ? "Yes" : "No"}/>
                                         }
                                         // onChange={}

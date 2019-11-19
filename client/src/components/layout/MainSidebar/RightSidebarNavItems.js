@@ -9,7 +9,7 @@ class RightSidebarNavItems extends React.Component {
         super(props);
 
         this.state = {
-            navItems: Store.getSidebarTitles()
+            navItems: Store.getSidebarItems()
         };
 
         this.onChange = this.onChange.bind(this);
@@ -26,7 +26,7 @@ class RightSidebarNavItems extends React.Component {
     onChange() {
         this.setState({
             ...this.state,
-            navItems: Store.getSidebarTitles()
+            navItems: Store.getSidebarItems()
         });
     }
 

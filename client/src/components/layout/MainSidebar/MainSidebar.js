@@ -47,7 +47,7 @@ class MainSidebar extends React.Component {
         );
         const {sidebarNavItems: items} = this.state;
         let hasChildren = items.filter(
-            item => item.to === this.props.location.pathname || (item.to1 && item.to1 === this.props.location.pathname)
+            item => item.to === this.props.location.pathname
         ).shift();
         hasChildren = hasChildren && hasChildren.show;
         return (

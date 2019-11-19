@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import {Container, Row, Col} from "shards-react";
 
 import PageTitle from "./../components/common/PageTitle";
-import Statistics from "../components/dashboard/Statistics";
-import SummaryCard from "../components/dashboard/SummaryCard";
+import Statistics from "../components/manage-resources/Statistics";
+import SummaryCard from "../components/manage-resources/SummaryCard";
 
 const ManageResources = () => (
     <Container fluid className="main-content-container px-4">
