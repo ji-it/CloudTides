@@ -1,5 +1,5 @@
 # CloudTides
-[![Actions Status](https://github.com/dzl84/CloudTides/workflows/{workflow_name}/badge.svg)](https://github.com/dzl84/CloudTides/actions)
+[![Actions Status](https://github.com/dzl84/CloudTides/workflows/testserver/badge.svg)](https://github.com/dzl84/CloudTides/actions)
 
 ## Dependencies
 
