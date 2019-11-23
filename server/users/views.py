@@ -30,9 +30,9 @@ class UserLogin(APIView):
             if user.is_active:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
-                res = vCenter.objects.filter(username=username,password=password).value_list('priority', flat=True)
+                res = User.objects.get(username=username)
                 dic['token'] = token
-                dic['priority'] = res
+                dic['priority'] = res.vCenter.priority
                 return JsonResponse(dic, status=200)
             else:
                 return JsonResponse({'message': 'Unauthorized'}, status=401)
