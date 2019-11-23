@@ -7,3 +7,12 @@ Pillow==5.4.1
 PyJWT==1.7.1
 django-cors-headers==2.2.0
 django_extensions
+# test and cov
+coverage==4.5.2
+pytest
+pytest-django
+pytest-cov
+# lint
+pylint==2.3.0
+pylint-django==2.0.6
+pylint-plugin-utils==0.5 
