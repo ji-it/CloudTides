@@ -73,7 +73,8 @@
     "redux-saga": "^1.0.1",
     "reselect": "^4.0.0",
     "shards-react": "^1.0.3",
-    "shortid": "latest"
+    "shortid": "latest",
+    "object-assign": "latest"
   },
   "eslintConfig": {
     "extends": "react-app"

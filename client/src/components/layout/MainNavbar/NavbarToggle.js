@@ -1,18 +1,14 @@
 import React from "react";
-
-import {Dispatcher, Constants} from "../../../flux";
+import Actions from '../../../flux/actions';
 
 class NavbarToggle extends React.Component {
     constructor(props) {
         super(props);
-
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
-        Dispatcher.dispatch({
-            actionType: Constants.TOGGLE_SIDEBAR
-        });
+        Actions.toggleMenu();
     }
 
     render() {

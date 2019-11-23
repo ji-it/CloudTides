@@ -15,10 +15,12 @@ import {
 import {Label, Input} from "reactstrap";
 import classnames from "classnames";
 import axios from 'axios';
+import lodash from 'lodash'
 import validate from "../../utils/validate";
+import {Actions} from "../../flux";
+import {element} from "prop-types";
 
 export default class ModalAddResource extends React.Component {
-
     state = {
         formIsValid: false,
         formControls: {
@@ -26,7 +28,6 @@ export default class ModalAddResource extends React.Component {
                 value: '',
                 valid: false,
                 validationRules: {
-                    minLength: 4,
                     isRequired: true
                 }
             },
@@ -35,31 +36,36 @@ export default class ModalAddResource extends React.Component {
                 valid: false,
                 validationRules: {
                     isRequired: true,
-                    minLength: 2,
                 }
             },
             password: {
                 value: '',
                 valid: false,
                 validationRules: {
-                    minLength: 6,
                     isRequired: true
                 }
             },
             vmtype: {
+                value: 'vSphere',
+                valid: true,
+                validationRules: {
+                    isRequired: true
+                }
+            },
+            host: {
                 value: '',
                 valid: false,
                 validationRules: {
                     isRequired: true
                 }
             },
-            ip: {
-                value: '',
-                valid: false,
+            datacenters: {
+                value: "",
+                valid: true,
                 validationRules: {
                     isRequired: true
                 }
-            }
+            },
         }
     };
 
@@ -70,7 +76,6 @@ export default class ModalAddResource extends React.Component {
                 value: '',
                 valid: false,
                 validationRules: {
-                    minLength: 2,
                     isRequired: true
                 }
             },
@@ -78,7 +83,6 @@ export default class ModalAddResource extends React.Component {
                 value: '',
                 valid: false,
                 validationRules: {
-                    minLength: 4,
                     isRequired: true
                 }
             },
@@ -86,24 +90,30 @@ export default class ModalAddResource extends React.Component {
                 value: '',
                 valid: false,
                 validationRules: {
-                    minLength: 6,
                     isRequired: true
                 }
             },
             vmtype: {
+                value: "KVM",
+                valid: false,
+                validationRules: {
+                    isRequired: true
+                }
+            },
+            host: {
                 value: '',
                 valid: false,
                 validationRules: {
                     isRequired: true
                 }
             },
-            ip: {
-                value: '',
+            datacenters: {
+                value: "",
                 valid: false,
                 validationRules: {
                     isRequired: true
                 }
-            }
+            },
         };
         this.setState({
             formControls: formControls,
@@ -122,7 +132,6 @@ export default class ModalAddResource extends React.Component {
         const updatedFormElement = {
             ...updatedControls[name]
         };
-
         updatedFormElement.value = value;
         updatedFormElement.valid = validate(value, updatedFormElement.validationRules);
 
@@ -146,14 +155,15 @@ export default class ModalAddResource extends React.Component {
             formData[formElementId] = this.state.formControls[formElementId].value;
         }
 
-        axios.post(`additional-functions/contact-form-handler`, formData)
-            .then(res => {
-                if (res.status == 200) {
-                    this.resetState(true);
-                } else {
-                    console.log(res.data);
-                }
-            })
+        Actions.addResource(formData);
+        // axios.post(`additional-functions/contact-form-handler`, formData)
+        //     .then(res => {
+        //         if (res.status == 200) {
+        //             this.resetState(true);
+        //         } else {
+        //             console.log(res.data);
+        //         }
+        //     })
     };
 
 
@@ -196,15 +206,15 @@ export default class ModalAddResource extends React.Component {
                             </FormGroup>
                             <FormGroup
                                 className={classnames("mb-3", {
-                                    focused: this.state.emailFocused
+                                    focused: this.state.vmtypeFocused
                                 })}
                             >
-                                <Label for="email">VM Platform</Label>
+                                <Label for="vmtype">VM Platform</Label>
                                 <FormSelect
                                     name="vmtype"
                                     onChange={this.handleChange}
-                                    // value={this.state.formControls.vmtype.value}
-                                    // valid={this.state.formControls.vmtype.valid}
+                                    value={this.state.formControls.vmtype.value}
+                                    valid={this.state.formControls.vmtype.valid}
                                     onFocus={e => this.setState({vmtypeFocused: true})}
                                     onBlur={e => this.setState({vmtypeFocused: false})}
                                 >
@@ -216,19 +226,19 @@ export default class ModalAddResource extends React.Component {
                             </FormGroup>
                             <FormGroup
                                 className={classnames("mb-3", {
-                                    focused: this.state.ipFocused
+                                    focused: this.state.hostFocused
                                 })}
                             >
-                                <Label for="ip">IP Address</Label>
+                                <Label for="host">Host Address</Label>
                                 <FormInput
-                                    placeholder="IP Address"
+                                    placeholder="FQDN or IP Address"
                                     type="text"
-                                    name="ip"
+                                    name="host"
                                     onChange={this.handleChange}
-                                    value={this.state.formControls.ip.value}
-                                    onFocus={e => this.setState({ipFocused: true})}
-                                    onBlur={e => this.setState({ipFocused: false})}
-                                    valid={this.state.formControls.ip.valid}
+                                    value={this.state.formControls.host.value}
+                                    onFocus={e => this.setState({hostFocused: true})}
+                                    onBlur={e => this.setState({hostFocused: false})}
+                                    valid={this.state.formControls.host.valid}
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -265,8 +275,18 @@ export default class ModalAddResource extends React.Component {
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <Label for="exampleSelectMulti">Select Datacenter</Label>
-                                <Input type="select" name="selectMulti" id="selectDC" multiple>
+                                <Label for="datacenters">Select Datacenter</Label>
+                                <Input
+                                    className={classnames({
+                                        focused: this.state.datacentersFocused
+                                    })}
+                                    type="select"
+                                    name="datacenters"
+                                    value={this.state.formControls.datacenters.value}
+                                    onChange={this.handleChange}
+                                    onFocus={e => this.setState({datacentersFocused: true})}
+                                    onBlur={e => this.setState({datacentersFocused: false})}
+                                >
                                     {
                                         dcs.map((item, index) => {
                                                 return (<option value={item.id} key={index}>{item.name}</option>)

@@ -6,9 +6,7 @@ import {Col} from "shards-react";
 import SidebarMainNavbar from "./SidebarMainNavbar";
 import LeftSidebarNavItems from "./LeftSidebarNavItems";
 import RightSidebarNavItems from "./RightSidebarNavItems";
-
-import {Store} from "../../../flux";
-
+import Store from "../../../flux/store";
 
 class MainSidebar extends React.Component {
     constructor(props) {

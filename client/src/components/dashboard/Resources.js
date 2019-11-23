@@ -14,9 +14,39 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ModalAddResource from "../common/ModalAddResource";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
+import Store from "../../flux/store";
+import {Actions} from "../../flux";
 
 class Resources extends React.Component {
-    state = {};
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tableData: Store.getResourceTableData()
+        };
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    componentWillMount() {
+        Store.addChangeListener(this.onChange);
+    }
+
+    componentWillUnmount() {
+        Store.removeChangeListener(this.onChange);
+    }
+
+    componentDidMount() {
+        Actions.getResources()
+    }
+
+    onChange() {
+        this.setState({
+            ...this.state,
+            tableData: Store.getResourceTableData()
+        });
+    }
+
     toggleModal = state => {
         this.setState({
             [state]: !this.state[state]
@@ -34,7 +64,8 @@ class Resources extends React.Component {
     });
 
     render() {
-        const {title, columns, data, options} = this.props;
+        const {title, columns, options} = this.props;
+        const {tableData: data} = this.state;
         return (
             <Card small className="blog-comments">
                 <CardHeader className="m-2 mb-0">
@@ -78,7 +109,6 @@ Resources.propTypes = {
      * The table dataset.
      */
     columns: PropTypes.array,
-    data: PropTypes.array,
     tableStyle: PropTypes.object,
     options: PropTypes.object,
 };
@@ -87,7 +117,8 @@ Resources.defaultProps = {
     title: "Resources",
     columns: [
         {
-            name: "Name",
+            name: "name",
+            label: "Name",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -96,7 +127,8 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "Status",
+            name: "status",
+            label: "Status",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -111,9 +143,13 @@ Resources.defaultProps = {
                 }
             }
         },
-        "IP Address",
         {
-            name: "CPU",
+            name: "ip_address",
+            label: "IP Address"
+        },
+        {
+            name: "cpu",
+            label: "CPU",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -135,7 +171,8 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "RAM",
+            name: "memory",
+            label: "Memory",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -154,7 +191,8 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "Disk",
+            name: "disk",
+            label: "Disk",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -172,9 +210,13 @@ Resources.defaultProps = {
                 }
             }
         },
-        "Jobs Done",
         {
-            name: "Project",
+            name: "jobs_done",
+            label: "Jobs Done"
+        },
+        {
+            name: "policy",
+            label: "Policy",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -183,7 +225,8 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "Active",
+            name: "active",
+            label: "Active",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -204,10 +247,6 @@ Resources.defaultProps = {
             }
         },
         // {name: "", options: { filter: false,sort: false,empty: true,customBodyRender: (value, tableMeta, updateValue) => {return ();}}},
-    ],
-    data: [
-        ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
-        ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
     ],
     tableStyle: {
         MUIDataTableSelectCell: {
