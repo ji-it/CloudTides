@@ -2,8 +2,10 @@ from django.conf.urls import url
 from django.urls import path, include
 from .views import *
 
+app_name = 'users'
 urlpatterns = [
 
-    url(r'^api/users/', UserListView.as_view(), name='view-all'),
-
+    #path('', UserListView.as_view(), name='view-all'),
+    path('login/', UserLogin.as_view(), name='login'),
+    path('', test, name='test')
 ]

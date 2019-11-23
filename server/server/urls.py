@@ -26,5 +26,5 @@ schema_view = get_swagger_view(title='TIDES API DOCS')
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/docs/$', schema_view),
-    url(r'^', include('users.urls')),
+    path('users/', include('users.urls')),
 ]
