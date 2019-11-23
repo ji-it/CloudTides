@@ -23,8 +23,8 @@ class UserLogin(APIView):
     
     def post(self, request):
         dic = {}
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.data.get("username")
+        password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:

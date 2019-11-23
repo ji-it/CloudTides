@@ -6,4 +6,4 @@ from rest_framework import *
 class vCenterSerializer(ModelSerializer):
     class Meta:
         model = vCenter
-        #fields = ["priority"]
+        fields = ["priority"]
