@@ -10,4 +10,4 @@ from import_export import resources
 
 @admin.register(TidesUser)
 class TidesUserAdmin(ImportExportModelAdmin):
-    pass
+  pass
