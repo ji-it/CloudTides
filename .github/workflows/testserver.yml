@@ -36,5 +36,5 @@ jobs:
     - name: Test
       run: |
         pytest server/
-        ls -a /home/runner/work/**
+        ls -aR /home/runner/work/
       #  cd server/ && coverage-badge -f  -o ../server_coverage.svg
