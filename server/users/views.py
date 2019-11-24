@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from rest_framework.response import Response
-from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -17,13 +16,12 @@ from django.views.decorators.cache import cache_page
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
-
 class UserListView(APIView):
 
     def get(self, request):
         users = TidesUser.objects.all()
         serializer = TidesUserSerializer(users, many=True)
-        return JsonResponse({'message': serializer.data}, status=200)
+        return Response({'message': serializer.data}, status=200)
 
 
 class UserLogin(APIView):
