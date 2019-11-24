@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from .serializers import *
-from .models import TidesUser
+from .models import Account
 
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
@@ -19,7 +19,7 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 class UserListView(APIView):
 
     def get(self, request):
-        users = TidesUser.objects.all()
+        users = Account.objects.all()
         serializer = TidesUserSerializer(users, many=True)
         return Response({'message': serializer.data}, status=200)
 
@@ -51,7 +51,7 @@ class UserRegister(APIView):
             if user:
                 token = Token.objects.create(user=user)
                 json = serializer.data
-                profile = TidesUser(user=user, priority=request.data['priority'],
+                profile = Account(user=user, priority=request.data['priority'],
                                     company_name=request.data['company_name'])
                 profile.save()
                 json['token'] = token.key

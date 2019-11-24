@@ -3,11 +3,10 @@ from __future__ import unicode_literals
 from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 from .models import *
-from import_export import resources
 
 
 # Register your models here.
 
-@admin.register(TidesUser)
-class TidesUserAdmin(ImportExportModelAdmin):
-  pass
+@admin.register(Account)
+class AccountAdmin(ImportExportModelAdmin):
+    pass
