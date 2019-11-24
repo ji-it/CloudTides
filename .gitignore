@@ -1,5 +1,6 @@
 client/node_modules
 client/public/bundle
+server/.idea
 cloud-tides.css
 package-lock.json
 stats.json
