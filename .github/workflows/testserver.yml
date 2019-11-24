@@ -34,7 +34,7 @@ jobs:
         git ls-files server/ | grep -v 'migrations' | grep -v 'settings.py' | grep -v 'manage.py' | grep -E '.py$' |
           xargs pylint -E --load-plugins=pylint_django
     - name: Test
-      working-directory: ./server
+      working-directory: server
       run: |
         pytest
         ls -a ./**
