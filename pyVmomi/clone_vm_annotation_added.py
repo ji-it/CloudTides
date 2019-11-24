@@ -136,7 +136,7 @@ def clone_vm(content, template, vm_name, si, datacenter_name,
         resource_pool = cluster.resourcePool
 
     vmconf = vim.vm.ConfigSpec()
-    vmconf.annotation = 'BOINC'
+    vmconf.annotation = 'BOINC-stopped'
 
     # set relospec
     relospec = vim.vm.RelocateSpec()
