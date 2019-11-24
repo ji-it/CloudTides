@@ -51,4 +51,5 @@ class UserRegister(APIView):
                 profile.save()
                 json['token'] = token.key
                 return Response(json, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

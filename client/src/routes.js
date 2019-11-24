@@ -8,10 +8,14 @@ import {DefaultLayout} from "./layouts";
 import {STATE_LOGIN, STATE_SIGNUP} from "./components/auth/AuthForn";
 import AuthPage from "./views/AuthPage";
 import Dashboard from "./views/Dashboard";
-// import UserProfileLite from "./views/UserProfileLite";
-// import AddNewPost from "./views/AddNewPost";
+import ManageResources from "./views/ManageResources";
+import Contribution from "./views/Contribution";
+import Templates from "./views/Templates";
 import Errors from "./views/Errors";
 import EmptyLayout from "./layouts/Empty";
+import Settings from "./views/Settings";
+// import UserProfileLite from "./views/UserProfileLite";
+// import AddNewPost from "./views/AddNewPost";
 // import ComponentsOverview from "./views/ComponentsOverview";
 // import Tables from "./views/Tables";
 // import BlogPosts from "./views/BlogPosts";
@@ -42,6 +46,26 @@ export default [
         path: "/home",
         layout: DefaultLayout,
         component: Dashboard
+    },
+    {
+        path: "/manage-resources",
+        layout: DefaultLayout,
+        component: ManageResources
+    },
+    {
+        path: "/contribution",
+        layout: DefaultLayout,
+        component: Contribution
+    },
+    {
+        path: "/templates",
+        layout: DefaultLayout,
+        component: Templates
+    },
+    {
+        path: "/settings",
+        layout: DefaultLayout,
+        component: Settings
     },
     {
         path: "/errors",

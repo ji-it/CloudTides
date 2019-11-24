@@ -1,19 +1,19 @@
 @charset "UTF-8";
 
 @font-face {
-    font-family: "untitled-font-1";
-    src: url("fonts/untitled-font-1.eot");
-    src: url("fonts/untitled-font-1.eot?#iefix") format("embedded-opentype"),
-    url("fonts/untitled-font-1.woff") format("woff"),
-    url("fonts/untitled-font-1.ttf") format("truetype"),
-    url("fonts/untitled-font-1.svg#untitled-font-1") format("svg");
+    font-family: "tides";
+    src: url("fonts/tides.eot");
+    src: url("fonts/tides.eot?#iefix") format("embedded-opentype"),
+    url("fonts/tides.woff") format("woff"),
+    url("fonts/tides.ttf") format("truetype"),
+    url("fonts/tides.svg#tides") format("svg");
     font-weight: normal;
     font-style: normal;
 
 }
 
 [data-icon]:before {
-    font-family: "untitled-font-1" !important;
+    font-family: "tides" !important;
     content: attr(data-icon);
     font-style: normal !important;
     font-weight: normal !important;
@@ -25,9 +25,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
-    font-family: "untitled-font-1" !important;
+[class^="tides-icon-"]:before,
+[class*=" tides-icon-"]:before {
+    font-family: "tides" !important;
     font-style: normal !important;
     font-weight: normal !important;
     font-variant: normal !important;
@@ -38,20 +38,20 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-dashboard:before {
-    content: "\61";
+.tides-icon-resource:before {
+  content: "\41";
 }
-
-.icon-template:before {
-    content: "\62";
+.tides-icon-contribution:before {
+  content: "\42";
 }
-
-.icon-settings:before {
-    content: "\63";
+.tides-icon-settings:before {
+  content: "\43";
 }
-
-.icon-contribution:before {
-    content: "\64";
+.tides-icon-template:before {
+  content: "\44";
+}
+.tides-icon-dashboard:before {
+  content: "\45";
 }
 
 

@@ -59,6 +59,7 @@
 
     &--increase {
       color: theme-color('success');
+
       &::before {
         background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMTdjNjcxIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gPHBhdGggZD0iTTcgMTRsNS01IDUgNXoiLz4gPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPiA8L3N2Zz4=);
       }
@@ -66,6 +67,7 @@
 
     &--decrease {
       color: theme-color('danger');
+
       &::before {
         background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjYzQxODNjIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTcgMTBsNSA1IDUtNXoiLz4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==);
       }
@@ -107,4 +109,80 @@
 .card-group .stats-small {
   position: relative;
   overflow: hidden;
+}
+
+
+.status-border {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 5px;
+}
+
+.small, small {
+  font-size: 90%;
+  font-weight: 400;
+}
+
+.tides-idle {
+  border-color: #CC960B !important;
+  background-color: #FCF5E6 !important;
+  color: #CC960B;
+}
+
+.tides-busy {
+  border-color: #BD0D0D !important;
+  background-color: #FCE6E6 !important;
+  color: #BD0D0D;
+}
+
+.tides-contributing {
+  border-color: #09832F !important;
+  background-color: #E6FCEF !important;
+  color: #09832F;
+}
+
+.btn-icon-split {
+  padding: 0;
+  overflow: hidden;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.stack-button {
+  font-size: 14px;
+  padding: 10px;
+}
+
+.bottom-aligner {
+  display: inline-block;
+  height: 76%;
+  width: 0;
+  vertical-align: bottom;
+}
+
+.workloadProgress {
+  height: 1.65rem;
+  line-height: 1.65rem;
+}
+
+.workloadProgressBar {
+  height: 1.65rem;
+  line-height: 1.65rem;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
 }

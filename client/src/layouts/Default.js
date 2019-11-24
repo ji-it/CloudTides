@@ -10,6 +10,7 @@ import MainFooter from "../components/layout/MainFooter";
 class DefaultLayout extends React.Component {
     render() {
         const {noNavbar, noFooter, children} = this.props;
+        const offset = (this.props.location.pathname !== "/manage-resources") ? {marginLeft: "80px"} : {};
         return (
             <Container fluid>
                 <Row>
@@ -20,6 +21,7 @@ class DefaultLayout extends React.Component {
                         // md={{size: 9, offset: 3}}
                         // sm="12"
                         tag="main"
+                        style={offset}
                     >
                         {!noNavbar && <MainNavbar/>}
                         {children}

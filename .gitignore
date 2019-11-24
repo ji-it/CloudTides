@@ -1,7 +1,12 @@
 client/node_modules
 client/public/bundle
+server/.idea
 cloud-tides.css
 package-lock.json
 stats.json
 **/__pycache__/
 db.sqlite3
+client/.idea
+client/dummy_data
+.idea
+server/users/migrations

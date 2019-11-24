@@ -1,4 +1,5 @@
 # CloudTides
+![](https://github.com/dzl84/CloudTides/workflows/Tides%20Server%20application/badge.svg)
 
 ## Dependencies
 

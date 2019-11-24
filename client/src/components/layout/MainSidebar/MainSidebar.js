@@ -4,12 +4,9 @@ import classNames from "classnames";
 import {Col} from "shards-react";
 
 import SidebarMainNavbar from "./SidebarMainNavbar";
-import SidebarSearch from "./SidebarSearch";
 import LeftSidebarNavItems from "./LeftSidebarNavItems";
 import RightSidebarNavItems from "./RightSidebarNavItems";
-
-import {Store} from "../../../flux";
-
+import Store from "../../../flux/store";
 
 class MainSidebar extends React.Component {
     constructor(props) {
@@ -47,7 +44,9 @@ class MainSidebar extends React.Component {
             this.state.menuVisible && "open"
         );
         const {sidebarNavItems: items} = this.state;
-        let hasChildren = items.filter(item => item.to === this.props.location.pathname).shift();
+        let hasChildren = items.filter(
+            item => item.to === this.props.location.pathname
+        ).shift();
         hasChildren = hasChildren && hasChildren.show;
         return (
             <Col
