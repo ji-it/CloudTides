@@ -1,0 +1,3 @@
+npm install -g json-server
+
+json-server --watch dummy_data/resources.json --port 8080

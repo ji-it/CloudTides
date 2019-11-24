@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {Navbar, NavbarBrand} from "shards-react";
+import Actions from '../../../flux/actions';
 
-import {Dispatcher, Constants} from "../../../flux";
 
 class SidebarMainNavbar extends React.Component {
     constructor(props) {
@@ -12,9 +12,7 @@ class SidebarMainNavbar extends React.Component {
     }
 
     handleToggleSidebar() {
-        Dispatcher.dispatch({
-            actionType: Constants.TOGGLE_SIDEBAR
-        });
+        Actions.toggleMenu();
     }
 
     render() {

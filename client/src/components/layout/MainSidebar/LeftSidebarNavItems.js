@@ -1,8 +1,7 @@
 import React from "react";
 import {Nav} from "shards-react";
-
 import SidebarNavItem from "./SidebarNavItem";
-import {Store} from "../../../flux";
+import Store from "../../../flux/store";
 
 class LeftSidebarNavItems extends React.Component {
     constructor(props) {

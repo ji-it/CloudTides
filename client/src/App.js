@@ -14,7 +14,7 @@ export default () => (
         <div>
             {routes.map((route, index) => {
                 return (
-                    <div>
+                    <div key={index}>
                         {(route.path == "/signup" || route.path == "/login") ? (
                             <Route
                                 key={index}
