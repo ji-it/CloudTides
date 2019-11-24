@@ -35,6 +35,6 @@ jobs:
           xargs pylint -E --load-plugins=pylint_django
     - name: Test
       run: |
-        pytest
+        pytest server/
         ls -a /**
       #  cd server/ && coverage-badge -f  -o ../server_coverage.svg
