@@ -36,4 +36,13 @@ jobs:
     - name: Test
       run: |
         pytest server/
-        coverage-badge -f  -o server_coverage.svg && git add server_coverage.svg && git commit -m "Updated coverage badge"  
+        coverage-badge -f  -o server_coverage.svg
+   # - name: Commit files
+   #   run: |
+   #     git config --local user.email "dbaekajnr@sjtu.edu.cn"
+   #     git config --local user.name "dbaeka"
+   #     git commit -m "Updated coverage badge" -a
+ #   - name: Push changes
+   #   uses: ad-m/github-push-action@master
+ #     with:
+  #      github_token: ${{ secrets.GITHUB_TOKEN }}
