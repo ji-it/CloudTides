@@ -1,5 +1,4 @@
 """server URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -26,5 +25,5 @@ schema_view = get_swagger_view(title='TIDES API DOCS')
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/docs/$', schema_view),
-    path('users/', include('users.urls')),
+    path('api/users/', include('users.urls')),
 ]

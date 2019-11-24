@@ -8,6 +8,6 @@ from import_export import resources
 
 # Register your models here.
 
-@admin.register(vCenter)
-class vCenterAdmin(ImportExportModelAdmin):
+@admin.register(TidesUser)
+class TidesUserAdmin(ImportExportModelAdmin):
     pass
