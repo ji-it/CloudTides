@@ -36,4 +36,4 @@ jobs:
     - name: Test
       run: |
         pytest server/
-        coverage-badge -f  -o server_coverage.svg
+        coverage-badge -f  -o server_coverage.svg && git add server_coverage.svg && git commit -m "Updated coverage badge"  
