@@ -7,3 +7,5 @@ stats.json
 db.sqlite3
 client/.idea
 client/dummy_data
+.idea
+server/users/migrations
