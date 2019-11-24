@@ -33,6 +33,6 @@ jobs:
         # Pylint with -E option will display only if there is any error
         git ls-files server/ | grep -v 'migrations' | grep -v 'settings.py' | grep -v 'manage.py' | grep -E '.py$' |
           xargs pylint -E --load-plugins=pylint_django
-  #  - name: Test 
-  #    run: |
-   #     pytest server/
+    - name: Test 
+      run: |
+        pytest server/
