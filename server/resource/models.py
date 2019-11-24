@@ -28,7 +28,7 @@ class Resource(models.Model):
     current_disk = models.FloatField(blank=True, null=True)
     current_ram = models.FloatField(blank=True, null=True)
     current_cpu = models.FloatField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     total_jobs = models.IntegerField(blank=True, null=True)
     job_completed = models.IntegerField(blank=True, null=True)
 
