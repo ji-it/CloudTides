@@ -9,4 +9,6 @@ db.sqlite3
 client/.idea
 client/dummy_data
 .idea
-server/users/migrations
+.coverage
+coverage.svg
+.dat.nosync0216.YIhZVp

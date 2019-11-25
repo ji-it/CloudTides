@@ -21,5 +21,5 @@ class TidesUserSerializer(serializers.ModelSerializer):
         return user
 
     class Meta:
-        model = TidesUser
+        model = Account
         fields = ["username", "password", "priority"]

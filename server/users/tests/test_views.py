@@ -1,19 +1,26 @@
+"""
+    Unit Test file for views
+"""
 from django.test import TestCase
-
 from django.urls import reverse
-from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 
 
-class TidesUsersTest(APITestCase):
-    def setUp(self):
-        # We want to go ahead and originally create a user.
-        self.test_user = User.objects.create_user('testuser', 'testpassword')
+class TidesUserViewTest(TestCase):
+    """
+    Test View class
+    """
+    # URL for creating an account.
+    create_url = reverse('register')
 
-        # URL for creating an account.
-        self.create_url = reverse('register')
+    @classmethod
+    def setUpTestData(cls):
+        """
+        :return: None
+        """
+        User.objects.create_user('testuser', 'testpassword')
 
     def test_create_user(self):
         """
@@ -22,7 +29,8 @@ class TidesUsersTest(APITestCase):
         data = {
             'username': 'foobar',
             'password': 'somepassword',
-            'priority': 'High'
+            'priority': '3',
+            'company_name': 'Test Company'
         }
 
         response = self.client.post(self.create_url, data, format='json')
@@ -44,7 +52,9 @@ class TidesUsersTest(APITestCase):
         """
         data = {
             'username': 'foobar',
-            'password': 'foo'
+            'password': 'foo',
+            'priority': '3',
+            'company_name': 'Test Company'
         }
 
         response = self.client.post(self.create_url, data, format='json')
@@ -55,7 +65,9 @@ class TidesUsersTest(APITestCase):
     def test_create_user_with_no_password(self):
         data = {
             'username': 'foobar',
-            'password': ''
+            'password': '',
+            'priority': '3',
+            'company_name': 'Test Company'
         }
 
         response = self.client.post(self.create_url, data, format='json')
@@ -66,8 +78,9 @@ class TidesUsersTest(APITestCase):
     def test_create_user_with_no_username(self):
         data = {
             'username': '',
-            'email': 'foobarbaz@example.com',
-            'password': 'foobar'
+            'password': 'foobar',
+            'priority': '3',
+            'company_name': 'Test Company'
         }
 
         response = self.client.post(self.create_url, data, format='json')
@@ -78,8 +91,9 @@ class TidesUsersTest(APITestCase):
     def test_create_user_with_preexisting_username(self):
         data = {
             'username': 'testuser',
-            'email': 'user@example.com',
-            'password': 'testuser'
+            'password': 'testuser',
+            'priority': '3',
+            'company_name': 'Test Company'
         }
 
         response = self.client.post(self.create_url, data, format='json')

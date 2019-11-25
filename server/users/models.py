@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-class TidesUser(models.Model):
+class Account(models.Model):
     PRI_CHOICES = (
         ('1', 'Low'),
         ('2', 'Medium'),
@@ -17,8 +17,8 @@ class TidesUser(models.Model):
 
     # META CLASS
     class Meta:
-        verbose_name = 'Tides User'
-        verbose_name_plural = 'Tides Users'
+        verbose_name = 'Tides Account'
+        verbose_name_plural = 'Tides Account'
 
     # TO STRING METHOD
     def __str__(self):
