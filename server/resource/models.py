@@ -35,3 +35,8 @@ class Resource(models.Model):
     class Meta:
         verbose_name = 'Tides Resource'
         verbose_name_plural = 'Tides Resources'
+
+    def save(self, *args, **kwargs):
+        # do something
+        super().save(*args, **kwargs)
+        # do something
