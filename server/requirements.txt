@@ -10,6 +10,8 @@ django_extensions
 django-redis
 redis
 pyvmomi==6.7.3
+suds-jurko
+vcrpy>=1.1.1
 # test and cov
 coverage==4.5.2
 pytest
