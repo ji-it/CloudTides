@@ -12,3 +12,4 @@ client/dummy_data
 .coverage
 coverage.svg
 .dat.nosync0216.YIhZVp
+client/build
