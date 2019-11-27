@@ -12,6 +12,7 @@ from .models import Account
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.views.decorators.cache import cache_page
+import json
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
@@ -27,18 +28,19 @@ class UserListView(APIView):
 class UserLogin(APIView):
 
     def post(self, request):
-        json = {}
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        dic = {}
+        data = json.loads(request.body)
+        username = data['username']
+        password = data['password']
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
                 res = User.objects.get(username=username)
-                json['token'] = token
-                json['priority'] = res.TidesUser.priority
-                return Response(json, status=status.HTTP_200_OK)
+                dic['token'] = token
+                dic['priority'] = res.TidesUser.priority
+                return Response(dic, status=status.HTTP_200_OK)
         return Response({'message': 'Unauthorized'}, status=status.HTTP_400_BAD_REQUEST)
 
 
