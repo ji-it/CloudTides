@@ -60,7 +60,7 @@ if not vm:
 
 print("Found: {0}".format(vm.name))
 spec = vim.vm.ConfigSpec()
-spec.annotation = args.message
+spec.annotation = "BOINC-running"
 task = vm.ReconfigVM_Task(spec)
 tasks.wait_for_tasks(si, [task])
 print("Done.")
