@@ -32,9 +32,6 @@ def setup_args():
                         required=False,
                         action='store',
                         help='IP address of the VM to search for')
-    parser.add_argument('-m', '--message',
-                        required=True,
-                        help="Message to add to the notes field.")
     my_args = parser.parse_args()
     return cli.prompt_for_password(my_args)
 
