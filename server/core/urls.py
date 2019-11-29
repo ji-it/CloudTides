@@ -26,5 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api/docs/$', schema_view),
     path('api/users/', include('users.urls')),
-    path('api/resource/', include('resource.urls'))
+    path('api/resource/', include('resource.urls')),
+    path('api/policy/', include('policy.urls')),
+    path('api/template/', include('template.urls'))
 ]

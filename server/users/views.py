@@ -55,7 +55,10 @@ class UserRegister(APIView):
                 json = serializer.data
                 profile = Account(user=user, priority=request.data['priority'],
                                     company_name=request.data['company_name'])
-                profile.save()
+                try:
+                    profile.save()
+                except:
+                    return Response({'message': 'user already registered'}, status=status.HTTP_200_OK)
                 json['token'] = token.key
                 return Response(json, status=status.HTTP_200_OK)
 

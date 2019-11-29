@@ -4,5 +4,6 @@ from .views import *
 
 urlpatterns = [
     path('validate/', ValidateResource.as_view(), name='validate'),
-    path('add/', AddResource.as_view(), name='add')
+    path('add/', AddResource.as_view(), name='add'),
+    path('delete/', DeleteResource.as_view(), name='delete')
 ]
