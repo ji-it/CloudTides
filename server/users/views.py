@@ -28,20 +28,19 @@ class UserListView(APIView):
 class UserLogin(APIView):
 
     def post(self, request):
-        dic = {}
-        data = json.loads(request.body)
-        username = data['username']
-        password = data['password']
+        json = {}
+        username = request.data['username']
+        password = request.data['password']
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
                 login(request, user)
                 token, _ = Token.objects.get_or_create(user=user)
                 res = User.objects.get(username=username)
-                dic['token'] = token
-                dic['priority'] = res.TidesUser.priority
-                return Response(dic, status=status.HTTP_200_OK)
-        return Response({'message': 'Unauthorized'}, status=status.HTTP_400_BAD_REQUEST)
+                json['userInfo'] = {'priority': res.account.priority, 'username': username}
+                json['token'] = token.key
+                return Response(json, status=status.HTTP_200_OK)
+        return Response({'message': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserRegister(APIView):
@@ -52,11 +51,11 @@ class UserRegister(APIView):
             user = serializer.save()
             if user:
                 token = Token.objects.create(user=user)
-                json = serializer.data
-                profile = Account(user=user, priority=request.data['priority'],
-                                    company_name=request.data['company_name'])
+                profile = Account(user=user, priority=request.data['priority'])
+                dic = serializer.data
+                dic['priority'] = profile.priority
+                json = {'userInfo': dic, 'token': token.key}
                 profile.save()
-                json['token'] = token.key
                 return Response(json, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

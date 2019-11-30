@@ -1,3 +1,4 @@
 import DefaultLayout from "./Default";
+import EmptyLayout from "./Empty";
 
-export { DefaultLayout };
+export {DefaultLayout, EmptyLayout};
