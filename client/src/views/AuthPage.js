@@ -1,4 +1,4 @@
-import AuthForm, {STATE_LOGIN} from '../components/auth/AuthForn';
+import AuthForm, {STATE_LOGIN} from '../components/auth/AuthForm';
 import React from 'react';
 import {Card, Col, Row} from 'reactstrap';
 
@@ -28,6 +28,7 @@ class AuthPage extends React.Component {
                 <Col md={6} lg={4}>
                     <div>
                         <AuthForm
+                            {...this.props}
                             authState={this.props.authState}
                             onChangeAuthState={this.handleAuthState}
                             onLogoClick={this.handleLogoClick}

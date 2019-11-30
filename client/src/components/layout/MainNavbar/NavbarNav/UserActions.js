@@ -10,6 +10,8 @@ import {
     NavLink
 } from "shards-react";
 
+import auth from "../../../../utils/auth";
+
 export default class UserActions extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +27,12 @@ export default class UserActions extends React.Component {
         this.setState({
             visible: !this.state.visible
         });
+    }
+
+    logout() {
+        auth.clearToken();
+        auth.clearUserInfo();
+        this.props.history.push("/")
     }
 
     render() {
@@ -44,7 +52,7 @@ export default class UserActions extends React.Component {
                         Profile
                     </DropdownItem>
                     <DropdownItem divider/>
-                    <DropdownItem tag={Link} to="/" className="text-danger">
+                    <DropdownItem tag={Link} to="#" onClick={this.logout} className="text-danger">
                         {/*<i className="material-icons text-danger">&#xE879;</i> */}
                         Logout
                     </DropdownItem>

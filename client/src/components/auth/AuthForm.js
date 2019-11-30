@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {Button, Form, FormGroup, Input, Label} from 'reactstrap';
 import validate from "../../utils/validate";
-import axios from "axios";
+import request from "../../utils/request";
+import auth from "../../utils/auth";
 import classnames from "classnames";
 import $ from "jquery";
-import {Redirect} from "react-router-dom";
+import {devURL} from "../../utils/urls";
+import env from "../../env";
 
 class AuthForm extends React.Component {
 
     state = {
-        redirectToReferrer: false,
         formIsValid: false,
         formControls: {
-            uname: {
+            username: {
                 value: '',
                 valid: false,
                 validationRules: {
@@ -42,10 +43,9 @@ class AuthForm extends React.Component {
     };
 
     resetState = () => {
-        const redirectToReferrer = false;
         const formIsValid = false;
         const formControls = {
-            uname: {
+            username: {
                 value: '',
                 valid: false,
                 validationRules: {
@@ -71,7 +71,6 @@ class AuthForm extends React.Component {
             },
         };
         this.setState({
-            redirectToReferrer: redirectToReferrer,
             formControls: formControls,
             formIsValid: formIsValid
         });
@@ -93,9 +92,6 @@ class AuthForm extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        /**/
-        $("#send").hide();
-        // $("#action-feedback").html(`<img src = "../../images/theme/ajax-loader.gif">`);
 
         let all_filled = true;
         $("input[required]").each(function () {
@@ -107,20 +103,6 @@ class AuthForm extends React.Component {
 
         if (all_filled == false) {
             $("#action-feedback").html('');
-            $("#send").show();
-            return;
-        }
-
-
-        if ($("#password").val() != $("#repassword").val() && this.isSignup) {
-            $("#action-feedback").html('Passwords do not match');
-            $("#send").show();
-            return;
-        }
-
-        if (!this.state.formControls.password.valid && !this.state.formControls.repassword.valid) {
-            $("#action-feedback").html('Passwords too short!');
-            $("#send").show();
             return;
         }
 
@@ -129,32 +111,34 @@ class AuthForm extends React.Component {
             formData[formElementId] = this.state.formControls[formElementId].value;
         }
 
+        if (this.isSignup) {
+            if ($("#password").val() != $("#repassword").val() && this.isSignup) {
+                $("#action-feedback").html('Passwords do not match');
+                return;
+            }
 
-        // Handle Login Success or Fail or Register
-        this.setState(() => ({
-            redirectToReferrer: true
-        }));
-        ISAUTHENTICATED = true;
+            if (!this.state.formControls.password.valid && !this.state.formControls.repassword.valid) {
+                $("#action-feedback").html('Passwords too short!');
+                return;
+            }
 
-        // axios.get("/api/users/?format=json").then(({data}) => {
-        //     console.log(data)
-        // }).catch(err => console.log(err))
-        // axios.post(`functions/register-handler`, formData)
-        //     .then(res => {
-        //         if (res.status == 200) {
-        //             this.resetState(true);
-        //             if (res.data == "1") {
-        //                 $("#send").show();
-        //                 window.location.href = "verification";
-        //             } else {
-        //                 $("#action-feedback").html(res.data);
-        //                 $("#send").show();
-        //             }
-        //         } else {
-        //             $("#action-feedback").html('Failed to create user. Please try again!');
-        //             $("#send").show();
-        //         }
-        //     })
+            formData.priority = env.DEFAULT_PRIORITY
+        }
+
+        const endpoint = (this.isLogin) ? '/api/users/login/' : '/api/users/register/'
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: formData})
+            .then((response) => {
+                auth.setToken(response.token, true);
+                auth.setUserInfo(response.userInfo, true);
+                this.redirectUser();
+            }).catch((err) => {
+            console.log(err);
+        });
+    };
+
+    redirectUser = () => {
+        this.props.history.push("/")
     };
 
     handleChange = event => {
@@ -185,9 +169,11 @@ class AuthForm extends React.Component {
             $(this).parent().css("border", "none");
         });
 
-        // $("#action-feedback").html('');
-        if (!passwordMatch && updatedControls["password"].value && updatedControls["repassword"].value) {
-            // $("#action-feedback").html('Passwords do not match');
+        if (this.isSignup) {
+            $("#action-feedback").html('');
+            if (!passwordMatch && updatedControls["password"].value && updatedControls["repassword"].value) {
+                $("#action-feedback").html('Passwords do not match');
+            }
         }
 
         this.setState({
@@ -213,22 +199,12 @@ class AuthForm extends React.Component {
     render() {
         const {
             showLogo,
-            usernameLabel,
             usernameInputProps,
-            passwordLabel,
             passwordInputProps,
-            confirmPasswordLabel,
             confirmPasswordInputProps,
             children,
             onLogoClick,
         } = this.props;
-
-        const {redirectToReferrer} = this.state;
-
-        if (redirectToReferrer === true) {
-            return <Redirect to='/home'/>
-        }
-
 
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -244,22 +220,20 @@ class AuthForm extends React.Component {
                     </div>
                 )}
                 <FormGroup className={classnames({
-                    focused: this.state.unameFocused
+                    focused: this.state.usernameFocused
                 })}>
-                    {/*<Label for={usernameLabel}></Label>*/}
                     <Input
                         onChange={this.handleChange}
-                        value={this.state.formControls.uname.value}
-                        onFocus={e => this.setState({unameFocused: true})}
-                        onBlur={e => this.setState({unameFocused: false})}
-                        valid={this.state.formControls.uname.valid}
+                        value={this.state.formControls.username.value}
+                        onFocus={e => this.setState({usernameFocused: true})}
+                        onBlur={e => this.setState({usernameFocused: false})}
+                        valid={this.state.formControls.username.valid}
                         required
                         {...usernameInputProps} />
                 </FormGroup>
                 <FormGroup className={classnames({
                     focused: this.state.passwordFocused
                 })}>
-                    {/*<Label for={passwordLabel}></Label>*/}
                     <Input
                         onChange={this.handleChange}
                         value={this.state.formControls.password.value}
@@ -273,7 +247,6 @@ class AuthForm extends React.Component {
                     <FormGroup className={classnames({
                         focused: this.state.repasswordFocused
                     })}>
-                        {/*<Label for={confirmPasswordLabel}>{confirmPasswordLabel}</Label>*/}
                         <Input
                             onChange={this.handleChange}
                             value={this.state.formControls.repassword.value}
@@ -326,7 +299,6 @@ class AuthForm extends React.Component {
 
 export const STATE_LOGIN = 'LOGIN';
 export const STATE_SIGNUP = 'SIGNUP';
-export var ISAUTHENTICATED = false;
 
 AuthForm.propTypes = {
     authState: PropTypes.oneOf([STATE_LOGIN, STATE_SIGNUP]).isRequired,
@@ -345,8 +317,8 @@ AuthForm.defaultProps = {
     showLogo: true,
     usernameLabel: 'Username',
     usernameInputProps: {
-        name: 'uname',
-        id: 'uname',
+        name: 'username',
+        id: 'username',
         type: 'text',
         placeholder: 'username',
     },
