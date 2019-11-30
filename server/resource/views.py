@@ -15,6 +15,7 @@ import json
 import pyVmomi
 from pyVmomi import vim, vmodl
 import datetime
+from .utils import *
 
 GBFACTOR = float(1 << 30)
 
@@ -50,16 +51,6 @@ class ValidateResource(APIView):
 
 class AddResource(APIView):
 
-    def get_all_objs(self, content, vimtype, folder=None, recurse=True):
-        if not folder:
-            folder = content.rootFolder
-
-        obj = {}
-        container = content.viewManager.CreateContainerView(folder, vimtype, recurse)
-        for managed_object_ref in container.view:
-            obj.update({managed_object_ref: managed_object_ref.name})
-        return obj
-
     def post(self, request):
         data = json.loads(request.body)
         host = data['host']
@@ -77,13 +68,13 @@ class AddResource(APIView):
                 port=443)
             atexit.register(Disconnect, si)
         except:
-            return Response({'message': 'Failure'}, status=401)
+            return Response({'message': 'connection failure'}, status=401)
         
         if si is None:
-            return Response({'message': 'Failure'}, status=401)
+            return Response({'message': 'connection failure'}, status=401)
         
         content = si.RetrieveContent()
-        datacenters = self.get_all_objs(content, [vim.Datacenter])
+        datacenters = get_all_objs(content, [vim.Datacenter])
         datacenter = None
         for dc in datacenters:
             if dc.name == datacenter_name:
@@ -115,6 +106,59 @@ class AddResource(APIView):
                     profile = Resource(username=username, password=password, date_added=date_added, host_address=host_address,
                                 platform_type=platform_type, total_ram=total_ram, total_cpu=total_cpu, current_ram=current_ram,
                                 current_cpu=current_cpu, is_active=is_active)
-                    profile.save()
+                    try:
+                        profile.save()
+                    except:
+                        return Response({'message': 'resource already registered'}, status=200)
 
+        return Response({'message': 'success'}, status=200)
+
+
+class DeleteResource(APIView):
+
+    def post(self, request):
+        data = json.loads(request.body)
+        host = data['host']
+        username = data['username']
+        password = data['password']
+        platform_type = data['platform_type']
+        datacenter_name = data['datacenter']
+
+        try:
+            si = None
+            si = SmartConnectNoSSL(
+                host=host,
+                user=username,
+                pwd=password,
+                port=443)
+            atexit.register(Disconnect, si)
+        except:
+            return Response({'message': 'connection failure'}, status=401)
+        
+        if si is None:
+            return Response({'message': 'connection failure'}, status=401)
+        
+        content = si.RetrieveContent()
+        datacenters = get_all_objs(content, [vim.Datacenter])
+        datacenter = None
+        for dc in datacenters:
+            if dc.name == datacenter_name:
+                datacenter = dc
+                break
+        
+        if datacenter is None:
+            return Response({'message': 'datacenter not found'}, status=401)
+
+        if hasattr(datacenter.hostFolder, 'childEntity'):
+            hostFolder = datacenter.hostFolder
+            computeResourceList = hostFolder.childEntity
+            for computeResource in computeResourceList:
+                hostList = computeResource.host
+                for ho in hostList:
+                    host_address = ho.name
+                    try:
+                        Resource.objects.get(host_address=host_address).delete()
+                    except:
+                        return Response({'message': 'no matching objects'}, status=401)
+        
         return Response({'message': 'success'}, status=200)
