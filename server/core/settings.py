@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'users',
     'resource',
     'policy',
-    'template'
+    'template',
     'corsheaders'
 ]
 
