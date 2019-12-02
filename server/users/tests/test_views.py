@@ -41,7 +41,7 @@ class TidesUserViewTest(TestCase):
         # And that we're returning a 201 created code.
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Additionally, we want to return the username upon successful creation.
-        self.assertEqual(response.data['username'], data['username'])
+        self.assertEqual(response.data['userInfo']['username'], data['username'])
         self.assertFalse('password' in response.data)
         token = Token.objects.get(user=user)
         self.assertEqual(response.data['token'], token.key)
