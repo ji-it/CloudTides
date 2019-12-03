@@ -125,7 +125,7 @@ class AuthForm extends React.Component {
             formData.priority = env.DEFAULT_PRIORITY
         }
 
-        const endpoint = (this.isLogin) ? '/api/users/login/' : '/api/users/register/'
+        const endpoint = (this.isLogin) ? '/api/users/login/' : '/api/users/register/';
         const requestURL = devURL + endpoint;
         request(requestURL, {method: 'POST', body: formData})
             .then((response) => {
