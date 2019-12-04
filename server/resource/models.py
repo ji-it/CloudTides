@@ -34,7 +34,7 @@ class Resource(models.Model):
     job_completed = models.IntegerField(blank=True, null=True, default=0)
     polling_interval = models.IntegerField(blank=True, null=True)
     monitored = models.BooleanField(blank=True, null=True, default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ManyToManyField(User, blank=True)
 
     class Meta:
         verbose_name = 'Tides Resource'
