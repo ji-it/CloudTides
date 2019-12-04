@@ -16,6 +16,8 @@ import pyVmomi
 from pyVmomi import vim, vmodl
 import datetime
 from .utils import *
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 GBFACTOR = float(1 << 30)
 
@@ -58,6 +60,10 @@ class AddResource(APIView):
         password = data['password']
         platform_type = data['platform_type']
         datacenter_name = data['datacenter']
+        polling_interval = data['polling_interval']
+        user_account = data['user_account']
+
+        res = get_object_or_404(User, username=user_account)
 
         try:
             si = None
@@ -97,21 +103,32 @@ class AddResource(APIView):
             for computeResource in computeResourceList:
                 hostList = computeResource.host
                 for ho in hostList:
-                    host_address = ho.name
+                    host_name = ho.name
                     total_ram = ho.hardware.memorySize/GBFACTOR
                     total_cpu = round(((ho.hardware.cpuInfo.hz/1e+9)*ho.hardware.cpuInfo.numCpuCores),0)
                     current_ram = float(ho.summary.quickStats.overallMemoryUsage/1024)
                     current_cpu = float(ho.summary.quickStats.overallCpuUsage/1024)
                     #print(current_cpu, current_ram, total_ram, total_cpu)
-                    profile = Resource(username=username, password=password, date_added=date_added, host_address=host_address,
-                                platform_type=platform_type, total_ram=total_ram, total_cpu=total_cpu, current_ram=current_ram,
-                                current_cpu=current_cpu, is_active=is_active)
-                    try:
-                        profile.save()
-                    except:
-                        return Response({'message': 'resource already registered'}, status=200)
+                    profile = Resource(host_name=host_name, username=username, password=password, date_added=date_added, 
+                                host_address=host, platform_type=platform_type, total_ram=total_ram, total_cpu=total_cpu,
+                                current_ram=current_ram, current_cpu=current_cpu, is_active=is_active,
+                                polling_interval=polling_interval, user=res)
+                    
+                    profile.save()
+                    #except:
+                        #return Response({'message': 'resource already registered'}, status=401)
 
         return Response({'message': 'success'}, status=200)
+
+'''
+class ListResource(APIView):
+
+    def post(self, request):
+        data = json.loads(request.body)
+        user_account = data['user_account']
+
+        res = get_object_or_404(User, username=user_account)
+'''
 
 
 class DeleteResource(APIView):
@@ -121,7 +138,7 @@ class DeleteResource(APIView):
         host = data['host']
         username = data['username']
         password = data['password']
-        platform_type = data['platform_type']
+        #platform_type = data['platform_type']
         datacenter_name = data['datacenter']
 
         try:
@@ -155,9 +172,9 @@ class DeleteResource(APIView):
             for computeResource in computeResourceList:
                 hostList = computeResource.host
                 for ho in hostList:
-                    host_address = ho.name
+                    host_name = ho.name
                     try:
-                        Resource.objects.get(host_address=host_address).delete()
+                        Resource.objects.get(host_name=host_name).delete()
                     except:
                         return Response({'message': 'no matching objects'}, status=401)
         

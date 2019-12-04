@@ -16,6 +16,8 @@ class Template(models.Model):
     provisioned_space = models.FloatField(blank=True, null=True)
     memory_size = models.FloatField(blank=True, null=True)
     template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPE, default='tides')
+    username = models.TextField()
+    password = models.TextField()
 
     class Meta:
         verbose_name = 'Tides Template'
