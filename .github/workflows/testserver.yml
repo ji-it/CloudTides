@@ -35,6 +35,7 @@ jobs:
           xargs pylint -E --load-plugins=pylint_django pylint --rcfile=server/.pylintrc
     - name: Test
       run: |
+        export DJANGO_SETTINGS_MODULE=core.test_settings
         pytest server/
         coverage-badge -f  -o server_coverage.svg
    # - name: Commit files
