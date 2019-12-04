@@ -40,10 +40,7 @@ INSTALLED_APPS = [
     'resource',
     'policy',
     'template',
-<<<<<<< HEAD
     'usage'
-=======
-    'corsheaders'
 ]
 
 from corsheaders.defaults import default_headers
@@ -57,7 +54,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://127.0.0.1:3000"
->>>>>>> a23e8c06083c02efdd5ad02592f592bf1704c2d2
 ]
 
 MIDDLEWARE = [
