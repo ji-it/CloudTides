@@ -21,7 +21,7 @@ SECRET_KEY = 'i7@q3rhti=*m3tokpaf@15qgxh15d8-o#-9l1)ke9)e2ec079)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["backend", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*",]
 
 # Application definition
 
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'users',
     'resource',
     'policy',
-    'template'
+    'template',
+    'usage'
 ]
 
 MIDDLEWARE = [
@@ -64,7 +65,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
-
+'''
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -75,7 +76,7 @@ CACHES = {
         "KEY_PREFIX": "tides",
     }
 }
-
+'''
 CACHE_TTL = 60 * 15  # seconds
 
 TEMPLATES = [
@@ -100,17 +101,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'Test',
-#         'USER': 'postgres',
-#         'PASSWORD': 't6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB', #created at the time of password setup
-#         'HOST': '10.11.16.83',
-#         'PORT': '30123',
-#     }
-# }
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Test',
+        'USER': 'postgres',
+        'PASSWORD': 't6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB', #created at the time of password setup
+        'HOST': '10.11.16.83',
+        'PORT': '30123',
+    }
+}
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -121,7 +122,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
+'''
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 

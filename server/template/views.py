@@ -22,9 +22,12 @@ class AddTemplate(APIView):
         provisioned_space = data['provisioned_space']
         memory_size = data['memory_size']
         template_type = data['template_type']
+        username = data['username']
+        password = data['password']
         
         profile = Template(name=name, date_added=date_added, guest_os=guest_os, compatibility=compatibility,
-                    provisioned_space=provisioned_space, memory_size=memory_size, template_type=template_type)
+                    provisioned_space=provisioned_space, memory_size=memory_size, template_type=template_type,
+                    username=username, password=password)
         try:
             profile.save()
         except:
@@ -38,6 +41,17 @@ class AddTemplate(APIView):
             return Response({'message': 'template upload error'}, status=401)
         
         return Response({'message': 'success'}, status=200)
+
+
+class ListTemplate(APIView):
+
+    def post(self, request):
+        file_path = os.path.join(settings.MEDIA_ROOT, 'uploads')
+        #for fi in os.listdir(file_path):
+            #print(fi)
+
+        return Response(os.listdir(file_path), status=200)
+
 
 
 class DeleteTemplate(APIView):

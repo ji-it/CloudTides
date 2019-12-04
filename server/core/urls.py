@@ -28,5 +28,6 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/resource/', include('resource.urls')),
     path('api/policy/', include('policy.urls')),
-    path('api/template/', include('template.urls'))
+    path('api/template/', include('template.urls')),
+    path('api/usage/', include('usage.urls'))
 ]
