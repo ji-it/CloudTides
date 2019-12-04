@@ -112,23 +112,35 @@ class AddResource(APIView):
                     profile = Resource(host_name=host_name, username=username, password=password, date_added=date_added, 
                                 host_address=host, platform_type=platform_type, total_ram=total_ram, total_cpu=total_cpu,
                                 current_ram=current_ram, current_cpu=current_cpu, is_active=is_active,
-                                polling_interval=polling_interval, user=res)
-                    
+                                polling_interval=polling_interval)
+
                     profile.save()
+                    profile.user.add(res)
+                    
+                    
                     #except:
                         #return Response({'message': 'resource already registered'}, status=401)
 
         return Response({'message': 'success'}, status=200)
 
-'''
+
 class ListResource(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-        user_account = data['user_account']
+        user_account = data['username']
 
-        res = get_object_or_404(User, username=user_account)
-'''
+        user = get_object_or_404(User, username=user_account)
+        results = Resource.objects.filter(user=user)
+        lis = []
+        for result in results:
+            dic = {}
+            dic['host_address'] = result.host_address
+            dic['host_name'] = result.host_name
+            lis.append(dic)
+        
+        return Response({'message': 'success', 'resources': lis}, status=200)
+
 
 
 class DeleteResource(APIView):

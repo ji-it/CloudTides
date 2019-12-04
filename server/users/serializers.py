@@ -22,4 +22,4 @@ class TidesUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ["username", "password", "priority"]
+        fields = ["username", "password", "priority", "company_name"]
