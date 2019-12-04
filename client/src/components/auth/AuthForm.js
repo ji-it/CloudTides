@@ -131,6 +131,7 @@ class AuthForm extends React.Component {
             .then((response) => {
                 auth.setToken(response.token, true);
                 auth.setUserInfo(response.userInfo, true);
+                //Load dashboard data:- resource list, total contribution (cost and power), total resource usage (usage use + hosts number, idle, vms)
                 this.redirectUser();
             }).catch((err) => {
             console.log(err);

@@ -48,7 +48,6 @@ class Store extends EventEmitter {
     }
 
     addResource(data) {
-        console.log(data)
         //Write to database and then use promise to push to 
         _store.resources.push(data);
         this.emit(Constants.CHANGE);
@@ -59,7 +58,6 @@ class Store extends EventEmitter {
             _store.resources = [];
             _store.resources.push(item);
         });
-        console.log(_store.resources)
         this.emit(Constants.CHANGE);
     }
 
