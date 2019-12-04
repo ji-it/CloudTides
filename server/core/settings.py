@@ -21,7 +21,7 @@ SECRET_KEY = 'i7@q3rhti=*m3tokpaf@15qgxh15d8-o#-9l1)ke9)e2ec079)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*",]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -79,7 +79,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
-'''
+# '''
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -90,7 +90,7 @@ CACHES = {
         "KEY_PREFIX": "tides",
     }
 }
-'''
+# '''
 CACHE_TTL = 60 * 15  # seconds
 
 TEMPLATES = [
@@ -114,7 +114,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -136,7 +136,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-'''
+# '''
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
