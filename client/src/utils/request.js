@@ -73,7 +73,7 @@ export default function request(
   if (token) {
     options.headers = Object.assign(
       {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Token ${token}`,
       },
       options.headers
     );

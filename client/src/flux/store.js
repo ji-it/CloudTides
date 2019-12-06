@@ -2,13 +2,16 @@ import Constants from "./constants";
 import getSidebarNavItems from "../data/sidebar-nav-items";
 import AppDispatcher from "./dispatcher";
 import {EventEmitter} from "events";
+import {devURL} from "../utils/urls";
+import request from "../utils/request";
+import auth from "../utils/auth";
 
 let _store = {
     menuVisible: false,
     navItems: getSidebarNavItems(),
     resources: [
-        ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
-        ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
+        // ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
+        // ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
     ],
 };
 
@@ -31,7 +34,7 @@ class Store extends EventEmitter {
                 this.addResource(action.data);
                 break;
             case Constants.GET_RESOURCES_RESPONSE:
-                const results = action.response.results;
+                const results = action.response;
                 this.updateResource(results);
                 break;
             default:
@@ -48,12 +51,22 @@ class Store extends EventEmitter {
     }
 
     addResource(data) {
-        //Write to database and then use promise to push to 
-        _store.resources.push(data);
-        this.emit(Constants.CHANGE);
+        //Write to database and then use promise to push to
+        const endpoint = '/api/resource/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data})
+            .then((response) => {
+                if (response.status === true) {
+                    _store.resources = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
     }
 
     updateResource(data) {
+        console.log(data)
         data.map((item, idx) => {
             _store.resources = [];
             _store.resources.push(item);
@@ -75,6 +88,7 @@ class Store extends EventEmitter {
     }
 
     getResourceTableData() {
+        console.log(_store.resources)
         return _store.resources;
     }
 };
