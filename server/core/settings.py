@@ -129,7 +129,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tides',
+        'NAME': 'tides2',
         'USER': 'postgres',
         'PASSWORD': 'password',  # created at the time of password setup
         'HOST': 'localhost',
