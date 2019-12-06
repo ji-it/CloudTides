@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from policy.models import *
+
 
 # Create your models here.
 class Resource(models.Model):
@@ -16,13 +18,15 @@ class Resource(models.Model):
     )
 
     # name = models.CharField(max_length=200)
+    # id = models.AutoField(primary_key=True)
     date_added = models.DateTimeField(blank=True, null=True)
-    host_address = models.TextField()
-    host_name = models.TextField()
+    host_address = models.TextField(null=True)
+    host_name = models.TextField(null=True, unique=True)
     platform_type = models.CharField(max_length=10, choices=PLATFORM, default='vsphere')
-    username = models.CharField(unique=True, max_length=150)
-    password = models.CharField(max_length=128)
-    status = models.CharField(max_length=20, choices=STATUS, default='busy')
+    username = models.CharField(max_length=150, null=True)
+    password = models.CharField(max_length=128, null=True)
+    datacenter = models.CharField(max_length=128, null=True)
+    status = models.CharField(max_length=20, choices=STATUS, null=True)
     total_disk = models.FloatField(blank=True, null=True)
     total_ram = models.FloatField(blank=True, null=True)
     total_cpu = models.FloatField(blank=True, null=True)
@@ -35,12 +39,15 @@ class Resource(models.Model):
     polling_interval = models.IntegerField(blank=True, null=True)
     monitored = models.BooleanField(blank=True, null=True, default=False)
     user = models.ManyToManyField(User, blank=True)
+    policy = models.ForeignKey(Policy, on_delete=models.SET_NULL, null=True)
 
-    class Meta:
-        verbose_name = 'Tides Resource'
-        verbose_name_plural = 'Tides Resources'
 
-    def save(self, *args, **kwargs):
-        # do something
-        super().save(*args, **kwargs)
-        # do something
+class Meta:
+    verbose_name = 'Tides Resource'
+    verbose_name_plural = 'Tides Resources'
+
+
+def save(self, *args, **kwargs):
+    # do something
+    super().save(*args, **kwargs)
+    # do something
