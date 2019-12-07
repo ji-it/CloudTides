@@ -173,4 +173,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/tides_tamplates/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'template/tides_templates')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'tides_templates')
