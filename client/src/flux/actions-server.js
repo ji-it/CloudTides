@@ -8,6 +8,13 @@ class ActionsServer {
             response: response
         });
     }
+
+    receiveTemplates(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_TEMPLATES_RESPONSE,
+            response: response
+        });
+    }
 }
 
 

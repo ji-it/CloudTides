@@ -9,10 +9,8 @@ import auth from "../utils/auth";
 let _store = {
     menuVisible: false,
     navItems: getSidebarNavItems(),
-    resources: [
-        // ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
-        // ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
-    ],
+    resources: [],
+    templates: [],
 };
 
 class Store extends EventEmitter {
@@ -22,6 +20,8 @@ class Store extends EventEmitter {
         this.addResource = this.addResource.bind(this);
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.updateResource = this.updateResource.bind(this);
+        this.addTemplate = this.addTemplate.bind(this);
+        this.updateTemplates = this.updateTemplates.bind(this);
         AppDispatcher.register(this.registerActions.bind(this));
     }
 
@@ -34,8 +34,13 @@ class Store extends EventEmitter {
                 this.addResource(action.data);
                 break;
             case Constants.GET_RESOURCES_RESPONSE:
-                const results = action.response;
-                this.updateResource(results);
+                this.updateResource(action.response);
+                break;
+            case Constants.ADD_TEMPLATE:
+                this.addTemplate(action.data);
+                break;
+            case Constants.GET_TEMPLATES_RESPONSE:
+                this.updateTemplates(action.response);
                 break;
             default:
                 return true;
@@ -66,10 +71,32 @@ class Store extends EventEmitter {
     }
 
     updateResource(data) {
-        console.log(data)
+        _store.resources = [];
         data.map((item, idx) => {
-            _store.resources = [];
             _store.resources.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
+    addTemplate(data) {
+        const endpoint = '/api/template/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data}, false)
+            .then((response) => {
+                if (response.status === true) {
+                    _store.templates = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    updateTemplates(data) {
+        console.log(data)
+        _store.templates = [];
+        data.map((item, idx) => {
+            _store.templates.push(item);
         });
         this.emit(Constants.CHANGE);
     }
@@ -88,9 +115,12 @@ class Store extends EventEmitter {
     }
 
     getResourceTableData() {
-        console.log(_store.resources)
         return _store.resources;
     }
-};
+
+    getTemplatesTableData() {
+        return _store.templates;
+    }
+}
 
 export default new Store();

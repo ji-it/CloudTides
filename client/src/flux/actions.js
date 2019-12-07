@@ -1,6 +1,7 @@
 import Constants from "./constants";
 import AppDispatcher from "./dispatcher";
 import ResourcesAPI from "../api/ResourcesAPI";
+import TemplatesAPI from "../api/TemplatesAPI";
 
 class Actions {
     addResource(data) {
@@ -9,6 +10,14 @@ class Actions {
             data: data
         });
     }
+
+    addTemplate(data) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.ADD_TEMPLATE,
+            data: data
+        });
+    }
+
 
     toggleMenu() {
         AppDispatcher.handleViewAction({
@@ -21,6 +30,13 @@ class Actions {
             actionType: Constants.GET_RESOURCES,
         });
         ResourcesAPI.getList();
+    }
+
+    getTemplates() {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_TEMPLATES,
+        });
+        TemplatesAPI.getList();
     }
 }
 
