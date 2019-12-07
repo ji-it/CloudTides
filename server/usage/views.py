@@ -6,7 +6,9 @@ import datetime
 import json
 from django.shortcuts import get_object_or_404
 from resource.models import *
+from django.utils import timezone
 import time
+
 
 # Create your views here.
 class AddHostUsage(APIView):
@@ -27,13 +29,13 @@ class AddHostUsage(APIView):
             return Response({'message': 'resource not registered'}, status=401)
 
         profile = HostUsage(date_added=date_added, host_address=host_address, host_name=host_name, total_ram=total_ram,
-                        total_cpu=total_cpu, ram_percent=ram_percent, cpu_percent=cpu_percent, resource=res)
+                            total_cpu=total_cpu, ram_percent=ram_percent, cpu_percent=cpu_percent, resource=res)
 
         try:
             profile.save()
         except:
             return Response({'message': 'object exists'}, status=401)
-        
+
         return Response({'message': 'success'}, status=200)
 
 
@@ -43,17 +45,16 @@ class UpdateHostUsage(APIView):
         data = json.loads(request.body)
         host_address = data['host_address']
         host_name = data['host_name']
-        ram_percent = data['ram_percent']
-        cpu_percent = data['cpu_percent']
-        date_added = datetime.datetime.now()
-
-        obj = get_object_or_404(HostUsage, host_address=host_address, host_name=host_name)
-        obj.ram_percent = ram_percent
-        obj.cpu_percent = cpu_percent
-        obj.date_added = date_added
-        obj.save(update_fields=['ram_percent', 'cpu_percent', 'date_added'])
-
-        return Response({'message': 'host usage updated'}, status=200)
+        resource = Resource.objects.get(host_name=host_name)
+        current_ram = data['current_ram']
+        current_cpu = data['current_cpu']
+        resource.current_cpu = current_cpu
+        resource.current_ram = current_ram
+        resource.save()
+        date_added = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
+        host_usage = HostUsage.objects.create(date_added=date_added, ram=current_ram, cpu=current_cpu,
+                                              resource=resource)
+        return Response({'message': 'host usage recorded'}, status=200)
 
 
 class DeleteHostUsage(APIView):
@@ -66,7 +67,7 @@ class DeleteHostUsage(APIView):
             HostUsage.objects.get(host_address=host_address, host_name=host_name).delete()
         except:
             return Response({'message': 'object not found'}, status=401)
-        
+
         return Response({'message': 'success'}, status=200)
 
 
@@ -74,13 +75,13 @@ class AddVMUsage(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-        #print(data)
+        # print(data)
         i = 0
         host_address = None
         for vm in data.keys():
             if i == 0:
                 host_address = vm
-                i+=1
+                i += 1
                 continue
             ip_address = vm
             vm_name = data[vm]['Name']
@@ -109,13 +110,14 @@ class AddVMUsage(APIView):
                 return Response({'message': 'resource not registered'}, status=401)
 
             profile = VMUsage(ip_address=ip_address, vm_name=vm_name, cpu_usage=cpu_usage, mem_usage=mem_usage,
-                        date_added=date_added, resource=res, create_time=create_time, boinc_time=boinc_time)
+                              date_added=date_added, resource=res, create_time=create_time, boinc_time=boinc_time)
             try:
                 profile.save()
             except:
                 return Response({'message': 'object exists'}, status=401)
-        
+
         return Response({'message': 'success'}, status=200)
+
 
 '''
 class UpdateVMUsage(APIView):
@@ -145,6 +147,7 @@ class UpdateVMUsage(APIView):
         return Response({'message': 'VM usage updated'}, status=200)
 '''
 
+
 class DeleteVMUsage(APIView):
 
     def post(self, request):
@@ -155,5 +158,5 @@ class DeleteVMUsage(APIView):
             VMUsage.objects.get(ip_address=ip_address).delete()
         except:
             return Response({'message': 'object not found'}, status=401)
-        
+
         return Response({'message': 'success'}, status=200)

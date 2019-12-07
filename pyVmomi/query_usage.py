@@ -10,6 +10,13 @@ from pyVmomi import vim
 from pyVim.connect import SmartConnect, Disconnect, SmartConnectNoSSL
 import datetime
 import getpass
+import psycopg2
+import requests
+import json
+import http.client
+
+GBFACTOR = float(1 << 30)
+requests.adapters.DEFAULT_RETRIES = 5
 
 
 def get_args():
@@ -37,23 +44,21 @@ def get_args():
                         required=False,
                         action='store',
                         help='Password to use')
-
+    '''
     parser.add_argument('-i', '--info',
                         required=True,
                         action='store',
                         help='cpu, mem or disk')
-    
-    parser.add_argument('-t', '--time',
+    '''
+    parser.add_argument('-n', '--name',
                         required=False,
-                        type=int,
-                        default=60,
                         action='store',
-                        help='Time length to query')
+                        help='Host name to query')
 
     parser.add_argument('--no-ssl',
                         action='store_true',
                         help='Skip SSL verification')
-    
+
     args = parser.parse_args()
 
     if not args.password:
@@ -63,7 +68,18 @@ def get_args():
     return args
 
 
+def get_all_objs(content, vimtype, folder=None, recurse=True):
+    if not folder:
+        folder = content.rootFolder
 
+    obj = {}
+    container = content.viewManager.CreateContainerView(folder, vimtype, recurse)
+    for managed_object_ref in container.view:
+        obj.update({managed_object_ref: managed_object_ref.name})
+    return obj
+
+
+'''
 def metricvalue(item, depth):
     maxdepth = 10
     if hasattr(item, 'childEntity'):
@@ -74,7 +90,7 @@ def metricvalue(item, depth):
             item = metricvalue(item, depth + 1)
     return item
 
-def run(content, vihost, item, time):
+def run(content, vihost, item, time, cur):
     output = []
         
     perf_dict = {}
@@ -111,16 +127,15 @@ def run(content, vihost, item, time):
             perfinfo['value'] = val
             output.append(perfinfo)
             count += 1
+            cur.execute("INSERT INTO usage  (time, data) VALUES (%s, %s)", (perfinfo['timestamp'], val))
         for out in output:
 	        print("Hostname:{} TimeStamp: {} {} Usage: {}".format(out['hostname'], out['timestamp'], name, out['value']))
-        
+'''
+
 
 def main():
     try:
         args = get_args()
-        if args.info != 'cpu' and args.info != 'mem' and args.info != 'disk' and args.info != 'power':
-            print("Wrong query info!")
-            return
         si = None
         if args.no_ssl:
             si = SmartConnectNoSSL(
@@ -140,18 +155,32 @@ def main():
     # disconnect this thing
     atexit.register(Disconnect, si)
     content = si.RetrieveContent()
-    
-    for child in content.rootFolder.childEntity:
-        datacenter = child
-        hostfolder = datacenter.hostFolder
-        hostlist = metricvalue(hostfolder, 0)
-        for hosts in hostlist:
-            esxihosts = hosts.host
-            for esxi in esxihosts:
-                name = esxi.summary.config.name
-                run(content, name, [args.info], args.time)
-    
-    
+
+    children = content.rootFolder.childEntity
+    for child in children:  # Iterate though DataCenters
+        dc = child
+        clusters = dc.hostFolder.childEntity
+        for cluster in clusters:  # Iterate through the clusters in the DC
+            hosts = cluster.host  # Variable to make pep8 compliance
+            for host in hosts:  # Iterate through Hosts in the Cluster
+                hostname = host.summary.config.name
+                if hostname != args.name:
+                    continue
+                data = {}
+                data['host_address'] = args.host
+                data['host_name'] = hostname
+                # total_ram = host.hardware.memorySize / GBFACTOR
+                #  total_cpu = round(((host.hardware.cpuInfo.hz / 1e+9) * host.hardware.cpuInfo.numCpuCores), 0)
+                current_ram = float(host.summary.quickStats.overallMemoryUsage / 1024)
+                current_cpu = float(host.summary.quickStats.overallCpuUsage / 1024)
+                data['current_cpu'] = current_cpu
+                data['current_ram'] = current_ram
+                requests.post("http://localhost:8000/api/usage/updatehost/", data=json.dumps(data))
+                # print(data)
+
+    # print(data)
+
+
 # start
 if __name__ == "__main__":
     main()
