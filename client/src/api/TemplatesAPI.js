@@ -6,20 +6,19 @@ import request from "../utils/request";
 export default {
 
     getList() {
-        const requestURL = devURL + "/api/resource/list/";
+        var config = {
+            headers: {'Access-Control-Allow-Origin': '*'},
+        };
+        const requestURL = devURL + "/api/template/list/";
         request(requestURL, {method: 'GET'})
             .then((response) => {
                 if (response.status === true) {
                     const {results} = response;
-                    ActionsServer.receiveResources(results);
+                    ActionsServer.receiveTemplates(results);
                 }
             }).catch((err) => {
             console.log(err);
         });
-    },
-
-    getListWithPolling(interval) {
-        return setInterval(() => this.getList(), interval);
     }
 
 }

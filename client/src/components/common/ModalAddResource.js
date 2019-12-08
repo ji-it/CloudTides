@@ -19,10 +19,17 @@ import lodash from 'lodash'
 import validate from "../../utils/validate";
 import {Actions} from "../../flux";
 import {element} from "prop-types";
+import {devURL} from "../../utils/urls";
+import request from "../../utils/request";
+import auth from "../../utils/auth";
 
 export default class ModalAddResource extends React.Component {
+
     state = {
+        dcs: [],
+        policies: [],
         formIsValid: false,
+        validateValid: false,
         formControls: {
             name: {
                 value: '',
@@ -61,9 +68,16 @@ export default class ModalAddResource extends React.Component {
             },
             datacenters: {
                 value: "",
-                valid: true,
+                valid: false,
                 validationRules: {
                     isRequired: true
+                }
+            },
+            policy: {
+                value: 0,
+                valid: false,
+                validationRules: {
+                    isInteger: true
                 }
             },
         }
@@ -71,6 +85,8 @@ export default class ModalAddResource extends React.Component {
 
     resetState = (success) => {
         const formIsValid = false;
+        const dcs = [];
+        const policies = [];
         const formControls = {
             uname: {
                 value: '',
@@ -114,10 +130,20 @@ export default class ModalAddResource extends React.Component {
                     isRequired: true
                 }
             },
+            policy: {
+                value: 0,
+                valid: false,
+                validationRules: {
+                    isInteger: true
+                }
+            },
         };
         this.setState({
             formControls: formControls,
-            formIsValid: formIsValid
+            validateValid: false,
+            formIsValid: formIsValid,
+            dcs: dcs,
+            policies: policies
         });
         this.props.onExit("addModal", success);
     };
@@ -137,13 +163,41 @@ export default class ModalAddResource extends React.Component {
 
         updatedControls[name] = updatedFormElement;
 
-        let formIsValid = true;
+        const {uname, password, host} = this.state.formControls;
+        const validated = uname.valid && password.valid && host.valid;
+
+
+        let formIsValid = validated;
         for (let inputIdentifier in updatedControls) {
-            formIsValid = updatedControls[inputIdentifier].valid && formIsValid;
+            formIsValid = updatedControls[inputIdentifier].valid && formIsValid && this.state;
         }
         this.setState({
             formControls: updatedControls,
-            formIsValid: formIsValid
+            formIsValid: formIsValid,
+            validateValid: validated
+        });
+    };
+
+    validateCredentials = event => {
+        event.preventDefault();
+
+        const {uname, password, host} = this.state.formControls;
+        const formData = {"username": uname.value, "password": password.value, "host": host.value};
+        const endpoint = '/api/resource/validate/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: formData})
+            .then((response) => {
+                let formControls = this.state.formControls;
+                if (response.results.length !== 0) {
+                    formControls.datacenters.value = response.results[0];
+                    formControls.datacenters.valid = true;
+                }
+                this.setState({
+                    dcs: response.results,
+                    formControls: formControls
+                })
+            }).catch((err) => {
+            console.log(err);
         });
     };
 
@@ -154,26 +208,15 @@ export default class ModalAddResource extends React.Component {
         for (let formElementId in this.state.formControls) {
             formData[formElementId] = this.state.formControls[formElementId].value;
         }
-
+        formData["polling_interval"] = 30;
         Actions.addResource(formData);
-        // axios.post(`additional-functions/contact-form-handler`, formData)
-        //     .then(res => {
-        //         if (res.status == 200) {
-        //             this.resetState(true);
-        //         } else {
-        //             console.log(res.data);
-        //         }
-        //     })
+        this.resetState(true)
     };
 
 
     render() {
-
-        const dcs = [
-            {name: "NY Datacenter", id: 214},
-            {name: "LA Datacenter", id: 213},
-        ];
-
+        let {policiesData: policies} = this.props;
+        policies = [{id: 0, name: ""}, ...policies];
         return (
             <div>
                 <Modal
@@ -249,6 +292,7 @@ export default class ModalAddResource extends React.Component {
                                     })}
                                     placeholder="Username"
                                     type="text"
+                                    autoComplete="username"
                                     name="uname"
                                     onChange={this.handleChange}
                                     value={this.state.formControls.uname.value}
@@ -263,6 +307,7 @@ export default class ModalAddResource extends React.Component {
                                     placeholder="Password"
                                     type="password"
                                     name="password"
+                                    autoComplete="current-password"
                                     onChange={this.handleChange}
                                     value={this.state.formControls.password.value}
                                     valid={this.state.formControls.password.valid}
@@ -273,6 +318,11 @@ export default class ModalAddResource extends React.Component {
                                         this.setState({ppasswordFocused: false})
                                     }
                                 />
+                                <Button id="validate" className="my-2" disabled={!this.state.validateValid}
+                                        onClick={this.validateCredentials} style={{"backgroundColor": "#00790e"}}
+                                        type="button">
+                                    Validate
+                                </Button>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="datacenters">Select Datacenter</Label>
@@ -288,7 +338,28 @@ export default class ModalAddResource extends React.Component {
                                     onBlur={e => this.setState({datacentersFocused: false})}
                                 >
                                     {
-                                        dcs.map((item, index) => {
+                                        this.state.dcs.map((item, index) => {
+                                                return (<option value={item} key={index}>{item}</option>)
+                                            }
+                                        )}
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="datacenters">Select Policy</Label>
+                                <Input
+                                    className={classnames({
+                                        focused: this.state.policyFocused
+                                    })}
+                                    type="select"
+                                    name="policy"
+                                    value={this.state.formControls.policy.value}
+                                    valid={this.state.formControls.policy.valid}
+                                    onChange={this.handleChange}
+                                    onFocus={e => this.setState({policyFocused: true})}
+                                    onBlur={e => this.setState({policyFocused: false})}
+                                >
+                                    {
+                                        policies.map((item, index) => {
                                                 return (<option value={item.id} key={index}>{item.name}</option>)
                                             }
                                         )}

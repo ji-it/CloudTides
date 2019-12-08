@@ -15,9 +15,39 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ModalAddPolicy from "../contribution/ModalAddPolicy";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
 import ModalAddResource from "../common/ModalAddResource";
+import Store from "../../flux/store";
+import {Actions} from "../../flux";
 
 class PoliciesTable extends React.Component {
-    state = {};
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tableData: Store.getPoliciesTableData()
+        };
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    componentWillMount() {
+        Store.addChangeListener(this.onChange);
+    }
+
+    componentWillUnmount() {
+        Store.removeChangeListener(this.onChange);
+    }
+
+    componentDidMount() {
+        Actions.getPolicies()
+    }
+
+    onChange() {
+        this.setState({
+            ...this.state,
+            tableData: Store.getPoliciesTableData()
+        });
+    }
+
     toggleModal = state => {
         this.setState({
             [state]: !this.state[state]
@@ -35,7 +65,8 @@ class PoliciesTable extends React.Component {
     });
 
     render() {
-        const {title, columns, data, options} = this.props;
+        const {title, columns, options} = this.props;
+        const {tableData: data} = this.state;
         return (
             <Card small className="blog-comments">
                 <CardHeader className="m-2 mb-0">
@@ -88,17 +119,8 @@ PoliciesTable.defaultProps = {
     title: "Contribution Policies",
     columns: [
         {
-            name: "Name",
-            options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return <b>{value}</b>;
-                }
-            }
-        },
-        "Date Created", "Project",
-        {
-            name: "Deploy Type",
+            label: "Name",
+            name: "name",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -107,27 +129,79 @@ PoliciesTable.defaultProps = {
             }
         },
         {
-            name: "Idle %",
+            name: "date_created",
+            label: "Date Created",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    const date = new Date(value);
+                    return date.toUTCString();
+                }
+            }
+        },
+        {
+            name: "project_name",
+            label: "Project",
+        },
+        {
+            label: "Deploy Type",
+            name: "deploy_type",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return <b>{value}</b>;
+                }
+            }
+        },
+        {
+            label: "Idle %",
+            name: "idle_policy",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const json = JSON.parse(value);
+                    console.log(json)
                     const nf = new Intl.NumberFormat('en-US', {
                         style: 'percent',
                     });
                     return (
-                        "CPU = " + nf.format(value)
+                        "CPU = " + nf.format(json.cpu) + ", RAM = " + nf.format(json.ram)
                     );
                 }
             }
         },
-        "Stop/Destroy",
-        "Hosts Assigned",
+        {
+            label: "Threshold %",
+            name: "threshold_policy",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const json = JSON.parse(value);
+                    const nf = new Intl.NumberFormat('en-US', {
+                        style: 'percent',
+                    });
+                    return (
+                        "CPU = " + nf.format(json.cpu) + ", RAM = " + nf.format(json.ram)
+                    );
+                }
+            }
+        },
+        {
+            name: "is_destroy",
+            label: "Destroy/Stop",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (value) ? "Destroy" : "Stop"
+                }
+            }
+        },
+        {
+            name: "hosts_assigned",
+            label: "Hosts Assigned",
+        },
 
         // {name: "", options: { filter: false,sort: false,empty: true,customBodyRender: (value, tableMeta, updateValue) => {return ();}}},
-    ],
-    data: [
-        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.3, "Destroy", 200],
-        ["SETI@Home Default Policy", "26/09/2019", "SETI@Home", "Container", 0.45, "Stop", 10],
     ],
     tableStyle: {
         MUIDataTableSelectCell: {

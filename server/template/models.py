@@ -1,23 +1,24 @@
 from django.db import models
+import os
+from django.conf import settings
+
 
 # Create your models here.
 
 class Template(models.Model):
-
     TEMPLATE_TYPE = (
-        ('1', 'host'),
-        ('2', 'tides')
+        ('1', 'datastore'),
+        ('2', 'upload')
     )
 
-    name = models.CharField(unique=True, max_length=150)
+    name = models.CharField(max_length=150)
     date_added = models.DateTimeField(blank=True, null=True)
     guest_os = models.CharField(max_length=100)
     compatibility = models.CharField(max_length=100, blank=True, null=True)
     provisioned_space = models.FloatField(blank=True, null=True)
     memory_size = models.FloatField(blank=True, null=True)
-    template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPE, default='tides')
-    username = models.TextField()
-    password = models.TextField()
+    template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPE, null=True)
+    file = models.FileField(upload_to='uploads/', null=True)
 
     class Meta:
         verbose_name = 'Tides Template'

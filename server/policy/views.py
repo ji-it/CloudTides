@@ -7,50 +7,58 @@ from .models import Policy
 from django.shortcuts import get_object_or_404
 from resource.models import *
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+from .serializers import *
+from projects.models import *
+from django.utils import timezone
+from django.contrib.auth.hashers import *
 from template.models import *
 
 # Create your views here.
 
 class AddPolicy(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         data = json.loads(request.body)
-        host_address = data['host_address']
-        host_name = data['host_name']
+        # password = make_password(data['password'])
+        password = data['password']
+        username = data['username']
+        account_type = data['accountType']
         name = data['name']
-        is_destroy = bool(data['is_destroy'])
-        deploy_type = data['deploy_type']
-        idle_policy = data['idle_policy']
-        busy_policy = data['busy_policy']
-        date_created = datetime.datetime.now()
-        user_account = data['username']
-        template = data['template']
-        is_manager = None
-        if data['is_manager'].lower() == "true":
-            is_manager = True
-        elif data['is_manager'].lower() == "false":
-            is_manager = False
-        #print(is_manager)
-        project_url = data['project_url']
-        boinc_user = data['boinc_user']
-        boinc_password = data['boinc_password']
+        is_destroy = None
+        if data['is_destroy'].lower() == "true":
+            is_destroy = True
+        elif data['is_destroy'].lower() == "false":
+            is_destroy = False
+        deploy_type = data['deployType']
+        idle_policy = data['idle']
+        threshold_policy = data['threshold']
+        project_id = data['project']
+        template_id = data['template']
+        date_created = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
 
-        res = get_object_or_404(Resource, host_address=host_address, host_name=host_name)
-        user = get_object_or_404(User, username=user_account)
-        tem = get_object_or_404(Template, name=template)
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
 
-        profile = Policy(host_address=host_address, host_name=host_name, name=name, date_created=date_created, busy_policy=busy_policy,
-                    is_destroy=is_destroy, deploy_type=deploy_type, idle_policy=idle_policy, resource=res, user=user, template=tem,
-                    is_manager=is_manager, project_url=project_url, boinc_user=boinc_user, boinc_password=boinc_password)
-        
-        profile.save()
-        #except:
-            #return Response({'message: policy name exists'}, status=401)
-        
+        project = Projects.objects.get(pk=project_id)
+        template = Template.objects.get(pk=template_id)
+        policy = Policy(password=password, username=username, name=name, date_created=date_created,
+                        is_destroy=is_destroy, deploy_type=deploy_type, idle_policy=idle_policy,
+                        account_type=account_type, threshold_policy=threshold_policy,
+                        project=project, template=template)
+        try:
+            policy.save()
+            policy.user.set((user,))
+        except:
+            return Response({'message: policy name exists'}, status=401)
+
         return Response({'message': 'success'}, status=200)
 
 
 class UpdatePolicy(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         data = json.loads(request.body)
@@ -74,24 +82,20 @@ class UpdatePolicy(APIView):
 
 
 class ListPolicy(APIView):
+    permission_classes = (IsAuthenticated,)
 
-    def post(self, request):
-        data = json.loads(request.body)
-        user_account = data['username']
-        user = get_object_or_404(User, username=user_account)
-        results = Policy.objects.filter(user=user)
-        lis = []
-        for result in results:
-            dic = {}
-            dic['host_address'] = result.host_address
-            dic['host_name'] = result.host_name
-            dic['policy_name'] = result.name
-            dic['is_destroy'] = result.is_destroy
-            dic['deploy_type'] = result.deploy_type
-            dic['idle_policy'] = result.idle_policy
-            lis.append(dic)
+    def get(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+        policies = Policy.objects.filter(user=user)
+        results = []
+        for policy in policies:
+            hosts_number = Resource.objects.filter(policy=policy).count()
+            data = PolicySerializer(policy).data
+            data["hosts_assigned"] = hosts_number
+            results.append(data)
 
-        return Response({'message': 'success', 'policies': lis}, status=200)
+        return Response({'message': 'success', 'status': True, 'results': results}, status=200)
 
 
 class RemovePolicy(APIView):
@@ -105,5 +109,5 @@ class RemovePolicy(APIView):
             Policy.objects.get(host_address=host_address, name=name).delete()
         except:
             return Response({'message': 'no matching objects'}, status=401)
-        
+
         return Response({'message': 'success'}, status=200)

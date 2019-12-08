@@ -25,7 +25,9 @@ const validate = (value, rules) => {
             case 'isPhone':
                 isValid = isValid && phoneValidator(value);
                 break;
-
+            case 'isInteger':
+                isValid = isValid && integerValidator(value);
+                break;
             default:
                 isValid = true;
         }
@@ -75,6 +77,10 @@ const phoneValidator = value => {
     var re = /^\d+$/;
     return re.test(String(value).toLowerCase());
 }
+
+const integerValidator = value => {
+    return value > 0;
+};
 
 
 export default validate;

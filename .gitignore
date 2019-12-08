@@ -13,3 +13,4 @@ client/dummy_data
 coverage.svg
 .dat.nosync0216.YIhZVp
 client/build
+server/**/migrations/**

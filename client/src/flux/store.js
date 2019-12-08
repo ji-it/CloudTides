@@ -2,14 +2,16 @@ import Constants from "./constants";
 import getSidebarNavItems from "../data/sidebar-nav-items";
 import AppDispatcher from "./dispatcher";
 import {EventEmitter} from "events";
+import {devURL} from "../utils/urls";
+import request from "../utils/request";
+import auth from "../utils/auth";
 
 let _store = {
     menuVisible: false,
     navItems: getSidebarNavItems(),
-    resources: [
-        ["New York Datacenter", "Idle", "192.168.0.1", 0.40, "6/10GB", "10/25GB", "20", "SETI@home", true,],
-        ["LA Datacenter", "Contributing", "192.168.0.1", 0.60, "6/10GB", "10/25GB", "20", "SETI@home", false,],
-    ],
+    resources: [],
+    templates: [],
+    policies: [],
 };
 
 class Store extends EventEmitter {
@@ -19,6 +21,10 @@ class Store extends EventEmitter {
         this.addResource = this.addResource.bind(this);
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.updateResource = this.updateResource.bind(this);
+        this.addTemplate = this.addTemplate.bind(this);
+        this.updateTemplates = this.updateTemplates.bind(this);
+        this.addPolicy = this.addPolicy.bind(this);
+        this.updatePolicies = this.updatePolicies.bind(this);
         AppDispatcher.register(this.registerActions.bind(this));
     }
 
@@ -31,8 +37,19 @@ class Store extends EventEmitter {
                 this.addResource(action.data);
                 break;
             case Constants.GET_RESOURCES_RESPONSE:
-                const results = action.response.results;
-                this.updateResource(results);
+                this.updateResource(action.response);
+                break;
+            case Constants.ADD_TEMPLATE:
+                this.addTemplate(action.data);
+                break;
+            case Constants.GET_TEMPLATES_RESPONSE:
+                this.updateTemplates(action.response);
+                break;
+            case Constants.ADD_POLICY:
+                this.addPolicy(action.data);
+                break;
+            case Constants.GET_POLICIES_RESPONSE:
+                this.updatePolicies(action.response);
                 break;
             default:
                 return true;
@@ -48,18 +65,70 @@ class Store extends EventEmitter {
     }
 
     addResource(data) {
-        console.log(data)
-        //Write to database and then use promise to push to 
-        _store.resources.push(data);
-        this.emit(Constants.CHANGE);
+        //Write to database and then use promise to push to
+        const endpoint = '/api/resource/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data})
+            .then((response) => {
+                if (response.status === true) {
+                    _store.resources = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
     }
 
     updateResource(data) {
+        _store.resources = [];
         data.map((item, idx) => {
-            _store.resources = [];
             _store.resources.push(item);
         });
-        console.log(_store.resources)
+        this.emit(Constants.CHANGE);
+    }
+
+    addTemplate(data) {
+        const endpoint = '/api/template/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data}, false)
+            .then((response) => {
+                if (response.status === true) {
+                    _store.templates = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    updateTemplates(data) {
+        _store.templates = [];
+        data.map((item, idx) => {
+            _store.templates.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
+    addPolicy(data) {
+        const endpoint = '/api/policy/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data})
+            .then((response) => {
+                if (response.status === true) {
+                    _store.policies = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    updatePolicies(data) {
+        _store.policies = [];
+        console.log(data)
+        data.map((item, idx) => {
+            _store.policies.push(item);
+        });
         this.emit(Constants.CHANGE);
     }
 
@@ -79,6 +148,14 @@ class Store extends EventEmitter {
     getResourceTableData() {
         return _store.resources;
     }
-};
+
+    getTemplatesTableData() {
+        return _store.templates;
+    }
+
+    getPoliciesTableData() {
+        return _store.policies;
+    }
+}
 
 export default new Store();

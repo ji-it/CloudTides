@@ -1,30 +1,36 @@
 from django.db import models
-from resource.models import *
+from django.contrib.auth.models import User
+from projects.models import Projects
 from template.models import *
 
-# Create your models here.
-class Policy(models.Model):
+# from resource.models import Resource
 
+
+class Policy(models.Model):
     DEPLOY_TYPE = (
-        ('1', 'kubernetes'),
-        ('2', 'vm')
+        ('1', 'K8S'),
+        ('2', 'VM')
     )
 
-    host_address = models.TextField()
-    host_name = models.TextField()
+    ACCOUNT_TYPE = (
+        ('1', 'acc_manager'),
+        ('2', 'boinc')
+    )
+
     name = models.CharField(max_length=150)
     date_created = models.DateTimeField(blank=True, null=True)
+    is_destroy = models.BooleanField(blank=True, null=True, default=True)
+    username = models.CharField(max_length=150, blank=True, null=True)
+    password = models.CharField(max_length=150, blank=True, null=True)
     template = models.OneToOneField(Template, on_delete=models.CASCADE)
-    is_destroy = models.BooleanField(blank=True, null=True, default=False)
-    deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='vm')
+    deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='VM')
+    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE, default='boinc')
     idle_policy = models.TextField(blank=True, null=True)
-    busy_policy = models.TextField(blank=True, null=True)
-    is_manager = models.BooleanField(default=False)
-    project_url = models.TextField()
-    boinc_user = models.TextField()
-    boinc_password = models.TextField()
-    resource = models.OneToOneField(Resource, on_delete=models.CASCADE, primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    threshold_policy = models.TextField(blank=True, null=True)
+    project = models.ForeignKey(Projects, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, blank=True)
+
+    #  resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True, related_name="resources")
 
     class Meta:
         verbose_name = 'Tides Policy'

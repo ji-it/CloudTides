@@ -22,7 +22,8 @@ class Resources extends React.Component {
         super(props);
 
         this.state = {
-            tableData: Store.getResourceTableData()
+            tableData: Store.getResourceTableData(),
+            policies: Store.getPoliciesTableData()
         };
 
         this.onChange = this.onChange.bind(this);
@@ -34,16 +35,21 @@ class Resources extends React.Component {
 
     componentWillUnmount() {
         Store.removeChangeListener(this.onChange);
+        clearInterval(this.timer);
+        this.timer = null;
     }
 
     componentDidMount() {
-        Actions.getResources()
+        Actions.getResources();
+        Actions.getPolicies();
+        this.timer = Actions.getResources(true)
     }
 
     onChange() {
         this.setState({
             ...this.state,
-            tableData: Store.getResourceTableData()
+            tableData: Store.getResourceTableData(),
+            policies: Store.getPoliciesTableData()
         });
     }
 
@@ -80,7 +86,7 @@ class Resources extends React.Component {
                             >
                                 <span className="text text-uppercase">Add Resource</span>
                             </Button>
-                            <ModalAddResource onExit={this.myCallBack}
+                            <ModalAddResource policiesData={this.state.policies} onExit={this.myCallBack}
                                               toggleState={this.state.addModal}/>
                             <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
                         </div>
@@ -117,7 +123,7 @@ Resources.defaultProps = {
     title: "Resources",
     columns: [
         {
-            name: "name",
+            name: "host_name",
             label: "Name",
             options: {
                 filter: true,
@@ -144,11 +150,11 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "ip_address",
+            name: "host_name",
             label: "IP Address"
         },
         {
-            name: "cpu",
+            name: "cpu_percent",
             label: "CPU",
             options: {
                 filter: true,
@@ -159,63 +165,66 @@ Resources.defaultProps = {
                     return (
                         <div>
                             {nf.format(value)}
-                            {
-                                (value == 0.4) ?
-                                    <ArrowDropUpIcon className="text-success"/>
-                                    :
-                                    <ArrowDropDownIcon className="text-danger"/>
-                            }
+                            {/*{*/}
+                            {/*    (value == 0.4) ?*/}
+                            {/*        <ArrowDropUpIcon className="text-success"/>*/}
+                            {/*        :*/}
+                            {/*        <ArrowDropDownIcon className="text-danger"/>*/}
+                            {/*}*/}
                         </div>
                     );
                 }
             }
         },
         {
-            name: "memory",
+            name: "ram_percent",
             label: "Memory",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
+                    const nf = new Intl.NumberFormat('en-US', {
+                        style: 'percent',
+                    });
                     return (
                         <div>
-                            {value}
-                            {
-                                (value == 0.4) ?
-                                    <ArrowDropUpIcon className="text-success"/>
-                                    :
-                                    <ArrowDropDownIcon className="text-danger"/>
-                            }
+                            {nf.format(value)}
+                            {/*{*/}
+                            {/*    (value == 0.4) ?*/}
+                            {/*        <ArrowDropUpIcon className="text-success"/>*/}
+                            {/*        :*/}
+                            {/*        <ArrowDropDownIcon className="text-danger"/>*/}
+                            {/*}*/}
                         </div>
                     );
                 }
             }
         },
+        // {
+        //     name: "total_disk",
+        //     label: "Disk",
+        //     options: {
+        //         filter: true,
+        //         customBodyRender: (value, tableMeta, updateValue) => {
+        //             return (
+        //                 <div>
+        //                     {value}
+        //                     {
+        //                         (value == 0.4) ?
+        //                             <ArrowDropUpIcon className="text-success"/>
+        //                             :
+        //                             <ArrowDropDownIcon className="text-danger"/>
+        //                     }
+        //                 </div>
+        //             );
+        //         }
+        //     }
+        // },
         {
-            name: "disk",
-            label: "Disk",
-            options: {
-                filter: true,
-                customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <div>
-                            {value}
-                            {
-                                (value == 0.4) ?
-                                    <ArrowDropUpIcon className="text-success"/>
-                                    :
-                                    <ArrowDropDownIcon className="text-danger"/>
-                            }
-                        </div>
-                    );
-                }
-            }
-        },
-        {
-            name: "jobs_done",
+            name: "job_completed",
             label: "Jobs Done"
         },
         {
-            name: "policy",
+            name: "policy_name",
             label: "Policy",
             options: {
                 filter: true,
@@ -225,7 +234,7 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "active",
+            name: "is_active",
             label: "Active",
             options: {
                 filter: true,

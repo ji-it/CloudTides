@@ -123,7 +123,6 @@ class AddVMUsage(APIView):
 
 '''
 class UpdateVMUsage(APIView):
-
     def post(self, request):
         data = json.loads(request.body)
         #print(data)
@@ -136,16 +135,13 @@ class UpdateVMUsage(APIView):
             create_time = data[vm]['CreateTime']
             boinc_time = data[vm]['BOINCTime']
             date_added = datetime.datetime.now()
-
             obj = get_object_or_404(VMUsage, ip_address=ip_address, vm_name=vm_name)
             obj.cpu_usage = cpu_usage
             obj.mem_usage = mem_usage
             obj.date_added = date_added
             obj.create_time = create_time
             obj.boinc_time = boinc_time
-
             obj.save(update_fields=['cpu_usage', 'mem_usage', 'date_added', 'create_time', 'boinc_time'])
-
         return Response({'message': 'VM usage updated'}, status=200)
 '''
 
