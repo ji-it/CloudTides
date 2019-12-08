@@ -6,9 +6,6 @@ import request from "../utils/request";
 export default {
 
     getList() {
-        var config = {
-            headers: {'Access-Control-Allow-Origin': '*'},
-        };
         const requestURL = devURL + "/api/resource/list/";
         request(requestURL, {method: 'GET'})
             .then((response) => {
@@ -19,6 +16,10 @@ export default {
             }).catch((err) => {
             console.log(err);
         });
+    },
+
+    getListWithPolling(interval) {
+        return setInterval(() => this.getList(), interval);
     }
 
 }

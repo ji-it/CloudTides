@@ -32,10 +32,12 @@ class Actions {
         });
     }
 
-    getResources() {
+    getResources(withPolling, interval =15000) {
         AppDispatcher.handleViewAction({
             actionType: Constants.GET_RESOURCES,
         });
+        if (withPolling)
+            return ResourcesAPI.getListWithPolling(interval);
         ResourcesAPI.getList();
     }
 

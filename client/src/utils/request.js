@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import auth from './auth';
+
 /**
  * Parses the JSON returned by a network request
  *
@@ -8,7 +9,7 @@ import auth from './auth';
  * @return {object}          The parsed JSON from the request
  */
 function parseJSON(response) {
-  return response.json ? response.json() : response;
+    return response.json ? response.json() : response;
 }
 
 /**
@@ -19,16 +20,16 @@ function parseJSON(response) {
  * @return {object|undefined} Returns either the response, or throws an error
  */
 function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
+    if (response.status >= 200 && response.status < 300) {
+        return response;
+    }
 
-  return parseJSON(response).then(responseFormatted => {
-    const error = new Error(response.statusText);
-    error.response = response;
-    error.response.payload = responseFormatted;
-    throw error;
-  });
+    return parseJSON(response).then(responseFormatted => {
+        const error = new Error(response.statusText);
+        error.response = response;
+        error.response.payload = responseFormatted;
+        throw error;
+    });
 }
 
 /**
@@ -38,9 +39,9 @@ function checkStatus(response) {
  * @returns {string}
  */
 function formatQueryParams(params) {
-  return Object.keys(params)
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
-    .join('&');
+    return Object.keys(params)
+        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+        .join('&');
 }
 
 /**
@@ -52,44 +53,45 @@ function formatQueryParams(params) {
  * @return {object}           The response data
  */
 export default function request(
-  url,
-  options = {},
-  stringify = true
+    url,
+    options = {},
+    stringify = true
 ) {
-  // Set headers
-  if (stringify) {
+    // Set headers
+    if (stringify) {
 
-    options.headers = Object.assign(
-      {
-        'Content-Type': 'application/json',
-      },
-      options.headers,
-      {}
-    );
-  }
+        options.headers = Object.assign(
+            {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store, no-cache, max-age=0',
+            },
+            options.headers,
+            {}
+        );
+    }
 
-  const token = auth.getToken();
+    const token = auth.getToken();
 
-  if (token) {
-    options.headers = Object.assign(
-      {
-        Authorization: `Token ${token}`,
-      },
-      options.headers
-    );
-  }
+    if (token) {
+        options.headers = Object.assign(
+            {
+                Authorization: `Token ${token}`,
+            },
+            options.headers
+        );
+    }
 
-  if (options && options.params) {
-    const params = formatQueryParams(options.params);
-    url = `${url}?${params}`;
-  }
+    if (options && options.params) {
+        const params = formatQueryParams(options.params);
+        url = `${url}?${params}`;
+    }
 
-  // Stringify body object
-  if (options && options.body && stringify) {
-    options.body = JSON.stringify(options.body);
-  }
+    // Stringify body object
+    if (options && options.body && stringify) {
+        options.body = JSON.stringify(options.body);
+    }
 
-  return fetch(url, options)
-    .then(checkStatus)
-    .then(parseJSON);
+    return fetch(url, options)
+        .then(checkStatus)
+        .then(parseJSON);
 }

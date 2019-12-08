@@ -27,6 +27,7 @@ export default class ModalAddResource extends React.Component {
 
     state = {
         dcs: [],
+        policies: [],
         formIsValid: false,
         validateValid: false,
         formControls: {
@@ -72,12 +73,20 @@ export default class ModalAddResource extends React.Component {
                     isRequired: true
                 }
             },
+            policy: {
+                value: 0,
+                valid: false,
+                validationRules: {
+                    isInteger: true
+                }
+            },
         }
     };
 
     resetState = (success) => {
         const formIsValid = false;
         const dcs = [];
+        const policies = [];
         const formControls = {
             uname: {
                 value: '',
@@ -121,12 +130,20 @@ export default class ModalAddResource extends React.Component {
                     isRequired: true
                 }
             },
+            policy: {
+                value: 0,
+                valid: false,
+                validationRules: {
+                    isInteger: true
+                }
+            },
         };
         this.setState({
             formControls: formControls,
             validateValid: false,
             formIsValid: formIsValid,
-            dcs: dcs
+            dcs: dcs,
+            policies: policies
         });
         this.props.onExit("addModal", success);
     };
@@ -198,7 +215,8 @@ export default class ModalAddResource extends React.Component {
 
 
     render() {
-
+        let {policiesData: policies} = this.props;
+        policies = [{id: 0, name: ""}, ...policies];
         return (
             <div>
                 <Modal
@@ -322,6 +340,27 @@ export default class ModalAddResource extends React.Component {
                                     {
                                         this.state.dcs.map((item, index) => {
                                                 return (<option value={item} key={index}>{item}</option>)
+                                            }
+                                        )}
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="datacenters">Select Policy</Label>
+                                <Input
+                                    className={classnames({
+                                        focused: this.state.policyFocused
+                                    })}
+                                    type="select"
+                                    name="policy"
+                                    value={this.state.formControls.policy.value}
+                                    valid={this.state.formControls.policy.valid}
+                                    onChange={this.handleChange}
+                                    onFocus={e => this.setState({policyFocused: true})}
+                                    onBlur={e => this.setState({policyFocused: false})}
+                                >
+                                    {
+                                        policies.map((item, index) => {
+                                                return (<option value={item.id} key={index}>{item.name}</option>)
                                             }
                                         )}
                                 </Input>

@@ -22,7 +22,8 @@ class Resources extends React.Component {
         super(props);
 
         this.state = {
-            tableData: Store.getResourceTableData()
+            tableData: Store.getResourceTableData(),
+            policies: Store.getPoliciesTableData()
         };
 
         this.onChange = this.onChange.bind(this);
@@ -34,16 +35,21 @@ class Resources extends React.Component {
 
     componentWillUnmount() {
         Store.removeChangeListener(this.onChange);
+        clearInterval(this.timer);
+        this.timer = null;
     }
 
     componentDidMount() {
-        Actions.getResources()
+        Actions.getResources();
+        Actions.getPolicies();
+        this.timer = Actions.getResources(true)
     }
 
     onChange() {
         this.setState({
             ...this.state,
-            tableData: Store.getResourceTableData()
+            tableData: Store.getResourceTableData(),
+            policies: Store.getPoliciesTableData()
         });
     }
 
@@ -80,7 +86,7 @@ class Resources extends React.Component {
                             >
                                 <span className="text text-uppercase">Add Resource</span>
                             </Button>
-                            <ModalAddResource onExit={this.myCallBack}
+                            <ModalAddResource policiesData={this.state.policies} onExit={this.myCallBack}
                                               toggleState={this.state.addModal}/>
                             <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
                         </div>
