@@ -7,16 +7,12 @@ class Projects(models.Model):
     project_name = models.TextField(null=True)
     has_account_manager = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = 'Tides Project'
+        verbose_name_plural = 'Tides Projects'
 
-class Meta:
-    verbose_name = 'Tides Project'
-    verbose_name_plural = 'Tides Projects'
-
-
-def save(self, *args, **kwargs):
-    # do something
-    super().save(*args, **kwargs)
-    # do something
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 from django.db import models

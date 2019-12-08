@@ -41,13 +41,9 @@ class Resource(models.Model):
     user = models.ManyToManyField(User, blank=True)
     policy = models.ForeignKey(Policy, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        verbose_name = 'Tides Resource'
+        verbose_name_plural = 'Tides Resources'
 
-class Meta:
-    verbose_name = 'Tides Resource'
-    verbose_name_plural = 'Tides Resources'
-
-
-def save(self, *args, **kwargs):
-    # do something
-    super().save(*args, **kwargs)
-    # do something
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
