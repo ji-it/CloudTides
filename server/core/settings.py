@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'resource',
     'policy',
     'template',
-    'usage'
+    'usage',
+    'projects'
 ]
 
 from corsheaders.defaults import default_headers
