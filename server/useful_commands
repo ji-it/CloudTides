@@ -2,7 +2,10 @@ python manage.py graph_models -a -g -o reactdj_models.png
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
-python manage.py createsuperuser
+python manage.py createsuperusr
 python manage.py syncdb
+
+python manage.py dumpdata projects --output projects/fixtures/projects.json
+python manage.py loaddata projects.json
 
 # pylint: disable=import-error

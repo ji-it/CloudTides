@@ -14,9 +14,40 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ModalAddResource from "../common/ModalAddResource";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
+import ModalAddTemplate from "./ModalAddTemplate";
+import Store from "../../flux/store";
+import {Actions} from "../../flux";
 
 class TemplatesTable extends React.Component {
-    state = {};
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tableData: Store.getTemplatesTableData()
+        };
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    componentWillMount() {
+        Store.addChangeListener(this.onChange);
+    }
+
+    componentWillUnmount() {
+        Store.removeChangeListener(this.onChange);
+    }
+
+    componentDidMount() {
+        Actions.getTemplates()
+    }
+
+    onChange() {
+        this.setState({
+            ...this.state,
+            tableData: Store.getTemplatesTableData()
+        });
+    }
+
     toggleModal = state => {
         this.setState({
             [state]: !this.state[state]
@@ -34,7 +65,8 @@ class TemplatesTable extends React.Component {
     });
 
     render() {
-        const {title, columns, data, options} = this.props;
+        const {title, columns, options} = this.props;
+        const {tableData: data} = this.state;
         return (
             <Card small className="blog-comments">
                 <CardHeader className="m-2 mb-0">
@@ -47,9 +79,9 @@ class TemplatesTable extends React.Component {
                                 className="shadow-sm"
                                 onClick={() => this.toggleModal("addModal")}
                             >
-                                <span className="text text-uppercase">Upload File</span>
+                                <span className="text text-uppercase">Add Template</span>
                             </Button>
-                            <ModalAddResource onExit={this.myCallBack}
+                            <ModalAddTemplate onExit={this.myCallBack}
                                               toggleState={this.state.addModal}/>
                             <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
                         </div>
@@ -87,7 +119,8 @@ TemplatesTable.defaultProps = {
     title: "Templates Manager",
     columns: [
         {
-            name: "Name",
+            name: "name",
+            label: "Name",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -95,9 +128,30 @@ TemplatesTable.defaultProps = {
                 }
             }
         },
-        "Date Added",
         {
-            name: "Guest OS",
+            name: "date_added",
+            label: "Date Added",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const date = new Date(value);
+                    return date.toUTCString();
+                }
+            }
+        },
+        {
+            name: "template_type",
+            label: "Source",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (value === "upload") ? "Upload" : (value === "datastore") ? "Datastore" : "";
+                }
+            }
+        },
+        {
+            name: "guest_os",
+            label: "Guest OS",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
@@ -105,13 +159,19 @@ TemplatesTable.defaultProps = {
                 }
             }
         },
-        "Compatibility", "Provisioned Space", "Memory Size",
-
+        {
+            name: "compatibility",
+            label: "Compatibility",
+        },
+        {
+            name: "provisioned_space",
+            label: "Provisioned Space",
+        },
+        {
+            name: "memory_size",
+            label: "Memory Size",
+        },
         // {name: "", options: { filter: false,sort: false,empty: true,customBodyRender: (value, tableMeta, updateValue) => {return ();}}},
-    ],
-    data: [
-        ["kube-1107", "26/09/2019", "Ubuntu Linux (64-bit)", "ESXI 6.5 and later", "34.2GB", "1GB"],
-        ["kube-1108", "26/09/2019", "Ubuntu Linux (64-bit)", "ESXI 6.5 and later", "34.2GB", "1GB"],
     ],
     tableStyle: {
         MUIDataTableSelectCell: {
@@ -135,8 +195,7 @@ TemplatesTable.defaultProps = {
     },
     options: {
         filterType: 'checkbox',
-        customToolbarSelect: () => {
-        },
+        customToolbarSelect: () => {},
         elevation: 0,
         filter: false,
         responsive: "scrollMaxHeight",

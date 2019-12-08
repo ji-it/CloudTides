@@ -1,0 +1,18 @@
+[
+  {
+    "model": "projects.projects",
+    "pk": 1,
+    "fields": {
+      "project_name": "Science United",
+      "has_account_manager": true
+    }
+  },
+  {
+    "model": "projects.projects",
+    "pk": 2,
+    "fields": {
+      "project_name": "SETI@Home",
+      "has_account_manager": false
+    }
+  }
+]
