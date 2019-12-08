@@ -1,12 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from projects.models import *
+from projects.models import Projects
 
 
 # from resource.models import Resource
 
 
-# Create your models here.
 class Policy(models.Model):
     DEPLOY_TYPE = (
         ('1', 'K8S'),

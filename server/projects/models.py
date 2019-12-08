@@ -1,5 +1,4 @@
 from django.db import models
-from policy.models import *
 
 
 # Create your models here.
@@ -13,8 +12,3 @@ class Projects(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
-
-from django.db import models
-
-# Create your models here.
