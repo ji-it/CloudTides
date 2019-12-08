@@ -14,11 +14,10 @@ class Resource(models.Model):
     STATUS = (
         ('1', 'idle'),
         ('2', 'busy'),
-        ('3', 'contributing')
+        ('3', 'contributing'),
+        ('4', 'unknown'),
     )
 
-    # name = models.CharField(max_length=200)
-    # id = models.AutoField(primary_key=True)
     date_added = models.DateTimeField(blank=True, null=True)
     host_address = models.TextField(null=True)
     host_name = models.TextField(null=True, unique=True)
@@ -26,7 +25,7 @@ class Resource(models.Model):
     username = models.CharField(max_length=150, null=True)
     password = models.CharField(max_length=128, null=True)
     datacenter = models.CharField(max_length=128, null=True)
-    status = models.CharField(max_length=20, choices=STATUS, null=True)
+    status = models.CharField(max_length=20, choices=STATUS, default="unknown")
     total_disk = models.FloatField(blank=True, null=True)
     total_ram = models.FloatField(blank=True, null=True)
     total_cpu = models.FloatField(blank=True, null=True)
@@ -44,6 +43,33 @@ class Resource(models.Model):
     class Meta:
         verbose_name = 'Tides Resource'
         verbose_name_plural = 'Tides Resources'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+class VM(models.Model):
+    name = models.CharField(max_length=200)
+    date_added = models.DateTimeField(blank=True, null=True)
+    date_destroyed = models.DateTimeField(blank=True, null=True)
+    boinc_time = models.DateTimeField(blank=True, null=True)
+    direct_host = models.CharField(max_length=200)
+    ip_address = models.TextField(null=True)
+    total_disk = models.FloatField(blank=True, null=True)
+    total_ram = models.FloatField(blank=True, null=True)
+    total_cpu = models.FloatField(blank=True, null=True)
+    current_disk = models.FloatField(blank=True, null=True)
+    current_ram = models.FloatField(blank=True, null=True)
+    current_cpu = models.FloatField(blank=True, null=True)
+    num_cpu = models.IntegerField(blank=True, null=True)
+    powered_on = models.BooleanField(blank=True, null=True, default=False)
+    guest_os = models.CharField(max_length=200)
+    user = models.ManyToManyField(User, blank=True)
+    resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = 'Tides VM'
+        verbose_name_plural = 'Tides VMs'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

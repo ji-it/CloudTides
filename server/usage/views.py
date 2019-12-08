@@ -52,8 +52,8 @@ class UpdateHostUsage(APIView):
         resource.current_ram = current_ram
         resource.save()
         date_added = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
-        host_usage = HostUsage.objects.create(date_added=date_added, ram=current_ram, cpu=current_cpu,
-                                              resource=resource)
+        _ = HostUsage.objects.create(date_added=date_added, ram=current_ram, cpu=current_cpu,
+                                     resource=resource)
         return Response({'message': 'host usage recorded'}, status=200)
 
 
@@ -75,46 +75,33 @@ class AddVMUsage(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-        # print(data)
-        i = 0
-        host_address = None
+
         for vm in data.keys():
-            if i == 0:
-                host_address = vm
-                i += 1
-                continue
             ip_address = vm
-            vm_name = data[vm]['Name']
-            cpu_usage = data[vm]['CPU']
-            mem_usage = data[vm]['Memory']
-            create_time = data[vm]['CreateTime']
-            boinc_time = data[vm]['BOINCTime']
-            if boinc_time == 'unstarted':
-                boinc_time = None
-            date_added = datetime.datetime.now()
+            cpu_usage = data[vm]['cpu_usage']
+            mem_usage = data[vm]['memory_usage']
+            vm_powered_on = data[vm]['powered_on']
+            host_address = data[vm]["host_ip"]
+            vm_name = data[vm]['name']
+            create_time = data[vm]['vm_created_time']
+            boinc_time = data[vm]['boinc_start_time']
+            direct_host = data[vm]['direct_host_name']
+            vm_total_mem = data[vm]['max_mem']
+            vm_total_cpu = data[vm]['max_cpu']
+            vm_num_cpu = data[vm]['num_cpu']
+            vm_guest_os = data[vm]['guest_os']
 
-            if VMUsage.objects.get(ip_address=ip_address):
-                obj = get_object_or_404(VMUsage, ip_address=ip_address, vm_name=vm_name)
-                obj.cpu_usage = cpu_usage
-                obj.mem_usage = mem_usage
-                obj.date_added = date_added
-                obj.create_time = create_time
-                obj.boinc_time = boinc_time
+            # if boinc_time == 'unstarted':
+            #     boinc_time = None
 
-                obj.save(update_fields=['cpu_usage', 'mem_usage', 'date_added', 'create_time', 'boinc_time'])
-                continue
+            date_added = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
 
-            try:
-                res = Resource.objects.get(host_address=host_address)
-            except:
-                return Response({'message': 'resource not registered'}, status=401)
-
-            profile = VMUsage(ip_address=ip_address, vm_name=vm_name, cpu_usage=cpu_usage, mem_usage=mem_usage,
-                              date_added=date_added, resource=res, create_time=create_time, boinc_time=boinc_time)
-            try:
-                profile.save()
-            except:
-                return Response({'message': 'object exists'}, status=401)
+            vm = VM.objects.get(ip_address=ip_address)
+            vm.current_cpu = cpu_usage
+            vm.current_ram = mem_usage
+            vm.powered_on = vm_powered_on
+            vm.save()
+            _ = VMUsage.objects.create(date_added=date_added, ram=mem_usage, cpu=cpu_usage, vm=vm)
 
         return Response({'message': 'success'}, status=200)
 

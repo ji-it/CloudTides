@@ -20,6 +20,7 @@ import pyVmomi
 from pyVmomi import vim, vmodl
 import datetime
 from .utils import *
+from controller.monitor import monitor
 from django.utils.cache import add_never_cache_headers
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -67,10 +68,12 @@ class AddResource(APIView):
         host = data['host']
         username = data['uname']
         password = data['password']
+        policy = data['policy']
         platform_type = data['vmtype']
         datacenter_name = data['datacenters']
         polling_interval = data['polling_interval']
 
+        policy = Policy.objects.get(pk=policy)
         try:
             si = None
             si = SmartConnectNoSSL(
@@ -125,6 +128,7 @@ class AddResource(APIView):
                                                                   host_address=host, platform_type=platform_type,
                                                                   total_ram=total_ram,
                                                                   total_cpu=total_cpu,
+                                                                  policy=policy,
                                                                   datacenter=datacenter_name,
                                                                   current_ram=current_ram, current_cpu=current_cpu,
                                                                   is_active=is_active,
@@ -134,7 +138,7 @@ class AddResource(APIView):
                         resources.append(serialized_obj.data)
                     except:
                         return Response({'message': 'Resource already registered', 'status': False}, status=200)
-
+        monitor()
         return Response({'message': 'success', 'status': True, 'results': resources}, status=200)
 
 
