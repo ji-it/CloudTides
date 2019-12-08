@@ -6,17 +6,16 @@ Query CPU, memory, disk and power usage of ESXi hosts.
 import ssl
 import argparse
 import atexit
-from pyVmomi import vim
 from pyVim.connect import SmartConnect, Disconnect, SmartConnectNoSSL
-import datetime
 import getpass
-import psycopg2
 import requests
 import json
-#import http.client
 
 GBFACTOR = float(1 << 30)
 requests.adapters.DEFAULT_RETRIES = 5
+
+FULL_HOSTNAME = "http://localhost:8000"
+
 
 def get_args():
     """ Get arguments from CLI """
@@ -57,7 +56,7 @@ def get_args():
     parser.add_argument('--no-ssl',
                         action='store_true',
                         help='Skip SSL verification')
-    
+
     args = parser.parse_args()
 
     if not args.password:
@@ -76,6 +75,7 @@ def get_all_objs(content, vimtype, folder=None, recurse=True):
     for managed_object_ref in container.view:
         obj.update({managed_object_ref: managed_object_ref.name})
     return obj
+
 
 '''
 def metricvalue(item, depth):
@@ -128,10 +128,10 @@ def run(content, vihost, item, time, cur):
             cur.execute("INSERT INTO usage  (time, data) VALUES (%s, %s)", (perfinfo['timestamp'], val))
         for out in output:
 	        print("Hostname:{} TimeStamp: {} {} Usage: {}".format(out['hostname'], out['timestamp'], name, out['value']))
-'''       
+'''
+
 
 def main():
-    
     try:
         args = get_args()
         si = None
@@ -153,8 +153,7 @@ def main():
     # disconnect this thing
     atexit.register(Disconnect, si)
     content = si.RetrieveContent()
-    
-    
+
     children = content.rootFolder.childEntity
     for child in children:  # Iterate though DataCenters
         dc = child
@@ -165,32 +164,23 @@ def main():
                 hostname = host.summary.config.name
                 if hostname != args.name:
                     continue
+
                 data = {}
                 data['host_address'] = args.host
                 data['host_name'] = hostname
-                total_ram = host.hardware.memorySize/GBFACTOR
-                total_cpu = round(((host.hardware.cpuInfo.hz/1e+9)*host.hardware.cpuInfo.numCpuCores),0)
-                current_ram = float(host.summary.quickStats.overallMemoryUsage/1024)
-                current_cpu = float(host.summary.quickStats.overallCpuUsage/1024)
-                ram_percent = float(current_ram/total_ram)
-                cpu_percent = float(current_cpu/total_cpu)
-                data['cpu_percent'] = cpu_percent
-                data['ram_percent'] = ram_percent
+                # total_ram = host.hardware.memorySize / GBFACTOR
+                #  total_cpu = round(((host.hardware.cpuInfo.hz / 1e+9) * host.hardware.cpuInfo.numCpuCores), 0)
+                current_ram = float(host.summary.quickStats.overallMemoryUsage / 1024.0)
+                current_cpu = float(host.summary.quickStats.overallCpuUsage / 1024.0)
+                data['current_cpu'] = current_cpu
+                data['current_ram'] = current_ram
 
-                hostdata = {}
-                hostdata['host_address'] = args.host
-                hostdata['host_name'] = hostname
-                hostdata['current_cpu'] = current_cpu
-                hostdata['current_ram'] = current_ram
+                requests.post(FULL_HOSTNAME + "/api/usage/updatehost/", data=json.dumps(data))
+                # print(data)
 
-                requests.post("http://192.168.56.1:8000/api/resource/update/", data=json.dumps(hostdata))
-                requests.post("http://192.168.56.1:8000/api/usage/updatehost/", data=json.dumps(data))
-                #print(data)
-                
-    
-    #print(data)
-    
-    
+    # print(data)
+
+
 # start
 if __name__ == "__main__":
     main()
