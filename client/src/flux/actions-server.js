@@ -15,6 +15,13 @@ class ActionsServer {
             response: response
         });
     }
+
+    receivePolicies(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_POLICIES_RESPONSE,
+            response: response
+        });
+    }
 }
 
 

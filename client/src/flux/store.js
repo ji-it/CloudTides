@@ -11,6 +11,7 @@ let _store = {
     navItems: getSidebarNavItems(),
     resources: [],
     templates: [],
+    policies: [],
 };
 
 class Store extends EventEmitter {
@@ -22,6 +23,8 @@ class Store extends EventEmitter {
         this.updateResource = this.updateResource.bind(this);
         this.addTemplate = this.addTemplate.bind(this);
         this.updateTemplates = this.updateTemplates.bind(this);
+        this.addPolicy = this.addPolicy.bind(this);
+        this.updatePolicies = this.updatePolicies.bind(this);
         AppDispatcher.register(this.registerActions.bind(this));
     }
 
@@ -41,6 +44,12 @@ class Store extends EventEmitter {
                 break;
             case Constants.GET_TEMPLATES_RESPONSE:
                 this.updateTemplates(action.response);
+                break;
+            case Constants.ADD_POLICY:
+                this.addPolicy(action.data);
+                break;
+            case Constants.GET_POLICIES_RESPONSE:
+                this.updatePolicies(action.response);
                 break;
             default:
                 return true;
@@ -93,10 +102,32 @@ class Store extends EventEmitter {
     }
 
     updateTemplates(data) {
-        console.log(data)
         _store.templates = [];
         data.map((item, idx) => {
             _store.templates.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
+    addPolicy(data) {
+        const endpoint = '/api/policy/add/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: data})
+            .then((response) => {
+                if (response.status === true) {
+                    _store.policies = response.results;
+                    this.emit(Constants.CHANGE);
+                }
+            }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    updatePolicies(data) {
+        _store.policies = [];
+        console.log(data)
+        data.map((item, idx) => {
+            _store.policies.push(item);
         });
         this.emit(Constants.CHANGE);
     }
@@ -120,6 +151,10 @@ class Store extends EventEmitter {
 
     getTemplatesTableData() {
         return _store.templates;
+    }
+
+    getPoliciesTableData() {
+        return _store.policies;
     }
 }
 

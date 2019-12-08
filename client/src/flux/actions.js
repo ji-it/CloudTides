@@ -2,6 +2,7 @@ import Constants from "./constants";
 import AppDispatcher from "./dispatcher";
 import ResourcesAPI from "../api/ResourcesAPI";
 import TemplatesAPI from "../api/TemplatesAPI";
+import PoliciesAPI from "../api/PoliciesAPI";
 
 class Actions {
     addResource(data) {
@@ -18,6 +19,12 @@ class Actions {
         });
     }
 
+    addPolicy(data) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.ADD_POLICY,
+            data: data
+        });
+    }
 
     toggleMenu() {
         AppDispatcher.handleViewAction({
@@ -37,6 +44,13 @@ class Actions {
             actionType: Constants.GET_TEMPLATES,
         });
         TemplatesAPI.getList();
+    }
+
+    getPolicies() {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_POLICIES,
+        });
+        PoliciesAPI.getList();
     }
 }
 
