@@ -63,7 +63,7 @@ def main():
             cur.execute("SELECT ip_address FROM usage_vmusage ORDER BY create_time DESC LIMIT 1")
             ip = cur.fetchone()
             os.system('python /home/shen1997/ve450/destroy_vm.py -s ' + result[1] + ' -u ' + result[2] +' -p ' + result[3] +\
-                ' --no-ssl -i ' + ip[0])
+                ' -i ' + ip[0])
             data = {}
             data['ip_address'] = ip[0]
             requests.post("http://192.168.56.1:8000/api/usage/deletevm/", data=json.dumps(data))

@@ -116,6 +116,7 @@ for child in content.rootFolder.childEntity:
         vmfolder = datacenter.vmFolder
         vmlist = vmfolder.childEntity
         for vm in vmlist:
-            printvminfo(vm_collect, vm)
+            if format(vm.runtime.powerState) == "poweredOn":
+                printvminfo(vm_collect, vm)
 print(vm_collect)
 requests.post("http://192.168.56.1:8000/api/usage/addvm/", data=json.dumps(vm_collect))
