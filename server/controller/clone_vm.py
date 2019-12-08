@@ -158,7 +158,7 @@ def clone_vm(content, template, si, datacenter_name, username, password,
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
-    time.sleep(120)
+    time.sleep(60)
     VM = get_obj(content, [vim.VirtualMachine], vm_name)
     #print(VM)
     print(VM.summary.guest.ipAddress)
@@ -178,23 +178,31 @@ def clone_vm(content, template, si, datacenter_name, username, password,
 
 
 def send_account(host_address, ip_address, template, username, password):
-    conn=psycopg2.connect(database="Test2",user="postgres",
+    conn=psycopg2.connect(database="Tides",user="postgres",
             password="t6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB",host="10.11.16.83",port="30123")
     cur=conn.cursor()
 
-    cur.execute("SELECT is_manager, project_url, boinc_user, boinc_password FROM policy_policy WHERE host_address = %s", (host_address,))
+    cur.execute("SELECT policy_id FROM resource_resource WHERE host_address = %s", (host_address,))
+    pid = cur.fetchone()
+
+    cur.execute("SELECT account_type, project_id, username, password FROM policy_policy WHERE id = %s", str(pid[0]))
     result = cur.fetchone()
+
+    cur.execute("SELECT url FROM projects_projects WHERE id = %s", str(result[1]))
+    url = cur.fetchone()
 
     cur.execute("SELECT password FROM template_template WHERE name = %s", (template,))
     pwd = cur.fetchone()
     filename = 'account.txt'
     with open(filename, 'w') as f:
         f.write(str(result[0]) + '\n')
-        f.write(result[1] + '\n')
+        f.write(url[0] + '\n')
         f.write(result[2] + '\n')
         f.write(result[3])
     os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' root@' + ip_address + ':/var/lib/boinc')
-    os.system('sshpass -p ' + pwd[0] + ' scp ' + 'run_boinc' + ' root@' + ip_address + ':/var/lib/boinc')
+    os.system('sshpass -p ' + pwd[0] + ' scp run_boinc root@' + ip_address + ':/var/lib/boinc')
+    os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+                ' -r root -w ' + pwd[0] + ' -l /bin/chmod -f "777 /var/lib/boinc/run_boinc"')
     os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
                 ' -r root -w ' + pwd[0] + ' -l /var/lib/boinc/run_boinc -f None')
     '''

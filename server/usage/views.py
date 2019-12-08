@@ -15,19 +15,17 @@ class AddHostUsage(APIView):
         data = json.loads(request.body)
         host_address = data['host_address']
         host_name = data['host_name']
-        total_ram = data['total_ram']
-        total_cpu = data['total_cpu']
         ram_percent = data['ram_percent']
         cpu_percent = data['cpu_percent']
         date_added = datetime.datetime.now()
 
         try:
-            res = Resource.objects.get(host_address=host_address)
+            res = Resource.objects.get(host_address=host_address, host_name=host_name)
         except:
             return Response({'message': 'resource not registered'}, status=401)
 
-        profile = HostUsage(date_added=date_added, host_address=host_address, host_name=host_name, total_ram=total_ram,
-                        total_cpu=total_cpu, ram_percent=ram_percent, cpu_percent=cpu_percent, resource=res)
+        profile = HostUsage(host_address=host_address, host_name=host_name, date_added=date_added, 
+                        ram=ram_percent, cpu=cpu_percent, resource=res)
 
         try:
             profile.save()
@@ -48,10 +46,10 @@ class UpdateHostUsage(APIView):
         date_added = datetime.datetime.now()
 
         obj = get_object_or_404(HostUsage, host_address=host_address, host_name=host_name)
-        obj.ram_percent = ram_percent
-        obj.cpu_percent = cpu_percent
+        obj.ram = ram_percent
+        obj.cpu = cpu_percent
         obj.date_added = date_added
-        obj.save(update_fields=['ram_percent', 'cpu_percent', 'date_added'])
+        obj.save(update_fields=['ram', 'cpu', 'date_added'])
 
         return Response({'message': 'host usage updated'}, status=200)
 

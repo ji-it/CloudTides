@@ -44,15 +44,15 @@ class AddPolicy(APIView):
 
         project = Projects.objects.get(pk=project_id)
         template = Template.objects.get(pk=template_id)
-        policy = Policy(password=password, username=username, name=name, date_created=date_created,
+        policy = Policy(username=username, password=password, name=name, date_created=date_created,
                         is_destroy=is_destroy, deploy_type=deploy_type, idle_policy=idle_policy,
                         account_type=account_type, threshold_policy=threshold_policy,
-                        project=project, template=template)
-        try:
-            policy.save()
-            policy.user.set((user,))
-        except:
-            return Response({'message: policy name exists'}, status=401)
+                        project=project, template=template, user=user)
+        #try:
+        policy.save()
+        #policy.user.set((user,))
+        #except:
+            #return Response({'message: policy name exists'}, status=401)
 
         return Response({'message': 'success'}, status=200)
 
@@ -62,21 +62,43 @@ class UpdatePolicy(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-        host_address = data['host_address']
-        host_name = data['host_name']
+        password = data['password']
+        username = data['username']
+        account_type = data['accountType']
         name = data['name']
-        is_destroy = bool(data['is_destroy'])
-        deploy_type = data['deploy_type']
-        idle_policy = data['idle_policy']
-        user_account = data['username']
-        user = get_object_or_404(User, username=user_account)
+        is_destroy = None
+        if data['is_destroy'].lower() == "true":
+            is_destroy = True
+        elif data['is_destroy'].lower() == "false":
+            is_destroy = False
+        deploy_type = data['deployType']
+        idle_policy = data['idle']
+        threshold_policy = data['threshold']
+        project_id = data['project']
+        template_id = data['template']
+        date_created = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
 
-        obj = get_object_or_404(Policy, host_address=host_address, host_name=host_name, name=name)
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+
+        project = Projects.objects.get(pk=project_id)
+        template = Template.objects.get(pk=template_id)
+
+        obj = get_object_or_404(Policy, name=name)
+        obj.username = username
+        obj.password = password
+        obj.account_type = account_type
         obj.is_destroy = is_destroy
         obj.deploy_type = deploy_type
         obj.idle_policy = idle_policy
+        obj.threshold_policy = threshold_policy
         obj.user = user
-        obj.save(update_fields=['is_destroy', 'deploy_type', 'idle_policy', 'user'])
+        obj.project = project
+        obj.template = template
+        obj.date_created = date_created
+    
+        obj.save(update_fields=['is_destroy', 'deploy_type', 'idle_policy', 'user', 'username', 'password', 'account_type',
+                        'threshold_policy', 'project', 'template', 'date_created'])
 
         return Response({'message': 'success'}, status=200)
 

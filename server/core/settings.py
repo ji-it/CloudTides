@@ -82,7 +82,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
-# '''
+'''
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -93,7 +93,7 @@ CACHES = {
         "KEY_PREFIX": "tides",
     }
 }
-# '''
+'''
 CACHE_TTL = 0 * 15  # seconds
 
 TEMPLATES = [
@@ -117,17 +117,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Test3',
+        'NAME': 'Tides',
         'USER': 'postgres',
         'PASSWORD': 't6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB', #created at the time of password setup
         'HOST': '10.11.16.83',
         'PORT': '30123',
     }
 }
+
 '''
 DATABASES = {
     'default': {
@@ -139,6 +140,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+'''
 # '''
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

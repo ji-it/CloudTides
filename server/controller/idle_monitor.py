@@ -5,20 +5,20 @@ import ast
 import requests
 
 def main():
-    conn=psycopg2.connect(database="Test2",user="postgres",
+    conn=psycopg2.connect(database="Tides",user="postgres",
             password="t6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB",host="10.11.16.83",port="30123")
     cur=conn.cursor()
 
-    cur.execute('SELECT id, host_address, username, password FROM resource_resource WHERE monitored = True')
+    cur.execute('SELECT id, host_address, username, password, policy_id FROM resource_resource WHERE monitored = True')
     results = cur.fetchall()
     for result in results:
         i = result[0]
         #print(i)
-        cur.execute('SELECT cpu_percent, ram_percent FROM usage_hostusage WHERE resource_id = %s', str(i))
+        cur.execute('SELECT cpu, ram FROM usage_hostusage WHERE resource_id = %s', str(i))
         usage = cur.fetchone()
 
         print(usage)
-        cur.execute('SELECT idle_policy, busy_policy, template_id FROM policy_policy WHERE resource_id = %s', str(i))
+        cur.execute('SELECT idle_policy, threshold_policy, template_id FROM policy_policy WHERE id = %s', str(result[4]))
         pols = cur.fetchone()
         deploy = False
         destroy = False

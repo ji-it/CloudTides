@@ -174,6 +174,7 @@ def main():
                 current_cpu = float(host.summary.quickStats.overallCpuUsage/1024)
                 ram_percent = float(current_ram/total_ram)
                 cpu_percent = float(current_cpu/total_cpu)
+                print(ram_percent, cpu_percent)
                 data['cpu_percent'] = cpu_percent
                 data['ram_percent'] = ram_percent
 

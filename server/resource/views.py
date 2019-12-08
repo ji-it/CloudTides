@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
 import requests
+from policy.models import *
 
 GBFACTOR = float(1 << 30)
 
@@ -121,8 +122,8 @@ class AddResource(APIView):
                     ram_percent = float(current_ram/total_ram)
                     cpu_percent = float(current_cpu/total_cpu)
                     # print(current_cpu, current_ram, total_ram, total_cpu)
-                    try:
-                        resource = Resource.objects.get_or_create(host_name=host_name, username=username,
+                    #try:
+                    resource = Resource.objects.get_or_create(host_name=host_name, username=username,
                                                                   password=password,
                                                                   date_added=date_added,
                                                                   host_address=host, platform_type=platform_type,
@@ -132,20 +133,20 @@ class AddResource(APIView):
                                                                   current_ram=current_ram, current_cpu=current_cpu,
                                                                   is_active=is_active,
                                                                   polling_interval=polling_interval)
-                        resource[0].user.set((user,))
-                        serialized_obj = ResourceSerializer(resource[0])
-                        resources.append(serialized_obj.data)
-                    except:
-                        return Response({'message': 'Resource already registered', 'status': False}, status=200)
-                    
                     data = {}
                     data['host_address'] = host
                     data['host_name'] = host_name
-                    data['total_cpu'] = total_cpu
-                    data['total_ram'] = total_ram
+                    #data['total_cpu'] = total_cpu
+                    #data['total_ram'] = total_ram
                     data['cpu_percent'] = cpu_percent
                     data['ram_percent'] = ram_percent
                     requests.post("http://127.0.0.1:8000/api/usage/addhost/", data=json.dumps(data))
+
+                    resource[0].user.set((user,))
+                    serialized_obj = ResourceSerializer(resource[0])
+                    resources.append(serialized_obj.data)
+                    #except:
+                        #return Response({'message': 'Resource already registered', 'status': False}, status=200)
 
         return Response({'message': 'success', 'status': True, 'results': resources}, status=200)
 
@@ -224,5 +225,22 @@ class DeleteResource(APIView):
                         Resource.objects.get(host_name=host_name).delete()
                     except:
                         return Response({'message': 'no matching objects'}, status=401)
+
+        return Response({'message': 'success'}, status=200)
+
+
+class AssignPolicy(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        data = json.loads(request.body)
+        resource_id = data['resource_id']
+        policy_id = data['policy_id']
+
+        resource = get_object_or_404(Resource, id=resource_id)
+        policy = get_object_or_404(Policy, id=policy_id)
+
+        resource.policy = policy
+        resource.save(update_fields=['policy'])
 
         return Response({'message': 'success'}, status=200)

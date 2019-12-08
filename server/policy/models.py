@@ -28,7 +28,7 @@ class Policy(models.Model):
     idle_policy = models.TextField(blank=True, null=True)
     threshold_policy = models.TextField(blank=True, null=True)
     project = models.ForeignKey(Projects, on_delete=models.SET_NULL, null=True)
-    user = models.ForeignKey(User, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
 
     #  resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True, related_name="resources")
 

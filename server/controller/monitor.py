@@ -2,7 +2,7 @@ import psycopg2
 import os
 
 def main():
-    conn=psycopg2.connect(database="Test2",user="postgres",
+    conn=psycopg2.connect(database="Tides",user="postgres",
             password="t6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB",host="10.11.16.83",port="30123")
     cur=conn.cursor()
 
