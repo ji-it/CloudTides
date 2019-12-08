@@ -20,7 +20,7 @@ python execute_program_in_vm.py
 """
 from __future__ import with_statement
 import atexit
-from tools import cli
+from tools import cli # pylint: disable=import-error
 from pyVim import connect
 from pyVmomi import vim, vmodl
 import ssl

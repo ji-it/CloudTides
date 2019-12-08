@@ -15,7 +15,7 @@ import psycopg2
 import os
 import requests
 import json
-from tools import tasks
+from tools import tasks # pylint: disable=import-error
 
 def get_args():
     """ Get arguments from CLI """
