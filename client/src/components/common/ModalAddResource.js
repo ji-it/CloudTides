@@ -208,7 +208,7 @@ export default class ModalAddResource extends React.Component {
         for (let formElementId in this.state.formControls) {
             formData[formElementId] = this.state.formControls[formElementId].value;
         }
-        formData["polling_interval"] = 30;
+        formData["polling_interval"] = 1;
         Actions.addResource(formData);
         this.resetState(true)
     };
@@ -333,6 +333,7 @@ export default class ModalAddResource extends React.Component {
                                     type="select"
                                     name="datacenters"
                                     value={this.state.formControls.datacenters.value}
+                                    valid={this.state.formControls.datacenters.valid}
                                     onChange={this.handleChange}
                                     onFocus={e => this.setState({datacentersFocused: true})}
                                     onBlur={e => this.setState({datacentersFocused: false})}
@@ -345,7 +346,7 @@ export default class ModalAddResource extends React.Component {
                                 </Input>
                             </FormGroup>
                             <FormGroup>
-                                <Label for="datacenters">Select Policy</Label>
+                                <Label for="policy">Select Policy</Label>
                                 <Input
                                     className={classnames({
                                         focused: this.state.policyFocused

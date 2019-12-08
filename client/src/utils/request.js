@@ -63,7 +63,7 @@ export default function request(
         options.headers = Object.assign(
             {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'no-store, no-cache, max-age=0',
+                'Cache-Control': 'max-age=0, no-cache, no-store, must-revalidate',
             },
             options.headers,
             {}
