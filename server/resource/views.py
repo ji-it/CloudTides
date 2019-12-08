@@ -18,6 +18,7 @@ import datetime
 from .utils import *
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+import requests
 
 GBFACTOR = float(1 << 30)
 
@@ -108,6 +109,8 @@ class AddResource(APIView):
                     total_cpu = round(((ho.hardware.cpuInfo.hz/1e+9)*ho.hardware.cpuInfo.numCpuCores),0)
                     current_ram = float(ho.summary.quickStats.overallMemoryUsage/1024)
                     current_cpu = float(ho.summary.quickStats.overallCpuUsage/1024)
+                    ram_percent = float(current_ram/total_ram)
+                    cpu_percent = float(current_cpu/total_cpu)
                     #print(current_cpu, current_ram, total_ram, total_cpu)
                     profile = Resource(host_name=host_name, username=username, password=password, date_added=date_added, 
                                 host_address=host, platform_type=platform_type, total_ram=total_ram, total_cpu=total_cpu,
@@ -116,11 +119,36 @@ class AddResource(APIView):
 
                     profile.save()
                     profile.user.add(res)
-                    
+
+                    data = {}
+                    data['host_address'] = host
+                    data['host_name'] = host_name
+                    data['total_cpu'] = total_cpu
+                    data['total_ram'] = total_ram
+                    data['cpu_percent'] = cpu_percent
+                    data['ram_percent'] = ram_percent
+                    requests.post("http://127.0.0.1:8000/api/usage/addhost/", data=json.dumps(data))
                     
                     #except:
                         #return Response({'message': 'resource already registered'}, status=401)
 
+        return Response({'message': 'success'}, status=200)
+
+
+class UpdateHost(APIView):
+
+    def post(self, request):
+        data = json.loads(request.body)
+        host_address = data['host_address']
+        host_name = data['host_name']
+        current_cpu = data['current_cpu']
+        current_ram = data['current_ram']
+
+        host = get_object_or_404(Resource, host_address=host_address, host_name=host_name)
+        host.current_cpu = current_cpu
+        host.current_ram = current_ram
+        host.save(update_fields=['current_cpu', 'current_ram'])
+        
         return Response({'message': 'success'}, status=200)
 
 

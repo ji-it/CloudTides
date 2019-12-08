@@ -1,5 +1,6 @@
 from django.db import models
 from resource.models import *
+from template.models import *
 
 # Create your models here.
 class Policy(models.Model):
@@ -13,9 +14,15 @@ class Policy(models.Model):
     host_name = models.TextField()
     name = models.CharField(max_length=150)
     date_created = models.DateTimeField(blank=True, null=True)
+    template = models.OneToOneField(Template, on_delete=models.CASCADE)
     is_destroy = models.BooleanField(blank=True, null=True, default=False)
     deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='vm')
     idle_policy = models.TextField(blank=True, null=True)
+    busy_policy = models.TextField(blank=True, null=True)
+    is_manager = models.BooleanField(default=False)
+    project_url = models.TextField()
+    boinc_user = models.TextField()
+    boinc_password = models.TextField()
     resource = models.OneToOneField(Resource, on_delete=models.CASCADE, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
 

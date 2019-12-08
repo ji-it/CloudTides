@@ -13,7 +13,7 @@ import getpass
 import psycopg2
 import requests
 import json
-import http.client
+#import http.client
 
 GBFACTOR = float(1 << 30)
 requests.adapters.DEFAULT_RETRIES = 5
@@ -170,11 +170,21 @@ def main():
                 data['host_name'] = hostname
                 total_ram = host.hardware.memorySize/GBFACTOR
                 total_cpu = round(((host.hardware.cpuInfo.hz/1e+9)*host.hardware.cpuInfo.numCpuCores),0)
-                current_ram = float(host.summary.quickStats.overallMemoryUsage/1024/total_ram)
-                current_cpu = float(host.summary.quickStats.overallCpuUsage/1024/total_cpu)
-                data['cpu_percent'] = current_cpu
-                data['ram_percent'] = current_ram
-                requests.post("http://127.0.0.1:8000/api/usage/updatehost/", data=json.dumps(data))
+                current_ram = float(host.summary.quickStats.overallMemoryUsage/1024)
+                current_cpu = float(host.summary.quickStats.overallCpuUsage/1024)
+                ram_percent = float(current_ram/total_ram)
+                cpu_percent = float(current_cpu/total_cpu)
+                data['cpu_percent'] = cpu_percent
+                data['ram_percent'] = ram_percent
+
+                hostdata = {}
+                hostdata['host_address'] = args.host
+                hostdata['host_name'] = hostname
+                hostdata['current_cpu'] = current_cpu
+                hostdata['current_ram'] = current_ram
+
+                requests.post("http://192.168.56.1:8000/api/resource/update/", data=json.dumps(hostdata))
+                requests.post("http://192.168.56.1:8000/api/usage/updatehost/", data=json.dumps(data))
                 #print(data)
                 
     

@@ -11,8 +11,8 @@ class Resource(models.Model):
 
     STATUS = (
         ('1', 'idle'),
-        ('2', 'busy'),
-        ('3', 'contributing')
+        ('2', 'normal'),
+        ('3', 'busy')
     )
 
     # name = models.CharField(max_length=200)
@@ -22,7 +22,7 @@ class Resource(models.Model):
     platform_type = models.CharField(max_length=10, choices=PLATFORM, default='vsphere')
     username = models.CharField(unique=True, max_length=150)
     password = models.CharField(max_length=128)
-    status = models.CharField(max_length=20, choices=STATUS, default='busy')
+    status = models.CharField(max_length=20, choices=STATUS, default='normal')
     total_disk = models.FloatField(blank=True, null=True)
     total_ram = models.FloatField(blank=True, null=True)
     total_cpu = models.FloatField(blank=True, null=True)

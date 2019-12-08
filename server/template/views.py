@@ -14,8 +14,8 @@ class AddTemplate(APIView):
 
     def post(self, request):
         #print(dir(request.POST))
-        data = json.loads(request.POST['json'])
-        name = str(request.FILES['file'])
+        data = json.loads(request.body)
+        name = data['name']
         date_added = datetime.datetime.now()
         guest_os = data['guest_os']
         compatibility = data['compatibility']
@@ -32,14 +32,14 @@ class AddTemplate(APIView):
             profile.save()
         except:
             return Response({'message': 'template exists'}, status=401)
-
+        '''
         try:
             if request.FILES['file']:
                 save_path = os.path.join(settings.MEDIA_ROOT, 'uploads', str(request.FILES['file']))
                 path = default_storage.save(save_path, request.FILES['file'])
         except:
             return Response({'message': 'template upload error'}, status=401)
-        
+        '''
         return Response({'message': 'success'}, status=200)
 
 

@@ -75,14 +75,17 @@ class AddVMUsage(APIView):
     def post(self, request):
         data = json.loads(request.body)
         #print(data)
-        i = 0
         host_address = None
         for vm in data.keys():
-            if i == 0:
+            if len(data[vm]) == 0:
                 host_address = vm
-                i+=1
+                break
+        
+        for vm in data.keys():
+            if len(data[vm]) == 0:
                 continue
             ip_address = vm
+            #print(data[vm])
             vm_name = data[vm]['Name']
             cpu_usage = data[vm]['CPU']
             mem_usage = data[vm]['Memory']
@@ -91,9 +94,9 @@ class AddVMUsage(APIView):
             if boinc_time == 'unstarted':
                 boinc_time = None
             date_added = datetime.datetime.now()
-
-            if VMUsage.objects.get(ip_address=ip_address):
-                obj = get_object_or_404(VMUsage, ip_address=ip_address, vm_name=vm_name)
+            
+            try:
+                obj = VMUsage.objects.get(ip_address=ip_address)
                 obj.cpu_usage = cpu_usage
                 obj.mem_usage = mem_usage
                 obj.date_added = date_added
@@ -102,18 +105,19 @@ class AddVMUsage(APIView):
 
                 obj.save(update_fields=['cpu_usage', 'mem_usage', 'date_added', 'create_time', 'boinc_time'])
                 continue
-
-            try:
-                res = Resource.objects.get(host_address=host_address)
+            
             except:
-                return Response({'message': 'resource not registered'}, status=401)
+                try:
+                    res = Resource.objects.get(host_address=host_address)
+                except:
+                    return Response({'message': 'resource not registered'}, status=401)
 
-            profile = VMUsage(ip_address=ip_address, vm_name=vm_name, cpu_usage=cpu_usage, mem_usage=mem_usage,
-                        date_added=date_added, resource=res, create_time=create_time, boinc_time=boinc_time)
-            try:
-                profile.save()
-            except:
-                return Response({'message': 'object exists'}, status=401)
+                profile = VMUsage(ip_address=ip_address, vm_name=vm_name, cpu_usage=cpu_usage, mem_usage=mem_usage,
+                            date_added=date_added, resource=res, create_time=create_time, boinc_time=boinc_time)
+                try:
+                    profile.save()
+                except:
+                    return Response({'message': 'object exists'}, status=401)
         
         return Response({'message': 'success'}, status=200)
 

@@ -11,7 +11,7 @@ class HostUsage(models.Model):
     total_cpu = models.FloatField(blank=True, null=True)
     ram_percent = models.FloatField(blank=True, null=True)
     cpu_percent = models.FloatField(blank=True, null=True)
-    resource = models.OneToOneField(Resource, on_delete=models.CASCADE, primary_key=True)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         # do something
@@ -26,7 +26,7 @@ class VMUsage(models.Model):
     vm_name = models.TextField(blank=True, null=True)
     cpu_usage = models.FloatField(blank=True, null=True)
     mem_usage = models.FloatField(blank=True, null=True)
-    resource = models.OneToOneField(Resource, on_delete=models.CASCADE, primary_key=True)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     create_time = models.DateTimeField(blank=True, null=True)
     boinc_time = models.DateTimeField(blank=True, null=True)
 
