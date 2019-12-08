@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from projects.models import *
 
 
 # from resource.models import Resource
@@ -7,17 +9,26 @@ from django.db import models
 # Create your models here.
 class Policy(models.Model):
     DEPLOY_TYPE = (
-        ('1', 'kubernetes'),
-        ('2', 'vm')
+        ('1', 'K8S'),
+        ('2', 'VM')
     )
 
-    # host_address = models.TextField()
-    #   host_name = models.TextField(unique=True)
-    name = models.CharField(unique=True, max_length=150)
+    ACCOUNT_TYPE = (
+        ('1', 'acc_manager'),
+        ('2', 'boinc')
+    )
+
+    name = models.CharField(max_length=150)
     date_created = models.DateTimeField(blank=True, null=True)
-    is_destroy = models.BooleanField(blank=True, null=True, default=False)
-    deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='vm')
+    is_destroy = models.BooleanField(blank=True, null=True, default=True)
+    username = models.CharField(max_length=150, blank=True, null=True)
+    password = models.CharField(max_length=150, blank=True, null=True)
+    deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='VM')
+    account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE, default='boinc')
     idle_policy = models.TextField(blank=True, null=True)
+    threshold_policy = models.TextField(blank=True, null=True)
+    project = models.ForeignKey(Projects, on_delete=models.SET_NULL, null=True)
+    user = models.ManyToManyField(User, blank=True)
 
     #  resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True, related_name="resources")
 
