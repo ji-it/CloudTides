@@ -20,8 +20,10 @@ import pyVmomi
 from pyVmomi import vim, vmodl
 import datetime
 from .utils import *
+from django.utils.cache import add_never_cache_headers
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.views.decorators.cache import never_cache
 
 GBFACTOR = float(1 << 30)
 

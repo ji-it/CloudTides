@@ -48,6 +48,7 @@ from corsheaders.defaults import default_headers
 
 CORS_ALLOW_HEADERS = default_headers + (
     'access-control-allow-origin',
+    'cache-control'
 )
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -58,6 +59,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 MIDDLEWARE = [
+    'core.middleware.DisableClientSideCachingMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,7 +94,7 @@ CACHES = {
     }
 }
 # '''
-CACHE_TTL = 60 * 15  # seconds
+CACHE_TTL = 0 * 15  # seconds
 
 TEMPLATES = [
     {
