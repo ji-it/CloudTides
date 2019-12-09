@@ -73,6 +73,7 @@ class AddVMUsage(APIView):
     def post(self, request):
         data = json.loads(request.body)
         #print(data)
+        VMUsage.objects.all().delete()
         host_address = None
         for vm in data.keys():
             if len(data[vm]) == 0:
