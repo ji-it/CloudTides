@@ -158,9 +158,10 @@ def clone_vm(content, template, si, datacenter_name, username, password,
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
-    time.sleep(120)
+    #time.sleep(120)
     VM = get_obj(content, [vim.VirtualMachine], vm_name)
-    #print(VM)
+    while VM.summary.guest.ipAddress is None:
+        pass
     print(VM.summary.guest.ipAddress)
     send_account(host_address, VM.summary.guest.ipAddress, tem_name, username, password)
 
@@ -199,8 +200,11 @@ def send_account(host_address, ip_address, template, username, password):
         f.write(url[0] + '\n')
         f.write(result[2] + '\n')
         f.write(result[3])
-    os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' root@' + ip_address + ':/var/lib/boinc')
-    os.system('sshpass -p ' + pwd[0] + ' scp run_boinc root@' + ip_address + ':/var/lib/boinc')
+    #time.sleep(30)
+    run_boinc = 'run_boinc'
+    while os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' ' + run_boinc + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+        time.sleep(5)
+        continue
     os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
                 ' -r root -w ' + pwd[0] + ' -l /bin/chmod -f "777 /var/lib/boinc/run_boinc"')
     os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +

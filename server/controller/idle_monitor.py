@@ -18,7 +18,7 @@ def main():
         usage = cur.fetchone()
 
         print(usage)
-        cur.execute('SELECT idle_policy, threshold_policy, template_id FROM policy_policy WHERE id = %s', str(result[4]))
+        cur.execute('SELECT idle_policy, threshold_policy, template_id, is_destroy FROM policy_policy WHERE id = %s', str(result[4]))
         pols = cur.fetchone()
         deploy = False
         destroy = False
@@ -60,14 +60,24 @@ def main():
         elif destroy:
             cur.execute("UPDATE resource_resource SET status = 'busy' WHERE id = %s", str(i))
             conn.commit()
-            cur.execute("SELECT ip_address FROM usage_vmusage ORDER BY create_time DESC LIMIT 1")
-            ip = cur.fetchone()
-            os.system('python /home/shen1997/ve450/destroy_vm.py -s ' + result[1] + ' -u ' + result[2] +' -p ' + result[3] +\
-                ' -i ' + ip[0])
-            data = {}
-            data['ip_address'] = ip[0]
-            requests.post("http://192.168.56.1:8000/api/usage/deletevm/", data=json.dumps(data))
-                
+            if pols[3] is False:
+                cur.execute("SELECT ip_address FROM usage_vmusage ORDER BY create_time DESC LIMIT 1")
+                ip = cur.fetchone()
+                data = {}
+                data['ip_address'] = ip[0]
+                requests.post("http://192.168.56.1:8000/api/usage/deletevm/", data=json.dumps(data))
+                os.system('python /home/shen1997/ve450/destroy_vm.py -s ' + result[1] + ' -u ' + result[2] +' -p ' + result[3] +\
+                    ' -i ' + ip[0])
+            else:
+                cur.execute("SELECT ip_address FROM usage_vmusage")
+                ips = cur.fetchall()
+                for ip in ips:
+                    data = {}
+                    data['ip_address'] = ip[0]
+                    requests.post("http://192.168.56.1:8000/api/usage/deletevm/", data=json.dumps(data))
+                    os.system('python /home/shen1997/ve450/destroy_vm.py -s ' + result[1] + ' -u ' + result[2] +' -p ' + result[3] +\
+                    ' -i ' + ip[0])
+                    
         else:
             cur.execute("UPDATE resource_resource SET status = 'normal' WHERE id = %s", str(i))
             conn.commit()
