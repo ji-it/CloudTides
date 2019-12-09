@@ -158,7 +158,7 @@ def clone_vm(content, template, si, datacenter_name, username, password,
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
-    time.sleep(60)
+    time.sleep(120)
     VM = get_obj(content, [vim.VirtualMachine], vm_name)
     #print(VM)
     print(VM.summary.guest.ipAddress)
