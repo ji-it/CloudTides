@@ -13,5 +13,4 @@ COPY . /app/
 
 EXPOSE 3000
 
-CMD npm compile-sass
 CMD npm start

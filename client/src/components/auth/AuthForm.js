@@ -122,7 +122,8 @@ class AuthForm extends React.Component {
                 return;
             }
 
-            formData.priority = env.DEFAULT_PRIORITY
+            formData.priority = env.DEFAULT_PRIORITY;
+            formData.company_name = '';
         }
 
         const endpoint = (this.isLogin) ? '/api/users/login/' : '/api/users/register/';
