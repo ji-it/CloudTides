@@ -139,7 +139,7 @@ DATABASES = {
         'NAME': 'tides2',
         'USER': 'postgres',
         'PASSWORD': 'password',  # created at the time of password setup
-        'HOST': 'host.docker.internal',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

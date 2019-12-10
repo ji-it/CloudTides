@@ -6,7 +6,7 @@ DATABASES = {
         'NAME': 'tides2',
         'USER': 'postgres',
         'PASSWORD': 'password',
-        'HOST': 'host.docker.internal',
+        'HOST':  'localhost',
         'PORT': '5432',
     }
 }
