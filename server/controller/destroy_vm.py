@@ -1,5 +1,4 @@
 '''
-Written by Zhe Shen, 19-11-3
 Destroy VM in vSphere.
 '''
 
@@ -11,7 +10,6 @@ import argparse
 
 
 def get_args():
-
     parser = argparse.ArgumentParser(
         description='Arguments for talking to vCenter')
 
@@ -35,18 +33,18 @@ def get_args():
                         required=False,
                         action='store',
                         help='Password to use')
-    
+
     parser.add_argument('-j', '--uuid',
                         action='store',
                         help='BIOS UUID of the virtual machine')
-    
+
     parser.add_argument('-d', '--dns',
                         action='store',
                         help='DNS name of the virtual machine')
-    
+
     parser.add_argument('-i', '--ip',
                         help='IP address of the virtual machine')
-    
+
     parser.add_argument('-n', '--name',
                         help='VM name of the virtual machine')
 
@@ -56,7 +54,6 @@ def get_args():
 
 
 def get_obj(content, vimtype, name):
-
     obj = None
     container = content.viewManager.CreateContainerView(
         content.rootFolder, vimtype, True)

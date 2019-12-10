@@ -1,5 +1,4 @@
 '''
-Written by Zhe Shen, 19-11-2
 Deploy a VM from a specified template.
 '''
 
@@ -13,9 +12,9 @@ import string
 import time
 import psycopg2
 import os
-import requests
-import json
-from tools import tasks # pylint: disable=import-error
+from tools import tasks  # pylint: disable=import-error
+from core.settings import BASE_DIR, DATABASES
+
 
 def get_args():
     """ Get arguments from CLI """
@@ -85,8 +84,7 @@ def get_args():
                         dest='power_on',
                         action='store_true',
                         help='power on the VM after creation')
-    
-    
+
     args = parser.parse_args()
 
     if not args.password:
@@ -109,7 +107,6 @@ def wait_for_task(task):
 
 
 def get_obj(content, vimtype, name):
-
     obj = None
     container = content.viewManager.CreateContainerView(
         content.rootFolder, vimtype, True)
@@ -127,8 +124,7 @@ def get_obj(content, vimtype, name):
 
 
 def clone_vm(content, template, si, datacenter_name, username, password,
-        cluster_name, resource_pool, power_on, host_address, tem_name):
-
+             cluster_name, resource_pool, power_on, host_address, tem_name):
     # if none get the first one
     datacenter = get_obj(content, [vim.Datacenter], datacenter_name)
     destfolder = datacenter.vmFolder
@@ -142,8 +138,8 @@ def clone_vm(content, template, si, datacenter_name, username, password,
         resource_pool = cluster.resourcePool
 
     vmconf = vim.vm.ConfigSpec()
-    now = int(round(time.time()*1000))
-    now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+    now = int(round(time.time() * 1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now / 1000))
     my_annotation = "Here is a BOINC-deployed VM created by ProjectTides at " + now02 + " with BOINC unstarted"
     vmconf.annotation = my_annotation
 
@@ -154,20 +150,21 @@ def clone_vm(content, template, si, datacenter_name, username, password,
 
     clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec)
     clonespec.config = vmconf
-    vm_name = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    vm_name = 'tides_worker-' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
-    time.sleep(120)
+    # time.sleep(120)
     VM = get_obj(content, [vim.VirtualMachine], vm_name)
-    #print(VM)
+    while VM.summary.guest.ipAddress is None:
+        pass
     print(VM.summary.guest.ipAddress)
     send_account(host_address, VM.summary.guest.ipAddress, tem_name, username, password)
 
     spec = vim.vm.ConfigSpec()
     old_ann = VM.summary.config.annotation
-    now = int(round(time.time()*1000))
-    now02 = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(now/1000))
+    now = int(round(time.time() * 1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now / 1000))
     annotation_add = "started at " + now02
     print(old_ann)
     spec.annotation = old_ann.replace("unstarted", annotation_add)
@@ -178,38 +175,50 @@ def clone_vm(content, template, si, datacenter_name, username, password,
 
 
 def send_account(host_address, ip_address, template, username, password):
-    conn=psycopg2.connect(database="Test2",user="postgres",
-            password="t6bB2T5KoQuPq6DrpWxJa3rYKVjIpOCtVSrKyBMB8PHcMShkidcQo8Kjn1lcXswB",host="10.11.16.83",port="30123")
-    cur=conn.cursor()
+    db = DATABASES['default']['NAME']
+    user = DATABASES['default']['USER']
+    password = DATABASES['default']['PASSWORD']
+    host = DATABASES['default']['HOST']
+    port = DATABASES['default']['PORT']
+    conn = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = conn.cursor()
 
-    cur.execute("SELECT is_manager, project_url, boinc_user, boinc_password FROM policy_policy WHERE host_address = %s", (host_address,))
+    cur.execute("SELECT policy_id FROM resource_resource WHERE host_address = %s", (host_address,))
+    pid = cur.fetchone()
+
+    cur.execute("SELECT account_type, project_id, username, password FROM policy_policy WHERE id = %s", str(pid[0]))
     result = cur.fetchone()
 
-    cur.execute("SELECT password FROM template_template WHERE name = %s", (template,))
-    pwd = cur.fetchone()
+    cur.execute("SELECT url FROM projects_projects WHERE id = %s", str(result[1]))
+    url = cur.fetchone()
+
+    # cur.execute("SELECT password FROM template_template WHERE name = %s", (template,))
+    # pwd = cur.fetchone()
+    pwd = "ve450g19"  # TODO: change to passwordless
+    path = os.path.join(BASE_DIR, 'controller')
     filename = 'account.txt'
     with open(filename, 'w') as f:
         f.write(str(result[0]) + '\n')
-        f.write(result[1] + '\n')
+        f.write(url[0] + '\n')
         f.write(result[2] + '\n')
         f.write(result[3])
-    os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' root@' + ip_address + ':/var/lib/boinc')
-    os.system('sshpass -p ' + pwd[0] + ' scp ' + 'run_boinc' + ' root@' + ip_address + ':/var/lib/boinc')
-    os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
-                ' -r root -w ' + pwd[0] + ' -l /var/lib/boinc/run_boinc -f None')
-    '''
-    data = {}
-    data['host'] = host_address
-    data['username'] = username
-    data['password'] = password
-    data['ip_address'] = ip_address
-    requests.post("http://192.168.56.1:8000/api/usage/setannotation/", data=json.dumps(data))
-    '''
-
+    # time.sleep(30)
+    run_boinc = 'run_boinc'
+    while os.system('sshpass -p ' + pwd[
+        0] + ' scp ' + filename + ' ' + run_boinc + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+        time.sleep(5)
+        continue
+    os.system(
+        'python ' + path + '/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+        ' -r root -w ' + pwd + ' -l /bin/chmod -f "777 /var/lib/boinc/run_boinc"')
+    os.system(
+        'python ' + path + '/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+        ' -r root -w ' + pwd + ' -l /var/lib/boinc/run_boinc -f None')
+    cur.execute("UPDATE resource_resource SET status = 'contributing' WHERE host_address = %s", (host_address,))
+    conn.commit()
 
 
 def main():
-    
     args = get_args()
 
     # connect this thing
@@ -233,10 +242,10 @@ def main():
     template = None
 
     template = get_obj(content, [vim.VirtualMachine], args.template)
-    
+
     if template:
         clone_vm(content, template, si, args.datacenter_name, args.user, args.password,
-            args.cluster_name, args.resource_pool, args.power_on, args.host, args.template)
+                 args.cluster_name, args.resource_pool, args.power_on, args.host, args.template)
     else:
         print("template not found")
 

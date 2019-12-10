@@ -5,6 +5,7 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import TreeItem from '@material-ui/lab/TreeItem';
+import Actions from '../../../flux/actions'
 
 const useStyles = makeStyles({
     root: {
@@ -21,6 +22,12 @@ export default function TreeChildbarNavItem({data}) {
     const handleChange = (event, nodes) => {
         setExpanded(nodes);
     };
+
+    const handleClick = (event) => {
+        const idx = event.target.name;
+        Actions.switchResource(idx)
+    };
+
     return (
         <TreeView
             className={classes.root}
@@ -31,14 +38,11 @@ export default function TreeChildbarNavItem({data}) {
             onNodeToggle={handleChange}
         >
             {data && data.map((item, idx) => {
-                const dt = new Date().getTime();
-                return (<TreeItem key={idx} nodeId={String(idx)}
-                                  label={item.name}>
-                    {item.children && item.children.map((item, idx) => (
-                        <TreeItem key={idx} nodeId={item.name + String(idx + dt + Math.random())}
-                                  label={item.name}/>
-                    ))}
-                </TreeItem>)
+                return (<a name={idx} key={idx} onClick={handleClick} className={"ml-2"}
+                           style={{cursor: "Pointer"}}
+                >
+                    {item.datacenter}
+                </a>)
             })}
         </TreeView>
     );

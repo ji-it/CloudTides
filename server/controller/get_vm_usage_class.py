@@ -5,6 +5,7 @@ import re
 import requests
 import argparse
 import getpass
+from pyVmomi import vim
 
 FULL_HOSTNAME = "http://localhost:8000"
 
@@ -69,7 +70,7 @@ def printvminfo(vm_collect, vm, depth=1):
     create_time = ""
     boinc_time = "unstarted"
     if my_ann.find("Here is a BOINC-deployed VM created by ProjectTides") != -1:
-       # print(my_ann)
+        # print(my_ann)
         if my_ann.find("unstarted") != -1:
             searchObj = re.search('Here is a BOINC-deployed VM created by ProjectTides at (.*) with BOINC unstarted',
                                   my_ann)
@@ -82,15 +83,15 @@ def printvminfo(vm_collect, vm, depth=1):
 
         vm_collect[summary.guest.ipAddress] = {
             "name": summary.config.name,
-            "memory": float(summary.quickStats.guestMemoryUsage/1024),
-            "cpu_usage": float(summary.quickStats.overallCpuUsage/1024),
+            "memory_usage": float(summary.quickStats.guestMemoryUsage / 1024.0),
+            "cpu_usage": float(summary.quickStats.overallCpuUsage / 1024.0),
             "vm_created_time": create_time,
             "dc_name": summary.vm.parent.parent.name,
             "guest_os": summary.config.guestFullName,
             "num_cpu": summary.config.numCpu,
             "direct_host_name": summary.guest.hostName,
-            "max_mem": float(summary.runtime.maxMemoryUsage/1024),
-            "max_cpu": float(summary.runtime.maxCpuUsage/1024),
+            "max_mem": float(summary.runtime.maxMemoryUsage / 1024.0),
+            "max_cpu": float(summary.runtime.maxCpuUsage / 1024.0),
             "powered_on": summary.runtime.powerState == "poweredOn",
             "boinc_start_time": boinc_time,
             "ip_address": summary.guest.ipAddress
@@ -115,17 +116,23 @@ def main():
         exit()
 
     content = si.RetrieveContent()
+    count = 0
     vm_collect = {}
-    vm_collect[args.host] = {}
+    vm_collect["vms"] = {}
+    # vm_collect[args.host] = {}
     for child in content.rootFolder.childEntity:
         if hasattr(child, 'vmFolder'):
             datacenter = child
             vmfolder = datacenter.vmFolder
             vmlist = vmfolder.childEntity
             for vm in vmlist:
-                if format(hasattr(vm, 'runtime') and vm.runtime.powerState) == "poweredOn":
-                    printvminfo(vm_collect, vm)
-    #print(vm_collect)
+                if type(vm) == vim.VirtualMachine:
+                    count = count + 1
+                    if format(vm.runtime.powerState) == "poweredOn":
+                        printvminfo(vm_collect['vms'], vm)
+
+    # print(vm_collect)
+    vm_collect["total_vms"] = count
     requests.post(FULL_HOSTNAME + "/api/usage/addvm/", data=json.dumps(vm_collect))
 
 

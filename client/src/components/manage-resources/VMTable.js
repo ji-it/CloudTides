@@ -12,12 +12,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ModalAddResource from "../common/ModalAddResource";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
 import Store from "../../flux/store";
 import {Actions} from "../../flux";
 
-class Resources extends React.Component {
+class VMTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -41,24 +40,13 @@ class Resources extends React.Component {
     });
 
     render() {
-        const {title, columns, options, data, policiesData} = this.props;
+        const {title, columns, options, data} = this.props;
         return (
             <Card small className="blog-comments">
                 <CardHeader className="m-2 mb-0">
                     <div>
                         <div style={{display: "inline-block"}}>
                             <h6 className="m-0 font-weight-bold">{title}</h6>
-                        </div>
-                        <div style={{display: "inline-block", float: "right"}}>
-                            <Button
-                                className="shadow-sm"
-                                onClick={() => this.toggleModal("addModal")}
-                            >
-                                <span className="text text-uppercase">Add Resource</span>
-                            </Button>
-                            <ModalAddResource policiesData={policiesData} onExit={this.myCallBack}
-                                              toggleState={this.state.addModal}/>
-                            <SuccessNotificationModal onRef={ref => (this.successmodal = ref)}/>
                         </div>
                     </div>
                 </CardHeader>
@@ -76,7 +64,7 @@ class Resources extends React.Component {
     }
 }
 
-Resources.propTypes = {
+VMTable.propTypes = {
     /**1
      * The component's title.
      */
@@ -90,12 +78,12 @@ Resources.propTypes = {
     options: PropTypes.object,
 };
 
-Resources.defaultProps = {
-    title: "Resources",
+VMTable.defaultProps = {
+    title: "Virtual Machines",
     data: [],
     columns: [
         {
-            name: "host_name",
+            name: "name",
             label: "Name",
             options: {
                 filter: true,
@@ -105,24 +93,23 @@ Resources.defaultProps = {
             }
         },
         {
-            name: "status",
+            name: "powered_on",
             label: "Status",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    const style = "tides-" + value.toLowerCase();
+                    const style = value ? "primary" : "warning";
                     return (
-                        <span className={style + " border small status-border"}
-                              data-task-status={value.toLowerCase()}
+                        <span className={style}
                         >
-                            {value}
+                            {value ? "On" : "Off"}
                         </span>
                     );
                 }
             }
         },
         {
-            name: "host_name",
+            name: "ip_address",
             label: "IP Address"
         },
         {
@@ -192,38 +179,42 @@ Resources.defaultProps = {
         //     }
         // },
         {
-            name: "job_completed",
-            label: "Jobs Done"
+            name: "guest_os",
+            label: "Guest OS"
         },
         {
-            name: "policy_name",
-            label: "Policy",
+            name: "date_created",
+            label: "Added",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    return <b>{value}</b>;
+                    const date = new Date(value);
+                    const res = (value) ? date.toUTCString() : "";
+                    return res;
                 }
             }
         },
         {
-            name: "is_active",
-            label: "Active",
+            name: "date_destroyed",
+            label: "Destroyed",
             options: {
                 filter: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    return (
-                        <FormControlLabel
-                            label={value ? "Yes" : "No"}
-                            value={value ? "Yes" : "No"}
-                            control={
-                                <Switch color="primary" checked={value} value={value ? "Yes" : "No"}/>
-                            }
-                            onChange={event => {
-                                updateValue(event.target.value === "Yes" ? false : true);
-                            }}
-                        />
-                    );
-
+                    const date = new Date(value);
+                    const res = (value) ? date.toUTCString() : "";
+                    return res;
+                }
+            }
+        },
+        {
+            name: "boinc_time",
+            label: "BOINC Start",
+            options: {
+                filter: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    const date = new Date(value);
+                    const res = (value) ? date.toUTCString() : "";
+                    return res;
                 }
             }
         },
@@ -259,4 +250,4 @@ Resources.defaultProps = {
     },
 };
 
-export default Resources;
+export default VMTable;

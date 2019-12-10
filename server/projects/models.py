@@ -5,6 +5,7 @@ from django.db import models
 class Projects(models.Model):
     project_name = models.TextField(null=True)
     has_account_manager = models.BooleanField(default=False)
+    url = models.TextField(null=True)
 
     class Meta:
         verbose_name = 'Tides Project'

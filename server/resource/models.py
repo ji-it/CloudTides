@@ -13,8 +13,8 @@ class Resource(models.Model):
 
     STATUS = (
         ('1', 'idle'),
-        ('2', 'busy'),
-        ('3', 'contributing'),
+        ('2', 'normal'),
+        ('3', 'busy'),
         ('4', 'unknown'),
     )
 
@@ -35,7 +35,8 @@ class Resource(models.Model):
     is_active = models.BooleanField(default=False)
     total_jobs = models.IntegerField(blank=True, null=True, default=0)
     job_completed = models.IntegerField(blank=True, null=True, default=0)
-    polling_interval = models.IntegerField(blank=True, null=True)
+    total_vms = models.IntegerField(blank=True, null=True, default=0)
+    # polling_interval = models.IntegerField(blank=True, null=True)
     monitored = models.BooleanField(blank=True, null=True, default=False)
     user = models.ManyToManyField(User, blank=True)
     policy = models.ForeignKey(Policy, on_delete=models.SET_NULL, null=True)
@@ -50,10 +51,10 @@ class Resource(models.Model):
 
 class VM(models.Model):
     name = models.CharField(max_length=200)
-    date_added = models.DateTimeField(blank=True, null=True)
+    date_created = models.DateTimeField(blank=True, null=True)
     date_destroyed = models.DateTimeField(blank=True, null=True)
     boinc_time = models.DateTimeField(blank=True, null=True)
-    direct_host = models.CharField(max_length=200)
+    direct_host = models.CharField(max_length=200, null=True)
     ip_address = models.TextField(null=True)
     total_disk = models.FloatField(blank=True, null=True)
     total_ram = models.FloatField(blank=True, null=True)
@@ -63,8 +64,8 @@ class VM(models.Model):
     current_cpu = models.FloatField(blank=True, null=True)
     num_cpu = models.IntegerField(blank=True, null=True)
     powered_on = models.BooleanField(blank=True, null=True, default=False)
+    is_destroyed = models.BooleanField(blank=True, null=True, default=False)
     guest_os = models.CharField(max_length=200)
-    user = models.ManyToManyField(User, blank=True)
     resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True)
 
     class Meta:

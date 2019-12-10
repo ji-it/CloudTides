@@ -1,10 +1,20 @@
 import psycopg2
 import os
 import json
-from config import BASE_DIR, DATABASES
+import ast
 import requests
 
 FULL_HOSTNAME = "http://localhost:8000"
+DATABASES = {
+    'default': {
+        'NAME': 'tides2',
+        'USER': 'postgres',
+        'PASSWORD': 'password',  # created at the time of password setup
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+BASE_DIR = "/Users/dbaekajnr/Projects/CloudTides/server"
 
 
 def main():
@@ -19,7 +29,7 @@ def main():
 
     cur.execute(
         'SELECT id, host_address, username, password, policy_id, total_cpu, total_ram FROM resource_resource WHERE '
-        'monitored = True AND is_active = True')
+        'monitored = True')
     results = cur.fetchall()
 
     for result in results:
@@ -64,6 +74,8 @@ def main():
             conn.commit()
             cur.execute("SELECT name FROM template_template WHERE id = " + str(policy[2]))
             template_name = cur.fetchone()
+            print('python ' + path + '/clone_vm.py -s ' + result[1] + ' -u ' + result[2] + ' -p ' + result[3] + \
+                  ' --no-ssl --power-on --template ' + template_name[0])
             os.system(
                 'python ' + path + '/clone_vm.py -s ' + result[1] + ' -u ' + result[2] + ' -p ' + result[3] + \
                 ' --no-ssl --power-on --template ' + template_name[0])

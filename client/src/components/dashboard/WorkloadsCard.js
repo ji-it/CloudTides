@@ -12,7 +12,19 @@ import {
 class WorkloadsCard extends React.Component {
 
     render() {
-        const {title} = this.props;
+        const {title, data} = this.props;
+        const {workload} = data;
+        let contributed = 0, running = 0, destroyed = 0, hosts_used = 0, percentage;
+        if (workload) {
+            contributed = workload.contributed;
+            running = workload.running;
+            destroyed = workload.destroyed;
+            hosts_used = workload.hosts_used;
+            percentage = running / contributed * 100;
+        }
+        const nf = new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 2,
+        });
         return (
             <Card small className="h-100">
                 <CardHeader className="border-bottom">
@@ -21,14 +33,15 @@ class WorkloadsCard extends React.Component {
                 <CardBody className="d-flex py-0">
                     <div className="w-100 mx-10 text-left">
                         <div className="mt-2" style={{fontSize: "1.2em", color: "#1B2376"}}>
-                            <span style={{fontSize: "1.8em"}}>400 jobs</span> contributed
+                            <span style={{fontSize: "1.8em"}}>{contributed}</span> contributed
                         </div>
                         <div className="mb-3 font-weight-normal">
-                            <div><b>30</b> running | <b>4</b> suspended</div>
-                            <div><b>70</b> resources used</div>
+                            <div><b>{running}</b> running | <b>{destroyed}</b> destroyed</div>
+                            <div><b>{hosts_used}</b> resources used</div>
                         </div>
                         <div className="mb-3">
-                            <Progress className="workloadProgress" barClassName="workloadProgressBar" value="20">20</Progress>
+                            <Progress className="workloadProgress" barClassName="workloadProgressBar"
+                                      value={String(percentage)}>{nf.format(percentage)}</Progress>
                         </div>
                     </div>
                 </CardBody>
@@ -37,14 +50,16 @@ class WorkloadsCard extends React.Component {
     }
 }
 
-WorkloadsCard.propTypes = {
+WorkloadsCard
+    .propTypes = {
     /**
      * The component's title.
      */
     title: PropTypes.string,
 };
 
-WorkloadsCard.defaultProps = {
+WorkloadsCard
+    .defaultProps = {
     title: "Workloads",
 };
 

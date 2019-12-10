@@ -16,7 +16,8 @@ class ContributionCard extends React.Component {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         });
-        const {dayValue, monthValue} = this.props.data;
+        // const {dayValue, monthValue} = this.props.data;
+        const {data} = this.props;
         return (
             <Card small className="h-100">
                 <CardHeader className="border-bottom">
@@ -25,11 +26,11 @@ class ContributionCard extends React.Component {
                 <CardBody className="d-flex py-0">
                     <div className="m-auto text-center">
                         <div className="mt-2" style={{fontSize: "1.2em", color: "#1B2376"}}>
-                            <span style={{fontSize: "1.8em"}}>{nf.format(dayValue)}</span> /day
+                            <span style={{fontSize: "1.8em"}}>{nf.format(data.contribution)}</span> /day
                         </div>
-                        <div className="mb-3">
-                            <span>{nf.format(monthValue)}</span> /month
-                        </div>
+                        {/*<div className="mb-3">*/}
+                        {/*    <span>{nf.format()}</span> /month*/}
+                        {/*</div>*/}
                     </div>
                 </CardBody>
             </Card>

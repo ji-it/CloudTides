@@ -8,9 +8,18 @@ from django.shortcuts import get_object_or_404
 from resource.models import *
 from django.utils import timezone
 import time
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 
 # Create your views here.
+class AddHostUsage(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        pass
+
+
 class AddHostUsage(APIView):
 
     def post(self, request):
@@ -75,33 +84,45 @@ class AddVMUsage(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-
-        for vm in data.keys():
+        vms = data["vms"]
+        total_vms = data['total_vms']
+        for vm in vms.keys():
             ip_address = vm
-            cpu_usage = data[vm]['cpu_usage']
-            mem_usage = data[vm]['memory_usage']
-            vm_powered_on = data[vm]['powered_on']
-            host_address = data[vm]["host_ip"]
-            vm_name = data[vm]['name']
-            create_time = data[vm]['vm_created_time']
-            boinc_time = data[vm]['boinc_start_time']
-            direct_host = data[vm]['direct_host_name']
-            vm_total_mem = data[vm]['max_mem']
-            vm_total_cpu = data[vm]['max_cpu']
-            vm_num_cpu = data[vm]['num_cpu']
-            vm_guest_os = data[vm]['guest_os']
+            cpu_usage = vms[vm]['cpu_usage']
+            mem_usage = vms[vm]['memory_usage']
+            vm_powered_on = vms[vm]['powered_on']
+            host_name = vms[vm]["dc_name"]
+            vm_name = vms[vm]['name']
+            create_time = vms[vm]['vm_created_time']
+            boinc_time = vms[vm]['boinc_start_time']
+            direct_host = vms[vm]['direct_host_name']
+            vm_total_mem = vms[vm]['max_mem']
+            vm_total_cpu = vms[vm]['max_cpu']
+            vm_num_cpu = vms[vm]['num_cpu']
+            vm_guest_os = vms[vm]['guest_os']
 
-            # if boinc_time == 'unstarted':
-            #     boinc_time = None
+            if boinc_time == 'unstarted':
+                boinc_time = None
 
             date_added = timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
 
-            vm = VM.objects.get(ip_address=ip_address)
+            vm, created = VM.objects.get_or_create(ip_address=ip_address, name=vm_name, direct_host=direct_host)
+            if created:
+                vm.date_created = create_time
+                vm.boinc_time = boinc_time
+                vm.total_ram = vm_total_mem
+                vm.total_cpu = vm_total_cpu
+                vm.num_cpu = vm_num_cpu
+                vm.guest_os = vm_guest_os
+                resource = Resource.objects.get(datacenter=host_name)
+                resource.total_vms = total_vms
+                resource.save()
+                vm.resource = resource
             vm.current_cpu = cpu_usage
             vm.current_ram = mem_usage
             vm.powered_on = vm_powered_on
             vm.save()
-            _ = VMUsage.objects.create(date_added=date_added, ram=mem_usage, cpu=cpu_usage, vm=vm)
+            _ = VMUsage.objects.create(date_added=date_added, mem=mem_usage, cpu=cpu_usage, vm=vm)
 
         return Response({'message': 'success'}, status=200)
 
@@ -133,17 +154,3 @@ class UpdateVMUsage(APIView):
 
         return Response({'message': 'VM usage updated'}, status=200)
 '''
-
-
-class DeleteVMUsage(APIView):
-
-    def post(self, request):
-        data = json.loads(request.body)
-        ip_address = data['ip_address']
-
-        try:
-            VMUsage.objects.get(ip_address=ip_address).delete()
-        except:
-            return Response({'message': 'object not found'}, status=401)
-
-        return Response({'message': 'success'}, status=200)

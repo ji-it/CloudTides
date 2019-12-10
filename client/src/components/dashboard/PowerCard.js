@@ -10,10 +10,14 @@ class PowerCard extends React.Component {
 
     render() {
         const {title} = this.props;
-        const nf = new Intl.NumberFormat('en-US', {
+        const nf1 = new Intl.NumberFormat('en-US', {
             style: 'percent',
         });
-        const {percentage, wattage} = this.props.data;
+        const nf2 = new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 2,
+        });
+        // const {percentage, wattage} = this.props.data;
+        const {data} = this.props;
         return (
             <Card small className="h-100">
                 <CardHeader className="border-bottom">
@@ -22,10 +26,10 @@ class PowerCard extends React.Component {
                 <CardBody className="d-flex py-0">
                     <div className="m-auto text-center">
                         <div className="mt-2" style={{fontSize: "1.2em", color: "#1B2376"}}>
-                            <span style={{fontSize: "1.8em"}}>{wattage}</span> kWh
+                            <span style={{fontSize: "1.8em"}}>{nf2.format(data.power * 134)}</span> kWh
                         </div>
                         <div className="mb-3">
-                            <span>{nf.format(percentage)}</span> contributions
+                            <span>{nf1.format(data.power)}</span> contributions
                         </div>
                     </div>
                 </CardBody>

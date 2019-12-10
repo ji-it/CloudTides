@@ -9,6 +9,29 @@ class ActionsServer {
         });
     }
 
+    receiveDetailedResources(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_DETAILED_RESOURCES_RESPONSE,
+            response: response
+        });
+    }
+
+    receiveVMS(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_VMS_RESPONSE,
+            response: response
+        });
+    }
+
+
+    receiveOverview(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_OVERVIEW_RESPONSE,
+            response: response
+        });
+    }
+
+
     receiveTemplates(response) {
         AppDispatcher.handleServerAction({
             actionType: Constants.GET_TEMPLATES_RESPONSE,

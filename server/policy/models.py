@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from projects.models import Projects
+from template.models import Template
 
 
 # from resource.models import Resource
@@ -21,6 +22,7 @@ class Policy(models.Model):
     date_created = models.DateTimeField(blank=True, null=True)
     is_destroy = models.BooleanField(blank=True, null=True, default=True)
     username = models.CharField(max_length=150, blank=True, null=True)
+    template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True)
     password = models.CharField(max_length=150, blank=True, null=True)
     deploy_type = models.CharField(max_length=20, choices=DEPLOY_TYPE, default='VM')
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE, default='boinc')

@@ -68,21 +68,21 @@ class Statistics extends React.Component {
             ...this.props.chartOptions
         };
 
-        const BlogUsersOverview = new Chart(this.canvasRef.current, {
+        const StatsOverview = new Chart(this.canvasRef.current, {
             type: "LineWithLine",
             data: this.props.chartData,
             options: chartOptions
         });
 
         // They can still be triggered on hover.
-        const buoMeta = BlogUsersOverview.getDatasetMeta(0);
+        const buoMeta = StatsOverview.getDatasetMeta(0);
         buoMeta.data[0]._model.radius = 0;
         buoMeta.data[
         this.props.chartData.datasets[0].data.length - 1
             ]._model.radius = 0;
 
         // Render the chart.
-        BlogUsersOverview.render();
+        StatsOverview.render();
     }
 
     render() {
@@ -97,19 +97,19 @@ class Statistics extends React.Component {
                     </div>
                 </CardHeader>
                 <CardBody className="pt-0">
-                    <Row className="border-bottom py-2 bg-light">
-                        <Col sm="6" className="d-flex mb-2 mb-sm-0">
-                            <RangeDatePicker/>
-                        </Col>
-                        <Col>
-                            <Button
-                                size="sm"
-                                className="d-flex btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0"
-                            >
-                                View Full Report &rarr;
-                            </Button>
-                        </Col>
-                    </Row>
+                    {/*<Row className="border-bottom py-2 bg-light">*/}
+                    {/*    /!*<Col sm="6" className="d-flex mb-2 mb-sm-0">*!/*/}
+                    {/*    /!*    <RangeDatePicker/>*!/*/}
+                    {/*    /!*</Col>*!/*/}
+                    {/*    <Col>*/}
+                    {/*        <Button*/}
+                    {/*            size="sm"*/}
+                    {/*            className="d-flex btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0"*/}
+                    {/*        >*/}
+                    {/*            View Full Report &rarr;*/}
+                    {/*        </Button>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
                     <canvas
                         height="120"
                         ref={this.canvasRef}
@@ -142,7 +142,7 @@ Statistics.defaultProps = {
         labels: Array.from(new Array(30), (_, i) => (i === 0 ? 1 : i)),
         datasets: [
             {
-                label: "Current Month",
+                label: "CPU",
                 fill: "start",
                 data: [
                     500,
@@ -174,7 +174,7 @@ Statistics.defaultProps = {
                     3400,
                     2910,
                     3100,
-                    4250
+                    // 4250
                 ],
                 backgroundColor: "rgba(0,123,255,0.1)",
                 borderColor: "rgba(0,123,255,1)",
@@ -185,7 +185,7 @@ Statistics.defaultProps = {
                 pointHoverRadius: 3
             },
             {
-                label: "Past Month",
+                label: "RAM",
                 fill: "start",
                 data: [
                     380,
@@ -217,7 +217,7 @@ Statistics.defaultProps = {
                     630,
                     720,
                     780,
-                    1200
+                    // 1200
                 ],
                 backgroundColor: "rgba(255,65,105,0.1)",
                 borderColor: "rgba(255,65,105,1)",

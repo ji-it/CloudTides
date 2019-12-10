@@ -4,6 +4,7 @@
     "pk": 1,
     "fields": {
       "project_name": "Science United",
+      "url": "https://scienceunited.org/",
       "has_account_manager": true
     }
   },
@@ -12,6 +13,7 @@
     "pk": 2,
     "fields": {
       "project_name": "SETI@Home",
+      "url": "https://setiathome.ssl.berkeley.edu/",
       "has_account_manager": false
     }
   }

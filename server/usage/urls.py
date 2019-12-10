@@ -7,6 +7,6 @@ urlpatterns = [
     path('updatehost/', UpdateHostUsage.as_view(), name='update_host_usage'),
     path('deletehost/', DeleteHostUsage.as_view(), name='delete_host_usage'),
     path('addvm/', AddVMUsage.as_view(), name='add_vm_usage'),
-    #path('updatevm/', UpdateVMUsage.as_view(), name='update_vm_usage'),
-    path('deletevm/', DeleteVMUsage.as_view(), name='delete_vm_usage')
+    path('get_host_usage/', AddVMUsage.as_view(), name='add_vm_usage'),
+
 ]

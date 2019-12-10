@@ -19,6 +19,7 @@ from django.conf.urls import url
 from rest_framework_swagger.views import get_swagger_view
 from django.conf.urls.static import static
 from django.conf import settings
+from controller.start_controller import start_controller
 
 schema_view = get_swagger_view(title='TIDES API DOCS')
 
@@ -31,3 +32,5 @@ urlpatterns = [
     path('api/template/', include('template.urls')),
     path('api/usage/', include('usage.urls'))
 ]
+
+start_controller()

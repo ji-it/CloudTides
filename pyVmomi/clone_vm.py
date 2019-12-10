@@ -1,5 +1,4 @@
 '''
-Written by Zhe Shen, 19-11-2
 Deploy a VM from a specified template.
 '''
 
@@ -8,7 +7,25 @@ from pyVim.connect import SmartConnect, SmartConnectNoSSL, Disconnect
 import atexit
 import argparse
 import getpass
+import random
+import string
+import time
+import psycopg2
+import os
+import requests
+import json
+from tools import tasks  # pylint: disable=import-error
 
+DATABASES = {
+    'default': {
+        'NAME': 'tides2',
+        'USER': 'postgres',
+        'PASSWORD': 'password',  # created at the time of password setup
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+BASE_DIR = "/Users/dbaekajnr/Projects/CloudTides/server"
 
 
 def get_args():
@@ -36,12 +53,12 @@ def get_args():
                         required=False,
                         action='store',
                         help='Password to use')
-
+    '''
     parser.add_argument('-v', '--vm-name',
                         required=True,
                         action='store',
                         help='Name of the VM you wish to make')
-
+    '''
     parser.add_argument('--no-ssl',
                         action='store_true',
                         help='Skip SSL verification')
@@ -79,8 +96,7 @@ def get_args():
                         dest='power_on',
                         action='store_true',
                         help='power on the VM after creation')
-    
-    
+
     args = parser.parse_args()
 
     if not args.password:
@@ -103,7 +119,6 @@ def wait_for_task(task):
 
 
 def get_obj(content, vimtype, name):
-
     obj = None
     container = content.viewManager.CreateContainerView(
         content.rootFolder, vimtype, True)
@@ -120,9 +135,8 @@ def get_obj(content, vimtype, name):
     return obj
 
 
-def clone_vm(content, template, vm_name, si, datacenter_name,
-        cluster_name, resource_pool, power_on):
-
+def clone_vm(content, template, si, datacenter_name, username, password,
+             cluster_name, resource_pool, power_on, host_address, tem_name):
     # if none get the first one
     datacenter = get_obj(content, [vim.Datacenter], datacenter_name)
     destfolder = datacenter.vmFolder
@@ -136,6 +150,10 @@ def clone_vm(content, template, vm_name, si, datacenter_name,
         resource_pool = cluster.resourcePool
 
     vmconf = vim.vm.ConfigSpec()
+    now = int(round(time.time() * 1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now / 1000))
+    my_annotation = "Here is a BOINC-deployed VM created by ProjectTides at " + now02 + " with BOINC unstarted"
+    vmconf.annotation = my_annotation
 
     # set relospec
     relospec = vim.vm.RelocateSpec()
@@ -143,15 +161,76 @@ def clone_vm(content, template, vm_name, si, datacenter_name,
     relospec.pool = resource_pool
 
     clonespec = vim.vm.CloneSpec(powerOn=power_on, template=False, location=relospec)
-
+    clonespec.config = vmconf
+    vm_name = 'tides_worker-' + ''.join(random.sample(string.ascii_letters + string.digits, 8))
     print("cloning VM...")
     task = template.Clone(folder=destfolder, name=vm_name, spec=clonespec)
     wait_for_task(task)
+    # time.sleep(120)
+    VM = get_obj(content, [vim.VirtualMachine], vm_name)
+    while VM.summary.guest.ipAddress is None:
+        pass
+    print(VM.summary.guest.ipAddress)
+    send_account(host_address, VM.summary.guest.ipAddress, tem_name, username, password)
+
+    spec = vim.vm.ConfigSpec()
+    old_ann = VM.summary.config.annotation
+    now = int(round(time.time() * 1000))
+    now02 = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(now / 1000))
+    annotation_add = "started at " + now02
+    print(old_ann)
+    spec.annotation = old_ann.replace("unstarted", annotation_add)
+
+    task = VM.ReconfigVM_Task(spec)
+    tasks.wait_for_tasks(si, [task])
     print("Done.")
 
 
+def send_account(host_address, ip_address, template, username, password):
+    db = DATABASES['default']['NAME']
+    user = DATABASES['default']['USER']
+    password = DATABASES['default']['PASSWORD']
+    host = DATABASES['default']['HOST']
+    port = DATABASES['default']['PORT']
+    conn = psycopg2.connect(database=db, user=user, password=password, host=host, port=port)
+    cur = conn.cursor()
+
+    cur.execute("SELECT policy_id FROM resource_resource WHERE host_address = %s", (host_address,))
+    pid = cur.fetchone()
+
+    cur.execute("SELECT account_type, project_id, username, password FROM policy_policy WHERE id = %s", str(pid[0]))
+    result = cur.fetchone()
+
+    cur.execute("SELECT url FROM projects_projects WHERE id = %s", str(result[1]))
+    url = cur.fetchone()
+
+    # cur.execute("SELECT password FROM template_template WHERE name = %s", (template,))
+    # pwd = cur.fetchone()
+    pwd = "ve450g19"  # TODO: change to passwordless
+    path = os.path.join(BASE_DIR, 'controller')
+    filename = 'account.txt'
+    with open(filename, 'w') as f:
+        f.write(str(result[0]) + '\n')
+        f.write(url[0] + '\n')
+        f.write(result[2] + '\n')
+        f.write(result[3])
+    # time.sleep(30)
+    run_boinc = 'run_boinc'
+    while os.system('sshpass -p ' + pwd[
+        0] + ' scp ' + filename + ' ' + run_boinc + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+        time.sleep(5)
+        continue
+    os.system(
+        'python ' + path + '/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+        ' -r root -w ' + pwd + ' -l /bin/chmod -f "777 /var/lib/boinc/run_boinc"')
+    os.system(
+        'python ' + path + '/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+        ' -r root -w ' + pwd + ' -l /var/lib/boinc/run_boinc -f None')
+    cur.execute("UPDATE resource_resource SET status = 'contributing' WHERE host_address = %s", (host_address,))
+    conn.commit()
+
+
 def main():
-    
     args = get_args()
 
     # connect this thing
@@ -175,10 +254,10 @@ def main():
     template = None
 
     template = get_obj(content, [vim.VirtualMachine], args.template)
-    
+
     if template:
-        clone_vm(content, template, args.vm_name, si, args.datacenter_name,
-            args.cluster_name, args.resource_pool, args.power_on)
+        clone_vm(content, template, si, args.datacenter_name, args.user, args.password,
+                 args.cluster_name, args.resource_pool, args.power_on, args.host, args.template)
     else:
         print("template not found")
 

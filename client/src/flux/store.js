@@ -12,6 +12,10 @@ let _store = {
     resources: [],
     templates: [],
     policies: [],
+    overview: {},
+    resourceDetails: [],
+    vms: [],
+    resourceIndex: null
 };
 
 class Store extends EventEmitter {
@@ -33,6 +37,9 @@ class Store extends EventEmitter {
             case Constants.TOGGLE_SIDEBAR:
                 this.toggleSidebar();
                 break;
+            case Constants.SWITCH_RESOURCE:
+                this.switchResourceIndex(action.data);
+                break;
             case Constants.ADD_RESOURCE:
                 this.addResource(action.data);
                 break;
@@ -42,6 +49,9 @@ class Store extends EventEmitter {
             case Constants.ADD_TEMPLATE:
                 this.addTemplate(action.data);
                 break;
+            case Constants.GET_VMS_RESPONSE:
+                this.updateVMS(action.response);
+                break;
             case Constants.GET_TEMPLATES_RESPONSE:
                 this.updateTemplates(action.response);
                 break;
@@ -50,6 +60,12 @@ class Store extends EventEmitter {
                 break;
             case Constants.GET_POLICIES_RESPONSE:
                 this.updatePolicies(action.response);
+                break;
+            case Constants.GET_OVERVIEW_RESPONSE:
+                this.updateOverview(action.response);
+                break;
+            case Constants.GET_DETAILED_RESOURCES_RESPONSE:
+                this.updateDetailedResource(action.response);
                 break;
             default:
                 return true;
@@ -84,6 +100,27 @@ class Store extends EventEmitter {
         data.map((item, idx) => {
             _store.resources.push(item);
         });
+        this.emit(Constants.CHANGE);
+    }
+
+    updateVMS(data) {
+        _store.vms = [];
+        data.map((item, idx) => {
+            _store.vms.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
+    updateDetailedResource(data) {
+        _store.resourceDetails = [];
+        data.map((item, idx) => {
+            _store.resourceDetails.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
+    updateOverview(data) {
+        _store.overview = data;
         this.emit(Constants.CHANGE);
     }
 
@@ -125,7 +162,6 @@ class Store extends EventEmitter {
 
     updatePolicies(data) {
         _store.policies = [];
-        console.log(data)
         data.map((item, idx) => {
             _store.policies.push(item);
         });
@@ -137,8 +173,17 @@ class Store extends EventEmitter {
         this.emit(Constants.CHANGE);
     }
 
+    switchResourceIndex(data) {
+        _store.resourceIndex = data;
+        this.emit(Constants.CHANGE);
+    }
+
     getMenuState() {
         return _store.menuVisible;
+    }
+
+    getResourceIndex() {
+        return _store.resourceIndex
     }
 
     getSidebarItems() {
@@ -149,12 +194,24 @@ class Store extends EventEmitter {
         return _store.resources;
     }
 
+     getVMTableData() {
+        return _store.vms;
+    }
+
+    getDetailedResourceTableData() {
+        return _store.resourceDetails;
+    }
+
     getTemplatesTableData() {
         return _store.templates;
     }
 
     getPoliciesTableData() {
         return _store.policies;
+    }
+
+    getOverviewData() {
+        return _store.overview;
     }
 }
 

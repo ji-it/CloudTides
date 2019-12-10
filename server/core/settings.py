@@ -74,6 +74,8 @@ MIDDLEWARE = [
   #  'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
+# USE_TZ = False
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
 

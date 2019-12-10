@@ -32,13 +32,47 @@ class Actions {
         });
     }
 
-    getResources(withPolling, interval =15000) {
+    switchResource(data) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.SWITCH_RESOURCE,
+            data: data
+        });
+    }
+
+    getResources(withPolling, interval = 15000) {
         AppDispatcher.handleViewAction({
             actionType: Constants.GET_RESOURCES,
         });
         if (withPolling)
             return ResourcesAPI.getListWithPolling(interval);
         ResourcesAPI.getList();
+    }
+
+    getVMS(withPolling, interval = 15000) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_VMS,
+        });
+        if (withPolling)
+            return ResourcesAPI.getVMListWithPolling(interval);
+        ResourcesAPI.getVMList();
+    }
+
+    getDetailedResources(withPolling, interval = 15000) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_DETAILED_RESOURCES,
+        });
+        if (withPolling)
+            return ResourcesAPI.getDetailedListWithPolling(interval);
+        ResourcesAPI.getDetailedList();
+    }
+
+    getOverview(withPolling, interval = 15000) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_OVERVIEW,
+        });
+        if (withPolling)
+            return ResourcesAPI.getOverviewWithPolling(interval);
+        ResourcesAPI.getOverview();
     }
 
     getTemplates() {

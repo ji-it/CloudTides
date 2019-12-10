@@ -9,7 +9,8 @@ class RightSidebarNavItems extends React.Component {
         super(props);
 
         this.state = {
-            navItems: Store.getSidebarItems()
+            navItems: Store.getSidebarItems(),
+            resourceDetails: Store.getDetailedResourceTableData()
         };
 
         this.onChange = this.onChange.bind(this);
@@ -26,34 +27,15 @@ class RightSidebarNavItems extends React.Component {
     onChange() {
         this.setState({
             ...this.state,
-            navItems: Store.getSidebarItems()
+            navItems: Store.getSidebarItems(),
+            resourceDetails: Store.getDetailedResourceTableData()
         });
     }
 
     render() {
-        const {navItems: items} = this.state;
+        const {navItems: items, resourceDetails: resData} = this.state;
         const selectedItem = items.filter(item => item.to === this.props.location.pathname).shift();
         const isManageResources = (selectedItem.to === "/manage-resources");
-        const data = [
-            {
-                name: "New York Datacenter",
-                children:
-                    [
-                        {name: 've450 Cluster 1'},
-                        {name: 've450 Cluster 2'},
-                        {name: 've450 Cluster 3'},
-                    ]
-            },
-            {
-                name: "LA Datacenter",
-                children:
-                    [
-                        {name: 'vv216 Cluster 1'},
-                        {name: 'vv216 Cluster 2'},
-                        {name: 'vv216 Cluster 3'},
-                    ]
-            },
-        ];
         return (
             <div className="child-nav-wrapper">
                 <h6 className="ml-10 mt-10 font-weight-bold text-black">{selectedItem.name}</h6>
@@ -63,7 +45,7 @@ class RightSidebarNavItems extends React.Component {
                     Add Resources
                 </Button>
                 <Nav className="nav--no-borders flex-column">
-                    {isManageResources ? <TreeChildbarNavItem data={data}/> :
+                    {isManageResources ? <TreeChildbarNavItem data={resData}/> :
                         selectedItem.children && selectedItem.children.map((item, idx) => {
                             return <ChildSidebarNavItem key={idx} item={item}/>
                         })}

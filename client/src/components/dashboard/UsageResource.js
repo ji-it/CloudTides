@@ -15,7 +15,7 @@ import Chart from "../../utils/chart";
 class UsageResource extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {};
         this.canvasRef = React.createRef();
     }
 
@@ -37,12 +37,36 @@ class UsageResource extends React.Component {
                 ...this.props.chartOptions
             }
         };
-
-        new Chart(this.canvasRef.current, chartConfig);
+        this.chart = new Chart(this.canvasRef.current, chartConfig);
     }
 
     render() {
-        const {title} = this.props;
+        const {title, o_data} = this.props;
+        const {resource} = o_data;
+        let hosts = 0, vms = 0, contributing = 0;
+        if (resource) {
+            hosts = resource.hosts;
+            vms = resource.vms;
+            contributing = resource.contributing;
+            const nf = new Intl.NumberFormat('en-US', {
+                style: 'percent',
+            });
+            const percentage = nf.format(contributing / vms);
+            const divide = contributing / vms;
+            this.props.chartData.datasets[0].data = [divide, 1 - divide];
+            this.props.chartOptions.elements.center.text = percentage + ' used';
+            const chartConfig = {
+                data: this.props.chartData,
+                options: {
+                    ...{
+                        cutoutPercentage: 70,
+                    },
+                    ...this.props.chartOptions
+                }
+            };
+            this.chart && (this.chart.data = chartConfig.data) && (this.chart.options = chartConfig.options) && this.chart.update()
+            // this.state.chart = new Chart(this.canvasRef.current, chartConfig);
+        }
         return (
             <Card small className="h-100">
                 <CardHeader className="border-bottom">
@@ -58,12 +82,12 @@ class UsageResource extends React.Component {
                 <CardFooter className="">
                     <Row>
                         <Col>
-                            <span className="d-block small"><b>208</b> hosts</span>
-                            <span className="d-block small"><b>429</b> VMs</span>
+                            <span className="d-block small"><b>{hosts}</b> hosts</span>
+                            <span className="d-block small"><b>{vms}</b> VMs</span>
                         </Col>
                         <Col className="text-right small">
                             <div className="bottom-aligner"></div>
-                            <span><b>20</b> idle</span>
+                            <span><b>{contributing}</b> contributing</span>
                         </Col>
                     </Row>
                 </CardFooter>
@@ -77,6 +101,7 @@ UsageResource.propTypes = {
      * The component's title.
      */
     title: PropTypes.string,
+    data: PropTypes.object,
     /**
      * The chart config object.
      */
@@ -93,10 +118,11 @@ UsageResource.propTypes = {
 
 UsageResource.defaultProps = {
     title: "Resource Usage",
+    data: {},
     chartData: {
         datasets: [
             {
-                data: [68.3, 31.7],
+                data: [0, 0],
                 backgroundColor: [
                     "rgba(0,61,255,1.0)",
                     "rgba(229,228,234,1.0)",
