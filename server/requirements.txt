@@ -1,4 +1,4 @@
-Django==2.1
+Django==2.1.15
 djangorestframework==3.9.1
 psycopg2-binary
 django-import-export==1.2.0
