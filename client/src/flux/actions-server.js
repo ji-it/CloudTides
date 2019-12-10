@@ -16,6 +16,21 @@ class ActionsServer {
         });
     }
 
+    receiveHostStats(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_HOST_STATS_RESPONSE,
+            response: response
+        });
+    }
+
+
+    receiveUserDetails(response) {
+        AppDispatcher.handleServerAction({
+            actionType: Constants.GET_USER_DETAILS_RESPONSE,
+            response: response
+        });
+    }
+
     receiveVMS(response) {
         AppDispatcher.handleServerAction({
             actionType: Constants.GET_VMS_RESPONSE,

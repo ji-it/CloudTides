@@ -15,7 +15,9 @@ let _store = {
     overview: {},
     resourceDetails: [],
     vms: [],
-    resourceIndex: null
+    resourceIndex: null,
+    hostStats: [],
+    user: {}
 };
 
 class Store extends EventEmitter {
@@ -51,6 +53,12 @@ class Store extends EventEmitter {
                 break;
             case Constants.GET_VMS_RESPONSE:
                 this.updateVMS(action.response);
+                break;
+            case Constants.GET_USER_DETAILS_RESPONSE:
+                this.updateUser(action.response);
+                break;
+            case Constants.GET_HOST_STATS_RESPONSE:
+                this.updateHostStats(action.response);
                 break;
             case Constants.GET_TEMPLATES_RESPONSE:
                 this.updateTemplates(action.response);
@@ -95,6 +103,15 @@ class Store extends EventEmitter {
         });
     }
 
+
+    updateHostStats(data) {
+        _store.hostStats = [];
+        data.map((item, idx) => {
+            _store.hostStats.push(item);
+        });
+        this.emit(Constants.CHANGE);
+    }
+
     updateResource(data) {
         _store.resources = [];
         data.map((item, idx) => {
@@ -121,6 +138,11 @@ class Store extends EventEmitter {
 
     updateOverview(data) {
         _store.overview = data;
+        this.emit(Constants.CHANGE);
+    }
+
+    updateUser(data) {
+        _store.user = data;
         this.emit(Constants.CHANGE);
     }
 
@@ -194,7 +216,15 @@ class Store extends EventEmitter {
         return _store.resources;
     }
 
-     getVMTableData() {
+    getHostStats() {
+        return _store.hostStats;
+    }
+
+    getUserDetails() {
+        return _store.user;
+    }
+
+    getVMTableData() {
         return _store.vms;
     }
 

@@ -12,12 +12,33 @@ import {
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
+import {devURL} from "../../utils/urls";
+import request from "../../utils/request";
+import auth from "../../utils/auth";
 
 class SummaryCard extends React.Component {
 
     getMuiTheme = () => createMuiTheme({
         overrides: this.props.tableStyle
     });
+
+    removeResource = (event) => {
+        const id = event.target.name;
+        const formData = {id: id};
+        const endpoint = '/api/resource/delete_host/';
+        const requestURL = devURL + endpoint;
+        request(requestURL, {method: 'POST', body: formData})
+            .then((response) => {
+                this.redirectUser();
+                //Load dashboard data:- resource list, total contribution (cost and power), total resource usage (usage use + hosts number, idle, vms)
+            }).catch((err) => {
+            console.log(err);
+        });
+    };
+
+    redirectUser = () => {
+        this.props.history.push("/manage-resources")
+    };
 
     render() {
         let {data, r_data} = this.props;
@@ -92,6 +113,7 @@ class SummaryCard extends React.Component {
                                     <FormControlLabel
                                         label="Allow to Contribute"
                                         labelPlacement="start"
+                                        // onChange={this.toggleActive}
                                         value={data.is_active ? "Yes" : "No"}
                                         control={
                                             <Switch color="primary" size="small" checked={data.is_active}
@@ -102,7 +124,8 @@ class SummaryCard extends React.Component {
                                 </MuiThemeProvider>
                             </div>
                             <div className="mt-4 mb-3">
-                                <Button theme="danger">Remove Resource</Button>
+                                <Button name={data.id} onClick={this.removeResource} theme="danger">Remove
+                                    Resource</Button>
                             </div>
                         </Col>
                     </Row>

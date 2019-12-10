@@ -16,6 +16,9 @@ import ModalAddResource from "../common/ModalAddResource";
 import SuccessNotificationModal from "../common/SuccessNotificationModal";
 import Store from "../../flux/store";
 import {Actions} from "../../flux";
+import {devURL} from "../../utils/urls";
+import request from "../../utils/request";
+import auth from "../../utils/auth";
 
 class Resources extends React.Component {
     constructor(props) {
@@ -94,6 +97,13 @@ Resources.defaultProps = {
     title: "Resources",
     data: [],
     columns: [
+        {
+            name: "id",
+            label: "ID",
+            options: {
+                display: false
+            }
+        },
         {
             name: "host_name",
             label: "Name",
@@ -215,11 +225,23 @@ Resources.defaultProps = {
                         <FormControlLabel
                             label={value ? "Yes" : "No"}
                             value={value ? "Yes" : "No"}
+                            name={tableMeta.rowData[0]}
                             control={
                                 <Switch color="primary" checked={value} value={value ? "Yes" : "No"}/>
                             }
                             onChange={event => {
+                                const id = event.target.name;
                                 updateValue(event.target.value === "Yes" ? false : true);
+                                const endpoint = '/api/resource/toggle_active/';
+                                const formData = {id: id};
+                                const requestURL = devURL + endpoint;
+                                request(requestURL, {method: 'POST', body: formData})
+                                    .then((response) => {
+                                        //Load dashboard data:- resource list, total contribution (cost and power), total resource usage (usage use + hosts number, idle, vms)
+                                        // this.redirectUser();
+                                    }).catch((err) => {
+                                    console.log(err);
+                                });
                             }}
                         />
                     );

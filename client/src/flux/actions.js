@@ -3,6 +3,8 @@ import AppDispatcher from "./dispatcher";
 import ResourcesAPI from "../api/ResourcesAPI";
 import TemplatesAPI from "../api/TemplatesAPI";
 import PoliciesAPI from "../api/PoliciesAPI";
+import UsageAPI from "../api/UsageAPI";
+import UserAPI from "../api/UserAPI";
 
 class Actions {
     addResource(data) {
@@ -57,6 +59,15 @@ class Actions {
         ResourcesAPI.getVMList();
     }
 
+    getHostStats(withPolling, interval = 15000) {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_HOST_STATS,
+        });
+        if (withPolling)
+            return UsageAPI.getHostStatsWithPolling(interval);
+        UsageAPI.getHostStats();
+    }
+
     getDetailedResources(withPolling, interval = 15000) {
         AppDispatcher.handleViewAction({
             actionType: Constants.GET_DETAILED_RESOURCES,
@@ -80,6 +91,13 @@ class Actions {
             actionType: Constants.GET_TEMPLATES,
         });
         TemplatesAPI.getList();
+    }
+
+    getUserDetails() {
+        AppDispatcher.handleViewAction({
+            actionType: Constants.GET_USER_DETAILS,
+        });
+        UserAPI.getDetails();
     }
 
     getPolicies() {

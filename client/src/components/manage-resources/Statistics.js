@@ -4,6 +4,7 @@ import {Row, Col, Card, CardHeader, CardBody, Button} from "shards-react";
 
 import RangeDatePicker from "../common/RangeDatePicker";
 import Chart from "../../utils/chart";
+import _ from 'lodash'
 
 class Statistics extends React.Component {
     constructor(props) {
@@ -76,17 +77,27 @@ class Statistics extends React.Component {
 
         // They can still be triggered on hover.
         const buoMeta = StatsOverview.getDatasetMeta(0);
-        buoMeta.data[0]._model.radius = 0;
-        buoMeta.data[
-        this.props.chartData.datasets[0].data.length - 1
-            ]._model.radius = 0;
+        buoMeta.data.length > 0 && (buoMeta.data[0]._model.radius = 0) &&
+        (buoMeta.data[this.props.chartData.datasets[0].data.length - 1]._model.radius = 0);
 
         // Render the chart.
         StatsOverview.render();
+        this.chart = StatsOverview
     }
 
     render() {
-        const {title} = this.props;
+        const {title, data} = this.props;
+        if (!_.isEmpty(data)) {
+            const key = Object.keys(data)[0];
+            const labels = data[key]["time"];
+            const ram = data[key]["ram"];
+            const cpu = data[key]["cpu"];
+            this.chart && (this.chart.data.datasets[1].data = ram) && (this.chart.data.datasets[0].data =
+                cpu) && (this.chart.data.labels = labels) && this.chart.update();
+        }
+
+
+        // this.chart && (this.chart.data = chartConfig.data) && (this.chart.options = chartConfig.options) && this.chart.update()
         return (
             <Card small className="h-100">
                 <CardHeader className="m-2 mb-0">
@@ -144,38 +155,7 @@ Statistics.defaultProps = {
             {
                 label: "CPU",
                 fill: "start",
-                data: [
-                    500,
-                    800,
-                    320,
-                    180,
-                    240,
-                    320,
-                    230,
-                    650,
-                    590,
-                    1200,
-                    750,
-                    940,
-                    1420,
-                    1200,
-                    960,
-                    1450,
-                    1820,
-                    2800,
-                    2102,
-                    1920,
-                    3920,
-                    3202,
-                    3140,
-                    2800,
-                    3200,
-                    3200,
-                    3400,
-                    2910,
-                    3100,
-                    // 4250
-                ],
+                data: [0],
                 backgroundColor: "rgba(0,123,255,0.1)",
                 borderColor: "rgba(0,123,255,1)",
                 pointBackgroundColor: "#ffffff",
@@ -187,38 +167,7 @@ Statistics.defaultProps = {
             {
                 label: "RAM",
                 fill: "start",
-                data: [
-                    380,
-                    430,
-                    120,
-                    230,
-                    410,
-                    740,
-                    472,
-                    219,
-                    391,
-                    229,
-                    400,
-                    203,
-                    301,
-                    380,
-                    291,
-                    620,
-                    700,
-                    300,
-                    630,
-                    402,
-                    320,
-                    380,
-                    289,
-                    410,
-                    300,
-                    530,
-                    630,
-                    720,
-                    780,
-                    // 1200
-                ],
+                data: [0],
                 backgroundColor: "rgba(255,65,105,0.1)",
                 borderColor: "rgba(255,65,105,1)",
                 pointBackgroundColor: "#ffffff",

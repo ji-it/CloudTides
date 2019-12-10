@@ -26,7 +26,7 @@ class ContributionCard extends React.Component {
                 <CardBody className="d-flex py-0">
                     <div className="m-auto text-center">
                         <div className="mt-2" style={{fontSize: "1.2em", color: "#1B2376"}}>
-                            <span style={{fontSize: "1.8em"}}>{nf.format(data.contribution)}</span> /day
+                            <span style={{fontSize: "1.8em"}}>{nf.format(data.contribution)}</span>
                         </div>
                         {/*<div className="mb-3">*/}
                         {/*    <span>{nf.format()}</span> /month*/}

@@ -33,9 +33,9 @@ export default class ModalAddResource extends React.Component {
         formControls: {
             name: {
                 value: '',
-                valid: false,
+                valid: true,
                 validationRules: {
-                    isRequired: true
+                    // isRequired: true
                 }
             },
             uname: {
@@ -92,12 +92,12 @@ export default class ModalAddResource extends React.Component {
                 value: '',
                 valid: false,
                 validationRules: {
-                    isRequired: true
+                    // isRequired: true
                 }
             },
             name: {
                 value: '',
-                valid: false,
+                valid: true,
                 validationRules: {
                     isRequired: true
                 }
@@ -229,24 +229,24 @@ export default class ModalAddResource extends React.Component {
                     </ModalHeader>
                     <ModalBody className="border-top">
                         <Form role="form">
-                            <FormGroup
-                                className={classnames("mb-3", {
-                                    focused: this.state.nameFocused
-                                })}
-                            >
-                                <Label for="name">Name</Label>
-                                <FormInput
-                                    placeholder="Resource Name"
-                                    type="text"
-                                    name="name"
-                                    onChange={this.handleChange}
-                                    value={this.state.formControls.name.value}
-                                    onFocus={e => this.setState({nameFocused: true})}
-                                    onBlur={e => this.setState({nameFocused: false})}
-                                    valid={this.state.formControls.name.valid}
-                                />
+                            {/*<FormGroup*/}
+                            {/*    className={classnames("mb-3", {*/}
+                            {/*        focused: this.state.nameFocused*/}
+                            {/*    })}*/}
+                            {/*>*/}
+                            {/*    <Label for="name">Name</Label>*/}
+                            {/*    <FormInput*/}
+                            {/*        placeholder="Resource Name"*/}
+                            {/*        type="text"*/}
+                            {/*        name="name"*/}
+                            {/*        onChange={this.handleChange}*/}
+                            {/*        value={this.state.formControls.name.value}*/}
+                            {/*        onFocus={e => this.setState({nameFocused: true})}*/}
+                            {/*        onBlur={e => this.setState({nameFocused: false})}*/}
+                            {/*        valid={this.state.formControls.name.valid}*/}
+                            {/*    />*/}
 
-                            </FormGroup>
+                            {/*</FormGroup>*/}
                             <FormGroup
                                 className={classnames("mb-3", {
                                     focused: this.state.vmtypeFocused
