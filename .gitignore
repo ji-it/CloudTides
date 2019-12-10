@@ -13,3 +13,4 @@ coverage.svg
 .dat.nosync0216.YIhZVp
 client/build
 server/**/migrations/**
+server/venv/

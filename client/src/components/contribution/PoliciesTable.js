@@ -35,10 +35,13 @@ class PoliciesTable extends React.Component {
 
     componentWillUnmount() {
         Store.removeChangeListener(this.onChange);
+        clearInterval(this.timer1);
+        this.timer1 = null;
     }
 
     componentDidMount() {
-        Actions.getPolicies()
+        Actions.getPolicies();
+        this.timer1 = Actions.getPolicies(true);
     }
 
     onChange() {

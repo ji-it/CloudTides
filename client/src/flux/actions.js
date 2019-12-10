@@ -100,10 +100,12 @@ class Actions {
         UserAPI.getDetails();
     }
 
-    getPolicies() {
+    getPolicies(withPolling, interval = 15000) {
         AppDispatcher.handleViewAction({
             actionType: Constants.GET_POLICIES,
         });
+         if (withPolling)
+            return PoliciesAPI.getListWithPolling(interval);
         PoliciesAPI.getList();
     }
 }

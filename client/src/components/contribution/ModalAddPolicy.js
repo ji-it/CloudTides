@@ -42,8 +42,8 @@ export default class ModalAddPolicy extends React.Component {
             },
             idle: {
                 value: {
-                    cpu: 30,
-                    ram: 30,
+                    cpu: 0.30,
+                    ram: 0.30,
                 },
                 isOpen: false,
                 valid: true,
@@ -51,8 +51,8 @@ export default class ModalAddPolicy extends React.Component {
             },
             threshold: {
                 value: {
-                    cpu: 60,
-                    ram: 60,
+                    cpu: 0.60,
+                    ram: 0.60,
                 },
                 isOpen: false,
                 valid: true,
@@ -115,8 +115,8 @@ export default class ModalAddPolicy extends React.Component {
             },
             idle: {
                 value: {
-                    cpu: 30,
-                    ram: 30,
+                    cpu: 0.30,
+                    ram: 0.30,
                 },
                 isOpen: false,
                 valid: true,
@@ -124,8 +124,8 @@ export default class ModalAddPolicy extends React.Component {
             },
             threshold: {
                 value: {
-                    cpu: 60,
-                    ram: 60,
+                    cpu: 0.60,
+                    ram: 0.60,
                 },
                 isOpen: false,
                 valid: true,
@@ -402,7 +402,7 @@ export default class ModalAddPolicy extends React.Component {
                                             <div className="text-muted d-block mb-1">CPU</div>
                                             <Slider
                                                 connect={[true, false]}
-                                                start={[this.state.formControls.idle.value.cpu]}
+                                                start={[this.state.formControls.idle.value.cpu*100]}
                                                 onChange={this.handleIdleCPU}
                                                 range={{min: 0, max: 100}}
                                                 tooltips
@@ -419,7 +419,7 @@ export default class ModalAddPolicy extends React.Component {
                                             <div className="text-muted d-block mb-1">Memory</div>
                                             <Slider
                                                 connect={[true, false]}
-                                                start={[this.state.formControls.idle.value.ram]}
+                                                start={[this.state.formControls.idle.value.ram*100]}
                                                 onChange={this.handleIdleRAM}
                                                 range={{min: 0, max: 100}}
                                                 tooltips
@@ -448,7 +448,7 @@ export default class ModalAddPolicy extends React.Component {
                                             <div className="text-muted d-block mb-1">CPU</div>
                                             <Slider
                                                 connect={[true, false]}
-                                                start={[this.state.formControls.threshold.value.cpu]}
+                                                start={[this.state.formControls.threshold.value.cpu*100]}
                                                 onChange={this.handleThreshCPU}
                                                 range={{min: 0, max: 100}}
                                                 tooltips
@@ -464,7 +464,7 @@ export default class ModalAddPolicy extends React.Component {
                                             <div className="text-muted d-block mb-1">Memory</div>
                                             <Slider
                                                 connect={[true, false]}
-                                                start={[this.state.formControls.threshold.value.cpu]}
+                                                start={[this.state.formControls.threshold.value.ram*100]}
                                                 onChange={this.handleThreshRAM}
                                                 range={{min: 0, max: 100}}
                                                 tooltips

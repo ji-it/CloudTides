@@ -19,6 +19,9 @@ export default {
             }).catch((err) => {
             console.log(err);
         });
-    }
+    },
+    getListWithPolling(interval) {
+        return setInterval(() => this.getList(), interval);
+    },
 
 }
