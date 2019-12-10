@@ -17,6 +17,8 @@ import requests
 import json
 from tools import tasks # pylint: disable=import-error
 
+os.chdir('/home/shen1997/ve450')
+
 def get_args():
     """ Get arguments from CLI """
     parser = argparse.ArgumentParser(
@@ -201,14 +203,18 @@ def send_account(host_address, ip_address, template, username, password):
         f.write(result[2] + '\n')
         f.write(result[3])
     #time.sleep(30)
-    run_boinc = 'run_boinc'
-    while os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' ' + run_boinc + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+    #run_boinc = 'run_boinc'
+    while os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' root@' + ip_address + ':/var/lib/boinc') != 0:
         time.sleep(5)
         continue
-    os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
+    while os.system('sshpass -p ' + pwd[0] + ' scp ' + 'run_boinc' + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+        time.sleep(5)
+        continue
+    os.system('python /home/shen1997/ve450/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
                 ' -r root -w ' + pwd[0] + ' -l /bin/chmod -f "777 /var/lib/boinc/run_boinc"')
-    os.system('python execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' + ip_address +
-                ' -r root -w ' + pwd[0] + ' -l /var/lib/boinc/run_boinc -f None')
+    os.system('python /home/shen1997/ve450/execute_program.py -s ' + host_address + ' -u ' + username + ' -p ' + password + ' -S -i ' 
+                + ip_address + ' -r root -w ' + pwd[0] + ' -l /var/lib/boinc/run_boinc -f None')
+        
     '''
     data = {}
     data['host'] = host_address
