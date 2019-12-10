@@ -131,8 +131,7 @@ class AddResource(APIView):
                                                               policy=policy,
                                                               datacenter=datacenter_name,
                                                               current_ram=current_ram, current_cpu=current_cpu,
-                                                              is_active=is_active)
-                    resource[0].user.set((user,))
+                                                              is_active=is_active, user=user)
                     serialized_obj = ResourceSerializer(resource[0])
                     resources.append(serialized_obj.data)
 
@@ -155,49 +154,10 @@ class DeleteResource(APIView):
 
     def post(self, request):
         data = json.loads(request.body)
-        host = data['host']
-        username = data['username']
-        password = data['password']
-        # platform_type = data['platform_type']
-        datacenter_name = data['datacenter']
-
         try:
-            si = None
-            si = SmartConnectNoSSL(
-                host=host,
-                user=username,
-                pwd=password,
-                port=443)
-            atexit.register(Disconnect, si)
+            Resource.objects.get(pk=data["id"]).delete()
         except:
-            return Response({'message': 'connection failure'}, status=401)
-
-        if si is None:
-            return Response({'message': 'connection failure'}, status=401)
-
-        content = si.RetrieveContent()
-        datacenters = get_all_objs(content, [vim.Datacenter])
-        datacenter = None
-        for dc in datacenters:
-            if dc.name == datacenter_name:
-                datacenter = dc
-                break
-
-        if datacenter is None:
-            return Response({'message': 'datacenter not found'}, status=401)
-
-        if hasattr(datacenter.hostFolder, 'childEntity'):
-            hostFolder = datacenter.hostFolder
-            computeResourceList = hostFolder.childEntity
-            for computeResource in computeResourceList:
-                hostList = computeResource.host
-                for ho in hostList:
-                    host_name = ho.name
-                    try:
-                        Resource.objects.get(host_name=host_name).delete()
-                    except:
-                        return Response({'message': 'no matching objects'}, status=401)
-
+            return Response({'message': 'no matching objects'}, status=401)
         return Response({'message': 'success'}, status=200)
 
 
@@ -214,6 +174,20 @@ class UpdateHost(APIView):
         host.current_cpu = current_cpu
         host.current_ram = current_ram
         host.save(update_fields=['current_cpu', 'current_ram'])
+
+        return Response({'message': 'success'}, status=200)
+
+
+class ToggleActive(APIView):
+
+    def post(self, request):
+        data = json.loads(request.body)
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+        id = data['id']
+        resource = Resource.objects.get(pk=id)
+        resource.is_active = not bool(resource.is_active)
+        resource.save()
 
         return Response({'message': 'success'}, status=200)
 
@@ -267,8 +241,10 @@ class ResourceInfo(APIView):
             vms_deployed = VM.objects.select_related("resource").filter(resource__user=user,
                                                                         resource__host_name=resource.host_name)
             result["total_vms"] = vms_deployed.count()
-            result["active_vms"] = vms_deployed.filter(is_destroyed=False, powered_on=True).count()
-            result["last_deployed"] = vms_deployed.order_by('-date_created')[0:1].get().date_created
+            if vms_deployed.count() > 0:
+                result["active_vms"] = vms_deployed.filter(is_destroyed=False, powered_on=True).count()
+                result["last_deployed"] = vms_deployed.order_by('-date_created')[0:1].get().date_created
+
             results.append(result)
         return Response({'message': 'success', 'results': results, "status": True}, status=200)
 
@@ -298,6 +274,7 @@ class OverviewStats(APIView):
         user = Token.objects.get(key=token).user
         resources = Resource.objects.filter(user=user)
         total_vms = 0
+        power, cost = 0, 0
         for resource in resources:
             total_vms = total_vms + resource.total_vms
         active_tides_vms = VM.objects.filter(is_destroyed=False, powered_on=True).count()
@@ -309,9 +286,10 @@ class OverviewStats(APIView):
         for vm in vm_usage:
             power_cpu_usage = power_cpu_usage + (vm.cpu / vm.vm.resource.total_cpu)
             power_ram_usage = power_ram_usage + (vm.mem / vm.vm.resource.total_ram)
-        power_ram_usage = power_ram_usage / vm_usage.count()
-        power_cpu_usage = power_cpu_usage / vm_usage.count()
-        power = 60 * power_cpu_usage + 20 * power_ram_usage
+        if vm_usage.count() != 0:
+            power_ram_usage = power_ram_usage / vm_usage.count()
+            power_cpu_usage = power_cpu_usage / vm_usage.count()
+            power = 60 * power_cpu_usage + 20 * power_ram_usage
 
         vm_usage = VMUsage.objects.select_related('vm', 'vm__resource').filter(vm__is_destroyed=True,
                                                                                vm__boinc_time__isnull=False,

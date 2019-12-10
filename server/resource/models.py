@@ -38,7 +38,7 @@ class Resource(models.Model):
     total_vms = models.IntegerField(blank=True, null=True, default=0)
     # polling_interval = models.IntegerField(blank=True, null=True)
     monitored = models.BooleanField(blank=True, null=True, default=False)
-    user = models.ManyToManyField(User, blank=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     policy = models.ForeignKey(Policy, on_delete=models.SET_NULL, null=True)
 
     class Meta:

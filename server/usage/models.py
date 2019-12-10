@@ -7,7 +7,7 @@ class HostUsage(models.Model):
     date_added = models.DateTimeField(blank=True, null=True)
     ram = models.FloatField(blank=True, null=True)
     cpu = models.FloatField(blank=True, null=True)
-    resource = models.ForeignKey(Resource, on_delete=models.DO_NOTHING, null=True)
+    resource = models.ForeignKey(Resource, on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         # do something

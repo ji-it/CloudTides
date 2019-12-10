@@ -13,11 +13,29 @@ from rest_framework.authtoken.models import Token
 
 
 # Create your views here.
-class AddHostUsage(APIView):
+class HostPastUsage(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        pass
+        results = []
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+        resources = Resource.objects.filter(user=user)
+        for count, resource in enumerate(resources):
+            usages = HostUsage.objects.select_related("resource").filter(resource__user=user,
+                                                                         resource__host_name=resource.host_name).order_by(
+                '-date_added')[:30]
+            result = {}
+            result[resource.host_name] = {}
+            result[resource.host_name]["ram"] = []
+            result[resource.host_name]["cpu"] = []
+            result[resource.host_name]["time"] = []
+            for usage in usages:
+                result[resource.host_name]["ram"].insert(0, 100 * usage.ram / usage.resource.total_ram)
+                result[resource.host_name]["cpu"].insert(0, 100 * usage.cpu / usage.resource.total_cpu)
+                result[resource.host_name]["time"].insert(0, usage.date_added.strftime("%H:%M"))
+            results.append(result)
+        return Response({'message': 'success', 'results': results, "status": True}, status=200)
 
 
 class AddHostUsage(APIView):

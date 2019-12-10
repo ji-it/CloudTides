@@ -12,16 +12,21 @@ from .models import Account
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.views.decorators.cache import cache_page
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
-class UserListView(APIView):
+class UserDetails(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        users = Account.objects.all()
-        serializer = TidesUserSerializer(users, many=True)
-        return Response({'message': serializer.data}, status=200)
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user
+        profile = Account.objects.get(user=user)
+        result = ProfileSerializer(profile).data
+        return Response({'message': 'success', 'results': result, "status": True}, status=200)
 
 
 class UserLogin(APIView):
@@ -52,7 +57,7 @@ class UserRegister(APIView):
                 token = Token.objects.create(user=user)
                 json = serializer.data
                 profile = Account(user=user, priority=request.data['priority'],
-                                    company_name=request.data['company_name'])
+                                  company_name=request.data['company_name'])
                 try:
                     profile.save()
                 except:

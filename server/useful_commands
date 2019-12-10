@@ -9,3 +9,9 @@ python manage.py dumpdata projects --output projects/fixtures/projects.json
 python manage.py loaddata projects.json
 
 # pylint: disable=import-error
+
+docker exec -it 183 /bin/bash
+docker run -p8080:8000 backend
+
+
+172.17.0.1

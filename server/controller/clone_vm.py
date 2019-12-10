@@ -204,8 +204,10 @@ def send_account(host_address, ip_address, template, username, password):
         f.write(result[3])
     # time.sleep(30)
     run_boinc = 'run_boinc'
-    while os.system('sshpass -p ' + pwd[
-        0] + ' scp ' + filename + ' ' + run_boinc + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+    while os.system('sshpass -p ' + pwd[0] + ' scp ' + filename + ' root@' + ip_address + ':/var/lib/boinc') != 0:
+        time.sleep(5)
+        continue
+    while os.system('sshpass -p ' + pwd[0] + ' scp ' + 'run_boinc' + ' root@' + ip_address + ':/var/lib/boinc') != 0:
         time.sleep(5)
         continue
     os.system(

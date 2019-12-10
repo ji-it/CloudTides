@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Adding backend directory to make absolute filepaths consistent across services
 WORKDIR /app/server
-
+RUN apt-get update && apt-get -y install cron
 # Install Python dependencies
 COPY requirements.txt /app/server
 RUN pip3 install --upgrade pip -r requirements.txt
@@ -20,4 +20,6 @@ EXPOSE 8000
 
 # Be sure to use 0.0.0.0 for the host within the Docker container,
 # otherwise the browser won't be able to find it
+RUN python3 manage.py makemigrations && python3 manage.py migrate
+RUN python3 manage.py loaddata projects.json
 CMD python3 manage.py runserver 0.0.0.0:8000

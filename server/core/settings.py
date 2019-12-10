@@ -62,7 +62,7 @@ CORS_ORIGIN_WHITELIST = [
 
 MIDDLEWARE = [
     'core.middleware.DisableClientSideCachingMiddleware',
-   # 'django.middleware.cache.UpdateCacheMiddleware',
+    # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -71,7 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-  #  'django.middleware.cache.FetchFromCacheMiddleware',
+    #  'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 # USE_TZ = False
@@ -86,7 +86,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
-# '''
+'''
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -97,7 +97,7 @@ CACHES = {
         "KEY_PREFIX": "tides",
     }
 }
-# '''
+'''
 CACHE_TTL = 0 * 15  # seconds
 
 TEMPLATES = [
@@ -139,7 +139,7 @@ DATABASES = {
         'NAME': 'tides2',
         'USER': 'postgres',
         'PASSWORD': 'password',  # created at the time of password setup
-        'HOST': 'localhost',
+        'HOST': 'host.docker.internal',
         'PORT': '5432',
     }
 }
