@@ -1,0 +1,32 @@
+.card {
+  margin: 10px;
+  clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 0 100%);
+  border: 1.5px solid lightseagreen;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: calc(85% + 3px);
+  bottom: 85%;
+  border-bottom-left-radius: 10px;
+  box-shadow: -.2em .2em .3em -.1em rgba(0, 0, 0, .15);
+  background: linear-gradient(to left bottom, transparent 50%, rgba(0,0,0,.1) 0) 100% 0 no-repeat;
+  border-left: 1.5px solid lightseagreen;
+  border-bottom: 1.5px solid lightseagreen;
+}
+
+.card-text {
+  display: flex;
+  .row-label {
+    font-weight: bolder;
+    flex: 1;
+    max-width: 100px;
+  }
+
+  .row-content {
+    flex: 1;
+  }
+}

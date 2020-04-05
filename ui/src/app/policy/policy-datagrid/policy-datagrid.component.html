@@ -1,0 +1,46 @@
+<div class="content-header">
+  <h3>Contribution Policy</h3>
+</div>
+
+<div class="content-body">
+  <button class="btn btn-primary" (click)="this.add()">
+    <clr-icon shape="plus"></clr-icon>
+    Add Policy
+  </button>
+
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
+    <clr-dg-column [clrDgField]="'project'">Project</clr-dg-column>
+    <clr-dg-column [clrDgField]="'type'">Type</clr-dg-column>
+    <clr-dg-column [clrDgField]="'cpu'">CPU %</clr-dg-column>
+    <clr-dg-column [clrDgField]="'memory'">Memory %</clr-dg-column>
+    <clr-dg-column [clrDgField]="'destroy'">Destroy After Stop</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let item of list$ | async" [clrDgItem]="item">
+      <clr-dg-action-overflow>
+        <button class="action-item" (click)="this.edit(item)">
+          Edit
+        </button>
+        <button class="action-item" (click)="this.delete(item)">
+          Delete
+        </button>
+      </clr-dg-action-overflow>
+      <clr-dg-cell>{{ item.name }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.project }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.type }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.cpu }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.memory }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.destroy }}</clr-dg-cell>
+    </clr-dg-row>
+    <clr-dg-placeholder>
+      No Policy Data
+    </clr-dg-placeholder>
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="this.vo.pageSize">
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+        of {{pagination.totalItems}} items
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+
+</div>

@@ -1,0 +1,53 @@
+@import "tide-size";
+@import "tide-color";
+
+.card-block {
+  display: flex;
+
+  .info-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    border-right: 2px solid $light-grey;
+
+    clr-icon.info-icon {
+      padding: .5rem;
+    }
+
+    .info-container {
+      flex: 1;
+
+      .name {
+        font-size: $font-size-md;
+      }
+      .desc {
+        font-size: $font-size-sm;
+      }
+      .status {
+        font-size: $font-size-xs;
+
+        clr-icon {
+          color: $green;
+        }
+      }
+    }
+  }
+
+  .detail-wrapper {
+    display: flex;
+    flex: 2;
+
+    .detail-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+
+      .value {
+        font-size: $font-size-lg;
+        padding: .5rem 0;
+      }
+    }
+  }
+}
