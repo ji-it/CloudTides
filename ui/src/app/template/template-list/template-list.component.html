@@ -1,0 +1,15 @@
+<button class="btn btn-primary action-btn" (click)="this.add()">
+  <clr-icon shape="plus"></clr-icon>
+  Add Template
+</button>
+
+<div class="cards-container clr-row">
+  <div class="clr-col-md-6 clr-col-lg-4"
+    *ngFor="let item of (this.list$ | async)">
+    <tide-template-card
+      [template]="item"
+      (add)="this.onDelete($event)"
+      (delete)="this.onEdit($event)">
+    </tide-template-card>
+  </div>
+</div>

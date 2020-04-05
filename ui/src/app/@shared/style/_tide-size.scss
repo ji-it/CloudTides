@@ -1,0 +1,14 @@
+$font-size-base:              1rem !default;  // Clarity use 24 px
+
+$h1-font-size:                $font-size-base * 1.33333 !default; // 32px
+$h2-font-size:                $font-size-base * 1.16667 !default; // 28px
+$h3-font-size:                $font-size-base * 0.91667 !default; // 22px
+$h4-font-size:                $font-size-base * 0.75    !default; // 18px
+$h5-font-size:                $font-size-base * 0.66667 !default; // 16px
+$h6-font-size:                $font-size-base * 0.58333 !default; // 14px
+
+$font-size-xl:                $font-size-base * 2       !default; // 48px
+$font-size-lg:                $font-size-base * 1.25    !default; // 30px
+$font-size-md:                $font-size-base * .66667  !default; // 16px
+$font-size-sm:                $font-size-base * .5      !default; // 12px
+$font-size-xs:                $font-size-base * .458333 !default; // 10px

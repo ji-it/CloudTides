@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-header">{{ template.displayName }}</div>
+  <div class="card-block">
+    <div class="card-text">
+      <span class="row-label">Name</span>
+      <span class="row-content">{{ template.name }}</span>
+    </div>
+    <div class="card-text">
+      <span class="row-label">Contributors</span>
+      <span class="row-content">{{ template.contributors }}</span>
+    </div>
+    <div class="card-text">
+      <span class="row-label">URL</span>
+      <span class="row-content">{{ template.url }}</span>
+    </div>
+    <div class="card-text">
+      <span class="row-label">Version</span>
+      <span class="row-content">{{ template.version }}</span>
+    </div>
+    <div class="card-text">
+      <span class="row-label">Date</span>
+      <span class="row-content">{{ template.date }}</span>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button class="btn btn-sm btn-link" (click)="this.onEdit(template)">Edit</button>
+    <button class="btn btn-sm btn-link" (click)="this.onDelete(template)">Delete</button>
+  </div>
+</div>

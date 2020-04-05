@@ -1,0 +1,68 @@
+<clr-main-container>
+  <div class="main-container">
+
+    <ng-container *ngIf="!this.inLoginPage()">
+      <header class="header header-6">
+        <div class="branding">
+          <a routerLink="/" class="nav-link">
+            <clr-icon shape="vm-bug"></clr-icon>
+            <span class="title">{{ this.vo.title }}</span>
+          </a>
+        </div>
+        <div class="header-actions">
+          <clr-dropdown>
+            <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
+              <clr-icon shape="user"></clr-icon>
+              {{ (this.vo.user$ | async).name }}
+              <clr-icon shape="caret down"></clr-icon>
+            </button>
+            <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+              <a routerLink="/profile" clrDropdownItem>Profile</a>
+              <a (click)="this.signOut()" clrDropdownItem>Log out</a>
+            </clr-dropdown-menu>
+          </clr-dropdown>
+        </div>
+      </header>
+
+      <nav class="subnav">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/home"
+              routerLinkActive="active">
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/resource"
+              routerLinkActive="active">
+              Resource
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/policy"
+              routerLinkActive="active">
+              Policy
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/template"
+              routerLinkActive="active">
+              Template
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </ng-container>
+
+    <div class="content-container">
+      <div class="content-area">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </div>
+</clr-main-container>

@@ -1,0 +1,35 @@
+<div class="card">
+  <div class="card-block">
+    <div class="info-wrapper">
+      <clr-icon class="info-icon" size="100" shape="nodes"></clr-icon>
+      <span class="info-container">
+        <div class="name">
+          {{ item?.name }}
+        </div>
+        <div class="desc">{{ item?.host }}</div>
+        <div class="status">
+          <clr-icon shape="check-circle" class="is-solid"></clr-icon>
+          {{ item?.status }}
+        </div>
+      </span>
+    </div>
+    <div class="detail-wrapper">
+      <span class="detail-container">
+        <div class="value">{{ item?.sites }}</div>
+        <div class="key">Site</div>
+      </span>
+      <span class="detail-container">
+        <div class="value">{{ item?.orgs }}</div>
+        <div class="key">Organizations</div>
+      </span>
+      <span class="detail-container">
+        <div class="value">{{ item?.vms }}</div>
+        <div class="key">Running VMs</div>
+      </span>
+      <span class="detail-container">
+        <div class="value">{{ item?.services }}</div>
+        <div class="key">Services</div>
+      </span>
+    </div>
+  </div>
+</div>

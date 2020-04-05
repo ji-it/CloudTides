@@ -1,0 +1,51 @@
+<div class="login-wrapper">
+  <form class="login"
+    #loginForm="ngForm"
+    autocomplete="off"
+    (ngSubmit)="this.onSubmit(this.vo.model)">
+
+    <label class="title">
+      VMware Cloud Path
+    </label>
+
+    <div class="login-group">
+      <input class="username"
+        placeholder="Email"
+        type="text"
+        [(ngModel)]="this.vo.model.username"
+        name="username"
+        trimOnBlur
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="none"
+        spellcheck="false"
+        required>
+
+      <input class="password"
+        placeholder="Passowrd"
+        type="password"
+        [(ngModel)]="this.vo.model.password"
+        name="password"
+        autocomplete="new-password"
+        required>
+
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.loginError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.loginError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <button class="btn btn-primary"
+        type="submit"
+        [disabled]="!loginForm.form.valid || vo.submitting">
+        {{ this.vo.submitting ? 'Submitting...' : 'Login' }}
+      </button>
+    </div>
+  </form>
+</div>
