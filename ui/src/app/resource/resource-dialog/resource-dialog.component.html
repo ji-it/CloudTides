@@ -1,0 +1,33 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add Resource
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.resourceForm">
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          placeholder="Resource Name"
+          formControlName="name"
+          clrInput />
+        <clr-control-error>Required</clr-control-error>
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()">
+      Cancel
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      (click)="this.onSave()">
+      Save
+    </button>
+  </div>
+</clr-modal>

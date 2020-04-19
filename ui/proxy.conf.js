@@ -8,7 +8,7 @@ const {
 
 const endpoint = {
   local: 'http://localhost:3000',
-  e2e: 'http://localhost:8000'
+  e2e: 'http://localhost:8080'
 };
 
 const target = endpoint[MODE];

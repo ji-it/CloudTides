@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start.local": "cd mock && npm start & start_mode=local npm run start",
-    "start.e2e": "npm start & start_mode=local npm run start",
+    "start.e2e": "start_mode=e2e npm run start",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

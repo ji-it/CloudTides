@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { base } from '@tide-environments/base'
 
 @Injectable()
 export class PolicyService {
@@ -10,7 +11,7 @@ export class PolicyService {
   ) {
   }
 
-  private prefix = '/api/policies';
+  private prefix = `${base.apiPrefix}/schedulerPolicie`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(
@@ -37,13 +38,10 @@ export class PolicyService {
 
 // DTO
 interface ItemDTO {
-  id: string;
-  name: string;
-  project: string;
-  type: string;
-  cpu: number;
-  memory: number;
-  destroy: boolean;
+  crid: string;
+  template: string;
+  startConditions: (string | number)[][];
+  stopConditions: (string | number)[][];
 }
 
 function mapList(raw: ItemDTO[]): Item[] {
