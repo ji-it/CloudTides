@@ -19,9 +19,16 @@ export class PolicyDatagridComponent implements OnInit {
   };
 
   list$: Observable<Item[]> = of([]);
+  opened = false;
 
-  add() {
+  add (resource: Item) {
+    this.policyService.addItem(resource).subscribe(item => {
+      this.refreshList();
+    });
+  }
 
+  cancel() {
+    this.opened = false;
   }
 
   edit(item: Item) {
@@ -33,6 +40,10 @@ export class PolicyDatagridComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.refreshList();
+  }
+
+  refreshList() {
     this.list$ = this.policyService.getList();
   }
 

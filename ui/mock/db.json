@@ -7,7 +7,7 @@
   },
   "computeResource": [{
     "id": 1,
-    "name": "macosx",
+    "name": "vcenter",
     "cpu": 4,
     "mem": 17179869184,
     "disk": 162896932864,
@@ -19,7 +19,7 @@
   }],
   "schedulerPolicie": [{
     "crid": 1,
-    "template": "helloWorld",
+    "template": "Folding@Home",
     "startConditions": [
       ["cpu%", "lt", 5]
     ],
@@ -28,12 +28,14 @@
     ]
   }],
   "templates": [{
-    "name": "helloWorld",
-    "start": "echo hello",
-    "stop": "echo world",
-    "collect": "echo No",
-    "cpu": 1,
+    "id": "1",
+    "name": "Folding@Home",
+    "displayName": "VMware Appliance for Folding@Home",
+    "version": "v1.0.2",
+    "date": "April 01, 2020",
+    "url": "https://flings.vmware.com/vmware-appliance-for-folding-home",
+    "cpu": 4,
     "mem": 1024,
-    "disk": 0
+    "disk": 2048
   }]
 }

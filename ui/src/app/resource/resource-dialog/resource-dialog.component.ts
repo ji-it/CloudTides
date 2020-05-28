@@ -15,6 +15,10 @@ export class ResourceDialogComponent implements OnInit {
   ) {
     this.resourceForm = this.fb.group({
       name: [ '', Validators.required ],
+      datacenter: [ '' ],
+      cluster: [ '' ],
+      username: [ '', Validators.required ],
+      password: [ '', Validators.required ],
     });
   }
 

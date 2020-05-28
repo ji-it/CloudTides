@@ -1,0 +1,73 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Create Policy
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.policyForm">
+      <clr-select-container>
+        <label for="name">Template</label>
+        <select name="template"
+          clrSelect
+          class="clr-col-12 clr-col-md-8"
+          formControlName="template">
+          <option value="Folding@home">Folding@home</option>
+          <option value="CAS@home">CAS@home</option>
+          <option value="Asteroids@home">Asteroids@home</option>
+          <option value="BOINC@TACC">BOINC@TACC</option>
+          <option value="LHC@home@home">LHC@home@home</option>
+        </select>
+        <clr-control-error>Required</clr-control-error>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label for="name">Start Condition</label>
+        <select name="template"
+          clrSelect
+          class="clr-col-12 clr-col-md-8"
+          formControlName="startConditions">
+          <option value="cpu">CPU</option>
+          <option value="memory">Memory</option>
+          <option value="disk">Disk</option>
+        </select>
+        <clr-control-error>Required</clr-control-error>
+      </clr-select-container>
+      <clr-range-container>
+        <label></label>
+        <input type="range" clrRange formControlName="template" name="startConditions" />
+        <clr-control-helper>Select the percentage when to start</clr-control-helper>
+      </clr-range-container>
+
+      <clr-select-container>
+        <label for="name">Stop Condition</label>
+        <select name="template"
+          clrSelect
+          class="clr-col-12 clr-col-md-8"
+          formControlName="stopConditions">
+          <option value="cpu">CPU</option>
+          <option value="memory">Memory</option>
+          <option value="disk">Disk</option>
+        </select>
+        <clr-control-error>Required</clr-control-error>
+      </clr-select-container>
+      <clr-range-container>
+        <label></label>
+        <input type="range" clrRange formControlName="template" name="stopConditions" />
+        <clr-control-helper>Select the percentage when to stop</clr-control-helper>
+      </clr-range-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()">
+      Cancel
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      (click)="this.onSave()">
+      Save
+    </button>
+  </div>
+</clr-modal>

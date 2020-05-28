@@ -3,7 +3,7 @@
 </div>
 
 <div class="content-body">
-  <button class="btn btn-primary" (click)="this.add()">
+  <button class="btn btn-primary" (click)="this.opened=true">
     <clr-icon shape="plus"></clr-icon>
     Add Policy
   </button>
@@ -40,3 +40,10 @@
   </clr-datagrid>
 
 </div>
+
+<tide-policy-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.add($event)"
+  (cancel)="this.cancel()">
+</tide-policy-dialog>

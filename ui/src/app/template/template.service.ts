@@ -39,9 +39,10 @@ export class TemplateService {
 // Raw
 interface ItemDTO {
   name: string;
-  start: string;
-  stop: string;
-  collect: string;
+  displayName: string;
+  version: string;
+  date: string;
+  url: string;
   cpu: number;
   mem: number;
   disk: number;
