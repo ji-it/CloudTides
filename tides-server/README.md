@@ -1,6 +1,6 @@
-### Go-swagger server
+## Go-swagger server
 
-#### Go-swagger
+### Go-swagger
 
 The server side uses [go-swagger](https://github.com/go-swagger/go-swagger) to generate REST APIs. OpenAPI specifications can be found at [openapi](https://swagger.io/specification/v2/).
 
@@ -12,11 +12,11 @@ make gen
 
 will check your OpenAPI specifications and then generate corresponding code.
 
-#### Gorm
+### Gorm
 
 The server uses [gorm](https://github.com/jinzhu/gorm) to map Go structs to database schemas and interact with [Postgresql](https://www.postgresql.org/). The doc can be found [here](https://gorm.io/docs/).
 
-#### Development
+### Development
 
 ```
 glide install
