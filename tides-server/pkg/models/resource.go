@@ -41,7 +41,7 @@ type Resource struct {
 	PlatformType string `json:"platformType,omitempty"`
 
 	// policy foreign key
-	PolicyRef uint
+	PolicyRef *uint
 
 	// status
 	// Enum: [idle normal busy unknown]

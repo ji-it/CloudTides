@@ -19,6 +19,12 @@ type Policy struct {
 	// Enum: [accManager boinc]
 	AccountType string `json:"accountType,omitempty"`
 
+	// boinc password
+	BoincPassword string `json:"BoincPassword,omitempty"`
+
+	// boinc username
+	BoincUsername string `json:"BoincUsername,omitempty"`
+
 	// deploy type
 	// Enum: [K8S VM]
 	DeployType string `json:"deployType,omitempty"`

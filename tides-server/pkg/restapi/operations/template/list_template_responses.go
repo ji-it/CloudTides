@@ -78,3 +78,27 @@ func (o *ListTemplateBadRequest) WriteResponse(rw http.ResponseWriter, producer 
 
 	rw.WriteHeader(400)
 }
+
+// ListTemplateUnauthorizedCode is the HTTP code returned for type ListTemplateUnauthorized
+const ListTemplateUnauthorizedCode int = 401
+
+/*ListTemplateUnauthorized Unauthorized
+
+swagger:response listTemplateUnauthorized
+*/
+type ListTemplateUnauthorized struct {
+}
+
+// NewListTemplateUnauthorized creates ListTemplateUnauthorized with default headers values
+func NewListTemplateUnauthorized() *ListTemplateUnauthorized {
+
+	return &ListTemplateUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *ListTemplateUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}

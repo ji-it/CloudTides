@@ -73,6 +73,9 @@ type AddTemplateBody struct {
 	// memsize
 	Memsize float64 `json:"memsize,omitempty"`
 
+	// name
+	Name string `json:"name,omitempty"`
+
 	// os
 	Os string `json:"os,omitempty"`
 
