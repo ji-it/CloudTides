@@ -79,6 +79,30 @@ func (o *DeleteTemplateBadRequest) WriteResponse(rw http.ResponseWriter, produce
 	rw.WriteHeader(400)
 }
 
+// DeleteTemplateUnauthorizedCode is the HTTP code returned for type DeleteTemplateUnauthorized
+const DeleteTemplateUnauthorizedCode int = 401
+
+/*DeleteTemplateUnauthorized Unauthorized
+
+swagger:response deleteTemplateUnauthorized
+*/
+type DeleteTemplateUnauthorized struct {
+}
+
+// NewDeleteTemplateUnauthorized creates DeleteTemplateUnauthorized with default headers values
+func NewDeleteTemplateUnauthorized() *DeleteTemplateUnauthorized {
+
+	return &DeleteTemplateUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *DeleteTemplateUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
 // DeleteTemplateNotFoundCode is the HTTP code returned for type DeleteTemplateNotFound
 const DeleteTemplateNotFoundCode int = 404
 

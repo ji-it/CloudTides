@@ -104,6 +104,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 		api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
 		})
+	} else {
+		api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(handler.DeleteTemplateHandler)
 	}
 	if api.ResourceDestroyVMHandler == nil {
 		api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
@@ -135,6 +137,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 		api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
 		})
+	} else {
+		api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(handler.ListTemplateHandler)
 	}
 	if api.ResourceOverviewStatsHandler == nil {
 		api.ResourceOverviewStatsHandler = resource.OverviewStatsHandlerFunc(func(params resource.OverviewStatsParams) middleware.Responder {

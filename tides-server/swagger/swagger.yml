@@ -597,6 +597,10 @@ paths:
                 type: integer
               templateId:
                 type: integer
+              boincUsername:
+                type: string
+              boincPassword:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -656,6 +660,10 @@ paths:
                 type: integer
               templateId:
                 type: integer
+              boincUsername:
+                type: string
+              boincPassword:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -951,6 +959,8 @@ paths:
                 type: number
               memsize:
                 type: number
+              name:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -990,7 +1000,6 @@ paths:
                       type: string
                     dateAdded:
                       type: string
-                      format: date-time
                     guestOS:
                       type: string
                     compatibility:
@@ -1006,6 +1015,8 @@ paths:
                         - 'upload'
         400:
           description: 'bad request'
+        401:
+          description: 'Unauthorized'
   /template/delete:
     delete:
       operationId: 'deleteTemplate'
@@ -1034,6 +1045,8 @@ paths:
                   - 'success'
         400:
           description: 'bad request'
+        401:
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
 

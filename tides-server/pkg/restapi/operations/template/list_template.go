@@ -186,8 +186,7 @@ type ResultsItems0 struct {
 	Compatibility string `json:"compatibility,omitempty"`
 
 	// date added
-	// Format: date-time
-	DateAdded strfmt.DateTime `json:"dateAdded,omitempty"`
+	DateAdded string `json:"dateAdded,omitempty"`
 
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`
@@ -210,10 +209,6 @@ type ResultsItems0 struct {
 func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateDateAdded(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateTemplateType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -221,19 +216,6 @@ func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (o *ResultsItems0) validateDateAdded(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.DateAdded) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("dateAdded", "body", "date-time", o.DateAdded.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 
