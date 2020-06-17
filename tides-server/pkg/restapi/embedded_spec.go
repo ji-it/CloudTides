@@ -52,6 +52,12 @@ func init() {
                     "boinc"
                   ]
                 },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
+                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -277,6 +283,12 @@ func init() {
                     "accManager",
                     "boinc"
                   ]
+                },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
                 },
                 "deployType": {
                   "type": "string",
@@ -1002,6 +1014,9 @@ func init() {
                 "memsize": {
                   "type": "number"
                 },
+                "name": {
+                  "type": "string"
+                },
                 "os": {
                   "type": "string"
                 },
@@ -1081,6 +1096,9 @@ func init() {
           "400": {
             "description": "bad request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "resource not found"
           }
@@ -1115,8 +1133,7 @@ func init() {
                         "type": "string"
                       },
                       "dateAdded": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "string"
                       },
                       "guestOS": {
                         "type": "string"
@@ -1145,6 +1162,9 @@ func init() {
           },
           "400": {
             "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -1931,6 +1951,12 @@ func init() {
                     "boinc"
                   ]
                 },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
+                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -2126,6 +2152,12 @@ func init() {
                     "accManager",
                     "boinc"
                   ]
+                },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
                 },
                 "deployType": {
                   "type": "string",
@@ -2851,6 +2883,9 @@ func init() {
                 "memsize": {
                   "type": "number"
                 },
+                "name": {
+                  "type": "string"
+                },
                 "os": {
                   "type": "string"
                 },
@@ -2930,6 +2965,9 @@ func init() {
           "400": {
             "description": "bad request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "resource not found"
           }
@@ -2966,6 +3004,9 @@ func init() {
           },
           "400": {
             "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -3820,8 +3861,7 @@ func init() {
           "type": "string"
         },
         "dateAdded": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "guestOS": {
           "type": "string"

@@ -18,10 +18,6 @@ type Template struct {
 	// compatibility
 	Compatibility string `json:"compatibility,omitempty"`
 
-	// date added
-	// Format: date-time
-	DateAdded strfmt.DateTime `json:"dateAdded,omitempty"`
-
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`
 
@@ -43,10 +39,6 @@ type Template struct {
 func (m *Template) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateDateAdded(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateTemplateType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -54,19 +46,6 @@ func (m *Template) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *Template) validateDateAdded(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.DateAdded) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("dateAdded", "body", "date-time", m.DateAdded.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 

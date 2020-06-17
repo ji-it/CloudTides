@@ -36,8 +36,10 @@ func main() {
 	server.Port, _ = strconv.Atoi(config.Port)
 	fmt.Println(server.Port)
 
-	response, err := os.Hostname()
-	fmt.Println(response)
+	name, err := os.Hostname()
+	fmt.Println(name)
+
+	server.Host = "127.0.0.1"
 
 	/*
 		// Implement the handler functionality.
