@@ -25,6 +25,8 @@ jobs:
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
               dep ensure
           fi
+        env:
+          GO111MODULE: on
       - name: Build
         run: cd tides-server/cmd && go build -v .
         env:
