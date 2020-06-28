@@ -43,10 +43,11 @@ jobs:
 
       - name: gofmt
         run: |
+          cd tides-server
           # output files that doesn't conform to the format specification
-          cd tides-server && ls -p | grep -v vendor | grep -v swagger | grep "/$" | xargs gofmt -l -s
+          ls -p | grep -v vendor | grep -v swagger | grep "/$" | xargs gofmt -l -s
           # optional: failure to comply with the specification forces the task to fail
-          # exit $(cd tides-server && ls -p | grep -v vendor | grep -v swagger | grep "/$" | xargs gofmt -l -s | wc -l)
+          # exit $(ls -p | grep -v vendor | grep -v swagger | grep "/$" | xargs gofmt -l -s | wc -l)
 
       - name: gotest
         run: cd tides-server && go test ./...
