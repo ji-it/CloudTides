@@ -34,7 +34,7 @@ jobs:
           GO111MODULE: on
 
   test:
-    name: Test
+    name: Check
     runs-on: ubuntu-latest
     steps:
 
