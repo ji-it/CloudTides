@@ -38,6 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Check out source
+            uses: actions/checkout@v2
+
       - name: gofmt
         run: |
           # output files that doesn't conform to the format specification
