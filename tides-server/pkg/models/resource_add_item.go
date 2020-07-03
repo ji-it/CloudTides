@@ -25,6 +25,9 @@ type ResourceAddItem struct {
 	// RAM percent
 	RAMPercent float64 `json:"RAMPercent,omitempty"`
 
+	// cluster
+	Cluster string `json:"cluster,omitempty"`
+
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
@@ -34,20 +37,23 @@ type ResourceAddItem struct {
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
 
-	// host name
-	HostName string `json:"hostName,omitempty"`
-
 	// id
 	ID int64 `json:"id,omitempty"`
 
 	// is active
 	IsActive bool `json:"isActive,omitempty"`
 
+	// is resource pool
+	IsResourcePool bool `json:"isResourcePool,omitempty"`
+
 	// job completed
 	JobCompleted int64 `json:"jobCompleted,omitempty"`
 
 	// monitored
 	Monitored bool `json:"monitored,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
 
 	// platform type
 	// Enum: [vsphere kvm hyper-v]

@@ -365,17 +365,29 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "cluster": {
+                  "type": "string"
+                },
                 "datacenters": {
                   "type": "string"
                 },
-                "host": {
+                "hostAddress": {
                   "type": "string"
+                },
+                "isResourcePool": {
+                  "type": "boolean"
                 },
                 "password": {
                   "type": "string"
                 },
                 "policy": {
                   "type": "integer"
+                },
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "username": {
                   "type": "string"
@@ -861,7 +873,7 @@ func init() {
     },
     "/resource/update": {
       "put": {
-        "description": "update usage info of host",
+        "description": "update usage info of resource",
         "consumes": [
           "application/json"
         ],
@@ -871,7 +883,7 @@ func init() {
         "tags": [
           "resource"
         ],
-        "operationId": "updateHost",
+        "operationId": "updateResource",
         "parameters": [
           {
             "name": "reqBody",
@@ -888,7 +900,7 @@ func init() {
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
                   "type": "string"
                 }
               }
@@ -1169,69 +1181,6 @@ func init() {
         }
       }
     },
-    "/usage/addHost": {
-      "post": {
-        "description": "add host usage info into database",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "addHostUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "currentCPU": {
-                  "type": "number"
-                },
-                "currentRAM": {
-                  "type": "number"
-                },
-                "hostAddress": {
-                  "type": "string"
-                },
-                "hostName": {
-                  "type": "string"
-                },
-                "totalCPU": {
-                  "type": "number"
-                },
-                "totalRAM": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      }
-    },
     "/usage/addVM": {
       "post": {
         "description": "add VM usage info into database",
@@ -1260,7 +1209,7 @@ func init() {
                   "currentRAM": {
                     "type": "number"
                   },
-                  "dcName": {
+                  "datacenter": {
                     "type": "string"
                   },
                   "guestOS": {
@@ -1310,16 +1259,16 @@ func init() {
         }
       }
     },
-    "/usage/deleteHost": {
-      "delete": {
-        "description": "delete host usage info",
+    "/usage/add_resource": {
+      "post": {
+        "description": "add resource usage info into database",
         "consumes": [
           "application/json"
         ],
         "tags": [
           "usage"
         ],
-        "operationId": "deleteHostUsage",
+        "operationId": "addResourceUsage",
         "parameters": [
           {
             "name": "reqBody",
@@ -1327,10 +1276,73 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
+                  "type": "string"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
+    "/usage/delete_resource": {
+      "delete": {
+        "description": "delete resource usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "deleteResourceUsage",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
+                "hostAddress": {
                   "type": "string"
                 }
               }
@@ -1363,11 +1375,11 @@ func init() {
     },
     "/usage/getUsage": {
       "get": {
-        "description": "get host usage info during last period",
+        "description": "get resource usage info during last period",
         "tags": [
           "usage"
         ],
-        "operationId": "hostPastUsage",
+        "operationId": "resourcePastUsage",
         "responses": {
           "200": {
             "description": "OK"
@@ -1378,16 +1390,16 @@ func init() {
         }
       }
     },
-    "/usage/updateHost": {
+    "/usage/update_resource": {
       "put": {
-        "description": "update host usage info",
+        "description": "update datacenter usage info",
         "consumes": [
           "application/json"
         ],
         "tags": [
           "usage"
         ],
-        "operationId": "updateHostUsage",
+        "operationId": "updateResourceUsage",
         "parameters": [
           {
             "name": "reqBody",
@@ -1404,8 +1416,14 @@ func init() {
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
                   "type": "string"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
                 }
               }
             }
@@ -1420,7 +1438,7 @@ func init() {
                 "message": {
                   "type": "string",
                   "enum": [
-                    "host usage recorded"
+                    "resource usage recorded"
                   ]
                 }
               }
@@ -1669,6 +1687,9 @@ func init() {
         "RAMPercent": {
           "type": "number"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -1678,13 +1699,13 @@ func init() {
         "datacenter": {
           "type": "string"
         },
-        "hostName": {
-          "type": "string"
-        },
         "id": {
           "type": "integer"
         },
         "isActive": {
+          "type": "boolean"
+        },
+        "isResourcePool": {
           "type": "boolean"
         },
         "jobCompleted": {
@@ -1692,6 +1713,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",
@@ -1736,6 +1760,9 @@ func init() {
         "activeVMs": {
           "type": "integer"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -1748,7 +1775,7 @@ func init() {
         "dateAdded": {
           "type": "string"
         },
-        "hostName": {
+        "hostAddress": {
           "type": "string"
         },
         "id": {
@@ -1765,6 +1792,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",
@@ -1809,6 +1839,9 @@ func init() {
         "RAMPercent": {
           "type": "number"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -1821,7 +1854,7 @@ func init() {
         "dateAdded": {
           "type": "string"
         },
-        "hostName": {
+        "hostAddress": {
           "type": "string"
         },
         "id": {
@@ -1835,6 +1868,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",
@@ -2234,17 +2270,29 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "cluster": {
+                  "type": "string"
+                },
                 "datacenters": {
                   "type": "string"
                 },
-                "host": {
+                "hostAddress": {
                   "type": "string"
+                },
+                "isResourcePool": {
+                  "type": "boolean"
                 },
                 "password": {
                   "type": "string"
                 },
                 "policy": {
                   "type": "integer"
+                },
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "username": {
                   "type": "string"
@@ -2730,7 +2778,7 @@ func init() {
     },
     "/resource/update": {
       "put": {
-        "description": "update usage info of host",
+        "description": "update usage info of resource",
         "consumes": [
           "application/json"
         ],
@@ -2740,7 +2788,7 @@ func init() {
         "tags": [
           "resource"
         ],
-        "operationId": "updateHost",
+        "operationId": "updateResource",
         "parameters": [
           {
             "name": "reqBody",
@@ -2757,7 +2805,7 @@ func init() {
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
                   "type": "string"
                 }
               }
@@ -3011,69 +3059,6 @@ func init() {
         }
       }
     },
-    "/usage/addHost": {
-      "post": {
-        "description": "add host usage info into database",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "addHostUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "currentCPU": {
-                  "type": "number"
-                },
-                "currentRAM": {
-                  "type": "number"
-                },
-                "hostAddress": {
-                  "type": "string"
-                },
-                "hostName": {
-                  "type": "string"
-                },
-                "totalCPU": {
-                  "type": "number"
-                },
-                "totalRAM": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      }
-    },
     "/usage/addVM": {
       "post": {
         "description": "add VM usage info into database",
@@ -3117,16 +3102,16 @@ func init() {
         }
       }
     },
-    "/usage/deleteHost": {
-      "delete": {
-        "description": "delete host usage info",
+    "/usage/add_resource": {
+      "post": {
+        "description": "add resource usage info into database",
         "consumes": [
           "application/json"
         ],
         "tags": [
           "usage"
         ],
-        "operationId": "deleteHostUsage",
+        "operationId": "addResourceUsage",
         "parameters": [
           {
             "name": "reqBody",
@@ -3134,10 +3119,73 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
+                  "type": "string"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "enum": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
+    "/usage/delete_resource": {
+      "delete": {
+        "description": "delete resource usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "deleteResourceUsage",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
+                "hostAddress": {
                   "type": "string"
                 }
               }
@@ -3170,11 +3218,11 @@ func init() {
     },
     "/usage/getUsage": {
       "get": {
-        "description": "get host usage info during last period",
+        "description": "get resource usage info during last period",
         "tags": [
           "usage"
         ],
-        "operationId": "hostPastUsage",
+        "operationId": "resourcePastUsage",
         "responses": {
           "200": {
             "description": "OK"
@@ -3185,16 +3233,16 @@ func init() {
         }
       }
     },
-    "/usage/updateHost": {
+    "/usage/update_resource": {
       "put": {
-        "description": "update host usage info",
+        "description": "update datacenter usage info",
         "consumes": [
           "application/json"
         ],
         "tags": [
           "usage"
         ],
-        "operationId": "updateHostUsage",
+        "operationId": "updateResourceUsage",
         "parameters": [
           {
             "name": "reqBody",
@@ -3211,8 +3259,14 @@ func init() {
                 "hostAddress": {
                   "type": "string"
                 },
-                "hostName": {
+                "name": {
                   "type": "string"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
                 }
               }
             }
@@ -3227,7 +3281,7 @@ func init() {
                 "message": {
                   "type": "string",
                   "enum": [
-                    "host usage recorded"
+                    "resource usage recorded"
                   ]
                 }
               }
@@ -3479,7 +3533,7 @@ func init() {
         "currentRAM": {
           "type": "number"
         },
-        "dcName": {
+        "datacenter": {
           "type": "string"
         },
         "guestOS": {
@@ -3609,6 +3663,9 @@ func init() {
         "RAMPercent": {
           "type": "number"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -3618,13 +3675,13 @@ func init() {
         "datacenter": {
           "type": "string"
         },
-        "hostName": {
-          "type": "string"
-        },
         "id": {
           "type": "integer"
         },
         "isActive": {
+          "type": "boolean"
+        },
+        "isResourcePool": {
           "type": "boolean"
         },
         "jobCompleted": {
@@ -3632,6 +3689,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",
@@ -3676,6 +3736,9 @@ func init() {
         "activeVMs": {
           "type": "integer"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -3688,7 +3751,7 @@ func init() {
         "dateAdded": {
           "type": "string"
         },
-        "hostName": {
+        "hostAddress": {
           "type": "string"
         },
         "id": {
@@ -3705,6 +3768,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",
@@ -3749,6 +3815,9 @@ func init() {
         "RAMPercent": {
           "type": "number"
         },
+        "cluster": {
+          "type": "string"
+        },
         "currentCPU": {
           "type": "number"
         },
@@ -3761,7 +3830,7 @@ func init() {
         "dateAdded": {
           "type": "string"
         },
-        "hostName": {
+        "hostAddress": {
           "type": "string"
         },
         "id": {
@@ -3775,6 +3844,9 @@ func init() {
         },
         "monitored": {
           "type": "boolean"
+        },
+        "name": {
+          "type": "string"
         },
         "platformType": {
           "type": "string",

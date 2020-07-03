@@ -53,7 +53,7 @@ func startDB() {
 	db.AutoMigrate(&models.Policy{}).AddForeignKey("user_ref", "users(id)", "CASCADE", "CASCADE").AddForeignKey("project_ref", "projects(id)", "SET NULL", "CASCADE").AddForeignKey("template_ref", "templates(id)", "SET NULL", "CASCADE")
 	db.AutoMigrate(&models.Resource{}).AddForeignKey("user_ref", "users(id)", "CASCADE", "CASCADE").AddForeignKey("policy_ref", "policies(id)", "SET NULL", "CASCADE")
 	db.AutoMigrate(&models.VM{}).AddForeignKey("resource_ref", "resources(id)", "CASCADE", "CASCADE")
-	db.AutoMigrate(&models.HostUsage{}).AddForeignKey("resource_ref", "resources(id)", "CASCADE", "CASCADE")
+	db.AutoMigrate(&models.ResourceUsage{}).AddForeignKey("resource_ref", "resources(id)", "CASCADE", "CASCADE")
 	db.AutoMigrate(&models.VMUsage{}).AddForeignKey("vm_ref", "vms(id)", "CASCADE", "CASCADE")
 	fmt.Println("DB connection success")
 

@@ -13,6 +13,7 @@ import (
 	"github.com/vmware/govmomi/vim25/soap"
 
 	"tides-server/pkg/config"
+	"tides-server/pkg/logger"
 	"tides-server/pkg/models"
 	"tides-server/pkg/restapi/operations/resource"
 )
@@ -32,6 +33,8 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	ctx := context.Background()
 	c, err := govmomi.NewClient(ctx, u, true)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/validate/: [404] Connection failure")
 		return resource.NewValidateResourceNotFound()
 	}
 
@@ -41,6 +44,8 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 
 	v, err := m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"Datacenter"}, true)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/validate/: [404] Container view failure")
 		return resource.NewValidateResourceNotFound()
 	}
 
@@ -49,6 +54,8 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	var dss []mo.Datacenter
 	err = v.Retrieve(ctx, []string{"Datacenter"}, []string{}, &dss)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/validate/: [404] Datacenter not found")
 		return resource.NewValidateResourceNotFound()
 	}
 	for _, dc := range dss {
@@ -56,10 +63,14 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 		resBody.Results = append(resBody.Results, dc.ManagedEntity.Name)
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/validate/: [200] Resource validation success")
+
 	resBody.Message = "Success"
 	return resource.NewValidateResourceOK().WithPayload(&resBody)
 }
 
+// Register new clusters or resource pools
 func AddResourceHandler(params resource.AddResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewAddResourceUnauthorized()
@@ -68,14 +79,18 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	body := params.ReqBody
 
-	u, err := soap.ParseURL(body.Host)
+	u, err := soap.ParseURL(body.HostAddress)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/add/: [404] Connection failure")
 		return resource.NewAddResourceNotFound()
 	}
 	u.User = url.UserPassword(body.Username, body.Password)
 	ctx := context.Background()
 	c, err := govmomi.NewClient(ctx, u, true)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/add: [404] Connection failure")
 		return resource.NewAddResourceNotFound()
 	}
 
@@ -83,6 +98,8 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 
 	v, err := m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"Datacenter"}, true)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/add/: [404] Container view failure")
 		return resource.NewAddResourceNotFound()
 	}
 
@@ -91,6 +108,8 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	var dss []mo.Datacenter
 	err = v.Retrieve(ctx, []string{"Datacenter"}, []string{}, &dss)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/add/: [404] Datacenter not found")
 		return resource.NewAddResourceNotFound()
 	}
 
@@ -108,66 +127,190 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 		return resource.NewAddResourceNotFound()
 	}
 
-	v, err = m.CreateContainerView(ctx, datacenter.HostFolder, []string{"HostSystem"}, true)
-	var hss []mo.HostSystem
-	err = v.Retrieve(ctx, []string{"HostSystem"}, []string{}, &hss)
 	db := config.GetDB()
-	var res []*models.ResourceAddItem
 
-	for _, hs := range hss {
-		hostName := hs.Summary.Config.Name
-		totalCPU := float64(hs.Summary.Hardware.CpuMhz) * float64(hs.Summary.Hardware.NumCpuCores) / float64(1000)
-		currentCPU := float64(hs.Summary.QuickStats.OverallCpuUsage) / float64(1000)
-		totalMem := float64(hs.Summary.Hardware.MemorySize) / float64(1024*1024*1024)
-		currentMem := float64(hs.Summary.QuickStats.OverallMemoryUsage) / float64(1024)
+	res := []*models.ResourceAddItem{}
 
-		newResource := models.Resource{
-			Datacenter:   body.Datacenters,
-			HostAddress:  body.Host,
-			HostName:     hostName,
-			IsActive:     true,
-			JobCompleted: 0,
-			Monitored:    false,
-			Password:     body.Password,
-			PlatformType: body.Vmtype,
-			PolicyRef:    nil,
-			Status:       "unknown",
-			UserRef:      uid,
-			Username:     body.Username,
-		}
-		db.Create(&newResource)
-
-		newHostUsage := models.HostUsage{
-			CurrentCPU:  currentCPU,
-			CurrentRAM:  currentMem,
-			HostAddress: body.Host,
-			HostName:    hostName,
-			PercentCPU:  currentCPU / totalCPU,
-			PercentRAM:  currentMem / totalMem,
-			TotalCPU:    totalCPU,
-			TotalRAM:    totalMem,
-			ResourceRef: newResource.Model.ID,
-		}
-		db.Create(&newHostUsage)
-
-		newResultItem := models.ResourceAddItem{
-			CPUPercent:   currentCPU / totalCPU,
-			RAMPercent:   currentMem / totalMem,
-			CurrentCPU:   currentCPU,
-			CurrentRAM:   currentMem,
-			Datacenter:   body.Datacenters,
-			HostName:     hostName,
-			IsActive:     true,
-			JobCompleted: 0,
-			Monitored:    false,
-			PlatformType: body.Vmtype,
-			TotalCPU:     totalCPU,
-			TotalRAM:     totalMem,
+	if !body.IsResourcePool {
+		var clu models.Resource
+		if !db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RecordNotFound() {
+			if clu.IsResourcePool {
+				logger.SetLogLevel("ERROR")
+				logger.Error("/resource/add/: [404] Child resource pool already registered")
+				return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+					Message: "Child resource pool already registered!",
+				})
+			} else {
+				logger.SetLogLevel("ERROR")
+				logger.Error("/resource/add/: [404] Cluster already registered")
+				return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+					Message: "Cluster already registered!",
+				})
+			}
 		}
 
-		res = append(res, &newResultItem)
+		v, err = m.CreateContainerView(ctx, datacenter.HostFolder, []string{"ClusterComputeResource"}, true)
+		var hss []mo.ClusterComputeResource
+		err = v.Retrieve(ctx, []string{"ClusterComputeResource"}, []string{}, &hss)
+		for _, newclus := range body.Resources {
+			for _, hs := range hss {
+				if newclus == hs.ManagedEntity.Name {
+					newres := models.Resource{
+						Cluster:        newclus,
+						Datacenter:     body.Datacenters,
+						HostAddress:    body.HostAddress,
+						IsActive:       true,
+						IsResourcePool: false,
+						JobCompleted:   0,
+						Monitored:      false,
+						Name:           newclus,
+						Password:       body.Password,
+						PlatformType:   body.Vmtype,
+						Status:         "unknown",
+						TotalJobs:      0,
+						UserRef:        uid,
+						Username:       body.Username,
+					}
 
+					db.Create(&newres)
+
+					Summary := hs.Summary.GetComputeResourceSummary()
+
+					CurrentCPU := float64(Summary.TotalCpu-Summary.EffectiveCpu) / 1000.0
+					CurrentRAM := float64(Summary.TotalMemory)/(1024.0*1024.0*1024.0) - float64(Summary.EffectiveMemory)/1024.0
+					TotalCPU := float64(Summary.TotalCpu) / 1000.0
+					TotalRAM := float64(Summary.TotalMemory) / (1024.0 * 1024.0 * 1024.0)
+
+					newResourceUsage := models.ResourceUsage{
+						CurrentCPU:  CurrentCPU,
+						CurrentRAM:  CurrentRAM,
+						HostAddress: body.HostAddress,
+						Name:        newclus,
+						PercentCPU:  CurrentCPU / TotalCPU,
+						PercentRAM:  CurrentRAM / TotalRAM,
+						TotalCPU:    TotalCPU,
+						TotalRAM:    TotalRAM,
+						ResourceRef: newres.Model.ID,
+					}
+
+					db.Create(&newResourceUsage)
+
+					re := models.ResourceAddItem{
+						CPUPercent:     CurrentCPU / TotalCPU,
+						RAMPercent:     CurrentRAM / TotalRAM,
+						Cluster:        body.Cluster,
+						CurrentCPU:     CurrentCPU,
+						CurrentRAM:     CurrentRAM,
+						Datacenter:     body.Datacenters,
+						ID:             int64(newres.Model.ID),
+						IsActive:       true,
+						IsResourcePool: false,
+						JobCompleted:   0,
+						Monitored:      false,
+						Name:           newclus,
+						PlatformType:   body.Vmtype,
+						Status:         "unknown",
+						TotalCPU:       TotalCPU,
+						TotalJobs:      0,
+						TotalRAM:       TotalRAM,
+					}
+
+					res = append(res, &re)
+				}
+			}
+		}
+	} else {
+		var clu models.Resource
+		if !db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RecordNotFound() {
+			logger.SetLogLevel("ERROR")
+			logger.Error("/resource/add/: [404] Parent cluster already registered")
+			return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+				Message: "Parent cluster already registered!",
+			})
+		}
+
+		v, err = m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"ResourcePool"}, true)
+		var pool []mo.ResourcePool
+		err = v.Retrieve(ctx, []string{"ResourcePool"}, []string{}, &pool)
+
+		for _, newpo := range body.Resources {
+			for _, po := range pool {
+				if newpo == po.ManagedEntity.Name {
+					newres := models.Resource{
+						Cluster:        body.Cluster,
+						Datacenter:     body.Datacenters,
+						HostAddress:    body.HostAddress,
+						IsActive:       true,
+						IsResourcePool: true,
+						JobCompleted:   0,
+						Monitored:      false,
+						Name:           newpo,
+						Password:       body.Password,
+						PlatformType:   body.Vmtype,
+						Status:         "unknown",
+						TotalJobs:      0,
+						UserRef:        uid,
+						Username:       body.Username,
+					}
+
+					db.Create(&newres)
+
+					Summary := po.Summary.GetResourcePoolSummary().QuickStats
+					RuntimeInfo := po.Runtime
+
+					CurrentCPU := float64(RuntimeInfo.Cpu.OverallUsage)
+					TotalCPU := float64(RuntimeInfo.Cpu.MaxUsage)
+					CurrentRAM := float64(RuntimeInfo.Memory.OverallUsage) / (1024.0 * 1024.0)
+					TotalRAM := float64(RuntimeInfo.Memory.MaxUsage) / (1024.0 * 1024.0)
+
+					fmt.Println(CurrentCPU, TotalCPU, CurrentRAM, TotalRAM, Summary.GuestMemoryUsage, Summary.HostMemoryUsage, Summary.DistributedCpuEntitlement,
+						Summary.DistributedMemoryEntitlement, Summary.PrivateMemory, Summary.SharedMemory,
+						Summary.SwappedMemory, Summary.BalloonedMemory, Summary.OverheadMemory, Summary.ConsumedOverheadMemory,
+						Summary.CompressedMemory, RuntimeInfo.Cpu.OverallUsage, RuntimeInfo.Cpu.MaxUsage,
+						RuntimeInfo.Memory.OverallUsage, RuntimeInfo.Memory.MaxUsage)
+
+					newResourceUsage := models.ResourceUsage{
+						CurrentCPU:  CurrentCPU,
+						CurrentRAM:  CurrentRAM,
+						HostAddress: body.HostAddress,
+						Name:        newpo,
+						PercentCPU:  CurrentCPU / TotalCPU,
+						PercentRAM:  CurrentRAM / TotalRAM,
+						TotalCPU:    TotalCPU,
+						TotalRAM:    TotalRAM,
+						ResourceRef: newres.Model.ID,
+					}
+
+					db.Create(&newResourceUsage)
+
+					re := models.ResourceAddItem{
+						CPUPercent:     CurrentCPU / TotalCPU,
+						RAMPercent:     CurrentRAM / TotalRAM,
+						Cluster:        body.Cluster,
+						CurrentCPU:     CurrentCPU,
+						CurrentRAM:     CurrentRAM,
+						Datacenter:     body.Datacenters,
+						ID:             int64(newres.Model.ID),
+						IsActive:       true,
+						IsResourcePool: true,
+						JobCompleted:   0,
+						Monitored:      false,
+						Name:           newpo,
+						PlatformType:   body.Vmtype,
+						Status:         "unknown",
+						TotalCPU:       TotalCPU,
+						TotalJobs:      0,
+						TotalRAM:       TotalRAM,
+					}
+
+					res = append(res, &re)
+				}
+			}
+		}
 	}
+
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/add/: [200] Resource registration success")
 
 	return resource.NewAddResourceOK().WithPayload(&resource.AddResourceOKBody{
 		Message: "success",
@@ -185,13 +328,10 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 	db := config.GetDB()
 
 	db.Where("user_ref = ?", uid).Find(&resources)
-	if len(resources) == 0 {
-		return resource.NewListResourceNotFound()
-	}
 
 	var response []*models.ResourceListItem
 	for _, res := range resources {
-		var resUsage models.HostUsage
+		var resUsage models.ResourceUsage
 		db.Where("resource_ref = ?", res.Model.ID).First(&resUsage)
 		var pol models.Policy
 		db.Where("id = ?", res.PolicyRef).First(&pol)
@@ -199,15 +339,17 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 		newResultItem := models.ResourceListItem{
 			CPUPercent:   resUsage.PercentCPU,
 			RAMPercent:   resUsage.PercentRAM,
+			Cluster:      res.Cluster,
 			CurrentCPU:   resUsage.CurrentCPU,
 			CurrentRAM:   resUsage.CurrentRAM,
 			DateAdded:    time.Time.String(res.Model.CreatedAt),
 			Datacenter:   res.Datacenter,
-			HostName:     res.HostName,
+			HostAddress:  res.HostAddress,
 			ID:           int64(res.Model.ID),
 			IsActive:     res.IsActive,
 			JobCompleted: res.JobCompleted,
 			Monitored:    res.Monitored,
+			Name:         res.Name,
 			PlatformType: res.PlatformType,
 			PolicyName:   pol.Name,
 			Status:       res.Status,
@@ -218,6 +360,9 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 
 		response = append(response, &newResultItem)
 	}
+
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/list/: [200] Resource retrival success")
 
 	return resource.NewListResourceOK().WithPayload(&resource.ListResourceOKBody{
 		Message: "success",
@@ -238,9 +383,13 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	// db.Where("id = ? AND user_ref = ?", rid, uid).Delete(&res)
 	err := db.Unscoped().Where("id = ? AND user_ref = ?", rid, uid).Delete(&res).Error
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/delete/: [404] Resource not found")
 		return resource.NewDeleteResourceNotFound()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/delete/: [200] Resource deletion success")
 	return resource.NewDeleteResourceOK()
 }
 
@@ -273,15 +422,17 @@ func ToggleActiveHandler(params resource.ToggleActiveParams) middleware.Responde
 	rid := params.ReqBody.ID
 	var res models.Resource
 	db := config.GetDB()
-	db.Where("id = ?", rid).First(&res)
-
-	if res.HostName == "" {
+	if db.Where("id = ?", rid).First(&res).RecordNotFound() {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/toggle_active/: [404] Resource not found")
 		return resource.NewToggleActiveNotFound()
 	}
 
 	res.IsActive = !res.IsActive
 	db.Save(&res)
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/toggle_active/: [200] Toggle active success")
 	return resource.NewToggleActiveOK().WithPayload(&resource.ToggleActiveOKBody{
 		Message: "success",
 	})
@@ -303,6 +454,8 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 	db.Where("id = ?", pid).First(&pol)
 
 	if res.Model.ID == 0 || pol.Model.ID == 0 {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/assign_policy/: [404] Resource not found")
 		return resource.NewAssignPolicyNotFound()
 	}
 
@@ -310,6 +463,8 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 	*res.PolicyRef = uint(pid)
 	db.Save(&res)
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/assign_policy/: [200] Assign policy success")
 	return resource.NewAssignPolicyOK().WithPayload(&resource.AssignPolicyOKBody{
 		Message: "success",
 	})
@@ -322,9 +477,13 @@ func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
 	db := config.GetDB()
 	err := db.Unscoped().Where("ip_address = ?", ip).Delete(&vm).Error
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/destroy_vm/: [404] VM not found")
 		return resource.NewDestroyVMNotFound()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/destroy_vm/: [200] VM destroyed")
 	return resource.NewDestroyVMOK().WithPayload(&resource.DestroyVMOKBody{
 		Message: "success",
 	})
@@ -347,21 +506,23 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 		totalVMs := len(vms)
 		var pol models.Policy
 		db.Where("id = ?", res.PolicyRef).First(&pol)
-		var hu models.HostUsage
+		var hu models.ResourceUsage
 		db.Where("resource_ref = ?", res.Model.ID).First(&hu)
 
 		result := models.ResourceInfoItem{
 			CPUPercent:   hu.PercentCPU,
 			RAMPercent:   hu.PercentRAM,
+			Cluster:      res.Cluster,
 			CurrentCPU:   hu.CurrentCPU,
 			CurrentRAM:   hu.CurrentRAM,
 			Datacenter:   res.Datacenter,
 			DateAdded:    time.Time.String(res.Model.CreatedAt),
-			HostName:     res.HostName,
+			HostAddress:  res.HostAddress,
 			ID:           int64(res.Model.ID),
 			IsActive:     res.IsActive,
 			JobCompleted: res.JobCompleted,
 			Monitored:    res.Monitored,
+			Name:         res.Name,
 			PlatformType: res.PlatformType,
 			PolicyName:   pol.Name,
 			Status:       res.Status,
@@ -384,6 +545,8 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 		results = append(results, &result)
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/get_details/: [200] Resource info retrival success")
 	return resource.NewResourceInfoOK().WithPayload(&resource.ResourceInfoOKBody{
 		Message: "success",
 		Results: results,
@@ -443,6 +606,8 @@ func ResourceVMsInfoHandler(params resource.ResourceVMsInfoParams) middleware.Re
 		results = append(results, curvms)
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/get_vm_details/: [200] Resource VM info retrival success")
 	return resource.NewResourceVMsInfoOK().WithPayload(&resource.ResourceVMsInfoOKBody{
 		Message: "success",
 		Results: results,
