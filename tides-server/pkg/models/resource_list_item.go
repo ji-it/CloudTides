@@ -25,6 +25,9 @@ type ResourceListItem struct {
 	// RAM percent
 	RAMPercent float64 `json:"RAMPercent,omitempty"`
 
+	// cluster
+	Cluster string `json:"cluster,omitempty"`
+
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
@@ -37,8 +40,8 @@ type ResourceListItem struct {
 	// date added
 	DateAdded string `json:"dateAdded,omitempty"`
 
-	// host name
-	HostName string `json:"hostName,omitempty"`
+	// host address
+	HostAddress string `json:"hostAddress,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
@@ -51,6 +54,9 @@ type ResourceListItem struct {
 
 	// monitored
 	Monitored bool `json:"monitored,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
 
 	// platform type
 	// Enum: [vsphere kvm hyper-v]

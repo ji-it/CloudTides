@@ -15,23 +15,29 @@ import (
 type Resource struct {
 	gorm.Model
 
+	// cluster
+	Cluster string `json:"cluster,omitempty"`
+
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
 
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
 
-	// host name
-	HostName string `json:"hostName,omitempty" gorm:"unique"`
-
 	// is active
 	IsActive bool `json:"isActive,omitempty"`
+
+	// is resource pool
+	IsResourcePool bool `json:"isResourcePool,omitempty"`
 
 	// job completed
 	JobCompleted int64 `json:"jobCompleted,omitempty"`
 
 	// monitored
 	Monitored bool `json:"monitored,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty" gorm:"unique"`
 
 	// password
 	Password string `json:"password,omitempty"`
