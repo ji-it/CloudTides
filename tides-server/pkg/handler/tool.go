@@ -9,6 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	"tides-server/pkg/config"
+	"tides-server/pkg/logger"
 	"tides-server/pkg/models"
 )
 
@@ -16,6 +17,8 @@ func ParseUserIdFromToken(req *http.Request) (uint, error) {
 	reqToken := req.Header.Get("Authorization")
 	splitToken := strings.Split(reqToken, "Bearer ")
 	if len(splitToken) < 2 {
+		logger.SetLogLevel("ERROR")
+		logger.Error("Token not supplied in request")
 		return 0, errors.New("Token not supplied in request!")
 	}
 	stringToken := splitToken[1]
@@ -29,6 +32,8 @@ func ParseUserIdFromToken(req *http.Request) (uint, error) {
 		},
 	)
 	if claims.ExpiresAt < time.Now().UTC().Unix() {
+		logger.SetLogLevel("ERROR")
+		logger.Error("JWT is expired")
 		return 0, errors.New("JWT is expired")
 	}
 	return claims.Id, err

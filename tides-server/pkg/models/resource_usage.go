@@ -7,9 +7,9 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// HostUsage host usage
+// ResourceUsage host usage
 
-type HostUsage struct {
+type ResourceUsage struct {
 	gorm.Model
 
 	// current CPU
@@ -21,8 +21,8 @@ type HostUsage struct {
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
 
-	// host name
-	HostName string `json:"hostName,omitempty"`
+	// name
+	Name string `json:"name,omitempty"`
 
 	// percent CPU
 	PercentCPU float64 `json:"percentCPU,omitempty"`
@@ -41,7 +41,7 @@ type HostUsage struct {
 }
 
 // Validate validates this host usage
-func (m *HostUsage) Validate(formats strfmt.Registry) error {
+func (m *ResourceUsage) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if len(res) > 0 {
@@ -51,7 +51,7 @@ func (m *HostUsage) Validate(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *HostUsage) MarshalBinary() ([]byte, error) {
+func (m *ResourceUsage) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -59,8 +59,8 @@ func (m *HostUsage) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *HostUsage) UnmarshalBinary(b []byte) error {
-	var res HostUsage
+func (m *ResourceUsage) UnmarshalBinary(b []byte) error {
+	var res ResourceUsage
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

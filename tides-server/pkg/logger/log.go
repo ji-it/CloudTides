@@ -9,11 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"tides-server/pkg/config"
-
 	"github.com/sirupsen/logrus"
-
-	syslog "github.com/sirupsen/logrus/hooks/syslog"
 )
 
 var (
@@ -31,7 +27,7 @@ func initLogrus() {
 	// Disable logrun to output logs in local machine
 	logrus.SetOutput(ioutil.Discard)
 
-	config := config.GetConfig()
+	/*config := config.GetConfig()
 	if len(config.LoggingRemoteOptions) > 0 {
 		logopts := config.LoggingRemoteOptions[0]
 		hook, err := syslog.NewSyslogHook(
@@ -44,7 +40,7 @@ func initLogrus() {
 		} else {
 			logrus.AddHook(hook)
 		}
-	}
+	}*/
 }
 
 func initConsole() {

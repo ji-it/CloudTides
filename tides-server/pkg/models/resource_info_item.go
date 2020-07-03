@@ -28,6 +28,9 @@ type ResourceInfoItem struct {
 	// active v ms
 	ActiveVMs int64 `json:"activeVMs,omitempty"`
 
+	// cluster
+	Cluster string `json:"cluster,omitempty"`
+
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
@@ -40,8 +43,8 @@ type ResourceInfoItem struct {
 	// date added
 	DateAdded string `json:"dateAdded,omitempty"`
 
-	// host name
-	HostName string `json:"hostName,omitempty"`
+	// host address
+	HostAddress string `json:"hostAddress,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
@@ -57,6 +60,9 @@ type ResourceInfoItem struct {
 
 	// monitored
 	Monitored bool `json:"monitored,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
 
 	// platform type
 	// Enum: [vsphere kvm hyper-v]

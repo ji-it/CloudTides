@@ -63,7 +63,7 @@ paths:
           schema:
             type: object
             properties:
-              host:
+              hostAddress:
                 type: string
               username:
                 type: string
@@ -79,6 +79,14 @@ paths:
                   - hyper-v
               datacenters:
                 type: string
+              cluster:
+                type: string
+              isResourcePool:
+                type: boolean
+              resources:
+                type: array
+                items:
+                  type: string
       responses:
         200:
           description: 'returns the list of created resources'
@@ -159,8 +167,8 @@ paths:
                 type: string
   /resource/update:
     put:
-      operationId: 'updateHost'
-      description: 'update usage info of host'
+      operationId: 'updateResource'
+      description: 'update usage info of resource'
       tags:
         - 'resource'
       produces:
@@ -175,7 +183,7 @@ paths:
             properties:
               hostAddress:
                 type: string
-              hostName:
+              name:
                 type: string
               currentCPU:
                 type: number
@@ -769,8 +777,8 @@ paths:
                   - 'no matching objects'
   /usage/getUsage:
     get:
-      operationId: 'hostPastUsage'
-      description: 'get host usage info during last period'
+      operationId: 'resourcePastUsage'
+      description: 'get resource usage info during last period'
       tags:
         - 'usage'
       responses:
@@ -778,10 +786,10 @@ paths:
           description: 'OK'
         400:
           description: 'bad request'
-  /usage/addHost:
+  /usage/add_resource:
     post:
-      operationId: 'addHostUsage'
-      description: 'add host usage info into database'
+      operationId: 'addResourceUsage'
+      description: 'add resource usage info into database'
       tags:
         - 'usage'
       consumes:
@@ -794,7 +802,7 @@ paths:
             properties:
               hostAddress:
                 type: string
-              hostName:
+              name:
                 type: string
               totalRAM:
                 type: number
@@ -818,10 +826,10 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
-  /usage/updateHost:
+  /usage/update_resource:
     put:
-      operationId: 'updateHostUsage'
-      description: 'update host usage info'
+      operationId: 'updateResourceUsage'
+      description: 'update datacenter usage info'
       tags:
         - 'usage'
       consumes:
@@ -834,11 +842,15 @@ paths:
             properties:
               hostAddress:
                 type: string
-              hostName:
+              name:
                 type: string
               currentCPU:
                 type: number
               currentRAM:
+                type: number
+              totalCPU:
+                type: number
+              totalRAM:
                 type: number
       responses:
         200:
@@ -849,13 +861,13 @@ paths:
               message:
                 type: string
                 enum:
-                  - 'host usage recorded'
+                  - 'resource usage recorded'
         404:
           description: 'resource not found'
-  /usage/deleteHost:
+  /usage/delete_resource:
     delete:
-      operationId: 'deleteHostUsage'
-      description: 'delete host usage info'
+      operationId: 'deleteResourceUsage'
+      description: 'delete resource usage info'
       tags:
         - 'usage'
       consumes:
@@ -868,7 +880,7 @@ paths:
             properties:
               hostAddress:
                 type: string
-              hostName:
+              datacenter:
                 type: string
       responses:
         200:
@@ -906,7 +918,7 @@ paths:
                   type: number
                 poweredOn:
                   type: boolean
-                dcName:
+                datacenter:
                   type: string
                 name:
                   type: string
@@ -1056,8 +1068,6 @@ definitions:
     properties:
       id:
         type: integer
-      hostName:
-        type: string
       status:
         type: string
         enum:
@@ -1074,6 +1084,10 @@ definitions:
           - kvm
           - hyper-v
       datacenter:
+        type: string
+      cluster:
+        type: string
+      name:
         type: string
       totalCPU:
         type: number
@@ -1094,6 +1108,8 @@ definitions:
       RAMPercent:
         type: number
       monitored:
+        type: boolean
+      isResourcePool:
         type: boolean
   ResourceListItem:
     type: object
@@ -1102,7 +1118,7 @@ definitions:
         type: integer
       dateAdded:
         type: string
-      hostName:
+      hostAddress:
         type: string
       status:
         type: string
@@ -1141,6 +1157,10 @@ definitions:
         type: number
       monitored:
         type: boolean
+      cluster:
+        type: string
+      name:
+        type: string
   ResourceInfoItem:
     type: object
     properties:
@@ -1148,7 +1168,7 @@ definitions:
         type: integer
       dateAdded:
         type: string
-      hostName:
+      hostAddress:
         type: string
       status:
         type: string
@@ -1192,6 +1212,10 @@ definitions:
       activeVMs:
         type: integer
       lastDeployed:
+        type: string
+      cluster:
+        type: string
+      name:
         type: string
   ResourceVMInfoItem:
     type: object

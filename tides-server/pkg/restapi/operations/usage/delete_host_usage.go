@@ -36,7 +36,7 @@ func NewDeleteHostUsage(ctx *middleware.Context, handler DeleteHostUsageHandler)
 
 /*DeleteHostUsage swagger:route DELETE /usage/deleteHost usage deleteHostUsage
 
-delete host usage info
+delete datacenter usage info
 
 */
 type DeleteHostUsage struct {
@@ -67,11 +67,11 @@ func (o *DeleteHostUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model DeleteHostUsageBody
 type DeleteHostUsageBody struct {
 
+	// datacenter
+	Datacenter string `json:"datacenter,omitempty"`
+
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
-
-	// host name
-	HostName string `json:"hostName,omitempty"`
 }
 
 // Validate validates this delete host usage body
