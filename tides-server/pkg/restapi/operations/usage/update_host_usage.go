@@ -36,7 +36,7 @@ func NewUpdateHostUsage(ctx *middleware.Context, handler UpdateHostUsageHandler)
 
 /*UpdateHostUsage swagger:route PUT /usage/updateHost usage updateHostUsage
 
-update host usage info
+update datacenter usage info
 
 */
 type UpdateHostUsage struct {
@@ -73,11 +73,11 @@ type UpdateHostUsageBody struct {
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
+	// datacenter
+	Datacenter string `json:"datacenter,omitempty"`
+
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
-
-	// host name
-	HostName string `json:"hostName,omitempty"`
 }
 
 // Validate validates this update host usage body

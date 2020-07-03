@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/go-openapi/runtime/middleware"
 
+	"tides-server/pkg/logger"
 	"tides-server/pkg/restapi/operations/policy"
 
 	"tides-server/pkg/config"
@@ -35,9 +36,13 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	err := db.Create(&newPolicy).Error
 
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/policy/add/: [400] Policy creation failure")
 		return policy.NewAddPolicyBadRequest()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/policy/add/: [200] Policy creation success")
 	return policy.NewAddPolicyOK().WithPayload(&policy.AddPolicyOKBody{
 		Message: "success",
 	})
@@ -52,6 +57,8 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 	var pol models.Policy
 	db := config.GetDB()
 	if db.Where("id = ?", body.ID).First(&pol).RecordNotFound() {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/policy/update/: [404] Policy not found")
 		return policy.NewUpdatePolicyNotFound()
 	}
 
@@ -68,9 +75,13 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 
 	err := db.Save(&pol).Error
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/policy/update/: [400] Policy update failure")
 		return policy.NewUpdatePolicyBadRequest()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/policy/update/: [200] Policy update success")
 	return policy.NewUpdatePolicyOK().WithPayload(&policy.UpdatePolicyOKBody{
 		Message: "success",
 	})
@@ -87,9 +98,6 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 	db := config.GetDB()
 
 	db.Where("user_ref = ?", uid).Find(&policies)
-	if len(policies) == 0 {
-		return policy.NewListPolicyNotFound()
-	}
 
 	results := []*policy.ResultsItems0{}
 	for _, pol := range policies {
@@ -112,6 +120,8 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 		results = append(results, &newResult)
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/policy/list/: [200] Policy retrival success")
 	return policy.NewListPolicyOK().WithPayload(&policy.ListPolicyOKBody{
 		Message: "success",
 		Results: results,
@@ -129,9 +139,13 @@ func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder 
 
 	err := db.Unscoped().Where("id = ?", body.ID).Delete(&pol).Error
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/policy/remove/: [404] Policy not found")
 		return policy.NewRemovePolicyNotFound()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/policy/remove/: [200] Policy deletion success")
 	return policy.NewRemovePolicyOK().WithPayload(&policy.RemovePolicyOKBody{
 		Message: "success",
 	})

@@ -9,6 +9,7 @@ import (
 	"tides-server/pkg/restapi/operations/user"
 
 	"tides-server/pkg/config"
+	"tides-server/pkg/logger"
 	"tides-server/pkg/models"
 )
 
@@ -18,6 +19,8 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	var queryUser models.User
 	db.Where("username = ?", body.Username).First(&queryUser)
 	if queryUser.Username != "" {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/register/: [400] User already registered")
 		return user.NewRegisterUserBadRequest().WithPayload(&user.RegisterUserBadRequestBody{Message: "Username already used!"})
 	}
 
@@ -31,9 +34,13 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 
 	err := db.Create(&newUser).Error
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/register/: [400] User registration failure")
 		return user.NewRegisterUserBadRequest()
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/users/register/: [200] User registration success")
 	return user.NewRegisterUserOK().WithPayload(&user.RegisterUserOKBody{UserInfo: res})
 }
 
@@ -43,9 +50,16 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	db := config.GetDB()
 	var queryUser models.User
 	db.Where("Username = ?", body.Username).First(&queryUser)
-	if queryUser.Username == "" || queryUser.Password != body.Password {
+	if queryUser.Username == "" {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/login/: [401] User not registered")
+		return user.NewUserLoginUnauthorized()
+	} else if queryUser.Password != body.Password {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/login/: [401] Wrong password")
 		return user.NewUserLoginUnauthorized()
 	}
+
 	expirationTime := time.Now().Add(expireTime)
 	claims := Claims{
 		Id: queryUser.Model.ID,
@@ -59,18 +73,25 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	signedToken, _ := token.SignedString([]byte(secretKey))
 
 	res := user.UserLoginOKBodyUserInfo{Priority: queryUser.Priority, Username: queryUser.Username}
+	logger.SetLogLevel("INFO")
+	logger.Info("/users/login/: [200] User login success")
+
 	return user.NewUserLoginOK().WithPayload(&user.UserLoginOKBody{Token: signedToken, UserInfo: &res})
 }
 
 func UserDetailsHandler(params user.UserDetailsParams) middleware.Responder {
 	id, err := ParseUserIdFromToken(params.HTTPRequest)
 	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/get_details/: [401] User verification failure")
 		return user.NewUserDetailsUnauthorized()
 	}
 	db := config.GetDB()
 	var queryUser models.User
 	db.Where("id = ?", id).First(&queryUser)
 	if queryUser.Username == "" {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/users/get_details/: [401] User not registered")
 		return user.NewUserDetailsUnauthorized()
 	}
 
@@ -84,5 +105,7 @@ func UserDetailsHandler(params user.UserDetailsParams) middleware.Responder {
 		Position:    queryUser.Position,
 	}
 
+	logger.SetLogLevel("INFO")
+	logger.Info("/users/get_details/: [401] User profile retrieved")
 	return user.NewUserDetailsOK().WithPayload(&user.UserDetailsOKBody{Message: "success", Results: &res})
 }

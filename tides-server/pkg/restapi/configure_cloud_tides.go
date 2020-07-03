@@ -44,12 +44,12 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.UsageAddHostUsageHandler == nil {
-		api.UsageAddHostUsageHandler = usage.AddHostUsageHandlerFunc(func(params usage.AddHostUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.AddHostUsage has not yet been implemented")
+	if api.UsageAddResourceUsageHandler == nil {
+		api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(func(params usage.AddResourceUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.AddResourceUsage has not yet been implemented")
 		})
 	} else {
-		api.UsageAddHostUsageHandler = usage.AddHostUsageHandlerFunc(handler.AddHostUsageHandler)
+		api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(handler.AddResourceUsageHandler)
 	}
 	if api.PolicyAddPolicyHandler == nil {
 		api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
@@ -86,12 +86,12 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	} else {
 		api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(handler.AssignPolicyHandler)
 	}
-	if api.UsageDeleteHostUsageHandler == nil {
-		api.UsageDeleteHostUsageHandler = usage.DeleteHostUsageHandlerFunc(func(params usage.DeleteHostUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.DeleteHostUsage has not yet been implemented")
+	if api.UsageDeleteResourceUsageHandler == nil {
+		api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(func(params usage.DeleteResourceUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.DeleteResourceUsage has not yet been implemented")
 		})
 	} else {
-		api.UsageDeleteHostUsageHandler = usage.DeleteHostUsageHandlerFunc(handler.DeleteHostUsageHandler)
+		api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(handler.DeleteResourceUsageHandler)
 	}
 	if api.ResourceDeleteResourceHandler == nil {
 		api.ResourceDeleteResourceHandler = resource.DeleteResourceHandlerFunc(func(params resource.DeleteResourceParams) middleware.Responder {
@@ -114,9 +114,9 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	} else {
 		api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(handler.DestroyVMHandler)
 	}
-	if api.UsageHostPastUsageHandler == nil {
-		api.UsageHostPastUsageHandler = usage.HostPastUsageHandlerFunc(func(params usage.HostPastUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.HostPastUsage has not yet been implemented")
+	if api.UsageResourcePastUsageHandler == nil {
+		api.UsageResourcePastUsageHandler = usage.ResourcePastUsageHandlerFunc(func(params usage.ResourcePastUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.ResourcePastUsage has not yet been implemented")
 		})
 	}
 	if api.PolicyListPolicyHandler == nil {
@@ -180,17 +180,17 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	} else {
 		api.ResourceToggleActiveHandler = resource.ToggleActiveHandlerFunc(handler.ToggleActiveHandler)
 	}
-	if api.ResourceUpdateHostHandler == nil {
-		api.ResourceUpdateHostHandler = resource.UpdateHostHandlerFunc(func(params resource.UpdateHostParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateHost has not yet been implemented")
+	if api.ResourceUpdateResourceHandler == nil {
+		api.ResourceUpdateResourceHandler = resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
 		})
 	}
-	if api.UsageUpdateHostUsageHandler == nil {
-		api.UsageUpdateHostUsageHandler = usage.UpdateHostUsageHandlerFunc(func(params usage.UpdateHostUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.UpdateHostUsage has not yet been implemented")
+	if api.UsageUpdateResourceUsageHandler == nil {
+		api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
 		})
 	} else {
-		api.UsageUpdateHostUsageHandler = usage.UpdateHostUsageHandlerFunc(handler.UpdateHostUsageHandler)
+		api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(handler.UpdateResourceUsageHandler)
 	}
 	if api.PolicyUpdatePolicyHandler == nil {
 		api.PolicyUpdatePolicyHandler = policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {

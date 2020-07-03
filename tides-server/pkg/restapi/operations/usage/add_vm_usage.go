@@ -158,8 +158,8 @@ type AddVMUsageParamsBodyAnon struct {
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
-	// dc name
-	DcName string `json:"dcName,omitempty"`
+	// datacenter
+	Datacenter string `json:"datacenter,omitempty"`
 
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`

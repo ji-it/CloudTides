@@ -36,7 +36,7 @@ func NewAddHostUsage(ctx *middleware.Context, handler AddHostUsageHandler) *AddH
 
 /*AddHostUsage swagger:route POST /usage/addHost usage addHostUsage
 
-add host usage info into database
+add datacenter usage info into database
 
 */
 type AddHostUsage struct {
@@ -73,11 +73,11 @@ type AddHostUsageBody struct {
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
+	// datacenter
+	Datacenter string `json:"datacenter,omitempty"`
+
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
-
-	// host name
-	HostName string `json:"hostName,omitempty"`
 
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`

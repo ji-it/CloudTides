@@ -70,17 +70,26 @@ func (o *AddResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model AddResourceBody
 type AddResourceBody struct {
 
+	// cluster
+	Cluster string `json:"cluster,omitempty"`
+
 	// datacenters
 	Datacenters string `json:"datacenters,omitempty"`
 
-	// host
-	Host string `json:"host,omitempty"`
+	// host address
+	HostAddress string `json:"hostAddress,omitempty"`
+
+	// is resource pool
+	IsResourcePool bool `json:"isResourcePool,omitempty"`
 
 	// password
 	Password string `json:"password,omitempty"`
 
 	// policy
 	Policy int64 `json:"policy,omitempty"`
+
+	// resources
+	Resources []string `json:"resources"`
 
 	// username
 	Username string `json:"username,omitempty"`
