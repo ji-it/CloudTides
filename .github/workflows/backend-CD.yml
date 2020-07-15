@@ -2,10 +2,10 @@ name: backend-CD
 on:
   push:
     branches:
-      - master
+      - wwt-patch
   pull_request:
     branches:
-      - master
+      - wwt-patch
 
 jobs:
   deploy:
