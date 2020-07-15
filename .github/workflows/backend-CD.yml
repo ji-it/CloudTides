@@ -30,9 +30,9 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          source: "tides-server/cloudtides_backend.yml"
-          target: "/root"
+        port: 22
+        source: "tides-server/cloudtides_backend.yml"
+        target: "/root"
 
       - name: Upgrade the platform remotely
         uses: fifsky/ssh-action@master
