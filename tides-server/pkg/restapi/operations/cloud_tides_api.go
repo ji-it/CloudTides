@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"tides-server/pkg/restapi/operations/policy"
+	"tides-server/pkg/restapi/operations/project"
 	"tides-server/pkg/restapi/operations/resource"
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
@@ -51,6 +52,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		PolicyAddPolicyHandler: policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
 		}),
+		ProjectAddProjectHandler: project.AddProjectHandlerFunc(func(params project.AddProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.AddProject has not yet been implemented")
+		}),
 		ResourceAddResourceHandler: resource.AddResourceHandlerFunc(func(params resource.AddResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddResource has not yet been implemented")
 		}),
@@ -66,6 +70,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceAssignPolicyHandler: resource.AssignPolicyHandlerFunc(func(params resource.AssignPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AssignPolicy has not yet been implemented")
 		}),
+		ProjectDeleteProjectHandler: project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
+		}),
 		ResourceDeleteResourceHandler: resource.DeleteResourceHandlerFunc(func(params resource.DeleteResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DeleteResource has not yet been implemented")
 		}),
@@ -80,6 +87,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		PolicyListPolicyHandler: policy.ListPolicyHandlerFunc(func(params policy.ListPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.ListPolicy has not yet been implemented")
+		}),
+		ProjectListProjectHandler: project.ListProjectHandlerFunc(func(params project.ListProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
 		}),
 		ResourceListResourceHandler: resource.ListResourceHandlerFunc(func(params resource.ListResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ListResource has not yet been implemented")
@@ -111,11 +121,17 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		PolicyUpdatePolicyHandler: policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.UpdatePolicy has not yet been implemented")
 		}),
+		ProjectUpdateProjectHandler: project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
+		}),
 		ResourceUpdateResourceHandler: resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
 		}),
 		UsageUpdateResourceUsageHandler: usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
+		}),
+		ResourceUpdateStatusHandler: resource.UpdateStatusHandlerFunc(func(params resource.UpdateStatusParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.UpdateStatus has not yet been implemented")
 		}),
 		UserUserDetailsHandler: user.UserDetailsHandlerFunc(func(params user.UserDetailsParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UserDetails has not yet been implemented")
@@ -164,6 +180,8 @@ type CloudTidesAPI struct {
 
 	// PolicyAddPolicyHandler sets the operation handler for the add policy operation
 	PolicyAddPolicyHandler policy.AddPolicyHandler
+	// ProjectAddProjectHandler sets the operation handler for the add project operation
+	ProjectAddProjectHandler project.AddProjectHandler
 	// ResourceAddResourceHandler sets the operation handler for the add resource operation
 	ResourceAddResourceHandler resource.AddResourceHandler
 	// UsageAddResourceUsageHandler sets the operation handler for the add resource usage operation
@@ -174,6 +192,8 @@ type CloudTidesAPI struct {
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
 	// ResourceAssignPolicyHandler sets the operation handler for the assign policy operation
 	ResourceAssignPolicyHandler resource.AssignPolicyHandler
+	// ProjectDeleteProjectHandler sets the operation handler for the delete project operation
+	ProjectDeleteProjectHandler project.DeleteProjectHandler
 	// ResourceDeleteResourceHandler sets the operation handler for the delete resource operation
 	ResourceDeleteResourceHandler resource.DeleteResourceHandler
 	// UsageDeleteResourceUsageHandler sets the operation handler for the delete resource usage operation
@@ -184,6 +204,8 @@ type CloudTidesAPI struct {
 	ResourceDestroyVMHandler resource.DestroyVMHandler
 	// PolicyListPolicyHandler sets the operation handler for the list policy operation
 	PolicyListPolicyHandler policy.ListPolicyHandler
+	// ProjectListProjectHandler sets the operation handler for the list project operation
+	ProjectListProjectHandler project.ListProjectHandler
 	// ResourceListResourceHandler sets the operation handler for the list resource operation
 	ResourceListResourceHandler resource.ListResourceHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
@@ -204,10 +226,14 @@ type CloudTidesAPI struct {
 	ResourceToggleActiveHandler resource.ToggleActiveHandler
 	// PolicyUpdatePolicyHandler sets the operation handler for the update policy operation
 	PolicyUpdatePolicyHandler policy.UpdatePolicyHandler
+	// ProjectUpdateProjectHandler sets the operation handler for the update project operation
+	ProjectUpdateProjectHandler project.UpdateProjectHandler
 	// ResourceUpdateResourceHandler sets the operation handler for the update resource operation
 	ResourceUpdateResourceHandler resource.UpdateResourceHandler
 	// UsageUpdateResourceUsageHandler sets the operation handler for the update resource usage operation
 	UsageUpdateResourceUsageHandler usage.UpdateResourceUsageHandler
+	// ResourceUpdateStatusHandler sets the operation handler for the update status operation
+	ResourceUpdateStatusHandler resource.UpdateStatusHandler
 	// UserUserDetailsHandler sets the operation handler for the user details operation
 	UserUserDetailsHandler user.UserDetailsHandler
 	// UserUserLoginHandler sets the operation handler for the user login operation
@@ -286,6 +312,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.PolicyAddPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.AddPolicyHandler")
 	}
+	if o.ProjectAddProjectHandler == nil {
+		unregistered = append(unregistered, "project.AddProjectHandler")
+	}
 	if o.ResourceAddResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddResourceHandler")
 	}
@@ -301,6 +330,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceAssignPolicyHandler == nil {
 		unregistered = append(unregistered, "resource.AssignPolicyHandler")
 	}
+	if o.ProjectDeleteProjectHandler == nil {
+		unregistered = append(unregistered, "project.DeleteProjectHandler")
+	}
 	if o.ResourceDeleteResourceHandler == nil {
 		unregistered = append(unregistered, "resource.DeleteResourceHandler")
 	}
@@ -315,6 +347,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.PolicyListPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.ListPolicyHandler")
+	}
+	if o.ProjectListProjectHandler == nil {
+		unregistered = append(unregistered, "project.ListProjectHandler")
 	}
 	if o.ResourceListResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ListResourceHandler")
@@ -346,11 +381,17 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.PolicyUpdatePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.UpdatePolicyHandler")
 	}
+	if o.ProjectUpdateProjectHandler == nil {
+		unregistered = append(unregistered, "project.UpdateProjectHandler")
+	}
 	if o.ResourceUpdateResourceHandler == nil {
 		unregistered = append(unregistered, "resource.UpdateResourceHandler")
 	}
 	if o.UsageUpdateResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.UpdateResourceUsageHandler")
+	}
+	if o.ResourceUpdateStatusHandler == nil {
+		unregistered = append(unregistered, "resource.UpdateStatusHandler")
 	}
 	if o.UserUserDetailsHandler == nil {
 		unregistered = append(unregistered, "user.UserDetailsHandler")
@@ -458,6 +499,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/project/add"] = project.NewAddProject(o.context, o.ProjectAddProjectHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/resource/add"] = resource.NewAddResource(o.context, o.ResourceAddResourceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -478,6 +523,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
+	o.handlers["DELETE"]["/project/delete"] = project.NewDeleteProject(o.context, o.ProjectDeleteProjectHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
 	o.handlers["DELETE"]["/resource/delete"] = resource.NewDeleteResource(o.context, o.ResourceDeleteResourceHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
@@ -495,6 +544,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/policy/list"] = policy.NewListPolicy(o.context, o.PolicyListPolicyHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/project/list"] = project.NewListProject(o.context, o.ProjectListProjectHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -538,11 +591,19 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
+	o.handlers["PUT"]["/project/update"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
 	o.handlers["PUT"]["/resource/update"] = resource.NewUpdateResource(o.context, o.ResourceUpdateResourceHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/usage/update_resource"] = usage.NewUpdateResourceUsage(o.context, o.UsageUpdateResourceUsageHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/update_status"] = resource.NewUpdateStatus(o.context, o.ResourceUpdateStatusHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

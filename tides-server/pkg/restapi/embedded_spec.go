@@ -346,6 +346,202 @@ func init() {
         }
       }
     },
+    "/project/add": {
+      "post": {
+        "description": "add boinc projects",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "addProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/project/delete": {
+      "delete": {
+        "description": "delete boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "deleteProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
+    "/project/list": {
+      "get": {
+        "description": "list boinc projects",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "listProject",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ID": {
+                    "type": "integer"
+                  },
+                  "hasAccountManager": {
+                    "type": "boolean"
+                  },
+                  "projectName": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/project/update": {
+      "put": {
+        "description": "update boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "integer"
+                },
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
     "/resource/add": {
       "post": {
         "consumes": [
@@ -933,6 +1129,57 @@ func init() {
         }
       }
     },
+    "/resource/update_status": {
+      "put": {
+        "description": "update the status of resource: busy, normal, idle",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "monitored": {
+                  "type": "boolean"
+                },
+                "resourceId": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "update success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
     "/resource/validate": {
       "get": {
         "description": "returns the list of data centers belonging to the host",
@@ -1197,42 +1444,50 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
-              "additionalProperties": {
-                "type": "object",
-                "properties": {
-                  "boincStartTime": {
-                    "type": "string"
-                  },
-                  "currentCPU": {
-                    "type": "number"
-                  },
-                  "currentRAM": {
-                    "type": "number"
-                  },
-                  "datacenter": {
-                    "type": "string"
-                  },
-                  "guestOS": {
-                    "type": "string"
-                  },
-                  "hostName": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "numCPU": {
-                    "type": "integer"
-                  },
-                  "poweredOn": {
-                    "type": "boolean"
-                  },
-                  "totalCPU": {
-                    "type": "number"
-                  },
-                  "totalRAM": {
-                    "type": "number"
+              "properties": {
+                "VMs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "boincStartTime": {
+                        "type": "string"
+                      },
+                      "currentCPU": {
+                        "type": "number"
+                      },
+                      "currentRAM": {
+                        "type": "number"
+                      },
+                      "datacenter": {
+                        "type": "string"
+                      },
+                      "guestOS": {
+                        "type": "string"
+                      },
+                      "hostName": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "numCPU": {
+                        "type": "integer"
+                      },
+                      "poweredOn": {
+                        "type": "boolean"
+                      },
+                      "totalCPU": {
+                        "type": "number"
+                      },
+                      "totalRAM": {
+                        "type": "number"
+                      }
+                    }
                   }
+                },
+                "name": {
+                  "type": "string"
                 }
               }
             }
@@ -2251,6 +2506,188 @@ func init() {
         }
       }
     },
+    "/project/add": {
+      "post": {
+        "description": "add boinc projects",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "addProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/project/delete": {
+      "delete": {
+        "description": "delete boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "deleteProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
+    "/project/list": {
+      "get": {
+        "description": "list boinc projects",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "listProject",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListProjectOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/project/update": {
+      "put": {
+        "description": "update boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ID": {
+                  "type": "integer"
+                },
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
     "/resource/add": {
       "post": {
         "consumes": [
@@ -2838,6 +3275,57 @@ func init() {
         }
       }
     },
+    "/resource/update_status": {
+      "put": {
+        "description": "update the status of resource: busy, normal, idle",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "monitored": {
+                  "type": "boolean"
+                },
+                "resourceId": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "update success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      }
+    },
     "/resource/validate": {
       "get": {
         "description": "returns the list of data centers belonging to the host",
@@ -3075,8 +3563,16 @@ func init() {
             "in": "body",
             "schema": {
               "type": "object",
-              "additionalProperties": {
-                "$ref": "#/definitions/AddVMUsageParamsBodyAnon"
+              "properties": {
+                "VMs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/definitions/VMsAnon"
+                  }
+                },
+                "name": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -3521,41 +4017,20 @@ func init() {
     }
   },
   "definitions": {
-    "AddVMUsageParamsBodyAnon": {
+    "ListProjectOKBodyItems0": {
       "type": "object",
       "properties": {
-        "boincStartTime": {
-          "type": "string"
-        },
-        "currentCPU": {
-          "type": "number"
-        },
-        "currentRAM": {
-          "type": "number"
-        },
-        "datacenter": {
-          "type": "string"
-        },
-        "guestOS": {
-          "type": "string"
-        },
-        "hostName": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "numCPU": {
+        "ID": {
           "type": "integer"
         },
-        "poweredOn": {
+        "hasAccountManager": {
           "type": "boolean"
         },
-        "totalCPU": {
-          "type": "number"
+        "projectName": {
+          "type": "string"
         },
-        "totalRAM": {
-          "type": "number"
+        "url": {
+          "type": "string"
         }
       }
     },
@@ -3995,6 +4470,44 @@ func init() {
         },
         "username": {
           "type": "string"
+        }
+      }
+    },
+    "VMsAnon": {
+      "type": "object",
+      "properties": {
+        "boincStartTime": {
+          "type": "string"
+        },
+        "currentCPU": {
+          "type": "number"
+        },
+        "currentRAM": {
+          "type": "number"
+        },
+        "datacenter": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "hostName": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numCPU": {
+          "type": "integer"
+        },
+        "poweredOn": {
+          "type": "boolean"
+        },
+        "totalCPU": {
+          "type": "number"
+        },
+        "totalRAM": {
+          "type": "number"
         }
       }
     }

@@ -438,6 +438,32 @@ func ToggleActiveHandler(params resource.ToggleActiveParams) middleware.Responde
 	})
 }
 
+func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responder {
+	body := params.ReqBody
+	var res models.Resource
+	db := config.GetDB()
+	if db.Where("id = ?", body.ResourceID).First(&res).RecordNotFound() {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/update_status/: [404] Resource not found")
+		return resource.NewUpdateStatusNotFound()
+	}
+
+	if body.Status != "" {
+		res.Status = body.Status
+	}
+	res.Monitored = body.Monitored
+	err := db.Save(&res).Error
+	if err != nil {
+		logger.SetLogLevel("ERROR")
+		logger.Error("/resource/update_status/: [400] Update status failed")
+		return resource.NewUpdateStatusBadRequest()
+	}
+
+	logger.SetLogLevel("INFO")
+	logger.Info("/resource/update_status/: [200] Update status success")
+	return resource.NewUpdateStatusOK()
+}
+
 func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewAssignPolicyUnauthorized()
