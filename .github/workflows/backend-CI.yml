@@ -23,6 +23,7 @@ jobs:
 
       - name: Get dependencies
         run: |
+          cd tides-server
           go get -v -t -d ./...
           if [ -f Gopkg.toml ]; then
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -32,7 +33,9 @@ jobs:
           GO111MODULE: on
 
       - name: Build
-        run: cd tides-server/cmd && go build -v .
+        run: |
+          cd tides-server/cmd
+          go build -v .
         env:
           GO111MODULE: on
 
@@ -53,7 +56,9 @@ jobs:
           # exit $(ls -p | grep -v vendor | grep -v swagger | grep "/$" | xargs gofmt -l -s | wc -l)
 
       - name: gotest
-        run: cd tides-server && go test ./...
+        run: |
+          cd tides-server
+          go test ./...
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v1
