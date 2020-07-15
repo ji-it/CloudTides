@@ -2,10 +2,10 @@ name: backend-CD
 on:
   push:
     branches:
-      - master
+      - wwt-patch
   pull_request:
     branches:
-      - master
+      - wwt-patch
 
 jobs:
   deploy:
@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
-          source: "tides-server/*.yml"
+          source: "tides-server/cloudtides_backend.yml"
           target: "/root"
 
       - name: Upgrade the platform remotely
@@ -39,12 +39,8 @@ jobs:
         with:
           command: |
             cd /root/tides-server
-            kubectl delete -f cloudtides_backend_deploy_old.yml
-            kubectl delete -f cloudtides_backend_service_old.yml
-            kubectl apply -f cloudtides_backend_deploy.yml
-            kubectl apply -f cloudtides_backend_service.yml
-            mv cloudtides_backend_deploy.yml cloudtides_backend_deploy_old.yml
-            mv cloudtides_backend_service.yml cloudtides_backend_service_old.yml
+            kubectl delete -f cloudtides_backend.yml
+            kubectl apply -f cloudtides_backend.yml
           host: ${{ secrets.REMOTE_HOST }}
           user: ${{ secrets.REMOTE_USER }}
           pass: ${{ secrets.SSH_PASSWORD }}
