@@ -40,6 +40,6 @@ jobs:
           command: |
             cd /root/tides-server
             kubectl apply -f cloudtides_backend.yml
-        host: ${{ secrets.REMOTE_HOST }}
-        user: ${{ secrets.REMOTE_USER }}
-        pass: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ secrets.REMOTE_HOST }}
+          user: ${{ secrets.REMOTE_USER }}
+          pass: ${{ secrets.SSH_PASSWORD }}
