@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cloudtides-backend
-          image: wuwentao1998/cloudtides_backend
+          image: wuwentao1998/cloudtides_backend:latest
           ports:
             - containerPort: 80
 
