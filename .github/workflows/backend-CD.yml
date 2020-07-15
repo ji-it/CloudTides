@@ -34,7 +34,7 @@ jobs:
           source: "tides-server/cloudtides_backend.yml"
           target: "/root"
 
-      - name: Upgrade the platform remotely
+      - name: Upgrade the platform using SSH
         uses: fifsky/ssh-action@master
         with:
           command: |
