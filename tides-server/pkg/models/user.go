@@ -13,7 +13,6 @@ import (
 // User user
 
 type User struct {
-
 	gorm.Model
 
 	// city
