@@ -239,6 +239,38 @@ paths:
             properties:
               message:
                 type: string
+  /resource/update_status:
+    put:
+      operationId: 'updateStatus'
+      description: 'update the status of resource: busy, normal, idle'
+      tags:
+        - 'resource'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              resourceId:
+                type: integer
+              status:
+                type: string
+              monitored:
+                type: boolean
+      responses:
+        200:
+          description: 'update success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        404:
+          description: 'resource not found'
   /resource/assign_policy:
     put:
       operationId: 'assignPolicy'
@@ -909,31 +941,36 @@ paths:
           name: reqBody
           schema:
             type: object
-            additionalProperties:
-              type: object
-              properties:
-                currentCPU:
-                  type: number
-                currentRAM:
-                  type: number
-                poweredOn:
-                  type: boolean
-                datacenter:
-                  type: string
-                name:
-                  type: string
-                boincStartTime:
-                  type: string
-                hostName:
-                  type: string
-                totalCPU:
-                  type: number
-                totalRAM:
-                  type: number
-                numCPU:
-                  type: integer
-                guestOS:
-                  type: string
+            properties:
+              name:
+                type: string
+              VMs:
+                type: object                
+                additionalProperties:
+                  type: object
+                  properties:
+                    currentCPU:
+                      type: number
+                    currentRAM:
+                      type: number
+                    poweredOn:
+                      type: boolean
+                    datacenter:
+                      type: string
+                    name:
+                      type: string
+                    boincStartTime:
+                      type: string
+                    hostName:
+                      type: string
+                    totalCPU:
+                      type: number
+                    totalRAM:
+                      type: number
+                    numCPU:
+                      type: integer
+                    guestOS:
+                      type: string
       responses:
         200:
           description: 'OK'
@@ -1061,6 +1098,131 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
+  /project/list:
+    get:
+      operationId: 'listProject'
+      description: 'list boinc projects'
+      tags:
+        - 'project'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items: 
+              type: object
+              properties:
+                ID:
+                  type: integer
+                projectName:
+                  type: string
+                url:
+                  type: string
+                hasAccountManager:
+                  type: boolean
+        401:
+          description: 'Unauthorized'
+  /project/add:
+    post:
+      operationId: 'addProject'
+      description: 'add boinc projects'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              projectName:
+                type: string
+              url:
+                type: string
+              hasAccountManager:
+                type: boolean
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+  /project/update:
+    put:
+      operationId: 'updateProject'
+      description: 'update boinc project'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              ID:
+                type: integer
+              projectName:
+                type: string
+              url:
+                type: string
+              hasAccountManager:
+                type: boolean
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /project/delete:
+    delete:
+      operationId: 'deleteProject'
+      description: 'delete boinc project'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              ID:
+                type: integer
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+      
 
 definitions:
   ResourceAddItem:
