@@ -16,6 +16,7 @@ import (
 
 	"tides-server/pkg/restapi/operations"
 	"tides-server/pkg/restapi/operations/policy"
+	"tides-server/pkg/restapi/operations/project"
 	"tides-server/pkg/restapi/operations/resource"
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
@@ -219,6 +220,41 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 		})
 	} else {
 		api.ResourceValidateResourceHandler = resource.ValidateResourceHandlerFunc(handler.ValidateResourceHandler)
+	}
+	if api.ResourceUpdateStatusHandler == nil {
+		api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(func(params resource.UpdateStatusParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.UpdateStatus has not yet been implemented")
+		})
+	} else {
+		api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(handler.UpdateStatusHandler)
+	}
+	if api.ProjectAddProjectHandler == nil {
+		api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(func(params project.AddProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.AddProject has not yet been implemented")
+		})
+	} else {
+		api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(handler.AddProjectHandler)
+	}
+	if api.ProjectListProjectHandler == nil {
+		api.ProjectListProjectHandler = project.ListProjectHandlerFunc(func(params project.ListProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
+		})
+	} else {
+		api.ProjectListProjectHandler = project.ListProjectHandlerFunc(handler.ListProjectHandler)
+	}
+	if api.ProjectUpdateProjectHandler == nil {
+		api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
+		})
+	} else {
+		api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(handler.UpdateProjectHandler)
+	}
+	if api.ProjectDeleteProjectHandler == nil {
+		api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
+		})
+	} else {
+		api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(handler.DeleteProjectHandler)
 	}
 
 	api.PreServerShutdown = func() {}

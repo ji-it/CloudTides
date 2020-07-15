@@ -18,11 +18,7 @@ The server uses [gorm](https://github.com/jinzhu/gorm) to map Go structs to data
 
 ### Development
 
-```
-glide install
-```
-
-will install Golang dependencies in the repo.
+`glide` install will install Golang dependencies in the repo.
 
 To start the server,
 
@@ -30,4 +26,4 @@ To start the server,
 go run main.go
 ```
 
-To add new features, add new API specifications in swagger.yml and implement API logics in /pkg/handler.
+To add new features, add new API specifications in `swagger.yml` and implement API logics in `/pkg/handler`.

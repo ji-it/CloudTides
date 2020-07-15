@@ -62,7 +62,6 @@ func main() {
 	*/
 	// Start listening using having the handlers and port
 	// already set up.
-
 	if err := server.Serve(); err != nil {
 		log.Fatalln(err)
 	}

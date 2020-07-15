@@ -62,6 +62,72 @@ func (o *AddVMUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
+// AddVMUsageBody add VM usage body
+//
+// swagger:model AddVMUsageBody
+type AddVMUsageBody struct {
+
+	// v ms
+	VMs map[string]VMsAnon `json:"VMs,omitempty"`
+
+	// name
+	Name string `json:"name,omitempty"`
+}
+
+// Validate validates this add VM usage body
+func (o *AddVMUsageBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateVMs(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.VMs) { // not required
+		return nil
+	}
+
+	for k := range o.VMs {
+
+		if swag.IsZero(o.VMs[k]) { // not required
+			continue
+		}
+		if val, ok := o.VMs[k]; ok {
+			if err := val.Validate(formats); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *AddVMUsageBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *AddVMUsageBody) UnmarshalBinary(b []byte) error {
+	var res AddVMUsageBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 // AddVMUsageOKBody add VM usage o k body
 //
 // swagger:model AddVMUsageOKBody
@@ -144,10 +210,10 @@ func (o *AddVMUsageOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// AddVMUsageParamsBodyAnon add VM usage params body anon
+// VMsAnon v ms anon
 //
-// swagger:model AddVMUsageParamsBodyAnon
-type AddVMUsageParamsBodyAnon struct {
+// swagger:model VMsAnon
+type VMsAnon struct {
 
 	// boinc start time
 	BoincStartTime string `json:"boincStartTime,omitempty"`
@@ -183,13 +249,13 @@ type AddVMUsageParamsBodyAnon struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 }
 
-// Validate validates this add VM usage params body anon
-func (o *AddVMUsageParamsBodyAnon) Validate(formats strfmt.Registry) error {
+// Validate validates this v ms anon
+func (o *VMsAnon) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *AddVMUsageParamsBodyAnon) MarshalBinary() ([]byte, error) {
+func (o *VMsAnon) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -197,8 +263,8 @@ func (o *AddVMUsageParamsBodyAnon) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *AddVMUsageParamsBodyAnon) UnmarshalBinary(b []byte) error {
-	var res AddVMUsageParamsBodyAnon
+func (o *VMsAnon) UnmarshalBinary(b []byte) error {
+	var res VMsAnon
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

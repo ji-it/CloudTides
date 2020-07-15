@@ -105,18 +105,18 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 
 	db := config.GetDB()
 
-	for ip, val := range body {
+	for ip, val := range body.VMs {
 		var vm models.VM
 		if db.Where("ip_address = ?", ip).First(&vm).RecordNotFound() {
-			var dc models.Resource
-			err := db.Where("name = ?", val.Name).First(&dc).Error
+			var res models.Resource
+			err := db.Where("name = ?", body.Name).First(&res).Error
 			if err != nil {
 				logger.SetLogLevel("ERROR")
 				logger.Error("/usage/addVM/: [400] Resource not found")
 				return usage.NewAddVMUsageBadRequest()
 			}
 
-			boincTime, _ := time.Parse("Mon Jan 2 15:04:05 -0700 MST 2006", val.BoincStartTime)
+			boincTime, _ := time.Parse("2020-06-27 19:51:26", val.BoincStartTime)
 
 			newvm := models.VM{
 				BoincTime:   boincTime,
@@ -126,7 +126,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 				Name:        val.Name,
 				NumCPU:      val.NumCPU,
 				PoweredOn:   val.PoweredOn,
-				ResourceRef: dc.Model.ID,
+				ResourceRef: res.Model.ID,
 			}
 
 			db.Create(&newvm)
@@ -147,7 +147,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 			vmu.CurrentCPU = val.CurrentCPU
 			vmu.CurrentRAM = val.CurrentRAM
 
-			db.Save(&vm)
+			db.Save(&vmu)
 		}
 	}
 
