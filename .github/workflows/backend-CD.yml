@@ -1,4 +1,4 @@
-name: Deploy
+name: backend-CD
 on:
   push:
     branches:
@@ -8,12 +8,12 @@ on:
       - wwt-patch
 
 env:
-  DOCKER_REPO = wuwentao1998/cloudtides_backend
-  DOCKER_USERNAME = wuwentao1998
-  DOCKER_PASSWORD = 199804230521
-  REMOTE_HOST = 47.100.27.38
-  REMOTE_USER = root
-  SSH_PASSWORD = CEX297ftPBqcFnB
+  DOCKER_REPO: wuwentao1998/cloudtides_backend
+  DOCKER_USERNAME: wuwentao1998
+  DOCKER_PASSWORD: 199804230521
+  REMOTE_HOST: 47.100.27.38
+  REMOTE_USER: root
+  SSH_PASSWORD: CEX297ftPBqcFnB
 
 jobs:
   deploy:
