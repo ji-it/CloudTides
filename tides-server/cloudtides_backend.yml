@@ -15,6 +15,7 @@ spec:
       containers:
         - name: cloudtides-backend
           image: wuwentao1998/cloudtides_backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
 
