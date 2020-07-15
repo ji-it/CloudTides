@@ -106,6 +106,6 @@ func UserDetailsHandler(params user.UserDetailsParams) middleware.Responder {
 	}
 
 	logger.SetLogLevel("INFO")
-	logger.Info("/users/get_details/: [401] User profile retrieved")
+	logger.Info("/users/get_details/: [200] User profile retrieved")
 	return user.NewUserDetailsOK().WithPayload(&user.UserDetailsOKBody{Message: "success", Results: &res})
 }
