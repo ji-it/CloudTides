@@ -1,4 +1,4 @@
-name: backend-CD
+name: Deploy
 on:
   push:
     branches:
@@ -6,14 +6,6 @@ on:
   pull_request:
     branches:
       - wwt-patch
-
-env:
-  DOCKER_REPO: wuwentao1998/cloudtides_backend
-  DOCKER_USERNAME: wuwentao1998
-  DOCKER_PASSWORD: 199804230521
-  REMOTE_HOST: 47.100.27.38
-  REMOTE_USER: root
-  SSH_PASSWORD: CEX297ftPBqcFnB
 
 jobs:
   deploy:
@@ -26,17 +18,17 @@ jobs:
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ${{ DOCKER_REPO }}
-          username: ${{ DOCKER_USERNAME }}
-          password: ${{ DOCKER_PASSWORD }}
+          name: wuwentao1998/cloudtides_backend
+          username: wuwentao1998
+          password: 199804230521
           workdir: tides-server
 
       - name: Transfer yml file to Aliyun
         uses: appleboy/scp-action@master
         with:
-          host: ${{ REMOTE_HOST }}
-          username: ${{ REMOTE_USER }}
-          password: ${{ SSH_PASSWORD }}
+          host: 47.100.27.38
+          username: root
+          password: CEX297ftPBqcFnB
           port: 22
           source: "tides-server/cloudtides_backend.yml"
           target: "/root"
@@ -47,6 +39,6 @@ jobs:
           command: |
             cd /root/tides-server
             kubectl apply -f cloudtides_backend.yml
-          host: ${{ REMOTE_HOST }}
-          user: ${{ REMOTE_USER }}
-          pass: ${{ SSH_PASSWORD }}
+          host: 47.100.27.38
+          user: root
+          pass: CEX297ftPBqcFnB
