@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - '**.go'
+  pull_request:
+    branches:
+      - master
 
 jobs:
 
