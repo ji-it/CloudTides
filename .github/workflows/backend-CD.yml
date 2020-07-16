@@ -44,4 +44,4 @@ jobs:
             kubectl apply -f cloudtides_backend.yml
           host: 47.100.27.38
           user: root
-          password: CEX297ftPBqcFnB
+          pass: CEX297ftPBqcFnB
