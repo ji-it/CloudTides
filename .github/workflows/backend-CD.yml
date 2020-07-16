@@ -29,7 +29,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: 47.100.27.38
-          username: root
+          user: root
           password: CEX297ftPBqcFnB
           port: 22
           source: "tides-server/cloudtides_backend.yml"
@@ -43,5 +43,5 @@ jobs:
             kubectl delete -f cloudtides_backend.yml
             kubectl apply -f cloudtides_backend.yml
           host: 47.100.27.38
-          username: root
+          user: root
           password: CEX297ftPBqcFnB
