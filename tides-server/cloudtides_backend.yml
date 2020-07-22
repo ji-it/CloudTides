@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudtides-backend-deploy
+  namespace: scdc1-staging-fah-tides
 spec:
   selector:
     matchLabels:
@@ -24,7 +25,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cloudtides-backend-service
-  namespace: default
+  namespace: scdc1-staging-fah-tides
 spec:
   type: NodePort
   selector:

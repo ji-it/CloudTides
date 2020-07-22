@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
 
       - name: Check out code into the Go module directory
@@ -30,13 +30,13 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "tides-server/cloudtides_backend.yml"
-          target: "/root"  
+          target: "/home/runner"
 
       - name: Upgrade the platform using SSH
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd /root/tides-server
+            cd /home/runner/tides-server
             kubectl delete -f cloudtides_backend.yml
             kubectl apply -f cloudtides_backend.yml
           host: ${{ secrets.REMOTE_HOST }}
