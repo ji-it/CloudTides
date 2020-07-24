@@ -38,6 +38,7 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
+            export KUBECONFIG=/root/scdc1-staging-fah-tides.yaml
             cd /home/runner/tides-server
             kubectl delete -f cloudtides_backend.yml
             kubectl apply -f cloudtides_backend.yml
