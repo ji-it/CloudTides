@@ -40,7 +40,7 @@ func GetDB() *gorm.DB {
 }
 
 func startDB() {
-	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
 	db, err = gorm.Open("postgres", dbinfo)
 	// defer db.Close()
