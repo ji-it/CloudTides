@@ -25,7 +25,7 @@ jobs:
     runs-on: self-hosted
     needs: upload
     steps:
-      - name: Transfer yml file to publish server
+      - name: Transfer yaml file to publish server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
