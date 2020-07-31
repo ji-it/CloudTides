@@ -1,0 +1,1412 @@
+swagger: "2.0"
+info:
+  title: 'CloudTides-Server'
+  version: '0.0.1'
+basePath: /v1
+paths:
+  /resource/validate:
+    get:
+      operationId: 'validateResource'
+      description: 'returns the list of data centers belonging to the host'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              host:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: 'returns the list of data centers belonging to the host'
+          schema:
+            description: 'list of data centers belonging to the host'
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  type: string
+        401:
+          description: "Unauthorized"
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/add:
+    post:
+      operationId: 'addResource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              hostAddress:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+              policy:
+                type: integer
+              vmtype:
+                type: string
+                enum:
+                  - vsphere
+                  - kvm
+                  - hyper-v
+              datacenters:
+                type: string
+              cluster:
+                type: string
+              isResourcePool:
+                type: boolean
+              resources:
+                type: array
+                items:
+                  type: string
+      responses:
+        200:
+          description: 'returns the list of created resources'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ResourceAddItem'
+        401:
+          description: 'Unauthorized'                  
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/list:
+    get:
+      operationId: 'listResource'
+      description: 'returns the list of resources belonging to a user'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'returns the list of resources belonging to a user'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ResourceListItem'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /resource/delete:
+    delete:
+      operationId: 'deleteResource'
+      description: 'delete specified resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+      responses:
+        200:
+          description: 'returns success message'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/update:
+    put:
+      operationId: 'updateResource'
+      description: 'update usage info of resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              hostAddress:
+                type: string
+              name:
+                type: string
+              currentCPU:
+                type: number
+              currentRAM:
+                type: number
+      responses:
+        200:
+          description: 'returns success message'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/toggle_active:
+    put:
+      operationId: 'toggleActive'
+      description: 'toggle the status of the resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+      responses:
+        200:
+          description: 'returns success message'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resouce not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/update_status:
+    put:
+      operationId: 'updateStatus'
+      description: 'update the status of resource: busy, normal, idle'
+      tags:
+        - 'resource'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              resourceId:
+                type: integer
+              status:
+                type: string
+              monitored:
+                type: boolean
+      responses:
+        200:
+          description: 'update success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        404:
+          description: 'resource not found'
+  /resource/assign_policy:
+    put:
+      operationId: 'assignPolicy'
+      description: 'assign a policy to a specified resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              resourceId:
+                type: integer
+              policyId:
+                type: integer
+      responses:
+        200:
+          description: 'returns success message'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/destroy_vm:
+    put:
+      operationId: 'destroyVM'
+      description: 'destroy specified VM'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              ipAddress:
+                type: string
+      responses:
+        200:
+          description: 'returns success message'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/get_details:
+    get:
+      operationId: 'resourceInfo'
+      description: 'returns detailed info of resources belonging to a user'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'returns detailed info of resources belonging to a user'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ResourceInfoItem'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/get_vm_details:
+    get:
+      operationId: 'resourceVMsInfo'
+      description: 'get detailed info of VMs belonging to a user'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'get detailed info of VMs belonging to a user'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/definitions/ResourceVMInfoItem'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /resource/overview:
+    get:
+      operationId: 'overviewStats'
+      description: 'returns overall contribution statistics for a user'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'returns overall contribution statistics for a user'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: object
+                properties:
+                  resource:
+                    type: object
+                    properties:
+                      hosts:
+                        type: integer
+                      vms:
+                        type: integer
+                      contributing:
+                        type: integer
+                  contribution:
+                    type: number
+                  power:
+                    type: number
+                  workload:
+                    type: object
+                    properties:
+                      contributed:
+                        type: integer
+                      running:
+                        type: integer
+                      destroyed:
+                        type: integer
+                      hostsUsed:
+                        type: integer
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /users/get_details:
+    get:
+      operationId: 'userDetails'
+      description: 'get user profile'
+      tags:
+        - 'user'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'returns user profile'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: object
+                properties:
+                  companyName:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  city:
+                    type: string
+                  country:
+                    type: string
+                  email:
+                    type: string
+                  position:
+                    type: string
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /users/login:
+    post:
+      operationId: 'userLogin'
+      description: 'user login'
+      tags:
+        - 'user'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: 'returns user info'
+          schema:
+            type: object
+            properties:
+              userInfo:
+                type: object
+                properties:
+                  priority:
+                    type: string
+                    enum:
+                      - 'Low'
+                      - 'Medium'
+                      - 'High'
+                  username:
+                    type: string
+              token:
+                type: string
+        401:
+          description: 'Unauthorized'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'Unauthorized'
+  /users/register:
+    post:
+      operationId: 'registerUser'
+      description: 'user registration'
+      tags:
+        - 'user'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+              priority:
+                type: string
+                enum:
+                  - 'Low'
+                  - 'Medium'
+                  - 'High'
+              companyName:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              userInfo:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  password:
+                    type: string
+                  priority:
+                    type: string
+                    enum:
+                      - 'Low'
+                      - 'Medium'
+                      - 'High'
+                  companyName:
+                    type: string
+        400:
+          description: 'bad request'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /policy/add:
+    post:
+      operationId: 'addPolicy'
+      description: 'add a new idle policy and threshold policy'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              accountType:
+                type: string
+                enum:
+                  - accManager
+                  - boinc
+              name:
+                type: string
+              isDestroy:
+                type: boolean
+              deployType:
+                type: string
+                enum:
+                  - K8S
+                  - VM
+              idle:
+                type: string
+              threshold:
+                type: string
+              projectId:
+                type: integer
+              templateId:
+                type: integer
+              boincUsername:
+                type: string
+              boincPassword:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+  /policy/update:
+    put:
+      operationId: 'updatePolicy'
+      description: 'update a policy'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              Id:
+                type: integer
+              accountType:
+                type: string
+                enum:
+                  - accManager
+                  - boinc
+              name:
+                type: string
+              isDestroy:
+                type: boolean
+              deployType:
+                type: string
+                enum:
+                  - K8S
+                  - VM
+              idle:
+                type: string
+              threshold:
+                type: string
+              projectId:
+                type: integer
+              templateId:
+                type: integer
+              boincUsername:
+                type: string
+              boincPassword:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /policy/list:
+    get:
+      operationId: 'listPolicy'
+      description: 'list policies belonging to a user'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    isDestroy:
+                      type: boolean
+                    deployType:
+                      type: string
+                      enum:
+                        - K8S
+                        - VM
+                    idlePolicy:
+                      type: string
+                    thresholdPolicy:
+                      type: string
+                    projectName:
+                      type: string
+                    hostsAssigned:
+                      type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /policy/remove:
+    delete:
+      operationId: 'removePolicy'
+      description: 'remove a policy'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'no matching objects'
+  /usage/getUsage:
+    get:
+      operationId: 'resourcePastUsage'
+      description: 'get resource usage info during last period'
+      tags:
+        - 'usage'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'bad request'
+  /usage/add_resource:
+    post:
+      operationId: 'addResourceUsage'
+      description: 'add resource usage info into database'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              hostAddress:
+                type: string
+              name:
+                type: string
+              totalRAM:
+                type: number
+              totalCPU:
+                type: number
+              currentRAM:
+                type: number
+              currentCPU:
+                type: number
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+        404:
+          description: 'resource not found'
+  /usage/update_resource:
+    put:
+      operationId: 'updateResourceUsage'
+      description: 'update datacenter usage info'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              hostAddress:
+                type: string
+              name:
+                type: string
+              currentCPU:
+                type: number
+              currentRAM:
+                type: number
+              totalCPU:
+                type: number
+              totalRAM:
+                type: number
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'resource usage recorded'
+        404:
+          description: 'resource not found'
+  /usage/delete_resource:
+    delete:
+      operationId: 'deleteResourceUsage'
+      description: 'delete resource usage info'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              hostAddress:
+                type: string
+              datacenter:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+        404:
+          description: 'resource not found'
+  /usage/addVM:
+    post:
+      operationId: 'addVMUsage'
+      description: 'add VM usage info into database'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              VMs:
+                type: object                
+                additionalProperties:
+                  type: object
+                  properties:
+                    currentCPU:
+                      type: number
+                    currentRAM:
+                      type: number
+                    poweredOn:
+                      type: boolean
+                    datacenter:
+                      type: string
+                    name:
+                      type: string
+                    boincStartTime:
+                      type: string
+                    hostName:
+                      type: string
+                    totalCPU:
+                      type: number
+                    totalRAM:
+                      type: number
+                    numCPU:
+                      type: integer
+                    guestOS:
+                      type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+  /template/add:
+    post:
+      operationId: 'addTemplate'
+      description: 'upload a VM template'
+      tags:
+        - 'template'
+      consumes:
+        - 'application/json'
+        - 'multipart/form-data'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              os:
+                type: string
+              source:
+                type: string
+              compat:
+                type: string
+              space:
+                type: number
+              memsize:
+                type: number
+              name:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+  /template/list:
+    get:
+      operationId: 'listTemplate'
+      description: 'list all available VM templates'
+      tags:
+        - 'template'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+              results:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    dateAdded:
+                      type: string
+                    guestOS:
+                      type: string
+                    compatibility:
+                      type: string
+                    provisionedSpace:
+                      type: number
+                    memorySize:
+                      type: number
+                    templateType:
+                      type: string
+                      enum:
+                        - 'datastore'
+                        - 'upload'
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+  /template/delete:
+    delete:
+      operationId: 'deleteTemplate'
+      description: 'delete specified template'
+      tags:
+        - 'template'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - 'success'
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /project/list:
+    get:
+      operationId: 'listProject'
+      description: 'list boinc projects'
+      tags:
+        - 'project'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items: 
+              type: object
+              properties:
+                ID:
+                  type: integer
+                projectName:
+                  type: string
+                url:
+                  type: string
+                hasAccountManager:
+                  type: boolean
+        401:
+          description: 'Unauthorized'
+  /project/add:
+    post:
+      operationId: 'addProject'
+      description: 'add boinc projects'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              projectName:
+                type: string
+              url:
+                type: string
+              hasAccountManager:
+                type: boolean
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+  /project/update:
+    put:
+      operationId: 'updateProject'
+      description: 'update boinc project'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              ID:
+                type: integer
+              projectName:
+                type: string
+              url:
+                type: string
+              hasAccountManager:
+                type: boolean
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /project/delete:
+    delete:
+      operationId: 'deleteProject'
+      description: 'delete boinc project'
+      tags:
+        - 'project'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              ID:
+                type: integer
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+      
+
+definitions:
+  ResourceAddItem:
+    type: object
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+        enum:
+          - idle
+          - normal
+          - busy
+          - unknown
+      policyName:
+        type: string
+      platformType:
+        type: string
+        enum:
+          - vsphere
+          - kvm
+          - hyper-v
+      datacenter:
+        type: string
+      cluster:
+        type: string
+      name:
+        type: string
+      totalCPU:
+        type: number
+      totalRAM:
+        type: number
+      currentRAM:
+        type: number
+      currentCPU:
+        type: number
+      isActive:
+        type: boolean
+      totalJobs:
+        type: integer
+      jobCompleted:
+        type: integer
+      CPUPercent:
+        type: number
+      RAMPercent:
+        type: number
+      monitored:
+        type: boolean
+      isResourcePool:
+        type: boolean
+  ResourceListItem:
+    type: object
+    properties:
+      id:
+        type: integer
+      dateAdded:
+        type: string
+      hostAddress:
+        type: string
+      status:
+        type: string
+        enum:
+          - idle
+          - normal
+          - busy
+          - unknown
+      policyName:
+        type: string
+      platformType:
+        type: string
+        enum:
+          - vsphere
+          - kvm
+          - hyper-v
+      datacenter:
+        type: string
+      totalCPU:
+        type: number
+      totalRAM:
+        type: number
+      currentRAM:
+        type: number
+      currentCPU:
+        type: number
+      isActive:
+        type: boolean
+      totalJobs:
+        type: integer
+      jobCompleted:
+        type: integer
+      CPUPercent:
+        type: number
+      RAMPercent:
+        type: number
+      monitored:
+        type: boolean
+      cluster:
+        type: string
+      name:
+        type: string
+  ResourceInfoItem:
+    type: object
+    properties:
+      id:
+        type: integer
+      dateAdded:
+        type: string
+      hostAddress:
+        type: string
+      status:
+        type: string
+        enum:
+          - idle
+          - normal
+          - busy
+          - unknown
+      policyName:
+        type: string
+      platformType:
+        type: string
+        enum:
+          - vsphere
+          - kvm
+          - hyper-v
+      datacenter:
+        type: string
+      totalCPU:
+        type: number
+      totalRAM:
+        type: number
+      currentRAM:
+        type: number
+      currentCPU:
+        type: number
+      isActive:
+        type: boolean
+      totalJobs:
+        type: integer
+      jobCompleted:
+        type: integer
+      CPUPercent:
+        type: number
+      RAMPercent:
+        type: number
+      monitored:
+        type: boolean    
+      totalVMs:
+        type: integer
+      activeVMs:
+        type: integer
+      lastDeployed:
+        type: string
+      cluster:
+        type: string
+      name:
+        type: string
+  ResourceVMInfoItem:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      dateCreated:
+        type: string
+      dateDestroyed:
+        type: string
+      boincTime:
+        type: string
+      ipAddress:
+        type: string
+      totalRAM:
+        type: number
+      totalCPU:
+        type: number
+      currentRAM:
+        type: number
+      currentCPU:
+        type: number
+      poweredOn:
+        type: boolean
+      guestOS:
+        type: string
+      RAMPercent:
+        type: number
+      CPUPercent:
+        type: number

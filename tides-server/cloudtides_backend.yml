@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudtides-backend-deploy
+  namespace: scdc1-staging-fah-tides
+spec:
+  selector:
+    matchLabels:
+      app: cloudtides-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloudtides-backend
+    spec:
+      containers:
+        - name: cloudtides-backend
+          image: wuwentao1998/cloudtides_backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 1
+              memory: 1Gi
+            limits:
+              cpu: 2
+              memory: 2Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudtides-backend-service
+  namespace: scdc1-staging-fah-tides
+spec:
+  type: NodePort
+  selector:
+    app: cloudtides-backend
+  ports:
+    - port: 80
+      targetPort: 80
