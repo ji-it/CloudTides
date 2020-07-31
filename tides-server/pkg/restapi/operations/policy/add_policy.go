@@ -259,6 +259,9 @@ func (o *AddPolicyBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddPolicyOKBody
 type AddPolicyOKBody struct {
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// message
 	// Enum: [success]
 	Message string `json:"message,omitempty"`

@@ -18,7 +18,7 @@ The server uses [gorm](https://github.com/jinzhu/gorm) to map Go structs to data
 
 ### Development
 
-`glide` install will install Golang dependencies in the repo.
+`glide install` will install Golang dependencies in the repo.
 
 To start the server,
 

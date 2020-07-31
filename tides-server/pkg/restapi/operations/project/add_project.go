@@ -102,6 +102,9 @@ func (o *AddProjectBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddProjectOKBody
 type AddProjectOKBody struct {
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// message
 	Message string `json:"message,omitempty"`
 }

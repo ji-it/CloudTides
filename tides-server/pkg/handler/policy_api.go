@@ -45,6 +45,7 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	logger.Info("/policy/add/: [200] Policy creation success")
 	return policy.NewAddPolicyOK().WithPayload(&policy.AddPolicyOKBody{
 		Message: "success",
+		ID:      int64(newPolicy.Model.ID),
 	})
 }
 
