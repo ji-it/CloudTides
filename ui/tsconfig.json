@@ -7,7 +7,7 @@
       "@tide-shared/*": ["src/app/@shared/*"],
       "@tide-config/*": ["src/app/@shared/config/*"],
       "@tide-guard/*": ["src/app/@shared/guard/*"],
-      "@tide-environments": ["src/environments/environment"],
+      "@tide-environments/*": ["src/environments/*"],
     },
     "sourceMap": true,
     "declaration": false,

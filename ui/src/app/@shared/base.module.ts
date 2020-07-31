@@ -2,7 +2,6 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 
 
@@ -12,7 +11,6 @@ import { ClarityModule } from '@clr/angular';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     ClarityModule,
   ],
   exports: [
@@ -20,7 +18,6 @@ import { ClarityModule } from '@clr/angular';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     ClarityModule,
   ],
   declarations: [],

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
+import { base } from '@tide-environments/base'
 
 @Injectable()
 export class ResourceService {
@@ -10,16 +11,17 @@ export class ResourceService {
   ) {
   }
 
-  private prefix = '/api/resources';
+  private prefix = `${base.apiPrefix}/resource/list`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(
+      pluck('results'),
       map(mapList),
     );
   }
 
   addItem(payload: ItemPayload) {
-    return this.http.post<ItemDTO>(`${this.prefix}`, payload).pipe(
+    return this.http.post<ItemDTO>(`${this.prefix}`, `name=${payload.name}`).pipe(
       map(mapItem),
     );
   }
@@ -39,12 +41,10 @@ export class ResourceService {
 interface ItemDTO {
   id: string;
   name: string;
-  host: string;
-  status: string;
-  sites: number;
-  orgs: number;
-  vms: number;
-  services: number;
+  currentCPU: number;
+  currentRAM: number;
+  CPUPercent: number;
+  RAMPercent: number;
 }
 
 function mapList(raw: ItemDTO[]): Item[] {
@@ -58,7 +58,6 @@ function mapItem(raw: ItemDTO): Item {
 // UI
 export interface ItemPayload {
   name: string;
-  description: string;
 }
 
 export type Item = ItemDTO;

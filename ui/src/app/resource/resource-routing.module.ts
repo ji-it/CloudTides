@@ -5,6 +5,7 @@ import { ResourceComponent } from './resource.component';
 import { ResourceService } from './resource.service';
 import { ResourceListComponent } from './resource-list/resource-list.component';
 import { ResourceCardComponent } from './resource-card/resource-card.component';
+import { ResourceDialogComponent } from './resource-dialog/resource-dialog.component';
 
 
 const routes: Routes = [
@@ -24,6 +25,7 @@ export const declarations = [
   ResourceComponent,
   ResourceListComponent,
   ResourceCardComponent,
+  ResourceDialogComponent,
 ];
 
 export const providers = [

@@ -8,7 +8,8 @@ const {
 
 const endpoint = {
   local: 'http://localhost:3000',
-  e2e: 'http://localhost:8000'
+  e2e: 'http://localhost:8080',
+  test: 'http://10.163.95.185:30220',
 };
 
 const target = endpoint[MODE];
@@ -17,7 +18,7 @@ console.log(`
 ==========================================
 Starting Mode: [${MODE}]
 
-  /api/       -> ${target}
+  /v1/       -> ${target}
   /api-local/ -> ${endpoint.local}
 ==========================================
 `);
@@ -33,12 +34,12 @@ const PROXY_CONFIG = {
     },
   },
 
-  '/api/': {
+  '/v1/': {
     target: target,
     changeOrigin: true,
     secure: false,
     pathRewrite: {
-      '^/api': '/api',
+      '^/v1': '/v1',
     },
     onProxyRes(proxyResponse) {
       const cookies = proxyResponse.headers['set-cookie'];

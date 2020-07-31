@@ -13,7 +13,7 @@
           <clr-dropdown>
             <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
               <clr-icon shape="user"></clr-icon>
-              {{ (this.vo.user$ | async).name }}
+              {{ (this.vo.user$ | async)?.userInfo?.username }}
               <clr-icon shape="caret down"></clr-icon>
             </button>
             <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
