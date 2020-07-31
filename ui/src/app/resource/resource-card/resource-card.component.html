@@ -6,23 +6,18 @@
         <div class="name">
           {{ item?.name }}
         </div>
-        <div class="desc">CPU: {{ item?.cpu }}</div>
-        <div class="desc">Memory: {{ item?.mem }}</div>
-        <div class="desc">Disk: {{ item?.disk }}</div>
+        <div class="desc">CPU: {{ item?.currentCPU }}</div>
+        <div class="desc">Memory: {{ item?.currentRAM }}</div>
       </span>
     </div>
     <div class="detail-wrapper">
       <span class="detail-container">
-        <div class="value">{{ item?.usage["cpu%"] }}%</div>
+        <div class="value">{{ item?.CPUPercent * 100 }}%</div>
         <div class="key">CPU</div>
       </span>
       <span class="detail-container">
-        <div class="value">{{ item?.usage["mem%"] }}%</div>
+        <div class="value">{{ item?.RAMPercent * 100 }}%</div>
         <div class="key">Memory</div>
-      </span>
-      <span class="detail-container">
-        <div class="value">{{ item?.usage["disk%"] }}%</div>
-        <div class="key">Disk</div>
       </span>
     </div>
   </div>

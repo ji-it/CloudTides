@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { base } from '@tide-environments/base'
 
 @Injectable()
@@ -11,10 +11,11 @@ export class ResourceService {
   ) {
   }
 
-  private prefix = `${base.apiPrefix}/computeResource`;
+  private prefix = `${base.apiPrefix}/resource/list`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(
+      pluck('results'),
       map(mapList),
     );
   }
@@ -40,14 +41,10 @@ export class ResourceService {
 interface ItemDTO {
   id: string;
   name: string;
-  cpu: number;
-  mem: number;
-  disk: number;
-  usage: {
-    'cpu%': number;
-    'mem%': number;
-    'disk%': number;
-  }
+  currentCPU: number;
+  currentRAM: number;
+  CPUPercent: number;
+  RAMPercent: number;
 }
 
 function mapList(raw: ItemDTO[]): Item[] {

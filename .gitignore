@@ -14,3 +14,5 @@ coverage.svg
 client/build
 server/**/migrations/**
 server/venv/
+
+ui/.npmrc

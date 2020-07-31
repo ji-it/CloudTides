@@ -1,3 +1,3 @@
 export const base = {
-  apiPrefix: '/api/v1'
+  apiPrefix: '/v1'
 }

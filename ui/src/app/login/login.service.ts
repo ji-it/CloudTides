@@ -20,15 +20,7 @@ export class LoginService {
     username = '',
     password = '',
   ) {
-    return this.http.post<UserInfo>(`${base.apiPrefix}/session`, { username, password }).pipe(
-      tap(userInfo => {
-        this.session$.next(userInfo);
-      })
-    );
-  }
-
-  current() {
-    return this.http.get<UserInfo>(`${base.apiPrefix}/session`).pipe(
+    return this.http.post<UserInfo>(`${base.apiPrefix}/users/login`, { username, password }).pipe(
       tap(userInfo => {
         this.session$.next(userInfo);
       })
@@ -36,7 +28,7 @@ export class LoginService {
   }
 
   logout() {
-    return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
+    return this.http.post(`${base.apiPrefix}/users/login`, {}).pipe(
       tap(() => {
         this.document.location.href = '/login';
       })
@@ -53,11 +45,8 @@ export class LoginService {
 }
 
 export interface UserInfo {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  website: string;
-  admin: boolean;
+  token: string;
+  userInfo: {
+    username: string;
+  }
 }
