@@ -93,6 +93,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string",
                   "enum": [
@@ -382,6 +385,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string"
                 }
@@ -1295,6 +1301,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string",
                   "enum": [
@@ -2283,6 +2292,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string",
                   "enum": [
@@ -2542,6 +2554,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string"
                 }
@@ -3441,6 +3456,9 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "integer"
+                },
                 "message": {
                   "type": "string",
                   "enum": [

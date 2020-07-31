@@ -37,7 +37,10 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 
 	logger.SetLogLevel("INFO")
 	logger.Info("/template/add/: [200] Template add success")
-	return template.NewAddTemplateOK()
+	return template.NewAddTemplateOK().WithPayload(&template.AddTemplateOKBody{
+		Message: "success",
+		ID:      int64(newTem.Model.ID),
+	})
 }
 
 func ListTemplateHandler(params template.ListTemplateParams) middleware.Responder {

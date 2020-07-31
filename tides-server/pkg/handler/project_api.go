@@ -31,6 +31,7 @@ func AddProjectHandler(params project.AddProjectParams) middleware.Responder {
 	logger.Info("/policy/add/: [200] Project creation success")
 	return project.NewAddProjectOK().WithPayload(&project.AddProjectOKBody{
 		Message: "success",
+		ID:      int64(newProject.Model.ID),
 	})
 }
 

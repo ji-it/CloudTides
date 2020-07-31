@@ -114,6 +114,9 @@ func (o *AddTemplateBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddTemplateOKBody
 type AddTemplateOKBody struct {
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// message
 	// Enum: [success]
 	Message string `json:"message,omitempty"`
