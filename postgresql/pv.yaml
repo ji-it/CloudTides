@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  # Update name
+  name: nfs-pv-1
+  namespace: default
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    # FIXME: use the right IP
+    server: 10.130.44.20
+    # Fixme: use the right path
+    path: "/test/mysql-nfs01"
