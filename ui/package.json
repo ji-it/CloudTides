@@ -26,6 +26,8 @@
     "@clr/core": "^3.1.0",
     "@clr/icons": "^3.1.0",
     "@clr/ui": "^3.1.0",
+    "@ngx-translate/core": "^13.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@webcomponents/custom-elements": "^1.4.1",
     "chart.js": "^2.9.3",
     "ng2-charts": "^2.3.0",

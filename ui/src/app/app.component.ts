@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { PRODUCT_NAME } from '@tide-config/const';
 
 import { LoginService, UserInfo } from './login/login.service';
+import { TranslateService } from '@ngx-translate/core';
+import { I18nService } from './config/i18n';
 
 @Component({
   selector: 'tide-root',
@@ -15,8 +17,12 @@ export class AppComponent implements OnInit {
   constructor(
     private readonly loginService: LoginService,
     private readonly router: Router,
+    translate: TranslateService,
+    i18nService: I18nService,
   ) {
-
+    translate.setDefaultLang('en');
+    const language = i18nService.getLanguage();
+    translate.use(language);
   }
 
   readonly vo = {
