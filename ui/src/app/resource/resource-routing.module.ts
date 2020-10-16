@@ -7,7 +7,6 @@ import { ResourceListComponent } from './resource-list/resource-list.component';
 import { ResourceCardComponent } from './resource-card/resource-card.component';
 import { ResourceDialogComponent } from './resource-dialog/resource-dialog.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -16,9 +15,9 @@ const routes: Routes = [
       {
         path: '',
         component: ResourceListComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 export const declarations = [
@@ -34,6 +33,6 @@ export const providers = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ResourceRoutingModule { }
+export class ResourceRoutingModule {}

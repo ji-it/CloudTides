@@ -14,9 +14,9 @@ const routes: Routes = [
       {
         path: '',
         component: TemplateListComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 export const declarations = [
@@ -31,6 +31,6 @@ export const providers = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class TemplateRoutingModule { }
+export class TemplateRoutingModule {}

@@ -8,10 +8,8 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    children: [
-
-    ]
-  }
+    children: [],
+  },
 ];
 
 export const declarations = [
@@ -24,6 +22,6 @@ export const providers = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class HomeRoutingModule { }
+export class HomeRoutingModule {}

@@ -4,7 +4,6 @@ import { SharedModule } from '@tide-shared/shared.module';
 
 import { PolicyRoutingModule, declarations, providers } from './policy-routing.module';
 
-
 @NgModule({
   declarations: [
     ...declarations,
@@ -14,7 +13,7 @@ import { PolicyRoutingModule, declarations, providers } from './policy-routing.m
   ],
   imports: [
     SharedModule,
-    PolicyRoutingModule
-  ]
+    PolicyRoutingModule,
+  ],
 })
-export class PolicyModule { }
+export class PolicyModule {}

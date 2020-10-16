@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'cp-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
@@ -61,11 +61,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     })
   ;
 
-
   onSubmit({ username = '', password = '' }: Credential) {
     this.submit$.next({ username, password });
   }
-
 
   ngOnInit() {
     if (this.loginService.hasLoggedIn) {

@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'cp-spinner',
   templateUrl: './spinner.component.html',
-  styleUrls: [ './spinner.component.scss' ],
+  styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent implements OnInit {
 

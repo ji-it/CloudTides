@@ -33,7 +33,9 @@
               "node_modules/@clr/ui/clr-ui.min.css"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/@shared/style"]
+              "includePaths": [
+                "src/app/@shared/style"
+              ]
             },
             "scripts": [
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
@@ -131,6 +133,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "tides-ui"
+    }
+  },
+  "defaultProject": "tides-ui",
+  "cli": {
+    "analytics": "9e23faa2-e6f8-440e-869c-78ee7d802fd2"
+  }
 }

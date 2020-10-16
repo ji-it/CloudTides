@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { PolicyComponent } from './policy.component';
 import { PolicyService } from './policy.service';
-import { PolicyDatagridComponent } from './policy-datagrid/policy-datagrid.component'
-import { PolicyDialogComponent } from './policy-dialog/policy-dialog.component'
+import { PolicyDatagridComponent } from './policy-datagrid/policy-datagrid.component';
+import { PolicyDialogComponent } from './policy-dialog/policy-dialog.component';
 
 const routes: Routes = [
   {
@@ -14,9 +14,9 @@ const routes: Routes = [
       {
         path: '',
         component: PolicyDatagridComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 export const declarations = [
@@ -31,6 +31,6 @@ export const providers = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PolicyRoutingModule { }
+export class PolicyRoutingModule {}
