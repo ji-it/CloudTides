@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'tide-home',
@@ -7,13 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(public readonly translate: TranslateService) { }
 
   barData = [
     { data: this.genRandomData(5, 100), label: 'CPU%' },
     { data: this.genRandomData(5, 100), label: 'Memory%' },
     { data: this.genRandomData(5, 100), label: 'Disk%' },
-  ]
+  ];
 
   barLabels = [
     'Folding@home',
@@ -21,14 +22,14 @@ export class HomeComponent implements OnInit {
     'Asteroids@home',
     'BOINC@TACC',
     'LHC@home@home',
-  ]
+  ];
 
   barOptions = {
     title: {
       display: true,
-      text: 'Percent of Resource Usage for Each Project'
-    }
-  }
+      text: 'Percent of Resource Usage for Each Project',
+    },
+  };
 
   lineLabels = [
     'January',
@@ -42,14 +43,14 @@ export class HomeComponent implements OnInit {
     'September',
     'October',
     'November',
-    'December'
+    'December',
   ];
 
   lineOptions = {
     title: {
       display: true,
       text: 'Running Hours for Each Project',
-    }
+    },
   };
 
   lineData = [
@@ -63,21 +64,21 @@ export class HomeComponent implements OnInit {
   bubbleData = [
     {
       data: new Array(500)
-      .fill({})
-      .map(() => ({
-        x: Math.random() * 60,
-        y: Math.random() * 100,
-        r: Math.random() * 10,
-      })),
+        .fill({})
+        .map(() => ({
+          x: Math.random() * 60,
+          y: Math.random() * 100,
+          r: Math.random() * 10,
+        })),
       label: 'VM',
-    }
+    },
   ];
 
   bubbleOptions = {
     title: {
       display: true,
       text: 'Resource Distribution for Each VM',
-    }
+    },
   };
 
   ngOnInit(): void {
@@ -85,7 +86,7 @@ export class HomeComponent implements OnInit {
   }
 
   genRandomData(size, range) {
-    return new Array(size).fill('').map(a => Math.random() * range)
+    return new Array(size).fill('').map(a => Math.random() * range);
   }
 
 }

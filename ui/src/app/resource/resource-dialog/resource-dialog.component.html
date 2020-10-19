@@ -2,41 +2,41 @@
   [clrModalSize]="'lg'"
   [clrModalClosable]="false">
   <h3 class="modal-title">
-    Add Resource
+    {{ "HOME.RESOURCE.DIALOG.ADD_RESOURCE" | translate:{} }}
   </h3>
   <div class="modal-body">
     <form clrForm [formGroup]="this.resourceForm">
       <clr-input-container>
-        <label for="name">Name</label>
+        <label for="name">{{ "HOME.RESOURCE.DIALOG.NAME" | translate:{} }}</label>
         <input id="name"
           class="clr-col-12 clr-col-md-8"
           type="text"
-          placeholder="Resource Name"
+          [placeholder]="'HOME.RESOURCE.DIALOG.RESOURCE_NAME' | translate:{} "
           formControlName="name"
           clrInput />
-        <clr-control-error>Required</clr-control-error>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{} }}</clr-control-error>
       </clr-input-container>
       <clr-input-container>
-        <label for="datacenter">Datacenter</label>
+        <label for="datacenter">{{ "HOME.RESOURCE.DIALOG.DATACENTER" | translate:{} }}</label>
         <input id="datacenter"
           class="clr-col-12 clr-col-md-8"
           type="text"
-          placeholder="Datacenter Name"
+          [placeholder]="'HOME.RESOURCE.DIALOG.DATACENTER_NAME' | translate:{} "
           formControlName="datacenter"
           clrInput />
       </clr-input-container>
       <clr-input-container>
-        <label for="cluster">Cluster</label>
+        <label for="cluster">{{ "HOME.RESOURCE.DIALOG.CLUSTER" | translate:{} }}</label>
         <input id="cluster"
           class="clr-col-12 clr-col-md-8"
           type="text"
-          placeholder="Cluster Name"
+          [placeholder]="'HOME.RESOURCE.DIALOG.CLUSTER_NAME' | translate:{} "
           formControlName="cluster"
           clrInput />
       </clr-input-container>
 
       <clr-input-container>
-        <label for="username">Username</label>
+        <label for="username">{{ "HOME.RESOURCE.DIALOG.USERNAME" | translate:{} }}</label>
         <input id="username"
           class="clr-col-12 clr-col-md-8"
           type="text"
@@ -45,7 +45,7 @@
       </clr-input-container>
 
       <clr-password-container>
-        <label for="password">Password</label>
+        <label for="password">{{ "HOME.RESOURCE.DIALOG.PASSWORD" | translate:{} }}</label>
         <input id="password"
           type="password"
           class="clr-col-12 clr-col-md-8"
@@ -60,12 +60,12 @@
     <button type="button"
       class="btn btn-outline"
       (click)="this.onCancel()">
-      Cancel
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
     </button>
     <button type="button"
       class="btn btn-primary"
       (click)="this.onSave()">
-      Save
+      {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
     </button>
   </div>
 </clr-modal>

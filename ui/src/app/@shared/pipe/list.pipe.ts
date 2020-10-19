@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'list'
+  name: 'list',
 })
 export class ListPipe implements PipeTransform {
 
-  transform (value: (string | number)[][]): string {
+  transform(value: (string | number)[][]): string {
     return value.map(l => l.join(' ')).join('\n');
   }
 

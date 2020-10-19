@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { Item, ResourceService } from '../resource.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'tide-resource-list',
@@ -12,6 +13,7 @@ export class ResourceListComponent implements OnInit {
 
   constructor(
     private resourceService: ResourceService,
+    public readonly translate: TranslateService,
   ) {
 
   }

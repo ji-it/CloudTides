@@ -2,12 +2,12 @@
   [clrModalSize]="'lg'"
   [clrModalClosable]="false">
   <h3 class="modal-title">
-    Create Policy
+    {{ "HOME.POLICY.DIALOG.CREATE_POLICY" | translate:{} }}
   </h3>
   <div class="modal-body">
     <form clrForm [formGroup]="this.policyForm">
       <clr-select-container>
-        <label for="name">Template</label>
+        <label for="name">{{ "HOME.POLICY.DIALOG.TEMPLATE" | translate:{} }}</label>
         <select name="template"
           clrSelect
           class="clr-col-12 clr-col-md-8"
@@ -18,43 +18,43 @@
           <option value="BOINC@TACC">BOINC@TACC</option>
           <option value="LHC@home@home">LHC@home@home</option>
         </select>
-        <clr-control-error>Required</clr-control-error>
+        <clr-control-error>{{ "HOME.POLICY.DIALOG.REQUIRED" | translate:{} }}</clr-control-error>
       </clr-select-container>
 
       <clr-select-container>
-        <label for="name">Start Condition</label>
+        <label for="name">{{ "HOME.POLICY.DIALOG.START_CONDITION" | translate:{} }}</label>
         <select name="template"
           clrSelect
           class="clr-col-12 clr-col-md-8"
           formControlName="startConditions">
-          <option value="cpu">CPU</option>
-          <option value="memory">Memory</option>
-          <option value="disk">Disk</option>
+          <option value="cpu">{{ "HOME.POLICY.DIALOG.CPU" | translate:{} }}</option>
+          <option value="memory">{{ "HOME.POLICY.DIALOG.MEMORY" | translate:{} }}</option>
+          <option value="disk">{{ "HOME.POLICY.DIALOG.DISK" | translate:{} }}</option>
         </select>
-        <clr-control-error>Required</clr-control-error>
+        <clr-control-error>{{ "HOME.POLICY.DIALOG.REQUIRED" | translate:{} }}</clr-control-error>
       </clr-select-container>
       <clr-range-container>
         <label></label>
         <input type="range" clrRange formControlName="template" name="startConditions" />
-        <clr-control-helper>Select the percentage when to start</clr-control-helper>
+        <clr-control-helper>{{ "HOME.POLICY.DIALOG.SELECT_START" | translate:{} }}</clr-control-helper>
       </clr-range-container>
 
       <clr-select-container>
-        <label for="name">Stop Condition</label>
+        <label for="name">{{ "HOME.POLICY.DIALOG.STOP_CONDITION" | translate:{} }}</label>
         <select name="template"
           clrSelect
           class="clr-col-12 clr-col-md-8"
           formControlName="stopConditions">
-          <option value="cpu">CPU</option>
-          <option value="memory">Memory</option>
-          <option value="disk">Disk</option>
+          <option value="cpu">{{ "HOME.POLICY.DIALOG.CPU" | translate:{} }}</option>
+          <option value="memory">{{ "HOME.POLICY.DIALOG.MEMORY" | translate:{} }}</option>
+          <option value="disk">{{ "HOME.POLICY.DIALOG.DISK" | translate:{} }}</option>
         </select>
-        <clr-control-error>Required</clr-control-error>
+        <clr-control-error>{{ "HOME.POLICY.DIALOG.REQUIRED" | translate:{} }}</clr-control-error>
       </clr-select-container>
       <clr-range-container>
         <label></label>
         <input type="range" clrRange formControlName="template" name="stopConditions" />
-        <clr-control-helper>Select the percentage when to stop</clr-control-helper>
+        <clr-control-helper>{{ "HOME.POLICY.DIALOG.SELECT_STOP" | translate:{} }}</clr-control-helper>
       </clr-range-container>
     </form>
   </div>
@@ -62,12 +62,12 @@
     <button type="button"
       class="btn btn-outline"
       (click)="this.onCancel()">
-      Cancel
+      {{ "HOME.POLICY.DIALOG.CANCEL" | translate:{} }}
     </button>
     <button type="button"
       class="btn btn-primary"
       (click)="this.onSave()">
-      Save
+      {{ "HOME.POLICY.DIALOG.SAVE" | translate:{} }}
     </button>
   </div>
 </clr-modal>
