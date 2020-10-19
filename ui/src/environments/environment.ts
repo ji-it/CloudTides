@@ -6,10 +6,7 @@ import { base } from './base';
 
 export const environment = {
   production: false,
-<<<<<<< HEAD
   ...base,
-=======
->>>>>>> 00752a0... add .editorconfig and reformat all the code
 };
 
 /*
