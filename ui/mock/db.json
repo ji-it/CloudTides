@@ -2,30 +2,40 @@
   "session": {
 
   },
-  "resources": [
-    { "id": "1", "name": "Asia-India", "host": "sc-prd-comp-vc001.eng.vmware.com", "status": "Ready", "sites": 1, "orgs": 0, "vms": 0, "services": 0 },
-    { "id": "2", "name": "Acme-US-West", "host": "sc-prd-comp-vc002.eng.vmware.com", "status": "Ready", "sites": 2, "orgs": 2, "vms": 10, "services": 1 },
-    { "id": "3", "name": "Asia-China", "host": "sc-prd-comp-vc003.eng.vmware.com", "status": "Ready", "sites": 5, "orgs": 3, "vms": 5, "services": 5 },
-    { "id": "4", "name": "Europe-England", "host": "sc-prd-comp-vc004.eng.vmware.com", "status": "Ready", "sites": 6, "orgs": 6, "vms": 3, "services": 2 },
-    { "id": "5", "name": "Europe-Russia", "host": "sc-prd-comp-vc005.eng.vmware.com", "status": "Ready", "sites": 6, "orgs": 6, "vms": 3, "services": 2 },
-    { "id": "6", "name": "Acme-US-East", "host": "sc-prd-comp-vc006.eng.vmware.com", "status": "Ready", "sites": 8, "orgs": 7, "vms": 4, "services": 3 }
-  ],
-  "policies": [
-    { "id": "1", "name": "Amazon", "project": "Folding@home", "type": "VM", "cpu": 50, "memory": 30, "destroy": true },
-    { "id": "2", "name": "Google", "project": "CAS@home", "type": "VM", "cpu": 30, "memory": 60, "destroy": false },
-    { "id": "3", "name": "Microsoft", "project": "Asteroids@home", "type": "VM", "cpu": 60, "memory": 80, "destroy": true },
-    { "id": "4", "name": "Alibaba", "project": "BOINC@TACC", "type": "VM", "cpu": 40, "memory": 20, "destroy": false },
-    { "id": "5", "name": "Tencent", "project": "LHC@home", "type": "VM", "cpu": 80, "memory": 70, "destroy": true }
-  ],
-  "templates": [
-    {
-      "id": "1",
-      "name": "Folding@Home",
-      "displayName": "VMware Appliance for Folding@Home",
-      "contributors": "William Lam",
-      "version": "v1.0.2",
-      "date": "April 01, 2020",
-      "url": "https://flings.vmware.com/vmware-appliance-for-folding-home"
+  "config": {
+    "collect": "computeUnitCollect.sh"
+  },
+  "computeResource": [{
+    "id": 1,
+    "name": "vcenter",
+    "cpu": 4,
+    "mem": 17179869184,
+    "disk": 162896932864,
+    "usage": {
+      "cpu%": 10.2,
+      "mem%": 42.8,
+      "disk%": 93
     }
-  ]
+  }],
+  "schedulerPolicie": [{
+    "crid": 1,
+    "template": "Folding@Home",
+    "startConditions": [
+      ["cpu%", "lt", 5]
+    ],
+    "stopConditions": [
+      ["cpu%", "gt", 50]
+    ]
+  }],
+  "templates": [{
+    "id": "1",
+    "name": "Folding@Home",
+    "displayName": "VMware Appliance for Folding@Home",
+    "version": "v1.0.2",
+    "date": "April 01, 2020",
+    "url": "https://flings.vmware.com/vmware-appliance-for-folding-home",
+    "cpu": 4,
+    "mem": 1024,
+    "disk": 2048
+  }]
 }

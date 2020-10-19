@@ -4,6 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { base } from '@tide-environments/base'
 
 @Injectable()
 export class LoginService {
@@ -19,26 +20,26 @@ export class LoginService {
     username = '',
     password = '',
   ) {
-    return this.http.post<UserInfo>('/api/session', { username, password }).pipe(
+    return this.http.post<UserInfo>(`${base.apiPrefix}/session`, { username, password }).pipe(
       tap(userInfo => {
         this.session$.next(userInfo);
-      })
+      }),
     );
   }
 
   current() {
-    return this.http.get<UserInfo>('/api/session').pipe(
+    return this.http.get<UserInfo>(`${base.apiPrefix}/session`).pipe(
       tap(userInfo => {
         this.session$.next(userInfo);
-      })
+      }),
     );
   }
 
   logout() {
-    return this.http.post('/api/session', {}).pipe(
+    return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
       tap(() => {
         this.document.location.href = '/login';
-      })
+      }),
     );
   }
 

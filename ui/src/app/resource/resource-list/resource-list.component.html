@@ -1,4 +1,4 @@
-<button class="btn btn-primary" (click)="this.add()">
+<button class="btn btn-primary" (click)="this.opened=true">
   <clr-icon shape="plus"></clr-icon>
   Add Resource
 </button>
@@ -10,3 +10,10 @@
     </div>
   </div>
 </div>
+
+<tide-resource-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.add($event)"
+  (cancel)="this.cancel()">
+</tide-resource-dialog>

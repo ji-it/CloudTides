@@ -3,18 +3,16 @@
 </div>
 
 <div class="content-body">
-  <button class="btn btn-primary" (click)="this.add()">
+  <button class="btn btn-primary" (click)="this.opened=true">
     <clr-icon shape="plus"></clr-icon>
     Add Policy
   </button>
 
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
-    <clr-dg-column [clrDgField]="'project'">Project</clr-dg-column>
-    <clr-dg-column [clrDgField]="'type'">Type</clr-dg-column>
-    <clr-dg-column [clrDgField]="'cpu'">CPU %</clr-dg-column>
-    <clr-dg-column [clrDgField]="'memory'">Memory %</clr-dg-column>
-    <clr-dg-column [clrDgField]="'destroy'">Destroy After Stop</clr-dg-column>
+    <clr-dg-column [clrDgField]="'crid'">CRID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'template'">Template</clr-dg-column>
+    <clr-dg-column [clrDgField]="'startConditions'">Start Conditions</clr-dg-column>
+    <clr-dg-column [clrDgField]="'stopConditions'">Stop Condistions</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let item of list$ | async" [clrDgItem]="item">
       <clr-dg-action-overflow>
@@ -25,12 +23,10 @@
           Delete
         </button>
       </clr-dg-action-overflow>
-      <clr-dg-cell>{{ item.name }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.project }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.type }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.cpu }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.memory }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.destroy }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.crid }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.template }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.startConditions | list}}</clr-dg-cell>
+      <clr-dg-cell>{{ item.stopConditions | list}}</clr-dg-cell>
     </clr-dg-row>
     <clr-dg-placeholder>
       No Policy Data
@@ -44,3 +40,10 @@
   </clr-datagrid>
 
 </div>
+
+<tide-policy-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.add($event)"
+  (cancel)="this.cancel()">
+</tide-policy-dialog>

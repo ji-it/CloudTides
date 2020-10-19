@@ -5,12 +5,11 @@ import { Item } from '../template.service';
 @Component({
   selector: 'tide-template-card',
   templateUrl: './template-card.component.html',
-  styleUrls: ['./template-card.component.scss']
+  styleUrls: ['./template-card.component.scss'],
 })
 export class TemplateCardComponent implements OnInit {
 
-  constructor(
-  ) { }
+  constructor() { }
 
   @Input() template: Item;
   @Output() delete = new EventEmitter<Item>();

@@ -13,13 +13,14 @@
   bottom: 85%;
   border-bottom-left-radius: 10px;
   box-shadow: -.2em .2em .3em -.1em rgba(0, 0, 0, .15);
-  background: linear-gradient(to left bottom, transparent 50%, rgba(0,0,0,.1) 0) 100% 0 no-repeat;
+  background: linear-gradient(to left bottom, transparent 50%, rgba(0, 0, 0, .1) 0) 100% 0 no-repeat;
   border-left: 1.5px solid lightseagreen;
   border-bottom: 1.5px solid lightseagreen;
 }
 
 .card-text {
   display: flex;
+
   .row-label {
     font-weight: bolder;
     flex: 1;
