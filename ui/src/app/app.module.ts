@@ -9,7 +9,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppRoutingModule, declarations, providers } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { I18nService } from './config/i18n';
+import { I18nService } from '@tide-shared/service/i18n';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

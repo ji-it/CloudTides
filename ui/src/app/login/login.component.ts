@@ -5,7 +5,7 @@ import { LoginService } from './login.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { I18nService } from '../config/i18n';
+import { I18nService } from '@tide-shared/service/i18n';
 
 @Component({
   selector: 'cp-login',
