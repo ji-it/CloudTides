@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { base } from '@tide-environments/base'
 
 @Injectable()
 export class TemplateService {
@@ -10,7 +11,7 @@ export class TemplateService {
   ) {
   }
 
-  private prefix = '/api/templates';
+  private prefix = `${base.apiPrefix}/templates`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(
@@ -39,10 +40,12 @@ export class TemplateService {
 interface ItemDTO {
   name: string;
   displayName: string;
-  contributors: string;
   version: string;
   date: string;
   url: string;
+  cpu: number;
+  mem: number;
+  disk: number;
 }
 
 function mapList(raw: ItemDTO[]): Item[] {

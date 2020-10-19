@@ -6,29 +6,23 @@
         <div class="name">
           {{ item?.name }}
         </div>
-        <div class="desc">{{ item?.host }}</div>
-        <div class="status">
-          <clr-icon shape="check-circle" class="is-solid"></clr-icon>
-          {{ item?.status }}
-        </div>
+        <div class="desc">CPU: {{ item?.cpu }}</div>
+        <div class="desc">Memory: {{ item?.mem }}</div>
+        <div class="desc">Disk: {{ item?.disk }}</div>
       </span>
     </div>
     <div class="detail-wrapper">
       <span class="detail-container">
-        <div class="value">{{ item?.sites }}</div>
-        <div class="key">Site</div>
+        <div class="value">{{ item?.usage["cpu%"] }}%</div>
+        <div class="key">CPU</div>
       </span>
       <span class="detail-container">
-        <div class="value">{{ item?.orgs }}</div>
-        <div class="key">Organizations</div>
+        <div class="value">{{ item?.usage["mem%"] }}%</div>
+        <div class="key">Memory</div>
       </span>
       <span class="detail-container">
-        <div class="value">{{ item?.vms }}</div>
-        <div class="key">Running VMs</div>
-      </span>
-      <span class="detail-container">
-        <div class="value">{{ item?.services }}</div>
-        <div class="key">Services</div>
+        <div class="value">{{ item?.usage["disk%"] }}%</div>
+        <div class="key">Disk</div>
       </span>
     </div>
   </div>
