@@ -5,7 +5,7 @@ import { PRODUCT_NAME } from '@tide-config/const';
 
 import { LoginService, UserInfo } from './login/login.service';
 import { TranslateService } from '@ngx-translate/core';
-import { I18nService } from './config/i18n';
+import { I18nService } from '@tide-shared/service/i18n';
 
 @Component({
   selector: 'tide-root',

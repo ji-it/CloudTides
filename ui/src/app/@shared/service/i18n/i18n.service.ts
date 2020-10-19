@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { i18nSupportList } from './i18nSupportList';
+import { i18nSupportList } from '@tide-config/i18nSupportList';
 
 @Injectable()
 export class I18nService {
