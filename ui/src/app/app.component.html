@@ -10,6 +10,15 @@
           </a>
         </div>
         <div class="header-actions">
+          <clr-select-container>
+            <select
+              clrSelect
+              class="i18n-select"
+              [(ngModel)]="i18nService.i18nChoice"
+              (ngModelChange)="i18nService.setLanguage()">
+              <option *ngFor="let lang of i18nService.i18nSupportList" [value]="lang.lang">{{lang.name}}</option>
+            </select>
+          </clr-select-container>
           <clr-dropdown>
             <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
               <clr-icon shape="user"></clr-icon>
@@ -37,7 +46,7 @@
             <a class="nav-link"
               routerLink="/resource"
               routerLinkActive="active">
-              Resource
+              {{ "HOME.RESOURCE" | translate:{} }}
             </a>
           </li>
           <li class="nav-item">

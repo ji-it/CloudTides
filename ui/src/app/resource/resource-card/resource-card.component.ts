@@ -4,7 +4,7 @@ import { Item } from '../resource.service';
 @Component({
   selector: 'tide-resource-card',
   templateUrl: './resource-card.component.html',
-  styleUrls: ['./resource-card.component.scss']
+  styleUrls: ['./resource-card.component.scss'],
 })
 export class ResourceCardComponent implements OnInit {
 

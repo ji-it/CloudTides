@@ -6,7 +6,7 @@ import { Item, PolicyService } from '../policy.service';
 @Component({
   selector: 'policy-policy-datagrid',
   templateUrl: './policy-datagrid.component.html',
-  styleUrls: ['./policy-datagrid.component.scss']
+  styleUrls: ['./policy-datagrid.component.scss'],
 })
 export class PolicyDatagridComponent implements OnInit {
 

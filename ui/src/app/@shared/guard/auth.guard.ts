@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -15,7 +14,6 @@ import { Observable, of } from 'rxjs';
 
 import { LoginService } from '../../login/login.service';
 import { RouterData } from '../../app-routing.module';
-
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
@@ -41,10 +39,10 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
         if (valid === true) {
           return;
         } else {
-          this.router.navigate([ '/login' ]);
+          this.router.navigate(['/login']);
           return;
         }
-      })
+      }),
     );
   }
 

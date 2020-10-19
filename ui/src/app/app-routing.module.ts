@@ -47,8 +47,8 @@ const routes: Routes = [
         path: TEMPLATE_PATH_NAME,
         loadChildren: () => import('./template/template.module').then(m => m.TemplateModule),
       },
-    ]
-  }
+    ],
+  },
 ];
 
 export const declarations = [
@@ -64,8 +64,7 @@ export const providers = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
-
+export class AppRoutingModule {}
 
 export interface RouterData {
   anonymous?: boolean;

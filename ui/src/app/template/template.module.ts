@@ -4,7 +4,6 @@ import { SharedModule } from '@tide-shared/shared.module';
 
 import { TemplateRoutingModule, declarations, providers } from './template-routing.module';
 
-
 @NgModule({
   declarations: [
     ...declarations,
@@ -14,7 +13,7 @@ import { TemplateRoutingModule, declarations, providers } from './template-routi
   ],
   imports: [
     SharedModule,
-    TemplateRoutingModule
-  ]
+    TemplateRoutingModule,
+  ],
 })
-export class TemplateModule { }
+export class TemplateModule {}
