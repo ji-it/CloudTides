@@ -133,7 +133,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 
 	if !body.IsResourcePool {
 		var clu models.Resource
-		if !db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RecordNotFound() {
+		if db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RowsAffected > 0 {
 			if clu.IsResourcePool {
 				logger.SetLogLevel("ERROR")
 				logger.Error("/resource/add/: [404] Child resource pool already registered")
@@ -168,7 +168,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						PlatformType:   body.Vmtype,
 						Status:         "unknown",
 						TotalJobs:      0,
-						UserRef:        uid,
+						UserID:         uid,
 						Username:       body.Username,
 					}
 
@@ -190,7 +190,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						PercentRAM:  CurrentRAM / TotalRAM,
 						TotalCPU:    TotalCPU,
 						TotalRAM:    TotalRAM,
-						ResourceRef: newres.Model.ID,
+						ResourceID:  newres.Model.ID,
 					}
 
 					db.Create(&newResourceUsage)
@@ -221,7 +221,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 		}
 	} else {
 		var clu models.Resource
-		if !db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RecordNotFound() {
+		if db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).Error != nil {
 			logger.SetLogLevel("ERROR")
 			logger.Error("/resource/add/: [404] Parent cluster already registered")
 			return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
@@ -249,7 +249,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						PlatformType:   body.Vmtype,
 						Status:         "unknown",
 						TotalJobs:      0,
-						UserRef:        uid,
+						UserID:         uid,
 						Username:       body.Username,
 					}
 
@@ -278,7 +278,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						PercentRAM:  CurrentRAM / TotalRAM,
 						TotalCPU:    TotalCPU,
 						TotalRAM:    TotalRAM,
-						ResourceRef: newres.Model.ID,
+						ResourceID:  newres.Model.ID,
 					}
 
 					db.Create(&newResourceUsage)
@@ -327,14 +327,14 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
-	db.Where("user_ref = ?", uid).Find(&resources)
+	db.Where("user_id = ?", uid).Find(&resources)
 
 	var response []*models.ResourceListItem
 	for _, res := range resources {
 		var resUsage models.ResourceUsage
-		db.Where("resource_ref = ?", res.Model.ID).First(&resUsage)
+		db.Where("resource_id = ?", res.Model.ID).First(&resUsage)
 		var pol models.Policy
-		db.Where("id = ?", res.PolicyRef).First(&pol)
+		db.Where("id = ?", res.Policy.Model.ID).First(&pol)
 
 		newResultItem := models.ResourceListItem{
 			CPUPercent:   resUsage.PercentCPU,
@@ -380,8 +380,8 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	var res models.Resource
 
 	db := config.GetDB()
-	// db.Where("id = ? AND user_ref = ?", rid, uid).Delete(&res)
-	err := db.Unscoped().Where("id = ? AND user_ref = ?", rid, uid).Delete(&res).Error
+	// db.Where("id = ? AND user_id = ?", rid, uid).Delete(&res)
+	err := db.Unscoped().Where("id = ? AND user_id = ?", rid, uid).Delete(&res).Error
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/delete/: [404] Resource not found")
@@ -422,7 +422,7 @@ func ToggleActiveHandler(params resource.ToggleActiveParams) middleware.Responde
 	rid := params.ReqBody.ID
 	var res models.Resource
 	db := config.GetDB()
-	if db.Where("id = ?", rid).First(&res).RecordNotFound() {
+	if db.Where("id = ?", rid).First(&res).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/toggle_active/: [404] Resource not found")
 		return resource.NewToggleActiveNotFound()
@@ -442,7 +442,7 @@ func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responde
 	body := params.ReqBody
 	var res models.Resource
 	db := config.GetDB()
-	if db.Where("id = ?", body.ResourceID).First(&res).RecordNotFound() {
+	if db.Where("id = ?", body.ResourceID).First(&res).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/update_status/: [404] Resource not found")
 		return resource.NewUpdateStatusNotFound()
@@ -485,8 +485,7 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 		return resource.NewAssignPolicyNotFound()
 	}
 
-	res.PolicyRef = new(uint)
-	*res.PolicyRef = uint(pid)
+	res.Policy = pol
 	db.Save(&res)
 
 	logger.SetLogLevel("INFO")
@@ -523,17 +522,17 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	resources := []*models.Resource{}
 	db := config.GetDB()
-	db.Where("user_ref = ?", uid).Find(&resources)
+	db.Where("user_id = ?", uid).Find(&resources)
 
 	results := []*models.ResourceInfoItem{}
 	for _, res := range resources {
 		vms := []*models.VM{}
-		db.Where("resource_ref = ?", res.Model.ID).Find(&vms)
+		db.Where("resource_id = ?", res.Model.ID).Find(&vms)
 		totalVMs := len(vms)
 		var pol models.Policy
-		db.Where("id = ?", res.PolicyRef).First(&pol)
+		db.Where("id = ?", res.Policy.Model.ID).First(&pol)
 		var hu models.ResourceUsage
-		db.Where("resource_ref = ?", res.Model.ID).First(&hu)
+		db.Where("resource_id = ?", res.Model.ID).First(&hu)
 
 		result := models.ResourceInfoItem{
 			CPUPercent:   hu.PercentCPU,
@@ -559,11 +558,11 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 		}
 
 		if totalVMs > 0 {
-			var activeVMs int
-			db.Where("resource_ref = ? AND is_destroyed = ? AND powered_on = ?",
+			var activeVMs int64
+			db.Where("resource_id = ? AND is_destroyed = ? AND powered_on = ?",
 				res.Model.ID, false, true).Find(&vms).Count(&activeVMs)
 			var vm models.VM
-			db.Where("resource_ref = ?", res.Model.ID).Order("created_at").First(&vm)
+			db.Where("resource_id = ?", res.Model.ID).Order("created_at").First(&vm)
 			result.ActiveVMs = int64(activeVMs)
 			result.LastDeployed = time.Time.String(vm.Model.CreatedAt)
 		}
@@ -587,18 +586,18 @@ func ResourceVMsInfoHandler(params resource.ResourceVMsInfoParams) middleware.Re
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	resources := []*models.Resource{}
 	db := config.GetDB()
-	db.Where("user_ref = ?", uid).Find(&resources)
+	db.Where("user_id = ?", uid).Find(&resources)
 
 	results := [][]*models.ResourceVMInfoItem{}
 	for _, res := range resources {
 		vms := []*models.VM{}
 		curvms := []*models.ResourceVMInfoItem{}
-		db.Where("resource_ref = ?", res.Model.ID).Find(&vms)
+		db.Where("resource_id = ?", res.Model.ID).Find(&vms)
 
 		for _, vm := range vms {
 			var vmu models.VMUsage
 			var newvm models.ResourceVMInfoItem
-			if db.Where("vm_ref = ?", vm.Model.ID).First(&vmu).RecordNotFound() {
+			if db.Where("vm_id = ?", vm.Model.ID).First(&vmu).Error != nil {
 				newvm = models.ResourceVMInfoItem{
 					BoincTime:   time.Time.String(vm.BoincTime),
 					DateCreated: time.Time.String(vm.Model.CreatedAt),

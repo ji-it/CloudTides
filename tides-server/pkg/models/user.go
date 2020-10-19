@@ -7,7 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // User user

@@ -18,7 +18,7 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 	db := config.GetDB()
 	var res models.Resource
 
-	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&res).RecordNotFound() {
+	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&res).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/usage/add_resource/: [404] Resource not found")
 		return usage.NewAddResourceUsageNotFound()
@@ -36,7 +36,7 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 		PercentRAM:  PercentRAM,
 		TotalCPU:    body.TotalCPU,
 		TotalRAM:    body.TotalRAM,
-		ResourceRef: res.Model.ID,
+		ResourceID:  res.Model.ID,
 	}
 
 	err := db.Create(&newResourceUsage).Error
@@ -58,7 +58,7 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 	db := config.GetDB()
 
 	var hu models.ResourceUsage
-	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&hu).RecordNotFound() {
+	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&hu).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/usage/update_resource/: [404] Resource usage not found")
 		return usage.NewUpdateResourceUsageNotFound()
@@ -107,7 +107,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 
 	for ip, val := range body.VMs {
 		var vm models.VM
-		if db.Where("ip_address = ?", ip).First(&vm).RecordNotFound() {
+		if db.Where("ip_address = ?", ip).First(&vm).Error != nil {
 			var res models.Resource
 			err := db.Where("name = ?", body.Name).First(&res).Error
 			if err != nil {
@@ -126,7 +126,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 				Name:        val.Name,
 				NumCPU:      val.NumCPU,
 				PoweredOn:   val.PoweredOn,
-				ResourceRef: res.Model.ID,
+				ResourceID:  res.Model.ID,
 			}
 
 			db.Create(&newvm)
@@ -136,13 +136,13 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 				CurrentRAM: val.CurrentRAM,
 				TotalCPU:   val.TotalCPU,
 				TotalRAM:   val.TotalRAM,
-				VmRef:      newvm.Model.ID,
+				VmID:       newvm.Model.ID,
 			}
 
 			db.Create(&newvmUsage)
 		} else {
 			var vmu models.VMUsage
-			db.Where("vm_ref = ?", vm.Model.ID).First(&vmu)
+			db.Where("vm_id = ?", vm.Model.ID).First(&vmu)
 
 			vmu.CurrentCPU = val.CurrentCPU
 			vmu.CurrentRAM = val.CurrentRAM

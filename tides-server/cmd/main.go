@@ -39,7 +39,7 @@ func main() {
 	name, err := os.Hostname()
 	fmt.Println(name)
 
-	server.Host = "0.0.0.0"
+	server.Host = "localhost"
 
 	/*
 		// Implement the handler functionality.

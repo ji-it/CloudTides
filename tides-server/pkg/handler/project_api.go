@@ -67,7 +67,7 @@ func UpdateProjectHandler(params project.UpdateProjectParams) middleware.Respond
 
 	var pro models.Project
 	db := config.GetDB()
-	if db.Where("id = ?", body.ID).First(&pro).RecordNotFound() {
+	if db.Where("id = ?", body.ID).First(&pro).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/project/update/: [404] Project not found")
 		return project.NewUpdateProjectNotFound()

@@ -26,10 +26,10 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 		IdlePolicy:      body.Idle,
 		IsDestroy:       body.IsDestroy,
 		Name:            body.Name,
-		ProjectRef:      uint(body.ProjectID),
-		TemplateRef:     uint(body.TemplateID),
+		ProjectID:       uint(body.ProjectID),
+		TemplateID:      uint(body.TemplateID),
 		ThresholdPolicy: body.Threshold,
-		UserRef:         uid,
+		UserID:          uid,
 	}
 
 	db := config.GetDB()
@@ -57,7 +57,7 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 	body := params.ReqBody
 	var pol models.Policy
 	db := config.GetDB()
-	if db.Where("id = ?", body.ID).First(&pol).RecordNotFound() {
+	if db.Where("id = ?", body.ID).First(&pol).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/policy/update/: [404] Policy not found")
 		return policy.NewUpdatePolicyNotFound()
@@ -70,8 +70,8 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 	pol.IdlePolicy = body.Idle
 	pol.IsDestroy = body.IsDestroy
 	pol.Name = body.Name
-	pol.ProjectRef = uint(body.ProjectID)
-	pol.TemplateRef = uint(body.TemplateID)
+	pol.ProjectID = uint(body.ProjectID)
+	pol.TemplateID = uint(body.TemplateID)
 	pol.ThresholdPolicy = body.Threshold
 
 	err := db.Save(&pol).Error
@@ -98,14 +98,14 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 	policies := []*models.Policy{}
 	db := config.GetDB()
 
-	db.Where("user_ref = ?", uid).Find(&policies)
+	db.Where("user_id = ?", uid).Find(&policies)
 
 	results := []*policy.ResultsItems0{}
 	for _, pol := range policies {
 		resources := []*models.Resource{}
 		var pro models.Project
-		db.Where("policy_ref = ?", pol.Model.ID).Find(&resources)
-		db.Where("id = ?", pol.ProjectRef).First(&pro)
+		db.Where("policy_id = ?", pol.Model.ID).Find(&resources)
+		db.Where("id = ?", pol.ProjectID).First(&pro)
 
 		newResult := policy.ResultsItems0{
 			DeployType:      pol.DeployType,

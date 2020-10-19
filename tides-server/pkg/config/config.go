@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"tides-server/pkg/models"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
@@ -40,9 +41,9 @@ func GetDB() *gorm.DB {
 }
 
 func startDB() {
-	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
-		DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
-	db, err = gorm.Open("postgres", dbinfo)
+	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+		DB_USER, DB_PASSWORD, DB_NAME)
+	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	// defer db.Close()
 	if err != nil {
 		panic(err)
@@ -50,11 +51,11 @@ func startDB() {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
 	db.AutoMigrate(&models.Template{})
-	db.AutoMigrate(&models.Policy{}).AddForeignKey("user_ref", "users(id)", "CASCADE", "CASCADE").AddForeignKey("project_ref", "projects(id)", "SET NULL", "CASCADE").AddForeignKey("template_ref", "templates(id)", "SET NULL", "CASCADE")
-	db.AutoMigrate(&models.Resource{}).AddForeignKey("user_ref", "users(id)", "CASCADE", "CASCADE").AddForeignKey("policy_ref", "policies(id)", "SET NULL", "CASCADE")
-	db.AutoMigrate(&models.VM{}).AddForeignKey("resource_ref", "resources(id)", "CASCADE", "CASCADE")
-	db.AutoMigrate(&models.ResourceUsage{}).AddForeignKey("resource_ref", "resources(id)", "CASCADE", "CASCADE")
-	db.AutoMigrate(&models.VMUsage{}).AddForeignKey("vm_ref", "vms(id)", "CASCADE", "CASCADE")
+	db.AutoMigrate(&models.Policy{})
+	db.AutoMigrate(&models.Resource{})
+	db.AutoMigrate(&models.VM{})
+	db.AutoMigrate(&models.ResourceUsage{})
+	db.AutoMigrate(&models.VMUsage{})
 	fmt.Println("DB connection success")
 
 }

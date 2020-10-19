@@ -46,7 +46,7 @@ func VerifyUser(req *http.Request) bool {
 	}
 	db := config.GetDB()
 	var queryUser models.User
-	if db.Where("id = ?", id).First(&queryUser).RecordNotFound() {
+	if db.Where("id = ?", id).First(&queryUser).Error != nil {
 		return false
 	}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Resource resource
@@ -47,7 +47,7 @@ type Resource struct {
 	PlatformType string `json:"platformType,omitempty"`
 
 	// policy foreign key
-	PolicyRef *uint
+	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	// status
 	// Enum: [idle normal busy unknown]
@@ -60,7 +60,9 @@ type Resource struct {
 	TotalVMs int64 `json:"totalVMs,omitempty"`
 
 	// user foreign key
-	UserRef uint
+	UserID uint
+
+	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	// username
 	Username string `json:"username,omitempty"`

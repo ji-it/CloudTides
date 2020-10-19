@@ -4,7 +4,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // VMUsage VM usage
@@ -25,7 +25,9 @@ type VMUsage struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 
 	// vm foreign key
-	VmRef uint
+	VmID uint
+
+	Vm VM `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this VM usage

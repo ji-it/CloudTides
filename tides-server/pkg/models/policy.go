@@ -7,7 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Policy policy
@@ -39,16 +39,25 @@ type Policy struct {
 	Name string `json:"name,omitempty" gorm:"unique"`
 
 	// project foreign key
-	ProjectRef uint
+	ProjectID uint
+
+	Project Project `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	// template foreign key
-	TemplateRef uint
+	TemplateID uint
+
+	Template Template `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	// threshold policy
 	ThresholdPolicy string `json:"thresholdPolicy,omitempty"`
 
 	// user foreign key
-	UserRef uint
+	UserID uint
+
+	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	// resource foreign key
+	ResourceID uint
 }
 
 // Validate validates this policy

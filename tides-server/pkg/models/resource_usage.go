@@ -4,7 +4,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // ResourceUsage host usage
@@ -37,7 +37,9 @@ type ResourceUsage struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 
 	// resource foreign key
-	ResourceRef uint
+	ResourceID uint
+
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this host usage

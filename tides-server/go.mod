@@ -12,9 +12,10 @@ require (
 	github.com/go-openapi/swag v0.19.9
 	github.com/go-openapi/validate v0.19.10
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/jinzhu/gorm v1.9.14
 	github.com/lib/pq v1.7.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/vmware/govmomi v0.23.1
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
+	gorm.io/driver/postgres v1.0.2
+	gorm.io/gorm v1.20.2
 )

@@ -6,7 +6,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // VM VM
@@ -37,7 +37,9 @@ type VM struct {
 	PoweredOn bool `json:"poweredOn,omitempty"`
 
 	// resource foreign key
-	ResourceRef uint
+	ResourceID uint
+
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this VM

@@ -17,7 +17,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	body := params.ReqBody
 	db := config.GetDB()
 	var queryUser models.User
-	db.Where("username = ?", body.Username).First(&queryUser)
+	err := db.Where("username = ?", body.Username).First(&queryUser).Error
 	if queryUser.Username != "" {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/users/register/: [400] User already registered")
