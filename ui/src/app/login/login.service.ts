@@ -4,7 +4,7 @@ import { DOCUMENT } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { base } from '@tide-environments/base'
+import { base } from '@tide-environments/base';
 
 @Injectable()
 export class LoginService {

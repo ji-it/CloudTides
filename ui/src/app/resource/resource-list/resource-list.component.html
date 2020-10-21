@@ -1,6 +1,6 @@
 <button class="btn btn-primary" (click)="this.opened=true">
   <clr-icon shape="plus"></clr-icon>
-  Add Resource
+  {{ "HOME.RESOURCE.ADD_RESOURCE" | translate:{} }}
 </button>
 
 <div *ngIf="this.list$ | async as list">

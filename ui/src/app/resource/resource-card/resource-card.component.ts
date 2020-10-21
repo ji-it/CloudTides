@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Item } from '../resource.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'tide-resource-card',
@@ -8,7 +9,9 @@ import { Item } from '../resource.service';
 })
 export class ResourceCardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public readonly translate: TranslateService,
+  ) { }
 
   @Input() item: Item;
 

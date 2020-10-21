@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { base } from '@tide-environments/base'
+import { base } from '@tide-environments/base';
 
 @Injectable()
 export class TemplateService {

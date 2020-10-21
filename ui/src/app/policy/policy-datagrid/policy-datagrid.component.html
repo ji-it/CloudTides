@@ -1,26 +1,28 @@
 <div class="content-header">
-  <h3>Contribution Policy</h3>
+  <h3>{{ "HOME.POLICY.CONTRIBUTION_POLICY" | translate:{} }}</h3>
 </div>
 
 <div class="content-body">
   <button class="btn btn-primary" (click)="this.opened=true">
     <clr-icon shape="plus"></clr-icon>
-    Add Policy
+    {{ "HOME.POLICY.ADD_POLICY" | translate:{} }}
   </button>
 
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'crid'">CRID</clr-dg-column>
-    <clr-dg-column [clrDgField]="'template'">Template</clr-dg-column>
-    <clr-dg-column [clrDgField]="'startConditions'">Start Conditions</clr-dg-column>
-    <clr-dg-column [clrDgField]="'stopConditions'">Stop Condistions</clr-dg-column>
+    <clr-dg-column [clrDgField]="'crid'">{{ "HOME.POLICY.DATAGRID.CRID" | translate:{} }}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'template'">{{ "HOME.POLICY.DATAGRID.TEMPLATE" | translate:{} }}</clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="'startConditions'">{{ "HOME.POLICY.DATAGRID.START_CONDITIONS" | translate:{} }}</clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="'stopConditions'">{{ "HOME.POLICY.DATAGRID.STOP_CONDITIONS" | translate:{} }}</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let item of list$ | async" [clrDgItem]="item">
       <clr-dg-action-overflow>
         <button class="action-item" (click)="this.edit(item)">
-          Edit
+          {{ "HOME.POLICY.DATAGRID.EDIT" | translate:{} }}
         </button>
         <button class="action-item" (click)="this.delete(item)">
-          Delete
+          {{ "HOME.POLICY.DATAGRID.DELETE" | translate:{} }}
         </button>
       </clr-dg-action-overflow>
       <clr-dg-cell>{{ item.crid }}</clr-dg-cell>
@@ -34,7 +36,7 @@
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="this.vo.pageSize">
         {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-        of {{pagination.totalItems}} items
+        {{ "HOME.POLICY.DATAGRID.OF" | translate:{} }} {{pagination.totalItems}} {{ "HOME.POLICY.DATAGRID.ITEM" | translate:{} }}
       </clr-dg-pagination>
     </clr-dg-footer>
   </clr-datagrid>

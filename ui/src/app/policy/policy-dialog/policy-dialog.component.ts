@@ -6,7 +6,7 @@ import { ItemPayload } from '../policy.service';
 @Component({
   selector: 'tide-policy-dialog',
   templateUrl: './policy-dialog.component.html',
-  styleUrls: ['./policy-dialog.component.scss']
+  styleUrls: ['./policy-dialog.component.scss'],
 })
 export class PolicyDialogComponent implements OnInit {
 
@@ -14,9 +14,9 @@ export class PolicyDialogComponent implements OnInit {
     private readonly fb: FormBuilder,
   ) {
     this.policyForm = this.fb.group({
-      template: [ '', Validators.required ],
-      startConditions: [ '', Validators.required ],
-      stopConditions: [ '', Validators.required ],
+      template: ['', Validators.required],
+      startConditions: ['', Validators.required],
+      stopConditions: ['', Validators.required],
     });
   }
 
@@ -24,7 +24,7 @@ export class PolicyDialogComponent implements OnInit {
   @Output() save = new EventEmitter<ItemPayload>();
   @Output() cancel = new EventEmitter();
 
-  policyForm: FormGroup
+  policyForm: FormGroup;
 
   ngOnInit(): void {
 
