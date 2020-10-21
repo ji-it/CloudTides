@@ -35,7 +35,7 @@ func (o *ListTemplateURL) SetBasePath(bp string) {
 func (o *ListTemplateURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/template/list"
+	var _path = "/template"
 
 	_basePath := o._basePath
 	if _basePath == "" {

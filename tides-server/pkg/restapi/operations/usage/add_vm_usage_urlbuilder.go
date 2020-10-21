@@ -35,7 +35,7 @@ func (o *AddVMUsageURL) SetBasePath(bp string) {
 func (o *AddVMUsageURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/usage/addVM"
+	var _path = "/usage/vm"
 
 	_basePath := o._basePath
 	if _basePath == "" {

@@ -34,7 +34,7 @@ func NewAddTemplate(ctx *middleware.Context, handler AddTemplateHandler) *AddTem
 	return &AddTemplate{Context: ctx, Handler: handler}
 }
 
-/*AddTemplate swagger:route POST /template/add template addTemplate
+/*AddTemplate swagger:route POST /template template addTemplate
 
 upload a VM template
 

@@ -34,7 +34,7 @@ func NewDeleteResourceUsage(ctx *middleware.Context, handler DeleteResourceUsage
 	return &DeleteResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*DeleteResourceUsage swagger:route DELETE /usage/delete_resource usage deleteResourceUsage
+/*DeleteResourceUsage swagger:route DELETE /usage usage deleteResourceUsage
 
 delete resource usage info
 

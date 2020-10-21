@@ -49,7 +49,7 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(handler.AddPolicyHandler)
 
-	api.ResourceAddResourceHandler = resource.AddResourceHandlerFunc(handler.AddResourceHandler)
+	api.ResourceAddVsphereResourceHandler = resource.AddVsphereResourceHandlerFunc(handler.AddVsphereResourceHandler)
 
 	api.TemplateAddTemplateHandler = template.AddTemplateHandlerFunc(handler.AddTemplateHandler)
 
@@ -73,23 +73,17 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(handler.ListPolicyHandler)
 
-	api.ResourceListResourceHandler = resource.ListResourceHandlerFunc(handler.ListResourceHandler)
+	api.ResourceListVsphereResourceHandler = resource.ListVsphereResourceHandlerFunc(handler.ListVsphereResourceHandler)
 
 	api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(handler.ListTemplateHandler)
-
-	if api.ResourceOverviewStatsHandler == nil {
-		api.ResourceOverviewStatsHandler = resource.OverviewStatsHandlerFunc(func(params resource.OverviewStatsParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.OverviewStats has not yet been implemented")
-		})
-	}
 
 	api.UserRegisterUserHandler = user.RegisterUserHandlerFunc(handler.RegisterUserHandler)
 
 	api.PolicyRemovePolicyHandler = policy.RemovePolicyHandlerFunc(handler.RemovePolicyHandler)
 
-	api.ResourceResourceInfoHandler = resource.ResourceInfoHandlerFunc(handler.ResourceInfoHandler)
+	api.ResourceResourceVsphereInfoHandler = resource.ResourceVsphereInfoHandlerFunc(handler.ResourceVsphereInfoHandler)
 
-	api.ResourceResourceVMsInfoHandler = resource.ResourceVMsInfoHandlerFunc(handler.ResourceVMsInfoHandler)
+	api.ResourceResourceVsphereVMsInfoHandler = resource.ResourceVsphereVMsInfoHandlerFunc(handler.ResourceVsphereVMsInfoHandler)
 
 	api.ResourceToggleActiveHandler = resource.ToggleActiveHandlerFunc(handler.ToggleActiveHandler)
 
@@ -103,11 +97,13 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.PolicyUpdatePolicyHandler = policy.UpdatePolicyHandlerFunc(handler.UpdatePolicyHandler)
 
-	api.UserUserDetailsHandler = user.UserDetailsHandlerFunc(handler.UserDetailsHandler)
+	api.UserGetUserProfileHandler = user.GetUserProfileHandlerFunc(handler.GetUserProfileHandler)
+
+	api.UserUpdateUserProfileHandler = user.UpdateUserProfileHandlerFunc(handler.UpdateUserProfileHandler)
 
 	api.UserUserLoginHandler = user.UserLoginHandlerFunc(handler.UserLoginHandler)
 
-	api.ResourceValidateResourceHandler = resource.ValidateResourceHandlerFunc(handler.ValidateResourceHandler)
+	api.ResourceValidateVsphereResourceHandler = resource.ValidateVsphereResourceHandlerFunc(handler.ValidateVsphereResourceHandler)
 
 	api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(handler.UpdateStatusHandler)
 
@@ -118,6 +114,16 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(handler.UpdateProjectHandler)
 
 	api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(handler.DeleteProjectHandler)
+
+	api.ResourceValidateVcdResourceHandler = resource.ValidateVcdResourceHandlerFunc(handler.ValidateVcdResourceHandler)
+
+	api.ResourceAddVcdResourceHandler = resource.AddVcdResourceHandlerFunc(handler.AddVcdResourceHandler)
+
+	api.ResourceListVcdResourceHandler = resource.ListVcdResourceHandlerFunc(handler.ListVcdResourceHandler)
+
+	api.ResourceGetVcdResourceHandler = resource.GetVcdResourceHandlerFunc(handler.GetVcdResourceHandler)
+
+	api.ResourceDeleteVcdResourceHandler = resource.DeleteVcdResourceHandlerFunc(handler.DeleteVcdResourceHandler)
 
 	api.PreServerShutdown = func() {}
 

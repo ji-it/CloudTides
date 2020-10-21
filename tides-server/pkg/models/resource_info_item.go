@@ -64,10 +64,6 @@ type ResourceInfoItem struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// platform type
-	// Enum: [vsphere kvm hyper-v]
-	PlatformType string `json:"platformType,omitempty"`
-
 	// policy name
 	PolicyName string `json:"policyName,omitempty"`
 
@@ -92,10 +88,6 @@ type ResourceInfoItem struct {
 func (m *ResourceInfoItem) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -103,52 +95,6 @@ func (m *ResourceInfoItem) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceInfoItemTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceInfoItemTypePlatformTypePropEnum = append(resourceInfoItemTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourceInfoItemPlatformTypeVsphere captures enum value "vsphere"
-	ResourceInfoItemPlatformTypeVsphere string = "vsphere"
-
-	// ResourceInfoItemPlatformTypeKvm captures enum value "kvm"
-	ResourceInfoItemPlatformTypeKvm string = "kvm"
-
-	// ResourceInfoItemPlatformTypeHyperv captures enum value "hyper-v"
-	ResourceInfoItemPlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *ResourceInfoItem) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceInfoItemTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ResourceInfoItem) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

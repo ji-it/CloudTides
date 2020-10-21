@@ -79,33 +79,63 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	return user.NewUserLoginOK().WithPayload(&user.UserLoginOKBody{Token: signedToken, UserInfo: &res})
 }
 
-func UserDetailsHandler(params user.UserDetailsParams) middleware.Responder {
-	id, err := ParseUserIdFromToken(params.HTTPRequest)
-	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/users/get_details/: [401] User verification failure")
-		return user.NewUserDetailsUnauthorized()
+func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return user.NewGetUserProfileUnauthorized()
 	}
+
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	db := config.GetDB()
-	var queryUser models.User
-	db.Where("id = ?", id).First(&queryUser)
-	if queryUser.Username == "" {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/users/get_details/: [401] User not registered")
-		return user.NewUserDetailsUnauthorized()
+	var u models.User
+	if db.Where("id = ?", uid).First(&u).RowsAffected == 0 {
+		return user.NewGetUserProfileNotFound()
 	}
 
-	res := user.UserDetailsOKBodyResults{
-		City:        queryUser.City,
-		CompanyName: queryUser.CompanyName,
-		Country:     queryUser.Country,
-		Email:       queryUser.Email,
-		FirstName:   queryUser.FirstName,
-		LastName:    queryUser.LastName,
-		Position:    queryUser.Position,
+	res := user.GetUserProfileOKBodyResults{
+		City:        u.City,
+		CompanyName: u.CompanyName,
+		Country:     u.Country,
+		Email:       u.Email,
+		FirstName:   u.FirstName,
+		LastName:    u.LastName,
+		Position:    u.Position,
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/users/get_details/: [200] User profile retrieved")
-	return user.NewUserDetailsOK().WithPayload(&user.UserDetailsOKBody{Message: "success", Results: &res})
+	return user.NewGetUserProfileOK().WithPayload(&user.GetUserProfileOKBody{
+		Message: "success",
+		Results: &res,
+	})
+}
+
+func UpdateUserProfileHandler(params user.UpdateUserProfileParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return user.NewUpdateUserProfileUnauthorized()
+	}
+
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	body := params.ReqBody
+	db := config.GetDB()
+	var u models.User
+	if db.Where("id = ?", uid).First(&u).RowsAffected == 0 {
+		return user.NewUpdateUserProfileNotFound()
+	}
+
+	u.City = body.City
+	u.CompanyName = body.CompanyName
+	u.Country = body.Country
+	u.Email = body.Email
+	u.FirstName = body.FirstName
+	u.LastName = body.LastName
+	u.Position = body.Position
+
+	err := db.Save(&u).Error
+	if err != nil {
+		return user.NewUpdateUserProfileNotFound().WithPayload(&user.UpdateUserProfileNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+
+	return user.NewUpdateUserProfileOK().WithPayload(&user.UpdateUserProfileOKBody{
+		Message: "success",
+	})
 }

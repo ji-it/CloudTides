@@ -31,7 +31,7 @@ func NewUpdateResource(ctx *middleware.Context, handler UpdateResourceHandler) *
 	return &UpdateResource{Context: ctx, Handler: handler}
 }
 
-/*UpdateResource swagger:route PUT /resource/update resource updateResource
+/*UpdateResource swagger:route PUT /resource/{id} resource updateResource
 
 update usage info of resource
 
@@ -57,47 +57,6 @@ func (o *UpdateResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// UpdateResourceBody update resource body
-//
-// swagger:model UpdateResourceBody
-type UpdateResourceBody struct {
-
-	// current CPU
-	CurrentCPU float64 `json:"currentCPU,omitempty"`
-
-	// current RAM
-	CurrentRAM float64 `json:"currentRAM,omitempty"`
-
-	// host address
-	HostAddress string `json:"hostAddress,omitempty"`
-
-	// name
-	Name string `json:"name,omitempty"`
-}
-
-// Validate validates this update resource body
-func (o *UpdateResourceBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *UpdateResourceBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *UpdateResourceBody) UnmarshalBinary(b []byte) error {
-	var res UpdateResourceBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
 
 // UpdateResourceNotFoundBody update resource not found body

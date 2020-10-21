@@ -12,8 +12,21 @@ const (
 	issuer     string        = "CloudTides"
 )
 
+var letters = []rune("abcdefghijklmnopqrstuvwxyz")
+
 // Configuration of Json Web Token
 type Claims struct {
 	Id uint
 	jwt.StandardClaims
+}
+
+// Configuration of Vcd Connection
+type VcdConfig struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Org      string `json:"org"`
+	Href     string `json:"href"`
+	VDC      string `json:"vdc"`
+	Insecure bool   `json:"insecure"`
+	Token    string `json:"token"`
 }

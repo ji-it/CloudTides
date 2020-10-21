@@ -55,10 +55,6 @@ type ResourceAddItem struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// platform type
-	// Enum: [vsphere kvm hyper-v]
-	PlatformType string `json:"platformType,omitempty"`
-
 	// policy name
 	PolicyName string `json:"policyName,omitempty"`
 
@@ -80,10 +76,6 @@ type ResourceAddItem struct {
 func (m *ResourceAddItem) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -91,52 +83,6 @@ func (m *ResourceAddItem) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceAddItemTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceAddItemTypePlatformTypePropEnum = append(resourceAddItemTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourceAddItemPlatformTypeVsphere captures enum value "vsphere"
-	ResourceAddItemPlatformTypeVsphere string = "vsphere"
-
-	// ResourceAddItemPlatformTypeKvm captures enum value "kvm"
-	ResourceAddItemPlatformTypeKvm string = "kvm"
-
-	// ResourceAddItemPlatformTypeHyperv captures enum value "hyper-v"
-	ResourceAddItemPlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *ResourceAddItem) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceAddItemTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ResourceAddItem) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

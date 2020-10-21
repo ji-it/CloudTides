@@ -35,7 +35,7 @@ func (o *DeleteProjectURL) SetBasePath(bp string) {
 func (o *DeleteProjectURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/project/delete"
+	var _path = "/project"
 
 	_basePath := o._basePath
 	if _basePath == "" {

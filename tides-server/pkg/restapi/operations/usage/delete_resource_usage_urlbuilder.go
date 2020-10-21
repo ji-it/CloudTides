@@ -35,7 +35,7 @@ func (o *DeleteResourceUsageURL) SetBasePath(bp string) {
 func (o *DeleteResourceUsageURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/usage/delete_resource"
+	var _path = "/usage"
 
 	_basePath := o._basePath
 	if _basePath == "" {

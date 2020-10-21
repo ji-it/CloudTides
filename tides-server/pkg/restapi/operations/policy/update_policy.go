@@ -34,7 +34,7 @@ func NewUpdatePolicy(ctx *middleware.Context, handler UpdatePolicyHandler) *Upda
 	return &UpdatePolicy{Context: ctx, Handler: handler}
 }
 
-/*UpdatePolicy swagger:route PUT /policy/update policy updatePolicy
+/*UpdatePolicy swagger:route PUT /policy policy updatePolicy
 
 update a policy
 

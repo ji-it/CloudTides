@@ -35,7 +35,7 @@ func (o *AddTemplateURL) SetBasePath(bp string) {
 func (o *AddTemplateURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/template/add"
+	var _path = "/template"
 
 	_basePath := o._basePath
 	if _basePath == "" {

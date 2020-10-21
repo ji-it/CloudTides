@@ -35,7 +35,7 @@ func NewListPolicy(ctx *middleware.Context, handler ListPolicyHandler) *ListPoli
 	return &ListPolicy{Context: ctx, Handler: handler}
 }
 
-/*ListPolicy swagger:route GET /policy/list policy listPolicy
+/*ListPolicy swagger:route GET /policy policy listPolicy
 
 list policies belonging to a user
 

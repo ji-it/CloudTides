@@ -34,7 +34,7 @@ func NewDeleteTemplate(ctx *middleware.Context, handler DeleteTemplateHandler) *
 	return &DeleteTemplate{Context: ctx, Handler: handler}
 }
 
-/*DeleteTemplate swagger:route DELETE /template/delete template deleteTemplate
+/*DeleteTemplate swagger:route DELETE /template template deleteTemplate
 
 delete specified template
 

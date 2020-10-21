@@ -31,7 +31,7 @@ func NewUpdateStatus(ctx *middleware.Context, handler UpdateStatusHandler) *Upda
 	return &UpdateStatus{Context: ctx, Handler: handler}
 }
 
-/*UpdateStatus swagger:route PUT /resource/update_status resource updateStatus
+/*UpdateStatus swagger:route PUT /resource/update_status/{id} resource updateStatus
 
 update the status of resource: busy, normal, idle
 
@@ -66,9 +66,6 @@ type UpdateStatusBody struct {
 
 	// monitored
 	Monitored bool `json:"monitored,omitempty"`
-
-	// resource Id
-	ResourceID int64 `json:"resourceId,omitempty"`
 
 	// status
 	Status string `json:"status,omitempty"`

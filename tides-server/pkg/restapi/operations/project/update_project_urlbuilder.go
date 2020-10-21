@@ -35,7 +35,7 @@ func (o *UpdateProjectURL) SetBasePath(bp string) {
 func (o *UpdateProjectURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/project/update"
+	var _path = "/project"
 
 	_basePath := o._basePath
 	if _basePath == "" {

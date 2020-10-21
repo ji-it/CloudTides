@@ -9,11 +9,18 @@ import (
 	"errors"
 	"net/url"
 	golangswaggerpaths "path"
+	"strings"
+
+	"github.com/go-openapi/swag"
 )
 
 // DeleteResourceURL generates an URL for the delete resource operation
 type DeleteResourceURL struct {
+	ID int64
+
 	_basePath string
+	// avoid unkeyed usage
+	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
@@ -35,7 +42,14 @@ func (o *DeleteResourceURL) SetBasePath(bp string) {
 func (o *DeleteResourceURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/resource/delete"
+	var _path = "/resource/{id}"
+
+	id := swag.FormatInt64(o.ID)
+	if id != "" {
+		_path = strings.Replace(_path, "{id}", id, -1)
+	} else {
+		return nil, errors.New("id is required on DeleteResourceURL")
+	}
 
 	_basePath := o._basePath
 	if _basePath == "" {

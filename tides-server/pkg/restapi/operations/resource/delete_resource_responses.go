@@ -55,6 +55,30 @@ func (o *DeleteResourceOK) WriteResponse(rw http.ResponseWriter, producer runtim
 	}
 }
 
+// DeleteResourceUnauthorizedCode is the HTTP code returned for type DeleteResourceUnauthorized
+const DeleteResourceUnauthorizedCode int = 401
+
+/*DeleteResourceUnauthorized Unauthorized
+
+swagger:response deleteResourceUnauthorized
+*/
+type DeleteResourceUnauthorized struct {
+}
+
+// NewDeleteResourceUnauthorized creates DeleteResourceUnauthorized with default headers values
+func NewDeleteResourceUnauthorized() *DeleteResourceUnauthorized {
+
+	return &DeleteResourceUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *DeleteResourceUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
 // DeleteResourceNotFoundCode is the HTTP code returned for type DeleteResourceNotFound
 const DeleteResourceNotFoundCode int = 404
 

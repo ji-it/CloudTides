@@ -29,7 +29,7 @@ func NewResourcePastUsage(ctx *middleware.Context, handler ResourcePastUsageHand
 	return &ResourcePastUsage{Context: ctx, Handler: handler}
 }
 
-/*ResourcePastUsage swagger:route GET /usage/getUsage usage resourcePastUsage
+/*ResourcePastUsage swagger:route GET /usage usage resourcePastUsage
 
 get resource usage info during last period
 

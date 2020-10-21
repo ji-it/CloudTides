@@ -31,7 +31,7 @@ func NewDeleteResource(ctx *middleware.Context, handler DeleteResourceHandler) *
 	return &DeleteResource{Context: ctx, Handler: handler}
 }
 
-/*DeleteResource swagger:route DELETE /resource/delete resource deleteResource
+/*DeleteResource swagger:route DELETE /resource/{id} resource deleteResource
 
 delete specified resource
 
@@ -57,38 +57,6 @@ func (o *DeleteResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// DeleteResourceBody delete resource body
-//
-// swagger:model DeleteResourceBody
-type DeleteResourceBody struct {
-
-	// id
-	ID int64 `json:"id,omitempty"`
-}
-
-// Validate validates this delete resource body
-func (o *DeleteResourceBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DeleteResourceBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DeleteResourceBody) UnmarshalBinary(b []byte) error {
-	var res DeleteResourceBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
 
 // DeleteResourceNotFoundBody delete resource not found body

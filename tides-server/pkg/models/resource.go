@@ -10,13 +10,40 @@ import (
 	"gorm.io/gorm"
 )
 
-// Resource resource
-
-type Resource struct {
+type Vsphere struct {
 	gorm.Model
 
 	// cluster
 	Cluster string `json:"cluster,omitempty"`
+
+	// is resource pool
+	IsResourcePool bool `json:"isResourcePool,omitempty"`
+
+	ResourceID uint
+
+	// owner resource
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+type Vcd struct {
+	gorm.Model
+
+	// allocation model
+	AllocationModel string `json:"allocationModel,omitempty"`
+
+	// organization
+	Organization string `json:"organization,omitempty"`
+
+	ResourceID uint
+
+	// owner resource
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+// Resource resource
+
+type Resource struct {
+	gorm.Model
 
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
@@ -26,9 +53,6 @@ type Resource struct {
 
 	// is active
 	IsActive bool `json:"isActive,omitempty"`
-
-	// is resource pool
-	IsResourcePool bool `json:"isResourcePool,omitempty"`
 
 	// job completed
 	JobCompleted int64 `json:"jobCompleted,omitempty"`
@@ -41,10 +65,6 @@ type Resource struct {
 
 	// password
 	Password string `json:"password,omitempty"`
-
-	// platform type
-	// Enum: [vsphere kvm hyper-v]
-	PlatformType string `json:"platformType,omitempty"`
 
 	// policy foreign key
 	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
@@ -72,10 +92,6 @@ type Resource struct {
 func (m *Resource) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -83,52 +99,6 @@ func (m *Resource) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceTypePlatformTypePropEnum = append(resourceTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourcePlatformTypeVsphere captures enum value "vsphere"
-	ResourcePlatformTypeVsphere string = "vsphere"
-
-	// ResourcePlatformTypeKvm captures enum value "kvm"
-	ResourcePlatformTypeKvm string = "kvm"
-
-	// ResourcePlatformTypeHyperv captures enum value "hyper-v"
-	ResourcePlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *Resource) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *Resource) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -35,7 +35,7 @@ func (o *AddResourceUsageURL) SetBasePath(bp string) {
 func (o *AddResourceUsageURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/usage/add_resource"
+	var _path = "/usage"
 
 	_basePath := o._basePath
 	if _basePath == "" {

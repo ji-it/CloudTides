@@ -34,7 +34,7 @@ func NewAddVMUsage(ctx *middleware.Context, handler AddVMUsageHandler) *AddVMUsa
 	return &AddVMUsage{Context: ctx, Handler: handler}
 }
 
-/*AddVMUsage swagger:route POST /usage/addVM usage addVmUsage
+/*AddVMUsage swagger:route POST /usage/vm usage addVmUsage
 
 add VM usage info into database
 

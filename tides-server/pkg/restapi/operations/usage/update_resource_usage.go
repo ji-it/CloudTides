@@ -34,7 +34,7 @@ func NewUpdateResourceUsage(ctx *middleware.Context, handler UpdateResourceUsage
 	return &UpdateResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*UpdateResourceUsage swagger:route PUT /usage/update_resource usage updateResourceUsage
+/*UpdateResourceUsage swagger:route PUT /usage usage updateResourceUsage
 
 update datacenter usage info
 

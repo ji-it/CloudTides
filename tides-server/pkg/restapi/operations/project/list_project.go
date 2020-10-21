@@ -31,7 +31,7 @@ func NewListProject(ctx *middleware.Context, handler ListProjectHandler) *ListPr
 	return &ListProject{Context: ctx, Handler: handler}
 }
 
-/*ListProject swagger:route GET /project/list project listProject
+/*ListProject swagger:route GET /project project listProject
 
 list boinc projects
 

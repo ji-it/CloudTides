@@ -35,7 +35,7 @@ func (o *RemovePolicyURL) SetBasePath(bp string) {
 func (o *RemovePolicyURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/policy/remove"
+	var _path = "/policy"
 
 	_basePath := o._basePath
 	if _basePath == "" {

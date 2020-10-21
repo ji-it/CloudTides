@@ -4,9 +4,9 @@ info:
   version: '0.0.1'
 basePath: /v1
 paths:
-  /resource/validate:
+  /resource/vsphere/validate:
     get:
-      operationId: 'validateResource'
+      operationId: 'validateVsphereResource'
       description: 'returns the list of data centers belonging to the host'
       tags:
         - 'resource'
@@ -48,9 +48,9 @@ paths:
             properties:
               message:
                 type: string
-  /resource/add:
+  /resource/vsphere:
     post:
-      operationId: 'addResource'
+      operationId: 'addVsphereResource'
       tags:
         - 'resource'
       produces:
@@ -71,12 +71,6 @@ paths:
                 type: string
               policy:
                 type: integer
-              vmtype:
-                type: string
-                enum:
-                  - vsphere
-                  - kvm
-                  - hyper-v
               datacenters:
                 type: string
               cluster:
@@ -108,9 +102,8 @@ paths:
             properties:
               message:
                 type: string
-  /resource/list:
     get:
-      operationId: 'listResource'
+      operationId: 'listVsphereResource'
       description: 'returns the list of resources belonging to a user'
       tags:
         - 'resource'
@@ -132,10 +125,9 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-  /resource/delete:
-    delete:
-      operationId: 'deleteResource'
-      description: 'delete specified resource'
+  /resource/vcd/validate:
+    get:
+      operationId: 'validateVcdResource'
       tags:
         - 'resource'
       produces:
@@ -148,16 +140,27 @@ paths:
           schema:
             type: object
             properties:
-              id:
-                type: integer
+              href:
+                type: string
+              vdc:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+              org:
+                type: string
       responses:
         200:
-          description: 'returns success message'
+          description: 'returns the list of data centers belonging to the host'
           schema:
+            description: 'list of data centers belonging to the host'
             type: object
             properties:
               message:
-                type: string
+                type: string               
+        401:
+          description: "Unauthorized"
         404:
           description: 'resource not found'
           schema:
@@ -165,10 +168,9 @@ paths:
             properties:
               message:
                 type: string
-  /resource/update:
-    put:
-      operationId: 'updateResource'
-      description: 'update usage info of resource'
+  /resource/vcd:
+    post:
+      operationId: 'addVcdResource'
       tags:
         - 'resource'
       produces:
@@ -181,22 +183,150 @@ paths:
           schema:
             type: object
             properties:
-              hostAddress:
+              href:
                 type: string
-              name:
+              username:
                 type: string
+              password:
+                type: string
+              policy:
+                type: integer
+              datacenter:
+                type: string
+              org:
+                type: string
+      responses:
+        200:
+          description: 'returns created username'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  resourceId:
+                    type: integer
+                  vcdId:
+                    type: integer
+        401:
+          description: 'Unauthorized'                  
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    get:
+      operationId: 'listVcdResource'
+      description: 'list vcd resources'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'list all vcd resources'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                href:
+                  type: string
+                policy:
+                  type: integer
+                datacenter:
+                  type: string
+                organization:
+                  type: string
+                allocationModel:
+                  type: string 
+                isActive:
+                  type: boolean
+                monitored:
+                  type: boolean
+                status:
+                  type: string
+        401:
+          description: 'Unauthorized'
+  /resource/vcd/{id}:
+    get:
+      operationId: 'getVcdResource'
+      description: 'get vcd resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'return vcd info'
+          schema:
+            type: object
+            properties:
+              href:
+                type: string
+              policy:
+                type: integer
+              datacenter:
+                type: string
+              organization:
+                type: string
+              allocationModel:
+                type: string 
+              isActive:
+                type: boolean
+              monitored:
+                type: boolean
+              jobCompleted:
+                type: integer
+              status:
+                type: string
+              totalJobs:
+                type: integer
+              totalVMs:
+                type: integer
               currentCPU:
                 type: number
               currentRAM:
                 type: number
+              totalCPU:
+                type: number
+              totalRAM:
+                type: number
+        401:
+          description: 'Unauthorized'
+    delete:
+      operationId: 'deleteVcdResource'
+      description: 'delete vcd resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
-          description: 'returns success message'
+          description: 'deletion success'
           schema:
             type: object
             properties:
               message:
                 type: string
+        401:
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
           schema:
@@ -204,7 +334,7 @@ paths:
             properties:
               message:
                 type: string
-  /resource/toggle_active:
+  /resource/toggle_active/{id}:
     put:
       operationId: 'toggleActive'
       description: 'toggle the status of the resource'
@@ -215,13 +345,10 @@ paths:
       consumes:
         - 'application/json'
       parameters:
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
           description: 'returns success message'
@@ -239,7 +366,7 @@ paths:
             properties:
               message:
                 type: string
-  /resource/update_status:
+  /resource/update_status/{id}:
     put:
       operationId: 'updateStatus'
       description: 'update the status of resource: busy, normal, idle'
@@ -248,13 +375,15 @@ paths:
       consumes:
         - 'application/json'
       parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
         - in: body
           name: reqBody
           schema:
             type: object
             properties:
-              resourceId:
-                type: integer
               status:
                 type: string
               monitored:
@@ -271,7 +400,7 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
-  /resource/assign_policy:
+  /resource/assign_policy/{id}:
     put:
       operationId: 'assignPolicy'
       description: 'assign a policy to a specified resource'
@@ -282,13 +411,15 @@ paths:
       consumes:
         - 'application/json'
       parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
         - in: body
           name: reqBody
           schema:
             type: object
             properties:
-              resourceId:
-                type: integer
               policyId:
                 type: integer
       responses:
@@ -341,121 +472,9 @@ paths:
             properties:
               message:
                 type: string
-  /resource/get_details:
+  /users/profile:
     get:
-      operationId: 'resourceInfo'
-      description: 'returns detailed info of resources belonging to a user'
-      tags:
-        - 'resource'
-      produces:
-        - 'application/json'
-      responses:
-        200:
-          description: 'returns detailed info of resources belonging to a user'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/ResourceInfoItem'
-        401:
-          description: 'Unauthorized'
-        404:
-          description: 'resource not found'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-  /resource/get_vm_details:
-    get:
-      operationId: 'resourceVMsInfo'
-      description: 'get detailed info of VMs belonging to a user'
-      tags:
-        - 'resource'
-      produces:
-        - 'application/json'
-      responses:
-        200:
-          description: 'get detailed info of VMs belonging to a user'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              results:
-                type: array
-                items:
-                  type: array
-                  items:
-                    $ref: '#/definitions/ResourceVMInfoItem'
-        401:
-          description: 'Unauthorized'
-        404:
-          description: 'resource not found'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-  /resource/overview:
-    get:
-      operationId: 'overviewStats'
-      description: 'returns overall contribution statistics for a user'
-      tags:
-        - 'resource'
-      produces:
-        - 'application/json'
-      responses:
-        200:
-          description: 'returns overall contribution statistics for a user'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-              results:
-                type: object
-                properties:
-                  resource:
-                    type: object
-                    properties:
-                      hosts:
-                        type: integer
-                      vms:
-                        type: integer
-                      contributing:
-                        type: integer
-                  contribution:
-                    type: number
-                  power:
-                    type: number
-                  workload:
-                    type: object
-                    properties:
-                      contributed:
-                        type: integer
-                      running:
-                        type: integer
-                      destroyed:
-                        type: integer
-                      hostsUsed:
-                        type: integer
-        401:
-          description: 'Unauthorized'
-        404:
-          description: 'resource not found'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-  /users/get_details:
-    get:
-      operationId: 'userDetails'
+      operationId: 'getUserProfile'
       description: 'get user profile'
       tags:
         - 'user'
@@ -486,6 +505,52 @@ paths:
                     type: string
                   position:
                     type: string
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    put:
+      operationId: 'updateUserProfile'
+      description: 'update user profile'
+      tags:
+        - 'user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              companyName:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              city:
+                type: string
+              country:
+                type: string
+              email:
+                type: string
+              position:
+                type: string
+      responses:
+        200:
+          description: 'success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         401:
           description: 'Unauthorized'
         404:
@@ -599,7 +664,7 @@ paths:
             properties:
               message:
                 type: string
-  /policy/add:
+  /policy:
     post:
       operationId: 'addPolicy'
       description: 'add a new idle policy and threshold policy'
@@ -662,7 +727,6 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
-  /policy/update:
     put:
       operationId: 'updatePolicy'
       description: 'update a policy'
@@ -722,7 +786,6 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-  /policy/list:
     get:
       operationId: 'listPolicy'
       description: 'list policies belonging to a user'
@@ -768,7 +831,6 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-  /policy/remove:
     delete:
       operationId: 'removePolicy'
       description: 'remove a policy'
@@ -809,7 +871,7 @@ paths:
                 type: string
                 enum:
                   - 'no matching objects'
-  /usage/getUsage:
+  /usage:
     get:
       operationId: 'resourcePastUsage'
       description: 'get resource usage info during last period'
@@ -820,7 +882,6 @@ paths:
           description: 'OK'
         400:
           description: 'bad request'
-  /usage/add_resource:
     post:
       operationId: 'addResourceUsage'
       description: 'add resource usage info into database'
@@ -860,7 +921,6 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
-  /usage/update_resource:
     put:
       operationId: 'updateResourceUsage'
       description: 'update datacenter usage info'
@@ -898,7 +958,6 @@ paths:
                   - 'resource usage recorded'
         404:
           description: 'resource not found'
-  /usage/delete_resource:
     delete:
       operationId: 'deleteResourceUsage'
       description: 'delete resource usage info'
@@ -930,7 +989,7 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
-  /usage/addVM:
+  /usage/vm:
     post:
       operationId: 'addVMUsage'
       description: 'add VM usage info into database'
@@ -985,7 +1044,7 @@ paths:
                   - 'success'
         400:
           description: 'bad request'
-  /template/add:
+  /template:
     post:
       operationId: 'addTemplate'
       description: 'upload a VM template'
@@ -1028,7 +1087,6 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
-  /template/list:
     get:
       operationId: 'listTemplate'
       description: 'list all available VM templates'
@@ -1070,7 +1128,6 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
-  /template/delete:
     delete:
       operationId: 'deleteTemplate'
       description: 'delete specified template'
@@ -1102,7 +1159,7 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-  /project/list:
+  /project:
     get:
       operationId: 'listProject'
       description: 'list boinc projects'
@@ -1128,7 +1185,6 @@ paths:
                   type: boolean
         401:
           description: 'Unauthorized'
-  /project/add:
     post:
       operationId: 'addProject'
       description: 'add boinc projects'
@@ -1162,7 +1218,6 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
-  /project/update:
     put:
       operationId: 'updateProject'
       description: 'update boinc project'
@@ -1198,7 +1253,6 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-  /project/delete:
     delete:
       operationId: 'deleteProject'
       description: 'delete boinc project'
@@ -1245,12 +1299,6 @@ definitions:
           - unknown
       policyName:
         type: string
-      platformType:
-        type: string
-        enum:
-          - vsphere
-          - kvm
-          - hyper-v
       datacenter:
         type: string
       cluster:
@@ -1297,12 +1345,6 @@ definitions:
           - unknown
       policyName:
         type: string
-      platformType:
-        type: string
-        enum:
-          - vsphere
-          - kvm
-          - hyper-v
       datacenter:
         type: string
       totalCPU:
@@ -1329,90 +1371,3 @@ definitions:
         type: string
       name:
         type: string
-  ResourceInfoItem:
-    type: object
-    properties:
-      id:
-        type: integer
-      dateAdded:
-        type: string
-      hostAddress:
-        type: string
-      status:
-        type: string
-        enum:
-          - idle
-          - normal
-          - busy
-          - unknown
-      policyName:
-        type: string
-      platformType:
-        type: string
-        enum:
-          - vsphere
-          - kvm
-          - hyper-v
-      datacenter:
-        type: string
-      totalCPU:
-        type: number
-      totalRAM:
-        type: number
-      currentRAM:
-        type: number
-      currentCPU:
-        type: number
-      isActive:
-        type: boolean
-      totalJobs:
-        type: integer
-      jobCompleted:
-        type: integer
-      CPUPercent:
-        type: number
-      RAMPercent:
-        type: number
-      monitored:
-        type: boolean    
-      totalVMs:
-        type: integer
-      activeVMs:
-        type: integer
-      lastDeployed:
-        type: string
-      cluster:
-        type: string
-      name:
-        type: string
-  ResourceVMInfoItem:
-    type: object
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      dateCreated:
-        type: string
-      dateDestroyed:
-        type: string
-      boincTime:
-        type: string
-      ipAddress:
-        type: string
-      totalRAM:
-        type: number
-      totalCPU:
-        type: number
-      currentRAM:
-        type: number
-      currentCPU:
-        type: number
-      poweredOn:
-        type: boolean
-      guestOS:
-        type: string
-      RAMPercent:
-        type: number
-      CPUPercent:
-        type: number

@@ -34,7 +34,7 @@ func NewAddResourceUsage(ctx *middleware.Context, handler AddResourceUsageHandle
 	return &AddResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*AddResourceUsage swagger:route POST /usage/add_resource usage addResourceUsage
+/*AddResourceUsage swagger:route POST /usage usage addResourceUsage
 
 add resource usage info into database
 

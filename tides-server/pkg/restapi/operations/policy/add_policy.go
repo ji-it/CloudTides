@@ -34,7 +34,7 @@ func NewAddPolicy(ctx *middleware.Context, handler AddPolicyHandler) *AddPolicy 
 	return &AddPolicy{Context: ctx, Handler: handler}
 }
 
-/*AddPolicy swagger:route POST /policy/add policy addPolicy
+/*AddPolicy swagger:route POST /policy policy addPolicy
 
 add a new idle policy and threshold policy
 

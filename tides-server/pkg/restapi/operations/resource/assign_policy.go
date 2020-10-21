@@ -31,7 +31,7 @@ func NewAssignPolicy(ctx *middleware.Context, handler AssignPolicyHandler) *Assi
 	return &AssignPolicy{Context: ctx, Handler: handler}
 }
 
-/*AssignPolicy swagger:route PUT /resource/assign_policy resource assignPolicy
+/*AssignPolicy swagger:route PUT /resource/assign_policy/{id} resource assignPolicy
 
 assign a policy to a specified resource
 
@@ -66,9 +66,6 @@ type AssignPolicyBody struct {
 
 	// policy Id
 	PolicyID int64 `json:"policyId,omitempty"`
-
-	// resource Id
-	ResourceID int64 `json:"resourceId,omitempty"`
 }
 
 // Validate validates this assign policy body

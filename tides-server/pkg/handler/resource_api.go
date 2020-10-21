@@ -3,10 +3,12 @@ package handler
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net/url"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"github.com/vmware/govmomi"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
@@ -18,16 +20,16 @@ import (
 	"tides-server/pkg/restapi/operations/resource"
 )
 
-func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.Responder {
+func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewValidateResourceUnauthorized()
+		return resource.NewValidateVsphereResourceUnauthorized()
 	}
 
 	body := params.ReqBody
 
 	u, err := soap.ParseURL(body.Host)
 	if err != nil {
-		return resource.NewValidateResourceNotFound()
+		return resource.NewValidateVsphereResourceNotFound()
 	}
 	u.User = url.UserPassword(body.Username, body.Password)
 	ctx := context.Background()
@@ -35,10 +37,10 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/validate/: [404] Connection failure")
-		return resource.NewValidateResourceNotFound()
+		return resource.NewValidateVsphereResourceNotFound()
 	}
 
-	var resBody resource.ValidateResourceOKBody
+	var resBody resource.ValidateVsphereResourceOKBody
 
 	m := view.NewManager(c.Client)
 
@@ -46,7 +48,7 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/validate/: [404] Container view failure")
-		return resource.NewValidateResourceNotFound()
+		return resource.NewValidateVsphereResourceNotFound()
 	}
 
 	defer v.Destroy(ctx)
@@ -56,7 +58,7 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/validate/: [404] Datacenter not found")
-		return resource.NewValidateResourceNotFound()
+		return resource.NewValidateVsphereResourceNotFound()
 	}
 	for _, dc := range dss {
 		fmt.Println(dc.ManagedEntity.Name)
@@ -67,13 +69,13 @@ func ValidateResourceHandler(params resource.ValidateResourceParams) middleware.
 	logger.Info("/resource/validate/: [200] Resource validation success")
 
 	resBody.Message = "Success"
-	return resource.NewValidateResourceOK().WithPayload(&resBody)
+	return resource.NewValidateVsphereResourceOK().WithPayload(&resBody)
 }
 
 // Register new clusters or resource pools
-func AddResourceHandler(params resource.AddResourceParams) middleware.Responder {
+func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewAddResourceUnauthorized()
+		return resource.NewAddVsphereResourceUnauthorized()
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
@@ -83,7 +85,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/add/: [404] Connection failure")
-		return resource.NewAddResourceNotFound()
+		return resource.NewAddVsphereResourceNotFound()
 	}
 	u.User = url.UserPassword(body.Username, body.Password)
 	ctx := context.Background()
@@ -91,7 +93,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/add: [404] Connection failure")
-		return resource.NewAddResourceNotFound()
+		return resource.NewAddVsphereResourceNotFound()
 	}
 
 	m := view.NewManager(c.Client)
@@ -100,7 +102,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/add/: [404] Container view failure")
-		return resource.NewAddResourceNotFound()
+		return resource.NewAddVsphereResourceNotFound()
 	}
 
 	defer v.Destroy(ctx)
@@ -110,7 +112,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/add/: [404] Datacenter not found")
-		return resource.NewAddResourceNotFound()
+		return resource.NewAddVsphereResourceNotFound()
 	}
 
 	var datacenter mo.Datacenter
@@ -124,7 +126,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	}
 
 	if !found {
-		return resource.NewAddResourceNotFound()
+		return resource.NewAddVsphereResourceNotFound()
 	}
 
 	db := config.GetDB()
@@ -132,18 +134,19 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	res := []*models.ResourceAddItem{}
 
 	if !body.IsResourcePool {
-		var clu models.Resource
-		if db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).RowsAffected > 0 {
-			if clu.IsResourcePool {
+		var vs models.Vsphere
+
+		if db.Where("cluster = ?", body.Cluster).First(&vs).RowsAffected > 0 {
+			if vs.IsResourcePool {
 				logger.SetLogLevel("ERROR")
 				logger.Error("/resource/add/: [404] Child resource pool already registered")
-				return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 					Message: "Child resource pool already registered!",
 				})
 			} else {
 				logger.SetLogLevel("ERROR")
 				logger.Error("/resource/add/: [404] Cluster already registered")
-				return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 					Message: "Cluster already registered!",
 				})
 			}
@@ -156,23 +159,28 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 			for _, hs := range hss {
 				if newclus == hs.ManagedEntity.Name {
 					newres := models.Resource{
-						Cluster:        newclus,
-						Datacenter:     body.Datacenters,
-						HostAddress:    body.HostAddress,
-						IsActive:       true,
-						IsResourcePool: false,
-						JobCompleted:   0,
-						Monitored:      false,
-						Name:           newclus,
-						Password:       body.Password,
-						PlatformType:   body.Vmtype,
-						Status:         "unknown",
-						TotalJobs:      0,
-						UserID:         uid,
-						Username:       body.Username,
+						Datacenter:   body.Datacenters,
+						HostAddress:  body.HostAddress,
+						IsActive:     true,
+						JobCompleted: 0,
+						Monitored:    false,
+						Name:         newclus,
+						Password:     body.Password,
+						Status:       "unknown",
+						TotalJobs:    0,
+						UserID:       uid,
+						Username:     body.Username,
 					}
 
 					db.Create(&newres)
+
+					newvs := models.Vsphere{
+						Cluster:        body.Cluster,
+						IsResourcePool: body.IsResourcePool,
+						ResourceID:     newres.Model.ID,
+					}
+
+					db.Create(&newvs)
 
 					Summary := hs.Summary.GetComputeResourceSummary()
 
@@ -208,7 +216,6 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						JobCompleted:   0,
 						Monitored:      false,
 						Name:           newclus,
-						PlatformType:   body.Vmtype,
 						Status:         "unknown",
 						TotalCPU:       TotalCPU,
 						TotalJobs:      0,
@@ -224,7 +231,7 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 		if db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).Error != nil {
 			logger.SetLogLevel("ERROR")
 			logger.Error("/resource/add/: [404] Parent cluster already registered")
-			return resource.NewAddResourceNotFound().WithPayload(&resource.AddResourceNotFoundBody{
+			return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 				Message: "Parent cluster already registered!",
 			})
 		}
@@ -237,23 +244,28 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 			for _, po := range pool {
 				if newpo == po.ManagedEntity.Name {
 					newres := models.Resource{
-						Cluster:        body.Cluster,
-						Datacenter:     body.Datacenters,
-						HostAddress:    body.HostAddress,
-						IsActive:       true,
-						IsResourcePool: true,
-						JobCompleted:   0,
-						Monitored:      false,
-						Name:           newpo,
-						Password:       body.Password,
-						PlatformType:   body.Vmtype,
-						Status:         "unknown",
-						TotalJobs:      0,
-						UserID:         uid,
-						Username:       body.Username,
+						Datacenter:   body.Datacenters,
+						HostAddress:  body.HostAddress,
+						IsActive:     true,
+						JobCompleted: 0,
+						Monitored:    false,
+						Name:         newpo,
+						Password:     body.Password,
+						Status:       "unknown",
+						TotalJobs:    0,
+						UserID:       uid,
+						Username:     body.Username,
 					}
 
 					db.Create(&newres)
+
+					newvs := models.Vsphere{
+						Cluster:        body.Cluster,
+						IsResourcePool: body.IsResourcePool,
+						ResourceID:     newres.Model.ID,
+					}
+
+					db.Create(&newvs)
 
 					Summary := po.Summary.GetResourcePoolSummary().QuickStats
 					RuntimeInfo := po.Runtime
@@ -296,7 +308,6 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 						JobCompleted:   0,
 						Monitored:      false,
 						Name:           newpo,
-						PlatformType:   body.Vmtype,
 						Status:         "unknown",
 						TotalCPU:       TotalCPU,
 						TotalJobs:      0,
@@ -312,15 +323,15 @@ func AddResourceHandler(params resource.AddResourceParams) middleware.Responder 
 	logger.SetLogLevel("INFO")
 	logger.Info("/resource/add/: [200] Resource registration success")
 
-	return resource.NewAddResourceOK().WithPayload(&resource.AddResourceOKBody{
+	return resource.NewAddVsphereResourceOK().WithPayload(&resource.AddVsphereResourceOKBody{
 		Message: "success",
 		Results: res,
 	})
 }
 
-func ListResourceHandler(params resource.ListResourceParams) middleware.Responder {
+func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewListResourceUnauthorized()
+		return resource.NewListVsphereResourceUnauthorized()
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
@@ -339,7 +350,6 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 		newResultItem := models.ResourceListItem{
 			CPUPercent:   resUsage.PercentCPU,
 			RAMPercent:   resUsage.PercentRAM,
-			Cluster:      res.Cluster,
 			CurrentCPU:   resUsage.CurrentCPU,
 			CurrentRAM:   resUsage.CurrentRAM,
 			DateAdded:    time.Time.String(res.Model.CreatedAt),
@@ -350,7 +360,6 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 			JobCompleted: res.JobCompleted,
 			Monitored:    res.Monitored,
 			Name:         res.Name,
-			PlatformType: res.PlatformType,
 			PolicyName:   pol.Name,
 			Status:       res.Status,
 			TotalCPU:     resUsage.TotalCPU,
@@ -364,7 +373,7 @@ func ListResourceHandler(params resource.ListResourceParams) middleware.Responde
 	logger.SetLogLevel("INFO")
 	logger.Info("/resource/list/: [200] Resource retrival success")
 
-	return resource.NewListResourceOK().WithPayload(&resource.ListResourceOKBody{
+	return resource.NewListVsphereResourceOK().WithPayload(&resource.ListVsphereResourceOKBody{
 		Message: "success",
 		Results: response,
 	})
@@ -376,7 +385,7 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	rid := params.ReqBody.ID
+	rid := params.ID
 	var res models.Resource
 
 	db := config.GetDB()
@@ -419,7 +428,7 @@ func ToggleActiveHandler(params resource.ToggleActiveParams) middleware.Responde
 		return resource.NewToggleActiveUnauthorized()
 	}
 
-	rid := params.ReqBody.ID
+	rid := params.ID
 	var res models.Resource
 	db := config.GetDB()
 	if db.Where("id = ?", rid).First(&res).Error != nil {
@@ -442,7 +451,7 @@ func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responde
 	body := params.ReqBody
 	var res models.Resource
 	db := config.GetDB()
-	if db.Where("id = ?", body.ResourceID).First(&res).Error != nil {
+	if db.Where("id = ?", params.ID).First(&res).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/resource/update_status/: [404] Resource not found")
 		return resource.NewUpdateStatusNotFound()
@@ -470,7 +479,7 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 	}
 
 	body := params.ReqBody
-	rid := body.ResourceID
+	rid := params.ID
 	pid := body.PolicyID
 
 	var res models.Resource
@@ -514,9 +523,9 @@ func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
 	})
 }
 
-func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responder {
+func ResourceVsphereInfoHandler(params resource.ResourceVsphereInfoParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewResourceInfoUnauthorized()
+		return resource.NewResourceVsphereInfoUnauthorized()
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
@@ -537,7 +546,6 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 		result := models.ResourceInfoItem{
 			CPUPercent:   hu.PercentCPU,
 			RAMPercent:   hu.PercentRAM,
-			Cluster:      res.Cluster,
 			CurrentCPU:   hu.CurrentCPU,
 			CurrentRAM:   hu.CurrentRAM,
 			Datacenter:   res.Datacenter,
@@ -548,7 +556,6 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 			JobCompleted: res.JobCompleted,
 			Monitored:    res.Monitored,
 			Name:         res.Name,
-			PlatformType: res.PlatformType,
 			PolicyName:   pol.Name,
 			Status:       res.Status,
 			TotalCPU:     hu.TotalCPU,
@@ -572,15 +579,15 @@ func ResourceInfoHandler(params resource.ResourceInfoParams) middleware.Responde
 
 	logger.SetLogLevel("INFO")
 	logger.Info("/resource/get_details/: [200] Resource info retrival success")
-	return resource.NewResourceInfoOK().WithPayload(&resource.ResourceInfoOKBody{
+	return resource.NewResourceVsphereInfoOK().WithPayload(&resource.ResourceVsphereInfoOKBody{
 		Message: "success",
 		Results: results,
 	})
 }
 
-func ResourceVMsInfoHandler(params resource.ResourceVMsInfoParams) middleware.Responder {
+func ResourceVsphereVMsInfoHandler(params resource.ResourceVsphereVMsInfoParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewResourceVMsInfoUnauthorized()
+		return resource.NewResourceVsphereVMsInfoUnauthorized()
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
@@ -633,51 +640,247 @@ func ResourceVMsInfoHandler(params resource.ResourceVMsInfoParams) middleware.Re
 
 	logger.SetLogLevel("INFO")
 	logger.Info("/resource/get_vm_details/: [200] Resource VM info retrival success")
-	return resource.NewResourceVMsInfoOK().WithPayload(&resource.ResourceVMsInfoOKBody{
+	return resource.NewResourceVsphereVMsInfoOK().WithPayload(&resource.ResourceVsphereVMsInfoOKBody{
 		Message: "success",
 		Results: results,
 	})
 }
 
-/*
-func OverviewStatsHandler(params resource.OverviewStatsParams) middleware.Responder {
+func ValidateVcdResourceHandler(params resource.ValidateVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewOverviewStatsUnauthorized()
+		return resource.NewValidateVcdResourceUnauthorized()
+	}
+
+	body := params.ReqBody
+	conf := VcdConfig{
+		User:     body.Username,
+		Password: body.Password,
+		Org:      body.Org,
+		Href:     body.Href,
+		VDC:      body.Vdc,
+	}
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		return resource.NewValidateVcdResourceNotFound().WithPayload(&resource.ValidateVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		return resource.NewValidateVcdResourceNotFound().WithPayload(&resource.ValidateVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	_, err = org.GetVDCByName(conf.VDC, false)
+	if err != nil {
+		return resource.NewValidateVcdResourceNotFound().WithPayload(&resource.ValidateVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+
+	return resource.NewValidateVcdResourceOK().WithPayload(&resource.ValidateVcdResourceOKBody{
+		Message: "success",
+	})
+}
+
+func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewAddVcdResourceUnauthorized()
 	}
 
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	body := params.ReqBody
 	db := config.GetDB()
-	resources := []*models.Resource{}
-	db.Where("user_ref = ?", uid).Find(&resources)
-
-	totalVMs := 0
-	power := 0
-	cost := 0.0
-	totalActiveVM := 0
-	totalDestroyedVM := 0
-	costCPU := 0.0
-	costRAM := 0.0
-	for _, res := range resources {
-		var activeVMs int
-		var inactiveVMs int
-		vms := []*models.VM{}
-		totalVMs += int(res.TotalVMs)
-		db.Where("resource_ref = ? AND is_destroyed = ? AND powered_on = ?",
-			res.Model.ID, false, true).Find(&vms).Count(&activeVMs)
-		totalActiveVM += activeVMs
-
-		for _, vm := range vms {
-			var vmusage models.VMUsage
-			db.Where("vm_ref = ?", vm.Model.ID).First(&vmusage)
-			costCPU += vmusage.CurrentCPU / vmusage.TotalCPU
-			costRAM += vmusage.CurrentRAM / vmusage.TotalRAM
-		}
-		db.Where("resource_ref = ? AND is_destroyed = ?", res.Model.ID, true).
-			Find(&vms).Count(&inactiveVMs)
-		totalDestroyedVM += inactiveVMs
+	var res models.Resource
+	if db.Where("datacenter = ? AND host_address = ?", body.Datacenter, body.Href).First(&res).RowsAffected > 0 {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: "VCD already registered",
+		})
 	}
-	cost = 600*costCPU + 200*costRAM
+	conf := VcdConfig{
+		User:     body.Username,
+		Password: body.Password,
+		Org:      body.Org,
+		Href:     body.Href,
+		VDC:      body.Datacenter,
+	}
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	vdc, err := org.GetVDCByName(conf.VDC, false)
+	if err != nil {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	adminOrg, err := client.GetAdminOrgByName(conf.Org)
+	rand.Seed(time.Now().UnixNano())
+	username := "cloudtides-" + randSeq(10)
+	password := randSeq(20)
+	// fmt.Println(username, password)
+	var userDefinition = govcd.OrgUserConfiguration{
+		Name:         username,
+		Password:     password,
+		RoleName:     govcd.OrgUserRoleOrganizationAdministrator,
+		ProviderType: govcd.OrgUserProviderIntegrated,
+		IsEnabled:    true,
+	}
+	user, err := adminOrg.CreateUserSimple(userDefinition)
+	if err != nil {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	newres := models.Resource{
+		Datacenter:   body.Datacenter,
+		HostAddress:  body.Href,
+		IsActive:     true,
+		JobCompleted: 0,
+		Monitored:    false,
+		Name:         body.Datacenter,
+		Password:     password,
+		Status:       "unknown",
+		TotalJobs:    0,
+		UserID:       uid,
+		Username:     user.User.Name,
+	}
 
-	resourcesUsed := len(resources)
+	err = db.Create(&newres).Error
+	if err != nil {
+		return resource.NewAddVcdResourceNotFound().WithPayload(&resource.AddVcdResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+	newvcd := models.Vcd{
+		AllocationModel: vdc.Vdc.AllocationModel,
+		Organization:    body.Org,
+		ResourceID:      newres.Model.ID,
+	}
+	db.Create(&newvcd)
+
+	CurrentCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Used)
+	TotalCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Limit)
+	CurrentRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Used)
+	TotalRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Limit)
+	newVcdUsage := models.ResourceUsage{
+		CurrentCPU:  CurrentCPU,
+		CurrentRAM:  CurrentRAM,
+		HostAddress: body.Href,
+		Name:        body.Datacenter,
+		PercentCPU:  CurrentCPU / TotalCPU,
+		PercentRAM:  CurrentRAM / TotalRAM,
+		TotalCPU:    TotalCPU,
+		TotalRAM:    TotalRAM,
+		ResourceID:  newres.Model.ID,
+	}
+	db.Create(&newVcdUsage)
+
+	return resource.NewAddVcdResourceOK().WithPayload(&resource.AddVcdResourceOKBody{
+		Message: "success",
+		Results: &resource.AddVcdResourceOKBodyResults{
+			ResourceID: int64(newres.Model.ID),
+			Username:   user.User.Name,
+			VcdID:      int64(newvcd.Model.ID),
+		},
+	})
 }
-*/
+
+func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewListVcdResourceUnauthorized()
+	}
+
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	resources := []*models.Resource{}
+	db := config.GetDB()
+
+	db.Where("user_id = ?", uid).Find(&resources)
+
+	var responses []*resource.ListVcdResourceOKBodyItems0
+	for _, res := range resources {
+		var vcd models.Vcd
+		if db.Where("resource_id = ?", res.Model.ID).First(&vcd).RowsAffected == 0 {
+			continue
+		}
+		var vcdUsage models.ResourceUsage
+		db.Where("resource_id = ?", res.Model.ID).First(&vcdUsage)
+
+		newres := resource.ListVcdResourceOKBodyItems0{
+			AllocationModel: vcd.AllocationModel,
+			Datacenter:      res.Datacenter,
+			Href:            res.HostAddress,
+			IsActive:        res.IsActive,
+			Monitored:       res.Monitored,
+			Organization:    vcd.Organization,
+			Status:          res.Status,
+		}
+		responses = append(responses, &newres)
+	}
+
+	return resource.NewListVcdResourceOK().WithPayload(responses)
+}
+
+func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewGetVcdResourceUnauthorized()
+	}
+
+	vcdId := params.ID
+	db := config.GetDB()
+	var vcd models.Vcd
+	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
+		return resource.NewGetVcdResourceUnauthorized()
+	}
+
+	var vcdUsage models.ResourceUsage
+	db.Where("resource_id = ?", vcd.ResourceID).First(&vcdUsage)
+
+	res := resource.GetVcdResourceOKBody{
+		AllocationModel: vcd.AllocationModel,
+		CurrentCPU:      vcdUsage.CurrentCPU,
+		CurrentRAM:      vcdUsage.CurrentRAM,
+		Datacenter:      vcd.Resource.Datacenter,
+		Href:            vcd.Resource.HostAddress,
+		IsActive:        vcd.Resource.IsActive,
+		JobCompleted:    vcd.Resource.JobCompleted,
+		Monitored:       vcd.Resource.Monitored,
+		Organization:    vcd.Organization,
+		Policy:          int64(vcd.Resource.Policy.ID),
+		Status:          vcd.Resource.Status,
+		TotalCPU:        vcdUsage.TotalCPU,
+		TotalJobs:       vcd.Resource.TotalJobs,
+		TotalRAM:        vcdUsage.TotalRAM,
+		TotalVMs:        vcd.Resource.TotalVMs,
+	}
+
+	return resource.NewGetVcdResourceOK().WithPayload(&res)
+}
+
+func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewDeleteVcdResourceUnauthorized()
+	}
+
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	vcdId := params.ID
+	db := config.GetDB()
+	var vcd models.Vcd
+	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
+		return resource.NewDeleteVcdResourceNotFound()
+	}
+
+	db.Unscoped().Where("id = ? AND user_id = ?", vcd.Resource.ID, uid).Delete(&models.Resource{})
+
+	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
+		Message: "success",
+	})
+}

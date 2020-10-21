@@ -35,7 +35,7 @@ func (o *DeleteTemplateURL) SetBasePath(bp string) {
 func (o *DeleteTemplateURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/template/delete"
+	var _path = "/template"
 
 	_basePath := o._basePath
 	if _basePath == "" {

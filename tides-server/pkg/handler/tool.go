@@ -2,11 +2,15 @@ package handler
 
 import (
 	"errors"
+	"fmt"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	"tides-server/pkg/config"
 	"tides-server/pkg/logger"
@@ -51,4 +55,32 @@ func VerifyUser(req *http.Request) bool {
 	}
 
 	return true
+}
+
+// Creates a vCD client
+func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
+	u, err := url.ParseRequestURI(c.Href)
+	if err != nil {
+		return nil, fmt.Errorf("unable to pass url: %s", err)
+	}
+
+	vcdClient := govcd.NewVCDClient(*u, c.Insecure)
+	if c.Token != "" {
+		_ = vcdClient.SetToken(c.Org, govcd.AuthorizationHeader, c.Token)
+	} else {
+		_, err := vcdClient.GetAuthResponse(c.User, c.Password, c.Org)
+		if err != nil {
+			return nil, fmt.Errorf("unable to authenticate: %s", err)
+		}
+		// fmt.Printf("Token: %s\n", resp.Header[govcd.AuthorizationHeader])
+	}
+	return vcdClient, nil
+}
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

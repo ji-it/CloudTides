@@ -31,7 +31,7 @@ func NewAddProject(ctx *middleware.Context, handler AddProjectHandler) *AddProje
 	return &AddProject{Context: ctx, Handler: handler}
 }
 
-/*AddProject swagger:route POST /project/add project addProject
+/*AddProject swagger:route POST /project project addProject
 
 add boinc projects
 

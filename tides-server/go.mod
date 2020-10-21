@@ -14,6 +14,7 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/lib/pq v1.7.0
 	github.com/sirupsen/logrus v1.6.0
+	github.com/vmware/go-vcloud-director/v2 v2.9.0
 	github.com/vmware/govmomi v0.23.1
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 	gorm.io/driver/postgres v1.0.2

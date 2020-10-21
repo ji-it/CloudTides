@@ -31,7 +31,7 @@ func NewToggleActive(ctx *middleware.Context, handler ToggleActiveHandler) *Togg
 	return &ToggleActive{Context: ctx, Handler: handler}
 }
 
-/*ToggleActive swagger:route PUT /resource/toggle_active resource toggleActive
+/*ToggleActive swagger:route PUT /resource/toggle_active/{id} resource toggleActive
 
 toggle the status of the resource
 
@@ -57,38 +57,6 @@ func (o *ToggleActive) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// ToggleActiveBody toggle active body
-//
-// swagger:model ToggleActiveBody
-type ToggleActiveBody struct {
-
-	// id
-	ID int64 `json:"id,omitempty"`
-}
-
-// Validate validates this toggle active body
-func (o *ToggleActiveBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *ToggleActiveBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *ToggleActiveBody) UnmarshalBinary(b []byte) error {
-	var res ToggleActiveBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
 
 // ToggleActiveNotFoundBody toggle active not found body

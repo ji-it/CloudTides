@@ -35,7 +35,7 @@ func NewListTemplate(ctx *middleware.Context, handler ListTemplateHandler) *List
 	return &ListTemplate{Context: ctx, Handler: handler}
 }
 
-/*ListTemplate swagger:route GET /template/list template listTemplate
+/*ListTemplate swagger:route GET /template template listTemplate
 
 list all available VM templates
 

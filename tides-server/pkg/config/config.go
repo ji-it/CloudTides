@@ -53,9 +53,10 @@ func startDB() {
 	db.AutoMigrate(&models.Template{})
 	db.AutoMigrate(&models.Policy{})
 	db.AutoMigrate(&models.Resource{})
+	db.AutoMigrate(&models.Vsphere{})
+	db.AutoMigrate(&models.Vcd{})
 	db.AutoMigrate(&models.VM{})
 	db.AutoMigrate(&models.ResourceUsage{})
 	db.AutoMigrate(&models.VMUsage{})
 	fmt.Println("DB connection success")
-
 }

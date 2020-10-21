@@ -31,7 +31,7 @@ func NewDeleteProject(ctx *middleware.Context, handler DeleteProjectHandler) *De
 	return &DeleteProject{Context: ctx, Handler: handler}
 }
 
-/*DeleteProject swagger:route DELETE /project/delete project deleteProject
+/*DeleteProject swagger:route DELETE /project project deleteProject
 
 delete boinc project
 
