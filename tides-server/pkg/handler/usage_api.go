@@ -53,12 +53,33 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 	})
 }
 
+func GetResourceUsageHandler(params usage.GetResourceUsageParams) middleware.Responder {
+	db := config.GetDB()
+
+	var us models.ResourceUsage
+	if db.Where("resource_id = ?", params.ID).First(&us).RowsAffected == 0 {
+		return usage.NewGetResourceUsageNotFound()
+	}
+
+	res := usage.GetResourceUsageOKBody{
+		CurrentCPU: us.CurrentCPU,
+		CurrentRAM: us.CurrentRAM,
+		Name:       us.Name,
+		PercentCPU: us.PercentCPU,
+		PercentRAM: us.PercentRAM,
+		TotalCPU:   us.TotalCPU,
+		TotalRAM:   us.TotalRAM,
+	}
+
+	return usage.NewGetResourceUsageOK().WithPayload(&res)
+}
+
 func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middleware.Responder {
 	body := params.ReqBody
 	db := config.GetDB()
 
 	var hu models.ResourceUsage
-	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&hu).Error != nil {
+	if db.Where("resource_id = ?", params.ID).First(&hu).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/usage/update_resource/: [404] Resource usage not found")
 		return usage.NewUpdateResourceUsageNotFound()
@@ -81,12 +102,11 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 }
 
 func DeleteResourceUsageHandler(params usage.DeleteResourceUsageParams) middleware.Responder {
-	body := params.ReqBody
 
 	db := config.GetDB()
 	var hu models.ResourceUsage
 
-	err := db.Unscoped().Where("host_address = ? AND datacenter = ?", body.HostAddress, body.Datacenter).Delete(&hu).Error
+	err := db.Unscoped().Where("resource_id", params.ID).Delete(&hu).Error
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/usage/delete_resource/: [400] Resource usage deletion failure")

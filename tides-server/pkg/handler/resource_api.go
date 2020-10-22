@@ -402,51 +402,6 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	return resource.NewDeleteResourceOK()
 }
 
-/*
-func UpdateHostHandler(params resource.UpdateHostParams) middleware.Responder {
-	body := params.ReqBody
-	db := config.GetDB()
-
-	var res models.Resource
-	db.Where("host_address = ? AND host_name = ?", body.HostAddress, body.HostName).First(&res)
-	if res.HostAddress == "" {
-		return resource.NewUpdateHostNotFound()
-	}
-
-	res.CurrentCPU = body.CurrentCPU
-	res.CurrentRAM = body.CurrentRAM
-	db.Save(&res)
-
-	return resource.NewUpdateHostOK().WithPayload(&resource.UpdateHostOKBody{
-		Message: "success",
-	})
-}
-*/
-
-func ToggleActiveHandler(params resource.ToggleActiveParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewToggleActiveUnauthorized()
-	}
-
-	rid := params.ID
-	var res models.Resource
-	db := config.GetDB()
-	if db.Where("id = ?", rid).First(&res).Error != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/toggle_active/: [404] Resource not found")
-		return resource.NewToggleActiveNotFound()
-	}
-
-	res.IsActive = !res.IsActive
-	db.Save(&res)
-
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/toggle_active/: [200] Toggle active success")
-	return resource.NewToggleActiveOK().WithPayload(&resource.ToggleActiveOKBody{
-		Message: "success",
-	})
-}
-
 func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responder {
 	body := params.ReqBody
 	var res models.Resource
@@ -471,37 +426,6 @@ func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responde
 	logger.SetLogLevel("INFO")
 	logger.Info("/resource/update_status/: [200] Update status success")
 	return resource.NewUpdateStatusOK()
-}
-
-func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewAssignPolicyUnauthorized()
-	}
-
-	body := params.ReqBody
-	rid := params.ID
-	pid := body.PolicyID
-
-	var res models.Resource
-	var pol models.Policy
-	db := config.GetDB()
-	db.Where("id = ?", rid).First(&res)
-	db.Where("id = ?", pid).First(&pol)
-
-	if res.Model.ID == 0 || pol.Model.ID == 0 {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/assign_policy/: [404] Resource not found")
-		return resource.NewAssignPolicyNotFound()
-	}
-
-	res.Policy = pol
-	db.Save(&res)
-
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/assign_policy/: [200] Assign policy success")
-	return resource.NewAssignPolicyOK().WithPayload(&resource.AssignPolicyOKBody{
-		Message: "success",
-	})
 }
 
 func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
@@ -748,6 +672,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		Monitored:    false,
 		Name:         body.Datacenter,
 		Password:     password,
+		PolicyID:     0,
 		Status:       "unknown",
 		TotalJobs:    0,
 		UserID:       uid,
@@ -811,8 +736,6 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 		if db.Where("resource_id = ?", res.Model.ID).First(&vcd).RowsAffected == 0 {
 			continue
 		}
-		var vcdUsage models.ResourceUsage
-		db.Where("resource_id = ?", res.Model.ID).First(&vcdUsage)
 
 		newres := resource.ListVcdResourceOKBodyItems0{
 			AllocationModel: vcd.AllocationModel,
@@ -844,25 +767,28 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	var vcdUsage models.ResourceUsage
 	db.Where("resource_id = ?", vcd.ResourceID).First(&vcdUsage)
 
-	res := resource.GetVcdResourceOKBody{
+	var res models.Resource
+	db.Where("id = ?", vcd.ResourceID).First(&res)
+
+	response := resource.GetVcdResourceOKBody{
 		AllocationModel: vcd.AllocationModel,
 		CurrentCPU:      vcdUsage.CurrentCPU,
 		CurrentRAM:      vcdUsage.CurrentRAM,
-		Datacenter:      vcd.Resource.Datacenter,
-		Href:            vcd.Resource.HostAddress,
-		IsActive:        vcd.Resource.IsActive,
-		JobCompleted:    vcd.Resource.JobCompleted,
-		Monitored:       vcd.Resource.Monitored,
+		Datacenter:      res.Datacenter,
+		Href:            res.HostAddress,
+		IsActive:        res.IsActive,
+		JobCompleted:    res.JobCompleted,
+		Monitored:       res.Monitored,
 		Organization:    vcd.Organization,
-		Policy:          int64(vcd.Resource.Policy.ID),
-		Status:          vcd.Resource.Status,
+		Policy:          int64(res.PolicyID),
+		Status:          res.Status,
 		TotalCPU:        vcdUsage.TotalCPU,
-		TotalJobs:       vcd.Resource.TotalJobs,
+		TotalJobs:       res.TotalJobs,
 		TotalRAM:        vcdUsage.TotalRAM,
-		TotalVMs:        vcd.Resource.TotalVMs,
+		TotalVMs:        res.TotalVMs,
 	}
 
-	return resource.NewGetVcdResourceOK().WithPayload(&res)
+	return resource.NewGetVcdResourceOK().WithPayload(&response)
 }
 
 func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middleware.Responder {
@@ -881,6 +807,36 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 	db.Unscoped().Where("id = ? AND user_id = ?", vcd.Resource.ID, uid).Delete(&models.Resource{})
 
 	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
+		Message: "success",
+	})
+}
+
+func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewUpdateResourceUnauthorized()
+	}
+
+	rid := params.ID
+	db := config.GetDB()
+	var res models.Resource
+	if db.Where("id = ?", rid).First(&res).RowsAffected == 0 {
+		return resource.NewUpdateResourceNotFound()
+	}
+
+	if params.ReqBody.Active {
+		res.IsActive = params.ReqBody.Active
+	}
+	if params.ReqBody.Policy > 0 {
+		res.PolicyID = uint(params.ReqBody.Policy)
+	}
+	err := db.Save(&res).Error
+	if err != nil {
+		return resource.NewUpdateResourceNotFound().WithPayload(&resource.UpdateResourceNotFoundBody{
+			Message: err.Error(),
+		})
+	}
+
+	return resource.NewUpdateResourceOK().WithPayload(&resource.UpdateResourceOKBody{
 		Message: "success",
 	})
 }

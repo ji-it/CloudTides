@@ -6,14 +6,11 @@ package template
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // AddTemplateHandlerFunc turns a function with the right signature into a add template handler
@@ -118,61 +115,11 @@ type AddTemplateOKBody struct {
 	ID int64 `json:"id,omitempty"`
 
 	// message
-	// Enum: [success]
 	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this add template o k body
 func (o *AddTemplateOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateMessage(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-var addTemplateOKBodyTypeMessagePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["success"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		addTemplateOKBodyTypeMessagePropEnum = append(addTemplateOKBodyTypeMessagePropEnum, v)
-	}
-}
-
-const (
-
-	// AddTemplateOKBodyMessageSuccess captures enum value "success"
-	AddTemplateOKBodyMessageSuccess string = "success"
-)
-
-// prop value enum
-func (o *AddTemplateOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addTemplateOKBodyTypeMessagePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *AddTemplateOKBody) validateMessage(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Message) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateMessageEnum("addTemplateOK"+"."+"message", "body", o.Message); err != nil {
-		return err
-	}
-
 	return nil
 }
 

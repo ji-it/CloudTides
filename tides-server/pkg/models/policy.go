@@ -55,9 +55,6 @@ type Policy struct {
 	UserID uint
 
 	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-
-	// resource foreign key
-	ResourceID uint
 }
 
 // Validate validates this policy

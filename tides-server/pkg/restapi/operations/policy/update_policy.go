@@ -34,7 +34,7 @@ func NewUpdatePolicy(ctx *middleware.Context, handler UpdatePolicyHandler) *Upda
 	return &UpdatePolicy{Context: ctx, Handler: handler}
 }
 
-/*UpdatePolicy swagger:route PUT /policy policy updatePolicy
+/*UpdatePolicy swagger:route PUT /policy/{id} policy updatePolicy
 
 update a policy
 
@@ -62,13 +62,42 @@ func (o *UpdatePolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
+// UpdatePolicyBadRequestBody update policy bad request body
+//
+// swagger:model UpdatePolicyBadRequestBody
+type UpdatePolicyBadRequestBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update policy bad request body
+func (o *UpdatePolicyBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdatePolicyBadRequestBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdatePolicyBadRequestBody) UnmarshalBinary(b []byte) error {
+	var res UpdatePolicyBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 // UpdatePolicyBody update policy body
 //
 // swagger:model UpdatePolicyBody
 type UpdatePolicyBody struct {
-
-	// Id
-	ID int64 `json:"Id,omitempty"`
 
 	// account type
 	// Enum: [accManager boinc]
@@ -300,6 +329,38 @@ func (o *UpdatePolicyOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *UpdatePolicyOKBody) UnmarshalBinary(b []byte) error {
 	var res UpdatePolicyOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// UpdatePolicyUnauthorizedBody update policy unauthorized body
+//
+// swagger:model UpdatePolicyUnauthorizedBody
+type UpdatePolicyUnauthorizedBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update policy unauthorized body
+func (o *UpdatePolicyUnauthorizedBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdatePolicyUnauthorizedBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdatePolicyUnauthorizedBody) UnmarshalBinary(b []byte) error {
+	var res UpdatePolicyUnauthorizedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

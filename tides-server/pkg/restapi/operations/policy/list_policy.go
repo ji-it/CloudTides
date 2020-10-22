@@ -37,7 +37,7 @@ func NewListPolicy(ctx *middleware.Context, handler ListPolicyHandler) *ListPoli
 
 /*ListPolicy swagger:route GET /policy policy listPolicy
 
-list policies belonging to a user
+list all available policies
 
 */
 type ListPolicy struct {
@@ -140,9 +140,6 @@ type ResultsItems0 struct {
 	// deploy type
 	// Enum: [K8S VM]
 	DeployType string `json:"deployType,omitempty"`
-
-	// hosts assigned
-	HostsAssigned int64 `json:"hostsAssigned,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`

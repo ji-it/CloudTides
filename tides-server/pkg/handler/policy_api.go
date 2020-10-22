@@ -57,7 +57,7 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 	body := params.ReqBody
 	var pol models.Policy
 	db := config.GetDB()
-	if db.Where("id = ?", body.ID).First(&pol).Error != nil {
+	if db.Where("id = ?", params.ID).First(&pol).Error != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/policy/update/: [404] Policy not found")
 		return policy.NewUpdatePolicyNotFound()
@@ -93,23 +93,17 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 		return policy.NewListPolicyUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-
 	policies := []*models.Policy{}
 	db := config.GetDB()
 
-	db.Where("user_id = ?", uid).Find(&policies)
+	db.Find(&policies)
 
 	results := []*policy.ResultsItems0{}
 	for _, pol := range policies {
-		resources := []*models.Resource{}
 		var pro models.Project
-		db.Where("policy_id = ?", pol.Model.ID).Find(&resources)
 		db.Where("id = ?", pol.ProjectID).First(&pro)
-
 		newResult := policy.ResultsItems0{
 			DeployType:      pol.DeployType,
-			HostsAssigned:   int64(len(resources)),
 			ID:              int64(pol.Model.ID),
 			IdlePolicy:      pol.IdlePolicy,
 			IsDestroy:       pol.IsDestroy,
@@ -134,11 +128,11 @@ func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder 
 		return policy.NewRemovePolicyUnauthorized()
 	}
 
-	body := params.ReqBody
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	var pol models.Policy
 	db := config.GetDB()
 
-	err := db.Unscoped().Where("id = ?", body.ID).Delete(&pol).Error
+	err := db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&pol).Error
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/policy/remove/: [404] Policy not found")
@@ -150,4 +144,36 @@ func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder 
 	return policy.NewRemovePolicyOK().WithPayload(&policy.RemovePolicyOKBody{
 		Message: "success",
 	})
+}
+
+func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return policy.NewRemovePolicyUnauthorized()
+	}
+
+	db := config.GetDB()
+	var pol models.Policy
+	if db.Where("id = ?", params.ID).First(&pol).RowsAffected == 0 {
+		return policy.NewGetPolicyNotFound()
+	}
+
+	resources := []*models.Resource{}
+	db.Where("policy_id = ?", pol.Model.ID).Find(&resources)
+	var user models.User
+	db.Where("id = ?", pol.UserID).First(&user)
+	var pro models.Project
+	db.Where("id = ?", pol.ProjectID).First(&pro)
+
+	response := policy.GetPolicyOKBody{
+		DeployType:      pol.DeployType,
+		HostsAssigned:   int64(len(resources)),
+		IdlePolicy:      pol.IdlePolicy,
+		IsDestroy:       pol.IsDestroy,
+		Name:            pol.Name,
+		ProjectName:     pro.ProjectName,
+		ThresholdPolicy: pol.ThresholdPolicy,
+		User:            user.Username,
+	}
+
+	return policy.NewGetPolicyOK().WithPayload(&response)
 }

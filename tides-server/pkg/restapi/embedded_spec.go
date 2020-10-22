@@ -27,7 +27,7 @@ func init() {
   "paths": {
     "/policy": {
       "get": {
-        "description": "list policies belonging to a user",
+        "description": "list all available policies",
         "produces": [
           "application/json"
         ],
@@ -56,9 +56,6 @@ func init() {
                           "VM"
                         ]
                       },
-                      "hostsAssigned": {
-                        "type": "integer"
-                      },
                       "id": {
                         "type": "integer"
                       },
@@ -79,96 +76,6 @@ func init() {
                       }
                     }
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
-      "put": {
-        "description": "update a policy",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "policy"
-        ],
-        "operationId": "updatePolicy",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "Id": {
-                  "type": "integer"
-                },
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
-                  "type": "string"
-                },
-                "deployType": {
-                  "type": "string",
-                  "enum": [
-                    "K8S",
-                    "VM"
-                  ]
-                },
-                "idle": {
-                  "type": "string"
-                },
-                "isDestroy": {
-                  "type": "boolean"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "projectId": {
-                  "type": "integer"
-                },
-                "templateId": {
-                  "type": "integer"
-                },
-                "threshold": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
                 }
               }
             }
@@ -278,9 +185,81 @@ func init() {
             "description": "Unauthorized"
           }
         }
+      }
+    },
+    "/policy/{id}": {
+      "get": {
+        "description": "get info of a policy",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "getPolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "deployType": {
+                  "type": "string",
+                  "enum": [
+                    "K8S",
+                    "VM"
+                  ]
+                },
+                "hostsAssigned": {
+                  "type": "integer"
+                },
+                "idlePolicy": {
+                  "type": "string"
+                },
+                "isDestroy": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "thresholdPolicy": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
       },
-      "delete": {
-        "description": "remove a policy",
+      "put": {
+        "description": "update a policy",
         "consumes": [
           "application/json"
         ],
@@ -290,18 +269,56 @@ func init() {
         "tags": [
           "policy"
         ],
-        "operationId": "removePolicy",
+        "operationId": "updatePolicy",
         "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
           {
             "name": "reqBody",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "integer"
+                "accountType": {
+                  "type": "string",
+                  "enum": [
+                    "accManager",
+                    "boinc"
+                  ]
+                },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
+                },
+                "deployType": {
+                  "type": "string",
+                  "enum": [
+                    "K8S",
+                    "VM"
+                  ]
+                },
+                "idle": {
+                  "type": "string"
+                },
+                "isDestroy": {
+                  "type": "boolean"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "integer"
+                },
+                "templateId": {
+                  "type": "integer"
+                },
+                "threshold": {
                   "type": "string"
                 }
               }
@@ -323,6 +340,65 @@ func init() {
               }
             }
           },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "remove a policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "removePolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
           },
@@ -332,10 +408,7 @@ func init() {
               "type": "object",
               "properties": {
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "no matching objects"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -536,68 +609,6 @@ func init() {
         }
       }
     },
-    "/resource/assign_policy/{id}": {
-      "put": {
-        "description": "assign a policy to a specified resource",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "assignPolicy",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "policyId": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "returns success message",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -647,110 +658,6 @@ func init() {
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/resource/toggle_active/{id}": {
-      "put": {
-        "description": "toggle the status of the resource",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "toggleActive",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "returns success message",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resouce not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resource/update_status/{id}": {
-      "put": {
-        "description": "update the status of resource: busy, normal, idle",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "updateStatus",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "monitored": {
-                  "type": "boolean"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "update success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
           }
         }
       }
@@ -1269,6 +1176,71 @@ func init() {
         }
       }
     },
+    "/resource/{id}": {
+      "put": {
+        "description": "toggle active, assign policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "updateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "policy": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/template": {
       "get": {
         "description": "list all available VM templates",
@@ -1381,10 +1353,7 @@ func init() {
                   "type": "integer"
                 },
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -1396,7 +1365,9 @@ func init() {
             "description": "Unauthorized"
           }
         }
-      },
+      }
+    },
+    "/template/{id}": {
       "delete": {
         "description": "delete specified template",
         "consumes": [
@@ -1408,16 +1379,10 @@ func init() {
         "operationId": "deleteTemplate",
         "parameters": [
           {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
           }
         ],
         "responses": {
@@ -1427,10 +1392,7 @@ func init() {
               "type": "object",
               "properties": {
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -1448,79 +1410,6 @@ func init() {
       }
     },
     "/usage": {
-      "get": {
-        "description": "get resource usage info during last period",
-        "tags": [
-          "usage"
-        ],
-        "operationId": "resourcePastUsage",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "bad request"
-          }
-        }
-      },
-      "put": {
-        "description": "update datacenter usage info",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "updateResourceUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "currentCPU": {
-                  "type": "number"
-                },
-                "currentRAM": {
-                  "type": "number"
-                },
-                "hostAddress": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "totalCPU": {
-                  "type": "number"
-                },
-                "totalRAM": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "resource usage recorded"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
       "post": {
         "description": "add resource usage info into database",
         "consumes": [
@@ -1554,55 +1443,6 @@ func init() {
                 },
                 "totalRAM": {
                   "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
-      "delete": {
-        "description": "delete resource usage info",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "deleteResourceUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "datacenter": {
-                  "type": "string"
-                },
-                "hostAddress": {
-                  "type": "string"
                 }
               }
             }
@@ -1714,6 +1554,163 @@ func init() {
           },
           "400": {
             "description": "bad request"
+          }
+        }
+      }
+    },
+    "/usage/{id}": {
+      "get": {
+        "description": "get resource usage",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "getResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "percentCPU": {
+                  "type": "number"
+                },
+                "percentRAM": {
+                  "type": "number"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update datacenter usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "updateResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete resource usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "deleteResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
           }
         }
       }
@@ -2157,7 +2154,7 @@ func init() {
   "paths": {
     "/policy": {
       "get": {
-        "description": "list policies belonging to a user",
+        "description": "list all available policies",
         "produces": [
           "application/json"
         ],
@@ -2179,96 +2176,6 @@ func init() {
                   "items": {
                     "$ref": "#/definitions/ResultsItems0"
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
-      "put": {
-        "description": "update a policy",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "policy"
-        ],
-        "operationId": "updatePolicy",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "Id": {
-                  "type": "integer"
-                },
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
-                  "type": "string"
-                },
-                "deployType": {
-                  "type": "string",
-                  "enum": [
-                    "K8S",
-                    "VM"
-                  ]
-                },
-                "idle": {
-                  "type": "string"
-                },
-                "isDestroy": {
-                  "type": "boolean"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "projectId": {
-                  "type": "integer"
-                },
-                "templateId": {
-                  "type": "integer"
-                },
-                "threshold": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
                 }
               }
             }
@@ -2378,9 +2285,81 @@ func init() {
             "description": "Unauthorized"
           }
         }
+      }
+    },
+    "/policy/{id}": {
+      "get": {
+        "description": "get info of a policy",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "getPolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "deployType": {
+                  "type": "string",
+                  "enum": [
+                    "K8S",
+                    "VM"
+                  ]
+                },
+                "hostsAssigned": {
+                  "type": "integer"
+                },
+                "idlePolicy": {
+                  "type": "string"
+                },
+                "isDestroy": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "thresholdPolicy": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
       },
-      "delete": {
-        "description": "remove a policy",
+      "put": {
+        "description": "update a policy",
         "consumes": [
           "application/json"
         ],
@@ -2390,18 +2369,56 @@ func init() {
         "tags": [
           "policy"
         ],
-        "operationId": "removePolicy",
+        "operationId": "updatePolicy",
         "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
           {
             "name": "reqBody",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "integer"
+                "accountType": {
+                  "type": "string",
+                  "enum": [
+                    "accManager",
+                    "boinc"
+                  ]
+                },
+                "boincPassword": {
+                  "type": "string"
+                },
+                "boincUsername": {
+                  "type": "string"
+                },
+                "deployType": {
+                  "type": "string",
+                  "enum": [
+                    "K8S",
+                    "VM"
+                  ]
+                },
+                "idle": {
+                  "type": "string"
+                },
+                "isDestroy": {
+                  "type": "boolean"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "integer"
+                },
+                "templateId": {
+                  "type": "integer"
+                },
+                "threshold": {
                   "type": "string"
                 }
               }
@@ -2423,6 +2440,65 @@ func init() {
               }
             }
           },
+          "400": {
+            "description": "bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "remove a policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "policy"
+        ],
+        "operationId": "removePolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
           },
@@ -2432,10 +2508,7 @@ func init() {
               "type": "object",
               "properties": {
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "no matching objects"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -2622,68 +2695,6 @@ func init() {
         }
       }
     },
-    "/resource/assign_policy/{id}": {
-      "put": {
-        "description": "assign a policy to a specified resource",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "assignPolicy",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "policyId": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "returns success message",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -2733,110 +2744,6 @@ func init() {
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/resource/toggle_active/{id}": {
-      "put": {
-        "description": "toggle the status of the resource",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "toggleActive",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "returns success message",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resouce not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resource/update_status/{id}": {
-      "put": {
-        "description": "update the status of resource: busy, normal, idle",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "updateStatus",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "monitored": {
-                  "type": "boolean"
-                },
-                "status": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "update success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
           }
         }
       }
@@ -3329,6 +3236,71 @@ func init() {
         }
       }
     },
+    "/resource/{id}": {
+      "put": {
+        "description": "toggle active, assign policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "updateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "policy": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/template": {
       "get": {
         "description": "list all available VM templates",
@@ -3414,10 +3386,7 @@ func init() {
                   "type": "integer"
                 },
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -3429,7 +3398,9 @@ func init() {
             "description": "Unauthorized"
           }
         }
-      },
+      }
+    },
+    "/template/{id}": {
       "delete": {
         "description": "delete specified template",
         "consumes": [
@@ -3441,16 +3412,10 @@ func init() {
         "operationId": "deleteTemplate",
         "parameters": [
           {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
           }
         ],
         "responses": {
@@ -3460,10 +3425,7 @@ func init() {
               "type": "object",
               "properties": {
                 "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
+                  "type": "string"
                 }
               }
             }
@@ -3481,79 +3443,6 @@ func init() {
       }
     },
     "/usage": {
-      "get": {
-        "description": "get resource usage info during last period",
-        "tags": [
-          "usage"
-        ],
-        "operationId": "resourcePastUsage",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "bad request"
-          }
-        }
-      },
-      "put": {
-        "description": "update datacenter usage info",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "updateResourceUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "currentCPU": {
-                  "type": "number"
-                },
-                "currentRAM": {
-                  "type": "number"
-                },
-                "hostAddress": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "totalCPU": {
-                  "type": "number"
-                },
-                "totalRAM": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "resource usage recorded"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
       "post": {
         "description": "add resource usage info into database",
         "consumes": [
@@ -3587,55 +3476,6 @@ func init() {
                 },
                 "totalRAM": {
                   "type": "number"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
-      "delete": {
-        "description": "delete resource usage info",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "usage"
-        ],
-        "operationId": "deleteResourceUsage",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "datacenter": {
-                  "type": "string"
-                },
-                "hostAddress": {
-                  "type": "string"
                 }
               }
             }
@@ -3712,6 +3552,163 @@ func init() {
           },
           "400": {
             "description": "bad request"
+          }
+        }
+      }
+    },
+    "/usage/{id}": {
+      "get": {
+        "description": "get resource usage",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "getResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "percentCPU": {
+                  "type": "number"
+                },
+                "percentRAM": {
+                  "type": "number"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "update datacenter usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "updateResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentCPU": {
+                  "type": "number"
+                },
+                "currentRAM": {
+                  "type": "number"
+                },
+                "totalCPU": {
+                  "type": "number"
+                },
+                "totalRAM": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "delete resource usage info",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "deleteResourceUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "404": {
+            "description": "resource not found"
           }
         }
       }
@@ -4254,33 +4251,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "deployType": {
-          "type": "string",
-          "enum": [
-            "K8S",
-            "VM"
-          ]
-        },
-        "hostsAssigned": {
-          "type": "integer"
-        },
-        "id": {
-          "type": "integer"
-        },
-        "idlePolicy": {
+        "compatibility": {
           "type": "string"
         },
-        "isDestroy": {
-          "type": "boolean"
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
         },
         "name": {
           "type": "string"
         },
-        "projectName": {
-          "type": "string"
+        "provisionedSpace": {
+          "type": "number"
         },
-        "thresholdPolicy": {
-          "type": "string"
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

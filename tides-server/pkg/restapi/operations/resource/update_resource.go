@@ -33,7 +33,7 @@ func NewUpdateResource(ctx *middleware.Context, handler UpdateResourceHandler) *
 
 /*UpdateResource swagger:route PUT /resource/{id} resource updateResource
 
-update usage info of resource
+toggle active, assign policy
 
 */
 type UpdateResource struct {
@@ -57,6 +57,41 @@ func (o *UpdateResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// UpdateResourceBody update resource body
+//
+// swagger:model UpdateResourceBody
+type UpdateResourceBody struct {
+
+	// active
+	Active bool `json:"active,omitempty"`
+
+	// policy
+	Policy int64 `json:"policy,omitempty"`
+}
+
+// Validate validates this update resource body
+func (o *UpdateResourceBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdateResourceBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdateResourceBody) UnmarshalBinary(b []byte) error {
+	var res UpdateResourceBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }
 
 // UpdateResourceNotFoundBody update resource not found body

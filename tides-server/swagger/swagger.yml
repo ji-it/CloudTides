@@ -334,44 +334,14 @@ paths:
             properties:
               message:
                 type: string
-  /resource/toggle_active/{id}:
+  /resource/{id}:
     put:
-      operationId: 'toggleActive'
-      description: 'toggle the status of the resource'
+      operationId: 'updateResource'
+      description: 'toggle active, assign policy'
       tags:
         - 'resource'
       produces:
         - 'application/json'
-      consumes:
-        - 'application/json'
-      parameters:
-        - type: integer
-          in: path
-          name: id
-          required: true
-      responses:
-        200:
-          description: 'returns success message'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-        401:
-          description: 'Unauthorized'
-        404:
-          description: 'resouce not found'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-  /resource/update_status/{id}:
-    put:
-      operationId: 'updateStatus'
-      description: 'update the status of resource: busy, normal, idle'
-      tags:
-        - 'resource'
       consumes:
         - 'application/json'
       parameters:
@@ -384,47 +354,13 @@ paths:
           schema:
             type: object
             properties:
-              status:
-                type: string
-              monitored:
+              active:
                 type: boolean
-      responses:
-        200:
-          description: 'update success'
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-        400:
-          description: 'bad request'
-        404:
-          description: 'resource not found'
-  /resource/assign_policy/{id}:
-    put:
-      operationId: 'assignPolicy'
-      description: 'assign a policy to a specified resource'
-      tags:
-        - 'resource'
-      produces:
-        - 'application/json'
-      consumes:
-        - 'application/json'
-      parameters:
-        - type: integer
-          in: path
-          name: id
-          required: true
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              policyId:
+              policy:
                 type: integer
       responses:
         200:
-          description: 'returns success message'
+          description: 'success'
           schema:
             type: object
             properties:
@@ -727,6 +663,96 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+    get:
+      operationId: 'listPolicy'
+      description: 'list all available policies'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              results:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    isDestroy:
+                      type: boolean
+                    deployType:
+                      type: string
+                      enum:
+                        - K8S
+                        - VM
+                    idlePolicy:
+                      type: string
+                    thresholdPolicy:
+                      type: string
+                    projectName:
+                      type: string
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+  /policy/{id}:
+    get:
+      operationId: 'getPolicy'
+      description: 'get info of a policy'
+      tags:
+        - 'policy'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'success'
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              isDestroy:
+                type: boolean
+              deployType:
+                type: string
+                enum:
+                  - K8S
+                  - VM
+              idlePolicy:
+                type: string
+              thresholdPolicy:
+                type: string
+              projectName:
+                type: string
+              hostsAssigned:
+                type: integer
+              user:
+                type: string
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
     put:
       operationId: 'updatePolicy'
       description: 'update a policy'
@@ -737,13 +763,15 @@ paths:
       consumes:
         - 'application/json'
       parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
         - in: body
           name: reqBody
           schema:
             type: object
             properties:
-              Id:
-                type: integer
               accountType:
                 type: string
                 enum:
@@ -782,53 +810,18 @@ paths:
                   - 'success'
         400:
           description: 'bad request'
-        401:
-          description: 'Unauthorized'
-        404:
-          description: 'resource not found'
-    get:
-      operationId: 'listPolicy'
-      description: 'list policies belonging to a user'
-      tags:
-        - 'policy'
-      produces:
-        - 'application/json'
-      responses:
-        200:
-          description: 'OK'
           schema:
             type: object
             properties:
               message:
                 type: string
-              results:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    name:
-                      type: string
-                    isDestroy:
-                      type: boolean
-                    deployType:
-                      type: string
-                      enum:
-                        - K8S
-                        - VM
-                    idlePolicy:
-                      type: string
-                    thresholdPolicy:
-                      type: string
-                    projectName:
-                      type: string
-                    hostsAssigned:
-                      type: integer
-        400:
-          description: 'bad request'
         401:
           description: 'Unauthorized'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         404:
           description: 'resource not found'
     delete:
@@ -841,15 +834,10 @@ paths:
       consumes:
         - 'application/json'
       parameters:
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
           description: 'OK'
@@ -858,8 +846,6 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'success'
         401:
           description: 'Unauthorized'
         404:
@@ -869,19 +855,7 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'no matching objects'
   /usage:
-    get:
-      operationId: 'resourcePastUsage'
-      description: 'get resource usage info during last period'
-      tags:
-        - 'usage'
-      responses:
-        200:
-          description: 'OK'
-        400:
-          description: 'bad request'
     post:
       operationId: 'addResourceUsage'
       description: 'add resource usage info into database'
@@ -921,6 +895,48 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
+  /usage/{id}:
+    get:
+      operationId: 'getResourceUsage'
+      description: 'get resource usage'
+      tags:
+        - 'usage'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'success'
+          schema:
+            type: object
+            properties:
+              currentCPU:
+                type: number
+              currentRAM:
+                type: number
+              percentCPU:
+                type: number
+              percentRAM:
+                type: number
+              totalCPU:
+                type: number
+              totalRAM:
+                type: number
+              name:
+                type: string
+        400:
+          description: 'bad request'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
     put:
       operationId: 'updateResourceUsage'
       description: 'update datacenter usage info'
@@ -929,15 +945,15 @@ paths:
       consumes:
         - 'application/json'
       parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
         - in: body
           name: reqBody
           schema:
             type: object
             properties:
-              hostAddress:
-                type: string
-              name:
-                type: string
               currentCPU:
                 type: number
               currentRAM:
@@ -954,8 +970,6 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'resource usage recorded'
         404:
           description: 'resource not found'
     delete:
@@ -966,15 +980,10 @@ paths:
       consumes:
         - 'application/json'
       parameters:
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              hostAddress:
-                type: string
-              datacenter:
-                type: string
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
           description: 'OK'
@@ -983,8 +992,6 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'success'
         400:
           description: 'bad request'
         404:
@@ -1079,8 +1086,6 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'success'
               id:
                 type: integer
         400:
@@ -1128,6 +1133,7 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
+  /template/{id}:
     delete:
       operationId: 'deleteTemplate'
       description: 'delete specified template'
@@ -1136,13 +1142,10 @@ paths:
       consumes:
         - 'application/json'
       parameters:
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
           description: 'OK'
@@ -1151,8 +1154,6 @@ paths:
             properties:
               message:
                 type: string
-                enum:
-                  - 'success'
         400:
           description: 'bad request'
         401:

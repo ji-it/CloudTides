@@ -70,9 +70,6 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceAddVsphereResourceHandler: resource.AddVsphereResourceHandlerFunc(func(params resource.AddVsphereResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVsphereResource has not yet been implemented")
 		}),
-		ResourceAssignPolicyHandler: resource.AssignPolicyHandlerFunc(func(params resource.AssignPolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.AssignPolicy has not yet been implemented")
-		}),
 		ProjectDeleteProjectHandler: project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
 		}),
@@ -87,6 +84,12 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		ResourceDestroyVMHandler: resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
+		}),
+		PolicyGetPolicyHandler: policy.GetPolicyHandlerFunc(func(params policy.GetPolicyParams) middleware.Responder {
+			return middleware.NotImplemented("operation policy.GetPolicy has not yet been implemented")
+		}),
+		UsageGetResourceUsageHandler: usage.GetResourceUsageHandlerFunc(func(params usage.GetResourceUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.GetResourceUsage has not yet been implemented")
 		}),
 		UserGetUserProfileHandler: user.GetUserProfileHandlerFunc(func(params user.GetUserProfileParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.GetUserProfile has not yet been implemented")
@@ -115,23 +118,17 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		PolicyRemovePolicyHandler: policy.RemovePolicyHandlerFunc(func(params policy.RemovePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.RemovePolicy has not yet been implemented")
 		}),
-		UsageResourcePastUsageHandler: usage.ResourcePastUsageHandlerFunc(func(params usage.ResourcePastUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.ResourcePastUsage has not yet been implemented")
-		}),
-		ResourceToggleActiveHandler: resource.ToggleActiveHandlerFunc(func(params resource.ToggleActiveParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ToggleActive has not yet been implemented")
-		}),
 		PolicyUpdatePolicyHandler: policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.UpdatePolicy has not yet been implemented")
 		}),
 		ProjectUpdateProjectHandler: project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
 		}),
+		ResourceUpdateResourceHandler: resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
+		}),
 		UsageUpdateResourceUsageHandler: usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
-		}),
-		ResourceUpdateStatusHandler: resource.UpdateStatusHandlerFunc(func(params resource.UpdateStatusParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateStatus has not yet been implemented")
 		}),
 		UserUpdateUserProfileHandler: user.UpdateUserProfileHandlerFunc(func(params user.UpdateUserProfileParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UpdateUserProfile has not yet been implemented")
@@ -195,8 +192,6 @@ type CloudTidesAPI struct {
 	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
 	// ResourceAddVsphereResourceHandler sets the operation handler for the add vsphere resource operation
 	ResourceAddVsphereResourceHandler resource.AddVsphereResourceHandler
-	// ResourceAssignPolicyHandler sets the operation handler for the assign policy operation
-	ResourceAssignPolicyHandler resource.AssignPolicyHandler
 	// ProjectDeleteProjectHandler sets the operation handler for the delete project operation
 	ProjectDeleteProjectHandler project.DeleteProjectHandler
 	// UsageDeleteResourceUsageHandler sets the operation handler for the delete resource usage operation
@@ -207,6 +202,10 @@ type CloudTidesAPI struct {
 	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
 	// ResourceDestroyVMHandler sets the operation handler for the destroy VM operation
 	ResourceDestroyVMHandler resource.DestroyVMHandler
+	// PolicyGetPolicyHandler sets the operation handler for the get policy operation
+	PolicyGetPolicyHandler policy.GetPolicyHandler
+	// UsageGetResourceUsageHandler sets the operation handler for the get resource usage operation
+	UsageGetResourceUsageHandler usage.GetResourceUsageHandler
 	// UserGetUserProfileHandler sets the operation handler for the get user profile operation
 	UserGetUserProfileHandler user.GetUserProfileHandler
 	// ResourceGetVcdResourceHandler sets the operation handler for the get vcd resource operation
@@ -225,18 +224,14 @@ type CloudTidesAPI struct {
 	UserRegisterUserHandler user.RegisterUserHandler
 	// PolicyRemovePolicyHandler sets the operation handler for the remove policy operation
 	PolicyRemovePolicyHandler policy.RemovePolicyHandler
-	// UsageResourcePastUsageHandler sets the operation handler for the resource past usage operation
-	UsageResourcePastUsageHandler usage.ResourcePastUsageHandler
-	// ResourceToggleActiveHandler sets the operation handler for the toggle active operation
-	ResourceToggleActiveHandler resource.ToggleActiveHandler
 	// PolicyUpdatePolicyHandler sets the operation handler for the update policy operation
 	PolicyUpdatePolicyHandler policy.UpdatePolicyHandler
 	// ProjectUpdateProjectHandler sets the operation handler for the update project operation
 	ProjectUpdateProjectHandler project.UpdateProjectHandler
+	// ResourceUpdateResourceHandler sets the operation handler for the update resource operation
+	ResourceUpdateResourceHandler resource.UpdateResourceHandler
 	// UsageUpdateResourceUsageHandler sets the operation handler for the update resource usage operation
 	UsageUpdateResourceUsageHandler usage.UpdateResourceUsageHandler
-	// ResourceUpdateStatusHandler sets the operation handler for the update status operation
-	ResourceUpdateStatusHandler resource.UpdateStatusHandler
 	// UserUpdateUserProfileHandler sets the operation handler for the update user profile operation
 	UserUpdateUserProfileHandler user.UpdateUserProfileHandler
 	// UserUserLoginHandler sets the operation handler for the user login operation
@@ -335,9 +330,6 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceAddVsphereResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVsphereResourceHandler")
 	}
-	if o.ResourceAssignPolicyHandler == nil {
-		unregistered = append(unregistered, "resource.AssignPolicyHandler")
-	}
 	if o.ProjectDeleteProjectHandler == nil {
 		unregistered = append(unregistered, "project.DeleteProjectHandler")
 	}
@@ -352,6 +344,12 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ResourceDestroyVMHandler == nil {
 		unregistered = append(unregistered, "resource.DestroyVMHandler")
+	}
+	if o.PolicyGetPolicyHandler == nil {
+		unregistered = append(unregistered, "policy.GetPolicyHandler")
+	}
+	if o.UsageGetResourceUsageHandler == nil {
+		unregistered = append(unregistered, "usage.GetResourceUsageHandler")
 	}
 	if o.UserGetUserProfileHandler == nil {
 		unregistered = append(unregistered, "user.GetUserProfileHandler")
@@ -380,23 +378,17 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.PolicyRemovePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.RemovePolicyHandler")
 	}
-	if o.UsageResourcePastUsageHandler == nil {
-		unregistered = append(unregistered, "usage.ResourcePastUsageHandler")
-	}
-	if o.ResourceToggleActiveHandler == nil {
-		unregistered = append(unregistered, "resource.ToggleActiveHandler")
-	}
 	if o.PolicyUpdatePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.UpdatePolicyHandler")
 	}
 	if o.ProjectUpdateProjectHandler == nil {
 		unregistered = append(unregistered, "project.UpdateProjectHandler")
 	}
+	if o.ResourceUpdateResourceHandler == nil {
+		unregistered = append(unregistered, "resource.UpdateResourceHandler")
+	}
 	if o.UsageUpdateResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.UpdateResourceUsageHandler")
-	}
-	if o.ResourceUpdateStatusHandler == nil {
-		unregistered = append(unregistered, "resource.UpdateStatusHandler")
 	}
 	if o.UserUpdateUserProfileHandler == nil {
 		unregistered = append(unregistered, "user.UpdateUserProfileHandler")
@@ -528,10 +520,6 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/resource/vsphere"] = resource.NewAddVsphereResource(o.context, o.ResourceAddVsphereResourceHandler)
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
-	}
-	o.handlers["PUT"]["/resource/assign_policy/{id}"] = resource.NewAssignPolicy(o.context, o.ResourceAssignPolicyHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -539,11 +527,11 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/usage"] = usage.NewDeleteResourceUsage(o.context, o.UsageDeleteResourceUsageHandler)
+	o.handlers["DELETE"]["/usage/{id}"] = usage.NewDeleteResourceUsage(o.context, o.UsageDeleteResourceUsageHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/template"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
+	o.handlers["DELETE"]["/template/{id}"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -552,6 +540,14 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/resource/destroy_vm"] = resource.NewDestroyVM(o.context, o.ResourceDestroyVMHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/policy/{id}"] = policy.NewGetPolicy(o.context, o.PolicyGetPolicyHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/usage/{id}"] = usage.NewGetResourceUsage(o.context, o.UsageGetResourceUsageHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -587,19 +583,11 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/policy"] = policy.NewRemovePolicy(o.context, o.PolicyRemovePolicyHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/usage"] = usage.NewResourcePastUsage(o.context, o.UsageResourcePastUsageHandler)
+	o.handlers["DELETE"]["/policy/{id}"] = policy.NewRemovePolicy(o.context, o.PolicyRemovePolicyHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/resource/toggle_active/{id}"] = resource.NewToggleActive(o.context, o.ResourceToggleActiveHandler)
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
-	}
-	o.handlers["PUT"]["/policy"] = policy.NewUpdatePolicy(o.context, o.PolicyUpdatePolicyHandler)
+	o.handlers["PUT"]["/policy/{id}"] = policy.NewUpdatePolicy(o.context, o.PolicyUpdatePolicyHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
@@ -607,11 +595,11 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/usage"] = usage.NewUpdateResourceUsage(o.context, o.UsageUpdateResourceUsageHandler)
+	o.handlers["PUT"]["/resource/{id}"] = resource.NewUpdateResource(o.context, o.ResourceUpdateResourceHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/resource/update_status/{id}"] = resource.NewUpdateStatus(o.context, o.ResourceUpdateStatusHandler)
+	o.handlers["PUT"]["/usage/{id}"] = usage.NewUpdateResourceUsage(o.context, o.UsageUpdateResourceUsageHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

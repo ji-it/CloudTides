@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
 
 	"tides-server/pkg/restapi/operations"
 	"tides-server/pkg/restapi/operations/policy"
@@ -55,21 +54,11 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.UsageAddVMUsageHandler = usage.AddVMUsageHandlerFunc(handler.AddVMUsageHandler)
 
-	api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(handler.AssignPolicyHandler)
-
 	api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(handler.DeleteResourceUsageHandler)
-
-	api.ResourceDeleteResourceHandler = resource.DeleteResourceHandlerFunc(handler.DeleteResourceHandler)
 
 	api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(handler.DeleteTemplateHandler)
 
 	api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(handler.DestroyVMHandler)
-
-	if api.UsageResourcePastUsageHandler == nil {
-		api.UsageResourcePastUsageHandler = usage.ResourcePastUsageHandlerFunc(func(params usage.ResourcePastUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.ResourcePastUsage has not yet been implemented")
-		})
-	}
 
 	api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(handler.ListPolicyHandler)
 
@@ -80,18 +69,6 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.UserRegisterUserHandler = user.RegisterUserHandlerFunc(handler.RegisterUserHandler)
 
 	api.PolicyRemovePolicyHandler = policy.RemovePolicyHandlerFunc(handler.RemovePolicyHandler)
-
-	api.ResourceResourceVsphereInfoHandler = resource.ResourceVsphereInfoHandlerFunc(handler.ResourceVsphereInfoHandler)
-
-	api.ResourceResourceVsphereVMsInfoHandler = resource.ResourceVsphereVMsInfoHandlerFunc(handler.ResourceVsphereVMsInfoHandler)
-
-	api.ResourceToggleActiveHandler = resource.ToggleActiveHandlerFunc(handler.ToggleActiveHandler)
-
-	if api.ResourceUpdateResourceHandler == nil {
-		api.ResourceUpdateResourceHandler = resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
-		})
-	}
 
 	api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(handler.UpdateResourceUsageHandler)
 
@@ -104,8 +81,6 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.UserUserLoginHandler = user.UserLoginHandlerFunc(handler.UserLoginHandler)
 
 	api.ResourceValidateVsphereResourceHandler = resource.ValidateVsphereResourceHandlerFunc(handler.ValidateVsphereResourceHandler)
-
-	api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(handler.UpdateStatusHandler)
 
 	api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(handler.AddProjectHandler)
 
@@ -124,6 +99,12 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.ResourceGetVcdResourceHandler = resource.GetVcdResourceHandlerFunc(handler.GetVcdResourceHandler)
 
 	api.ResourceDeleteVcdResourceHandler = resource.DeleteVcdResourceHandlerFunc(handler.DeleteVcdResourceHandler)
+
+	api.ResourceUpdateResourceHandler = resource.UpdateResourceHandlerFunc(handler.UpdateResourceHandler)
+
+	api.PolicyGetPolicyHandler = policy.GetPolicyHandlerFunc(handler.GetPolicyHandler)
+
+	api.UsageGetResourceUsageHandler = usage.GetResourceUsageHandlerFunc(handler.GetResourceUsageHandler)
 
 	api.PreServerShutdown = func() {}
 

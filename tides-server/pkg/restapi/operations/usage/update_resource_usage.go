@@ -6,14 +6,11 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // UpdateResourceUsageHandlerFunc turns a function with the right signature into a update resource usage handler
@@ -34,7 +31,7 @@ func NewUpdateResourceUsage(ctx *middleware.Context, handler UpdateResourceUsage
 	return &UpdateResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*UpdateResourceUsage swagger:route PUT /usage usage updateResourceUsage
+/*UpdateResourceUsage swagger:route PUT /usage/{id} usage updateResourceUsage
 
 update datacenter usage info
 
@@ -73,12 +70,6 @@ type UpdateResourceUsageBody struct {
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
-	// host address
-	HostAddress string `json:"hostAddress,omitempty"`
-
-	// name
-	Name string `json:"name,omitempty"`
-
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
 
@@ -115,61 +106,11 @@ func (o *UpdateResourceUsageBody) UnmarshalBinary(b []byte) error {
 type UpdateResourceUsageOKBody struct {
 
 	// message
-	// Enum: [resource usage recorded]
 	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this update resource usage o k body
 func (o *UpdateResourceUsageOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateMessage(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-var updateResourceUsageOKBodyTypeMessagePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["resource usage recorded"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		updateResourceUsageOKBodyTypeMessagePropEnum = append(updateResourceUsageOKBodyTypeMessagePropEnum, v)
-	}
-}
-
-const (
-
-	// UpdateResourceUsageOKBodyMessageResourceUsageRecorded captures enum value "resource usage recorded"
-	UpdateResourceUsageOKBodyMessageResourceUsageRecorded string = "resource usage recorded"
-)
-
-// prop value enum
-func (o *UpdateResourceUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, updateResourceUsageOKBodyTypeMessagePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *UpdateResourceUsageOKBody) validateMessage(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Message) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateMessageEnum("updateResourceUsageOK"+"."+"message", "body", o.Message); err != nil {
-		return err
-	}
-
 	return nil
 }
 

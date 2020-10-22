@@ -79,10 +79,10 @@ func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Resp
 		return template.NewDeleteTemplateUnauthorized()
 	}
 
-	body := params.ReqBody
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	db := config.GetDB()
 
-	err := db.Unscoped().Where("name = ?", body.Name).Delete(&models.Template{}).Error
+	err := db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).Error
 	if err != nil {
 		logger.SetLogLevel("ERROR")
 		logger.Error("/template/delete/: [404] Template not found")
