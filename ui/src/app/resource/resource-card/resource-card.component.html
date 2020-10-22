@@ -6,23 +6,23 @@
         <div class="name">
           {{ item?.name }}
         </div>
-        <div class="desc">CPU: {{ item?.cpu }}</div>
-        <div class="desc">Memory: {{ item?.mem }}</div>
-        <div class="desc">Disk: {{ item?.disk }}</div>
+        <div class="desc">{{ "HOME.RESOURCE.CARD.INFO.CPU" | translate:{} }}: {{ item?.cpu }}</div>
+        <div class="desc">{{ "HOME.RESOURCE.CARD.INFO.MEMORY" | translate:{} }}: {{ item?.mem }}</div>
+        <div class="desc">{{ "HOME.RESOURCE.CARD.INFO.DISK" | translate:{} }}: {{ item?.disk }}</div>
       </span>
     </div>
     <div class="detail-wrapper">
       <span class="detail-container">
         <div class="value">{{ item?.usage["cpu%"] }}%</div>
-        <div class="key">CPU</div>
+        <div class="key">{{ "HOME.RESOURCE.CARD.DETAIL.CPU" | translate:{} }}</div>
       </span>
       <span class="detail-container">
         <div class="value">{{ item?.usage["mem%"] }}%</div>
-        <div class="key">Memory</div>
+        <div class="key">{{ "HOME.RESOURCE.CARD.DETAIL.MEMORY" | translate:{} }}</div>
       </span>
       <span class="detail-container">
         <div class="value">{{ item?.usage["disk%"] }}%</div>
-        <div class="key">Disk</div>
+        <div class="key">{{ "HOME.RESOURCE.CARD.DETAIL.DISK" | translate:{} }}</div>
       </span>
     </div>
   </div>

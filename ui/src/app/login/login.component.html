@@ -20,7 +20,7 @@
 
     <div class="login-group">
       <input class="username"
-        placeholder="Email"
+        [placeholder]="'LOGIN.EMAIL' | translate:{} "
         type="text"
         [(ngModel)]="this.vo.model.username"
         name="username"
@@ -32,7 +32,7 @@
         required />
 
       <input class="password"
-        placeholder="Passowrd"
+        [placeholder]="'LOGIN.PASSWORD' | translate:{} "
         type="password"
         [(ngModel)]="this.vo.model.password"
         name="password"

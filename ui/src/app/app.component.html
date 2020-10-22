@@ -5,8 +5,8 @@
       <header class="header header-6">
         <div class="branding">
           <a routerLink="/" class="nav-link">
-            <clr-icon shape="vm-bug"></clr-icon>
-            <span class="title">{{ this.vo.title }}</span>
+            <!--            <clr-icon shape="vm-bug"></clr-icon>-->
+            <span class="title">{{ "HOME.PRODUCT_NAME" | translate:{} }}</span>
           </a>
         </div>
         <div class="header-actions">
@@ -26,8 +26,8 @@
               <clr-icon shape="caret down"></clr-icon>
             </button>
             <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-              <a routerLink="/profile" clrDropdownItem>Profile</a>
-              <a (click)="this.signOut()" clrDropdownItem>Log out</a>
+              <a routerLink="/profile" clrDropdownItem>{{ "HOME.PROFILE" | translate:{} }}</a>
+              <a (click)="this.signOut()" clrDropdownItem>{{ "HOME.LOGOUT" | translate:{} }}</a>
             </clr-dropdown-menu>
           </clr-dropdown>
         </div>
@@ -39,28 +39,28 @@
             <a class="nav-link"
               routerLink="/home"
               routerLinkActive="active">
-              Dashboard
+              {{ "HOME.DASHBOARD.DASHBOARD" | translate:{} }}
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/resource"
               routerLinkActive="active">
-              {{ "HOME.RESOURCE" | translate:{} }}
+              {{ "HOME.RESOURCE.RESOURCE" | translate:{} }}
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/policy"
               routerLinkActive="active">
-              Policy
+              {{ "HOME.POLICY.POLICY" | translate:{} }}
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/template"
               routerLinkActive="active">
-              Template
+              {{ "HOME.TEMPLATE.TEMPLATE" | translate:{} }}
             </a>
           </li>
         </ul>

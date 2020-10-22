@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { TemplateService, Item } from '../template.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'tide-template-list',
@@ -12,6 +13,7 @@ export class TemplateListComponent implements OnInit {
 
   constructor(
     private readonly templateService: TemplateService,
+    public readonly translate: TranslateService,
   ) { }
 
   list$: Observable<Item[]> = of([]);
