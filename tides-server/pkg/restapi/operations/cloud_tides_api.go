@@ -523,7 +523,7 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/project"] = project.NewDeleteProject(o.context, o.ProjectDeleteProjectHandler)
+	o.handlers["DELETE"]["/project/{id}"] = project.NewDeleteProject(o.context, o.ProjectDeleteProjectHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -591,7 +591,7 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/project"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
+	o.handlers["PUT"]["/project/{id}"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

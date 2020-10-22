@@ -31,7 +31,7 @@ func NewUpdateProject(ctx *middleware.Context, handler UpdateProjectHandler) *Up
 	return &UpdateProject{Context: ctx, Handler: handler}
 }
 
-/*UpdateProject swagger:route PUT /project project updateProject
+/*UpdateProject swagger:route PUT /project/{id} project updateProject
 
 update boinc project
 
@@ -63,9 +63,6 @@ func (o *UpdateProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 //
 // swagger:model UpdateProjectBody
 type UpdateProjectBody struct {
-
-	// ID
-	ID int64 `json:"ID,omitempty"`
 
 	// has account manager
 	HasAccountManager bool `json:"hasAccountManager,omitempty"`

@@ -15,7 +15,6 @@ import (
 	"github.com/vmware/govmomi/vim25/soap"
 
 	"tides-server/pkg/config"
-	"tides-server/pkg/logger"
 	"tides-server/pkg/models"
 	"tides-server/pkg/restapi/operations/resource"
 )
@@ -35,8 +34,6 @@ func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParam
 	ctx := context.Background()
 	c, err := govmomi.NewClient(ctx, u, true)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/validate/: [404] Connection failure")
 		return resource.NewValidateVsphereResourceNotFound()
 	}
 
@@ -46,8 +43,6 @@ func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParam
 
 	v, err := m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"Datacenter"}, true)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/validate/: [404] Container view failure")
 		return resource.NewValidateVsphereResourceNotFound()
 	}
 
@@ -56,17 +51,12 @@ func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParam
 	var dss []mo.Datacenter
 	err = v.Retrieve(ctx, []string{"Datacenter"}, []string{}, &dss)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/validate/: [404] Datacenter not found")
 		return resource.NewValidateVsphereResourceNotFound()
 	}
 	for _, dc := range dss {
 		fmt.Println(dc.ManagedEntity.Name)
 		resBody.Results = append(resBody.Results, dc.ManagedEntity.Name)
 	}
-
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/validate/: [200] Resource validation success")
 
 	resBody.Message = "Success"
 	return resource.NewValidateVsphereResourceOK().WithPayload(&resBody)
@@ -83,16 +73,12 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 
 	u, err := soap.ParseURL(body.HostAddress)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/add/: [404] Connection failure")
 		return resource.NewAddVsphereResourceNotFound()
 	}
 	u.User = url.UserPassword(body.Username, body.Password)
 	ctx := context.Background()
 	c, err := govmomi.NewClient(ctx, u, true)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/add: [404] Connection failure")
 		return resource.NewAddVsphereResourceNotFound()
 	}
 
@@ -100,8 +86,6 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 
 	v, err := m.CreateContainerView(ctx, c.ServiceContent.RootFolder, []string{"Datacenter"}, true)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/add/: [404] Container view failure")
 		return resource.NewAddVsphereResourceNotFound()
 	}
 
@@ -110,8 +94,6 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 	var dss []mo.Datacenter
 	err = v.Retrieve(ctx, []string{"Datacenter"}, []string{}, &dss)
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/add/: [404] Datacenter not found")
 		return resource.NewAddVsphereResourceNotFound()
 	}
 
@@ -138,14 +120,10 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 
 		if db.Where("cluster = ?", body.Cluster).First(&vs).RowsAffected > 0 {
 			if vs.IsResourcePool {
-				logger.SetLogLevel("ERROR")
-				logger.Error("/resource/add/: [404] Child resource pool already registered")
 				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 					Message: "Child resource pool already registered!",
 				})
 			} else {
-				logger.SetLogLevel("ERROR")
-				logger.Error("/resource/add/: [404] Cluster already registered")
 				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 					Message: "Cluster already registered!",
 				})
@@ -229,8 +207,6 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 	} else {
 		var clu models.Resource
 		if db.Where("host_address = ? AND cluster = ?", body.HostAddress, body.Cluster).First(&clu).Error != nil {
-			logger.SetLogLevel("ERROR")
-			logger.Error("/resource/add/: [404] Parent cluster already registered")
 			return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 				Message: "Parent cluster already registered!",
 			})
@@ -320,9 +296,6 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 		}
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/add/: [200] Resource registration success")
-
 	return resource.NewAddVsphereResourceOK().WithPayload(&resource.AddVsphereResourceOKBody{
 		Message: "success",
 		Results: res,
@@ -370,9 +343,6 @@ func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middl
 		response = append(response, &newResultItem)
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/list/: [200] Resource retrival success")
-
 	return resource.NewListVsphereResourceOK().WithPayload(&resource.ListVsphereResourceOKBody{
 		Message: "success",
 		Results: response,
@@ -392,13 +362,9 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	// db.Where("id = ? AND user_id = ?", rid, uid).Delete(&res)
 	err := db.Unscoped().Where("id = ? AND user_id = ?", rid, uid).Delete(&res).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/delete/: [404] Resource not found")
 		return resource.NewDeleteResourceNotFound()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/delete/: [200] Resource deletion success")
 	return resource.NewDeleteResourceOK()
 }
 
@@ -407,8 +373,6 @@ func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responde
 	var res models.Resource
 	db := config.GetDB()
 	if db.Where("id = ?", params.ID).First(&res).Error != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/update_status/: [404] Resource not found")
 		return resource.NewUpdateStatusNotFound()
 	}
 
@@ -418,13 +382,9 @@ func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responde
 	res.Monitored = body.Monitored
 	err := db.Save(&res).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/update_status/: [400] Update status failed")
 		return resource.NewUpdateStatusBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/update_status/: [200] Update status success")
 	return resource.NewUpdateStatusOK()
 }
 
@@ -435,13 +395,9 @@ func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
 	db := config.GetDB()
 	err := db.Unscoped().Where("ip_address = ?", ip).Delete(&vm).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/resource/destroy_vm/: [404] VM not found")
 		return resource.NewDestroyVMNotFound()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/destroy_vm/: [200] VM destroyed")
 	return resource.NewDestroyVMOK().WithPayload(&resource.DestroyVMOKBody{
 		Message: "success",
 	})
@@ -501,8 +457,6 @@ func ResourceVsphereInfoHandler(params resource.ResourceVsphereInfoParams) middl
 		results = append(results, &result)
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/get_details/: [200] Resource info retrival success")
 	return resource.NewResourceVsphereInfoOK().WithPayload(&resource.ResourceVsphereInfoOKBody{
 		Message: "success",
 		Results: results,
@@ -562,8 +516,6 @@ func ResourceVsphereVMsInfoHandler(params resource.ResourceVsphereVMsInfoParams)
 		results = append(results, curvms)
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/resource/get_vm_details/: [200] Resource VM info retrival success")
 	return resource.NewResourceVsphereVMsInfoOK().WithPayload(&resource.ResourceVsphereVMsInfoOKBody{
 		Message: "success",
 		Results: results,
@@ -664,6 +616,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 			Message: err.Error(),
 		})
 	}
+
 	newres := models.Resource{
 		Datacenter:   body.Datacenter,
 		HostAddress:  body.Href,
@@ -672,11 +625,16 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		Monitored:    false,
 		Name:         body.Datacenter,
 		Password:     password,
-		PolicyID:     0,
 		Status:       "unknown",
 		TotalJobs:    0,
 		UserID:       uid,
 		Username:     user.User.Name,
+	}
+	if body.Policy > 0 {
+		newres.PolicyID = new(uint)
+		*newres.PolicyID = uint(body.Policy)
+	} else {
+		newres.PolicyID = nil
 	}
 
 	err = db.Create(&newres).Error
@@ -770,6 +728,10 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	var res models.Resource
 	db.Where("id = ?", vcd.ResourceID).First(&res)
 
+	policy := 0
+	if res.PolicyID != nil {
+		policy = int(*res.PolicyID)
+	}
 	response := resource.GetVcdResourceOKBody{
 		AllocationModel: vcd.AllocationModel,
 		CurrentCPU:      vcdUsage.CurrentCPU,
@@ -780,7 +742,7 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		JobCompleted:    res.JobCompleted,
 		Monitored:       res.Monitored,
 		Organization:    vcd.Organization,
-		Policy:          int64(res.PolicyID),
+		Policy:          int64(policy),
 		Status:          res.Status,
 		TotalCPU:        vcdUsage.TotalCPU,
 		TotalJobs:       res.TotalJobs,
@@ -823,11 +785,16 @@ func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Resp
 		return resource.NewUpdateResourceNotFound()
 	}
 
-	if params.ReqBody.Active {
+	if params.ReqBody.Active == true || params.ReqBody.Active == false {
 		res.IsActive = params.ReqBody.Active
 	}
 	if params.ReqBody.Policy > 0 {
-		res.PolicyID = uint(params.ReqBody.Policy)
+		if res.PolicyID != nil {
+			*res.PolicyID = uint(params.ReqBody.Policy)
+		} else {
+			res.PolicyID = new(uint)
+			*res.PolicyID = uint(params.ReqBody.Policy)
+		}
 	}
 	err := db.Save(&res).Error
 	if err != nil {

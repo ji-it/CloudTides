@@ -455,61 +455,6 @@ func init() {
           }
         }
       },
-      "put": {
-        "description": "update boinc project",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "project"
-        ],
-        "operationId": "updateProject",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ID": {
-                  "type": "integer"
-                },
-                "hasAccountManager": {
-                  "type": "boolean"
-                },
-                "projectName": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
       "post": {
         "description": "add boinc projects",
         "consumes": [
@@ -561,6 +506,66 @@ func init() {
             "description": "Unauthorized"
           }
         }
+      }
+    },
+    "/project/{id}": {
+      "put": {
+        "description": "update boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
       },
       "delete": {
         "description": "delete boinc project",
@@ -573,16 +578,10 @@ func init() {
         "operationId": "deleteProject",
         "parameters": [
           {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ID": {
-                  "type": "integer"
-                }
-              }
-            }
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
           }
         ],
         "responses": {
@@ -2541,61 +2540,6 @@ func init() {
           }
         }
       },
-      "put": {
-        "description": "update boinc project",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "project"
-        ],
-        "operationId": "updateProject",
-        "parameters": [
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ID": {
-                  "type": "integer"
-                },
-                "hasAccountManager": {
-                  "type": "boolean"
-                },
-                "projectName": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found"
-          }
-        }
-      },
       "post": {
         "description": "add boinc projects",
         "consumes": [
@@ -2647,6 +2591,66 @@ func init() {
             "description": "Unauthorized"
           }
         }
+      }
+    },
+    "/project/{id}": {
+      "put": {
+        "description": "update boinc project",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "project"
+        ],
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hasAccountManager": {
+                  "type": "boolean"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found"
+          }
+        }
       },
       "delete": {
         "description": "delete boinc project",
@@ -2659,16 +2663,10 @@ func init() {
         "operationId": "deleteProject",
         "parameters": [
           {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "ID": {
-                  "type": "integer"
-                }
-              }
-            }
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
           }
         ],
         "responses": {

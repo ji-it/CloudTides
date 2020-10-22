@@ -31,7 +31,7 @@ func NewDeleteProject(ctx *middleware.Context, handler DeleteProjectHandler) *De
 	return &DeleteProject{Context: ctx, Handler: handler}
 }
 
-/*DeleteProject swagger:route DELETE /project project deleteProject
+/*DeleteProject swagger:route DELETE /project/{id} project deleteProject
 
 delete boinc project
 
@@ -57,38 +57,6 @@ func (o *DeleteProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// DeleteProjectBody delete project body
-//
-// swagger:model DeleteProjectBody
-type DeleteProjectBody struct {
-
-	// ID
-	ID int64 `json:"ID,omitempty"`
-}
-
-// Validate validates this delete project body
-func (o *DeleteProjectBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DeleteProjectBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DeleteProjectBody) UnmarshalBinary(b []byte) error {
-	var res DeleteProjectBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
 
 // DeleteProjectOKBody delete project o k body

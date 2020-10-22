@@ -67,7 +67,7 @@ type Resource struct {
 	Password string `json:"password,omitempty"`
 
 	// policy foreign key
-	PolicyID uint
+	PolicyID *uint
 
 	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 

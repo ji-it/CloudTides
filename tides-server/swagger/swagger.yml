@@ -1219,6 +1219,7 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
+  /project/{id}:
     put:
       operationId: 'updateProject'
       description: 'update boinc project'
@@ -1227,13 +1228,15 @@ paths:
       consumes:
         - 'application/json'
       parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
         - in: body
           name: reqBody
           schema:
             type: object
             properties:
-              ID:
-                type: integer
               projectName:
                 type: string
               url:
@@ -1262,13 +1265,10 @@ paths:
       consumes:
         - 'application/json'
       parameters:
-        - in: body
-          name: reqBody
-          schema:
-            type: object
-            properties:
-              ID:
-                type: integer
+        - type: integer
+          in: path
+          name: id
+          required: true
       responses:
         200:
           description: 'OK'

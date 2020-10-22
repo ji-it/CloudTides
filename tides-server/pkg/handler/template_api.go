@@ -8,7 +8,6 @@ import (
 	"tides-server/pkg/restapi/operations/template"
 
 	"tides-server/pkg/config"
-	"tides-server/pkg/logger"
 	"tides-server/pkg/models"
 )
 
@@ -30,13 +29,9 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 	db := config.GetDB()
 	err := db.Create(&newTem).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/template/add/: [400] Template add failure")
 		return template.NewAddTemplateBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/template/add/: [200] Template add success")
 	return template.NewAddTemplateOK().WithPayload(&template.AddTemplateOKBody{
 		Message: "success",
 		ID:      int64(newTem.Model.ID),
@@ -66,8 +61,6 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 		result = append(result, &newItem)
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/template/list/: [200] Template retrival success")
 	return template.NewListTemplateOK().WithPayload(&template.ListTemplateOKBody{
 		Message: "success",
 		Results: result,
@@ -84,13 +77,9 @@ func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Resp
 
 	err := db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/template/delete/: [404] Template not found")
 		return template.NewDeleteTemplateNotFound()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/template/delete/: [200] Template deletion success")
 	return template.NewDeleteTemplateOK().WithPayload(&template.DeleteTemplateOKBody{
 		Message: "success",
 	})

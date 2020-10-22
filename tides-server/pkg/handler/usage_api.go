@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 
-	"tides-server/pkg/logger"
 	"tides-server/pkg/restapi/operations/usage"
 
 	"tides-server/pkg/config"
@@ -19,8 +18,6 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 	var res models.Resource
 
 	if db.Where("host_address = ? AND name = ?", body.HostAddress, body.Name).First(&res).Error != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/usage/add_resource/: [404] Resource not found")
 		return usage.NewAddResourceUsageNotFound()
 	}
 
@@ -41,13 +38,9 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 
 	err := db.Create(&newResourceUsage).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/usage/add_resource/: [400] Resource usage add failure")
 		return usage.NewAddResourceUsageBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/usage/add_resource/: [200] Resource usage add success")
 	return usage.NewAddResourceUsageOK().WithPayload(&usage.AddResourceUsageOKBody{
 		Message: "success",
 	})
@@ -80,8 +73,6 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 
 	var hu models.ResourceUsage
 	if db.Where("resource_id = ?", params.ID).First(&hu).Error != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/usage/update_resource/: [404] Resource usage not found")
 		return usage.NewUpdateResourceUsageNotFound()
 	}
 
@@ -94,8 +85,6 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 
 	db.Save(&hu)
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/usage/update_resource/: [200] Resource usage update success")
 	return usage.NewUpdateResourceUsageOK().WithPayload(&usage.UpdateResourceUsageOKBody{
 		Message: "resource usage recorded",
 	})
@@ -108,13 +97,9 @@ func DeleteResourceUsageHandler(params usage.DeleteResourceUsageParams) middlewa
 
 	err := db.Unscoped().Where("resource_id", params.ID).Delete(&hu).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/usage/delete_resource/: [400] Resource usage deletion failure")
 		return usage.NewDeleteResourceUsageBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/usage/delete_resource/: [200] Resource usage deletion success")
 	return usage.NewDeleteResourceUsageOK().WithPayload(&usage.DeleteResourceUsageOKBody{
 		Message: "success",
 	})
@@ -131,8 +116,6 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 			var res models.Resource
 			err := db.Where("name = ?", body.Name).First(&res).Error
 			if err != nil {
-				logger.SetLogLevel("ERROR")
-				logger.Error("/usage/addVM/: [400] Resource not found")
 				return usage.NewAddVMUsageBadRequest()
 			}
 
@@ -171,8 +154,6 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 		}
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/usage/addVM/: [200] VM usage add success")
 	return usage.NewAddVMUsageOK().WithPayload(&usage.AddVMUsageOKBody{
 		Message: "success",
 	})
