@@ -4249,30 +4249,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "compatibility": {
+        "deployType": {
+          "type": "string",
+          "enum": [
+            "K8S",
+            "VM"
+          ]
+        },
+        "id": {
+          "type": "integer"
+        },
+        "idlePolicy": {
           "type": "string"
         },
-        "dateAdded": {
-          "type": "string"
-        },
-        "guestOS": {
-          "type": "string"
-        },
-        "memorySize": {
-          "type": "number"
+        "isDestroy": {
+          "type": "boolean"
         },
         "name": {
           "type": "string"
         },
-        "provisionedSpace": {
-          "type": "number"
+        "projectName": {
+          "type": "string"
         },
-        "templateType": {
-          "type": "string",
-          "enum": [
-            "datastore",
-            "upload"
-          ]
+        "thresholdPolicy": {
+          "type": "string"
         }
       }
     },

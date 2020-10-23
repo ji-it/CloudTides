@@ -87,11 +87,11 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 
 	db.Find(&policies)
 
-	results := []*policy.ResultsItems0{}
+	results := []*policy.ListPolicyOKBodyResultsItems0{}
 	for _, pol := range policies {
 		var pro models.Project
 		db.Where("id = ?", pol.ProjectID).First(&pro)
-		newResult := policy.ResultsItems0{
+		newResult := policy.ListPolicyOKBodyResultsItems0{
 			DeployType:      pol.DeployType,
 			ID:              int64(pol.Model.ID),
 			IdlePolicy:      pol.IdlePolicy,

@@ -173,7 +173,7 @@ const (
 
 // prop value enum
 func (o *AddPolicyBody) validateAccountTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyBodyTypeAccountTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addPolicyBodyTypeAccountTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -216,7 +216,7 @@ const (
 
 // prop value enum
 func (o *AddPolicyBody) validateDeployTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyBodyTypeDeployTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addPolicyBodyTypeDeployTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -301,7 +301,7 @@ const (
 
 // prop value enum
 func (o *AddPolicyOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addPolicyOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil

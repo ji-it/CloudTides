@@ -153,7 +153,7 @@ const (
 
 // prop value enum
 func (o *RegisterUserBody) validatePriorityEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, registerUserBodyTypePriorityPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, registerUserBodyTypePriorityPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -309,7 +309,7 @@ const (
 
 // prop value enum
 func (o *RegisterUserOKBodyUserInfo) validatePriorityEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, registerUserOKBodyUserInfoTypePriorityPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, registerUserOKBodyUserInfoTypePriorityPropEnum, true); err != nil {
 		return err
 	}
 	return nil

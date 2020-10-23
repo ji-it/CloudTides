@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"tides-server/pkg/models"
 
-	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

@@ -73,7 +73,7 @@ type ListTemplateOKBody struct {
 	Message string `json:"message,omitempty"`
 
 	// results
-	Results []*ResultsItems0 `json:"results"`
+	Results []*ListTemplateOKBodyResultsItems0 `json:"results"`
 }
 
 // Validate validates this list template o k body
@@ -114,7 +114,7 @@ const (
 
 // prop value enum
 func (o *ListTemplateOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, listTemplateOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, listTemplateOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -177,10 +177,10 @@ func (o *ListTemplateOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// ResultsItems0 results items0
+// ListTemplateOKBodyResultsItems0 list template o k body results items0
 //
-// swagger:model ResultsItems0
-type ResultsItems0 struct {
+// swagger:model ListTemplateOKBodyResultsItems0
+type ListTemplateOKBodyResultsItems0 struct {
 
 	// compatibility
 	Compatibility string `json:"compatibility,omitempty"`
@@ -205,8 +205,8 @@ type ResultsItems0 struct {
 	TemplateType string `json:"templateType,omitempty"`
 }
 
-// Validate validates this results items0
-func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this list template o k body results items0
+func (o *ListTemplateOKBodyResultsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateTemplateType(formats); err != nil {
@@ -219,7 +219,7 @@ func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var resultsItems0TypeTemplateTypePropEnum []interface{}
+var listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -227,28 +227,28 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		resultsItems0TypeTemplateTypePropEnum = append(resultsItems0TypeTemplateTypePropEnum, v)
+		listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum = append(listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum, v)
 	}
 }
 
 const (
 
-	// ResultsItems0TemplateTypeDatastore captures enum value "datastore"
-	ResultsItems0TemplateTypeDatastore string = "datastore"
+	// ListTemplateOKBodyResultsItems0TemplateTypeDatastore captures enum value "datastore"
+	ListTemplateOKBodyResultsItems0TemplateTypeDatastore string = "datastore"
 
-	// ResultsItems0TemplateTypeUpload captures enum value "upload"
-	ResultsItems0TemplateTypeUpload string = "upload"
+	// ListTemplateOKBodyResultsItems0TemplateTypeUpload captures enum value "upload"
+	ListTemplateOKBodyResultsItems0TemplateTypeUpload string = "upload"
 )
 
 // prop value enum
-func (o *ResultsItems0) validateTemplateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resultsItems0TypeTemplateTypePropEnum); err != nil {
+func (o *ListTemplateOKBodyResultsItems0) validateTemplateTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (o *ResultsItems0) validateTemplateType(formats strfmt.Registry) error {
+func (o *ListTemplateOKBodyResultsItems0) validateTemplateType(formats strfmt.Registry) error {
 
 	if swag.IsZero(o.TemplateType) { // not required
 		return nil
@@ -263,7 +263,7 @@ func (o *ResultsItems0) validateTemplateType(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (o *ResultsItems0) MarshalBinary() ([]byte, error) {
+func (o *ListTemplateOKBodyResultsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -271,8 +271,8 @@ func (o *ResultsItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *ResultsItems0) UnmarshalBinary(b []byte) error {
-	var res ResultsItems0
+func (o *ListTemplateOKBodyResultsItems0) UnmarshalBinary(b []byte) error {
+	var res ListTemplateOKBodyResultsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

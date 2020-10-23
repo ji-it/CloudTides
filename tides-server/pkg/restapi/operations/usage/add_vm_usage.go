@@ -68,7 +68,7 @@ func (o *AddVMUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 type AddVMUsageBody struct {
 
 	// v ms
-	VMs map[string]VMsAnon `json:"VMs,omitempty"`
+	VMs map[string]AddVMUsageParamsBodyVMsAnon `json:"VMs,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
@@ -172,7 +172,7 @@ const (
 
 // prop value enum
 func (o *AddVMUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addVmUsageOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addVmUsageOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -210,10 +210,10 @@ func (o *AddVMUsageOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// VMsAnon v ms anon
+// AddVMUsageParamsBodyVMsAnon add VM usage params body v ms anon
 //
-// swagger:model VMsAnon
-type VMsAnon struct {
+// swagger:model AddVMUsageParamsBodyVMsAnon
+type AddVMUsageParamsBodyVMsAnon struct {
 
 	// boinc start time
 	BoincStartTime string `json:"boincStartTime,omitempty"`
@@ -249,13 +249,13 @@ type VMsAnon struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 }
 
-// Validate validates this v ms anon
-func (o *VMsAnon) Validate(formats strfmt.Registry) error {
+// Validate validates this add VM usage params body v ms anon
+func (o *AddVMUsageParamsBodyVMsAnon) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *VMsAnon) MarshalBinary() ([]byte, error) {
+func (o *AddVMUsageParamsBodyVMsAnon) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -263,8 +263,8 @@ func (o *VMsAnon) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *VMsAnon) UnmarshalBinary(b []byte) error {
-	var res VMsAnon
+func (o *AddVMUsageParamsBodyVMsAnon) UnmarshalBinary(b []byte) error {
+	var res AddVMUsageParamsBodyVMsAnon
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

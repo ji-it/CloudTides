@@ -153,7 +153,7 @@ const (
 
 // prop value enum
 func (o *AddResourceUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addResourceUsageOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addResourceUsageOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil

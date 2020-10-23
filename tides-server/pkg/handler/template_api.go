@@ -46,10 +46,10 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 	db := config.GetDB()
 	var templates []*models.Template
 	db.Find(&templates)
-	var result []*template.ResultsItems0
+	var result []*template.ListTemplateOKBodyResultsItems0
 
 	for _, tem := range templates {
-		newItem := template.ResultsItems0{
+		newItem := template.ListTemplateOKBodyResultsItems0{
 			Compatibility:    tem.Compatibility,
 			DateAdded:        time.Time.String(tem.Model.CreatedAt),
 			GuestOS:          tem.GuestOS,

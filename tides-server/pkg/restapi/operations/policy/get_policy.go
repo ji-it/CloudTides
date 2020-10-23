@@ -162,7 +162,7 @@ const (
 
 // prop value enum
 func (o *GetPolicyOKBody) validateDeployTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, getPolicyOKBodyTypeDeployTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, getPolicyOKBodyTypeDeployTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
