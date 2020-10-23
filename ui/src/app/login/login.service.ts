@@ -5,6 +5,8 @@ import { isEmpty } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { base } from '@tide-environments/base';
+import { LOGIN_PATH } from '@tide-config/path';
+import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 
 @Injectable()
 export class LoginService {
@@ -20,9 +22,10 @@ export class LoginService {
     username = '',
     password = '',
   ) {
-    return this.http.post<UserInfo>(`${base.apiPrefix}/session`, { username, password }).pipe(
-      tap(userInfo => {
-        this.session$.next(userInfo);
+    return this.http.post<ServerUserInfo>(base.apiPrefix + LOGIN_PATH, { username, password }).pipe(
+      tap(serverUserInfo => {
+        this.storeToken(serverUserInfo.token);
+        this.session$.next({ ...serverUserInfo.userInfo });
       }),
     );
   }
@@ -36,6 +39,7 @@ export class LoginService {
   }
 
   logout() {
+    this.removeToken();
     return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
       tap(() => {
         this.document.location.href = '/login';
@@ -43,21 +47,41 @@ export class LoginService {
     );
   }
 
+  storeToken(token: string) {
+    localStorage.setItem(LOCAL_STORAGE_KEY.TOKEN, token);
+  }
+
+  removeToken() {
+    localStorage.removeItem(LOCAL_STORAGE_KEY.TOKEN);
+  }
+
   get session() {
     return this.session$.value;
   }
 
   get hasLoggedIn() {
-    return isEmpty(this.session) === false;
+    return localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN);
+  }
+
+  get token() {
+    return localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN);
   }
 }
 
 export interface UserInfo {
-  id: string;
-  name: string;
   username: string;
-  email: string;
-  phone: string;
-  website: string;
-  admin: boolean;
+  password: string;
+  priority: string;
+  firstName: string;
+  lastName: string;
+  country: string;
+  city: string;
+  companyName: string;
+  position: boolean;
 }
+
+export interface ServerUserInfo {
+  token: string;
+  userInfo: UserInfo;
+}
+
