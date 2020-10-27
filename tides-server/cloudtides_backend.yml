@@ -18,7 +18,7 @@ spec:
           image: ericshen97/cloudtides_backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 80
 
 ---
 apiVersion: v1
