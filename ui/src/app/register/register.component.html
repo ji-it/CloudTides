@@ -1,0 +1,67 @@
+<div class="card" id="reg-card">
+  <div class="card-block">
+    <h1>
+      {{ "REGISTER.REGISTER" | translate:{} }}
+    </h1>
+    <p class="card-text">
+      {{ "REGISTER.SUBTITLE" | translate:{} }}
+    </p>
+
+    <form clrForm
+      [formGroup]="registerForm"
+      (ngSubmit)="this.onSubmit()">
+      <clr-input-container>
+        <label>{{ 'REGISTER.USERNAME' | translate:{} }}</label>
+        <input clrInput formControlName="username" />
+        <clr-control-error *clrIfError="'required'">{{ 'REGISTER.MISSING_USERNAME' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'minlength'">{{ 'REGISTER.TOO_SHORT_USERNAME' | translate:{} }}</clr-control-error>
+      </clr-input-container>
+      <clr-password-container>
+        <label>{{ 'REGISTER.PASSWORD' | translate:{} }}</label>
+        <input clrPassword formControlName="password" />
+        <clr-control-error *clrIfError="'required'">{{ 'REGISTER.MISSING_PASSWORD' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'minlength'">{{ 'REGISTER.TOO_SHORT_PASSWORD' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'maxlength'">{{ 'REGISTER.TOO_LONG_PASSWORD' | translate:{} }}</clr-control-error>
+      </clr-password-container>
+      <clr-password-container>
+        <label> Confirm Password</label>
+        <input clrPassword formControlName="confirmPassword" />
+        <clr-control-error *clrIfError="'required'">{{ 'REGISTER.MISSING_PASSWORD' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'minlength'">{{ 'REGISTER.TOO_SHORT_PASSWORD' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'maxlength'">{{ 'REGISTER.TOO_LONG_PASSWORD' | translate:{} }}</clr-control-error>
+        <clr-control-error
+          *clrIfError="'mismatch'">{{ 'REGISTER.PASSWORD_NOT_MATCH' | translate:{} }}</clr-control-error>
+      </clr-password-container>
+      <clr-input-container>
+        <label>{{ 'REGISTER.COMPANY' | translate:{} }}</label>
+        <input clrInput formControlName="companyName" />
+        <clr-control-error *clrIfError="'required'">{{ 'REGISTER.MISSING_COMPANY' | translate:{} }}</clr-control-error>
+      </clr-input-container>
+
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.loginError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.loginError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <button class="btn btn-primary"
+        type="submit"
+        [disabled]="vo.submitting || !this.registerForm.valid">
+        {{ (this.vo.submitting) && ('REGISTER.SUBMITTING'| translate:{}) || ('REGISTER.REGISTER'| translate:{}) }}
+      </button>
+    </form>
+  </div>
+
+
+</div>

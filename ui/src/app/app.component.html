@@ -19,7 +19,7 @@
               <option *ngFor="let lang of i18nService.i18nSupportList" [value]="lang.lang">{{lang.name}}</option>
             </select>
           </clr-select-container>
-          <clr-dropdown>
+          <clr-dropdown *ngIf="!this.inRegisterPage()">
             <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
               <clr-icon shape="user"></clr-icon>
               {{ (this.vo.user$ | async).username }}
@@ -33,7 +33,7 @@
         </div>
       </header>
 
-      <nav class="subnav">
+      <nav class="subnav" *ngIf="!this.inRegisterPage()">
         <ul class="nav">
           <li class="nav-item">
             <a class="nav-link"

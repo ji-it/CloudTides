@@ -6,6 +6,9 @@
     "EMAIL": "Email",
     "PASSWORD": "Password"
   },
+  "REGISTER": {
+    "VERIFY_PASSWORD": "Verify Password"
+  },
   "HOME": {
     "RESOURCE": {
       "RESOURCE": "Resource",

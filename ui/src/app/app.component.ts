@@ -27,11 +27,15 @@ export class AppComponent implements OnInit {
   };
 
   signOut() {
-    this.loginService.logout().subscribe();
+    this.loginService.logout();
   }
 
   inLoginPage() {
     return this.router.url.indexOf('/login') === 0;
+  }
+
+  inRegisterPage() {
+    return this.router.url.indexOf('/register') === 0;
   }
 
   ngOnInit() {

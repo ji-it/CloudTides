@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
 import { LoginService } from './login/login.service';
+import { RegisterComponent } from './register/register.component';
 
 import {
   LOGIN_PATH_NAME,
@@ -10,14 +11,16 @@ import {
   RESOURCE_PATH_NAME,
   TEMPLATE_PATH_NAME,
   POLICY_PATH_NAME,
+  REGISTER_PATH_NAME,
 } from '@tide-config/path';
 
 import { AuthGuard } from '@tide-guard/auth.guard';
+import { RegisterService } from './register/register.service';
 
 const routes: Routes = [
   {
     path: '',
-    // canActivateChild: [ AuthGuard ],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: '',
@@ -27,6 +30,13 @@ const routes: Routes = [
       {
         path: LOGIN_PATH_NAME,
         component: LoginComponent,
+        data: {
+          anonymous: true,
+        } as RouterData,
+      },
+      {
+        path: REGISTER_PATH_NAME,
+        component: RegisterComponent,
         data: {
           anonymous: true,
         } as RouterData,
@@ -53,11 +63,13 @@ const routes: Routes = [
 
 export const declarations = [
   LoginComponent,
+  RegisterComponent,
 ];
 
 export const providers = [
   AuthGuard,
   LoginService,
+  RegisterService,
 ];
 
 @NgModule({
