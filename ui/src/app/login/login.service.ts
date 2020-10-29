@@ -40,11 +40,12 @@ export class LoginService {
 
   logout() {
     this.removeToken();
-    return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
-      tap(() => {
-        this.document.location.href = '/login';
-      }),
-    );
+    this.document.location.href = '/login';
+    // return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
+    //   tap(() => {
+    //     this.document.location.href = '/login';
+    //   }),
+    // );
   }
 
   storeToken(token: string) {
