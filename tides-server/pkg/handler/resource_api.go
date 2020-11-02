@@ -368,26 +368,6 @@ func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Resp
 	return resource.NewDeleteResourceOK()
 }
 
-func UpdateStatusHandler(params resource.UpdateStatusParams) middleware.Responder {
-	body := params.ReqBody
-	var res models.Resource
-	db := config.GetDB()
-	if db.Where("id = ?", params.ID).First(&res).Error != nil {
-		return resource.NewUpdateStatusNotFound()
-	}
-
-	if body.Status != "" {
-		res.Status = body.Status
-	}
-	res.Monitored = body.Monitored
-	err := db.Save(&res).Error
-	if err != nil {
-		return resource.NewUpdateStatusBadRequest()
-	}
-
-	return resource.NewUpdateStatusOK()
-}
-
 func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
 	ip := params.ReqBody.IPAddress
 	var vm models.VM
@@ -625,7 +605,8 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		Monitored:    false,
 		Name:         body.Datacenter,
 		Password:     password,
-		Status:       "unknown",
+		PlatformType: models.ResourcePlatformTypeVcd,
+		Status:       models.ResourceStatusUnknown,
 		TotalJobs:    0,
 		UserID:       uid,
 		Username:     user.User.Name,
@@ -787,6 +768,9 @@ func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Resp
 
 	if params.ReqBody.Active == true || params.ReqBody.Active == false {
 		res.IsActive = params.ReqBody.Active
+		if params.ReqBody.Active == false {
+			res.Monitored = false
+		}
 	}
 	if params.ReqBody.Policy > 0 {
 		if res.PolicyID != nil {

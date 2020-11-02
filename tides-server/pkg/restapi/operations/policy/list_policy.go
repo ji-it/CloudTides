@@ -153,6 +153,9 @@ type ListPolicyOKBodyResultsItems0 struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
+
 	// project name
 	ProjectName string `json:"projectName,omitempty"`
 

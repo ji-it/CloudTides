@@ -68,6 +68,9 @@ func init() {
                       "name": {
                         "type": "string"
                       },
+                      "platformType": {
+                        "type": "string"
+                      },
                       "projectName": {
                         "type": "string"
                       },
@@ -123,6 +126,9 @@ func init() {
                 "boincUsername": {
                   "type": "string"
                 },
+                "catalog": {
+                  "type": "string"
+                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -139,8 +145,17 @@ func init() {
                 "name": {
                   "type": "string"
                 },
+                "network": {
+                  "type": "string"
+                },
+                "platformType": {
+                  "type": "string"
+                },
                 "projectId": {
                   "type": "integer"
+                },
+                "storage": {
+                  "type": "string"
                 },
                 "templateId": {
                   "type": "integer"
@@ -228,6 +243,9 @@ func init() {
                   "type": "boolean"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "platformType": {
                   "type": "string"
                 },
                 "projectName": {
@@ -1949,6 +1967,9 @@ func init() {
                 "companyName": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "password": {
                   "type": "string"
                 },
@@ -1977,6 +1998,9 @@ func init() {
                   "type": "object",
                   "properties": {
                     "companyName": {
+                      "type": "string"
+                    },
+                    "email": {
                       "type": "string"
                     },
                     "password": {
@@ -2222,6 +2246,9 @@ func init() {
                 "boincUsername": {
                   "type": "string"
                 },
+                "catalog": {
+                  "type": "string"
+                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -2238,8 +2265,17 @@ func init() {
                 "name": {
                   "type": "string"
                 },
+                "network": {
+                  "type": "string"
+                },
+                "platformType": {
+                  "type": "string"
+                },
                 "projectId": {
                   "type": "integer"
+                },
+                "storage": {
+                  "type": "string"
                 },
                 "templateId": {
                   "type": "integer"
@@ -2327,6 +2363,9 @@ func init() {
                   "type": "boolean"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "platformType": {
                   "type": "string"
                 },
                 "projectName": {
@@ -3946,6 +3985,9 @@ func init() {
                 "companyName": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "password": {
                   "type": "string"
                 },
@@ -3974,6 +4016,9 @@ func init() {
                   "type": "object",
                   "properties": {
                     "companyName": {
+                      "type": "string"
+                    },
+                    "email": {
                       "type": "string"
                     },
                     "password": {
@@ -4101,6 +4146,9 @@ func init() {
       "type": "object",
       "properties": {
         "companyName": {
+          "type": "string"
+        },
+        "email": {
           "type": "string"
         },
         "password": {
@@ -4249,30 +4297,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "deployType": {
-          "type": "string",
-          "enum": [
-            "K8S",
-            "VM"
-          ]
-        },
-        "id": {
-          "type": "integer"
-        },
-        "idlePolicy": {
+        "compatibility": {
           "type": "string"
         },
-        "isDestroy": {
-          "type": "boolean"
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
         },
         "name": {
           "type": "string"
         },
-        "projectName": {
-          "type": "string"
+        "provisionedSpace": {
+          "type": "number"
         },
-        "thresholdPolicy": {
-          "type": "string"
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

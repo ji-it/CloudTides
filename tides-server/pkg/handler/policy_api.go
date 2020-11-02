@@ -25,6 +25,7 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 		IdlePolicy:      body.Idle,
 		IsDestroy:       body.IsDestroy,
 		Name:            body.Name,
+		PlatformType:    body.PlatformType,
 		ProjectID:       uint(body.ProjectID),
 		TemplateID:      uint(body.TemplateID),
 		ThresholdPolicy: body.Threshold,
@@ -35,7 +36,26 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	err := db.Create(&newPolicy).Error
 
 	if err != nil {
-		return policy.NewAddPolicyBadRequest()
+		return policy.NewAddPolicyBadRequest().WithPayload(&policy.AddPolicyBadRequestBody{
+			Message: err.Error(),
+		})
+	}
+
+	if body.PlatformType == "vcd" {
+		newVcdPolicy := models.VcdPolicy{
+			Catalog:  body.Catalog,
+			Network:  body.Network,
+			Storage:  body.Storage,
+			PolicyID: newPolicy.ID,
+		}
+
+		err = db.Create(&newVcdPolicy).Error
+
+		if err != nil {
+			return policy.NewAddPolicyBadRequest().WithPayload(&policy.AddPolicyBadRequestBody{
+				Message: err.Error(),
+			})
+		}
 	}
 
 	return policy.NewAddPolicyOK().WithPayload(&policy.AddPolicyOKBody{
@@ -97,6 +117,7 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 			IdlePolicy:      pol.IdlePolicy,
 			IsDestroy:       pol.IsDestroy,
 			Name:            pol.Name,
+			PlatformType:    pol.PlatformType,
 			ProjectName:     pro.ProjectName,
 			ThresholdPolicy: pol.ThresholdPolicy,
 		}
@@ -153,6 +174,7 @@ func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 		IdlePolicy:      pol.IdlePolicy,
 		IsDestroy:       pol.IsDestroy,
 		Name:            pol.Name,
+		PlatformType:    pol.PlatformType,
 		ProjectName:     pro.ProjectName,
 		ThresholdPolicy: pol.ThresholdPolicy,
 		User:            user.Username,

@@ -102,6 +102,9 @@ type RegisterUserBody struct {
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
 
+	// email
+	Email string `json:"email,omitempty"`
+
 	// password
 	Password string `json:"password,omitempty"`
 
@@ -257,6 +260,9 @@ type RegisterUserOKBodyUserInfo struct {
 
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
+
+	// email
+	Email string `json:"email,omitempty"`
 
 	// password
 	Password string `json:"password,omitempty"`

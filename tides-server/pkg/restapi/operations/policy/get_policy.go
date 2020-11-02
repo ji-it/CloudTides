@@ -115,6 +115,9 @@ type GetPolicyOKBody struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
+
 	// project name
 	ProjectName string `json:"projectName,omitempty"`
 

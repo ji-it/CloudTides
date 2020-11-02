@@ -51,6 +51,7 @@ func startDB() {
 	db.AutoMigrate(&models.Project{})
 	db.AutoMigrate(&models.Template{})
 	db.AutoMigrate(&models.Policy{})
+	db.AutoMigrate(&models.VcdPolicy{})
 	db.AutoMigrate(&models.Resource{})
 	db.AutoMigrate(&models.Vsphere{})
 	db.AutoMigrate(&models.Vcd{})

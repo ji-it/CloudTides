@@ -109,6 +109,9 @@ type AddPolicyBody struct {
 	// boinc username
 	BoincUsername string `json:"boincUsername,omitempty"`
 
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
+
 	// deploy type
 	// Enum: [K8S VM]
 	DeployType string `json:"deployType,omitempty"`
@@ -122,8 +125,17 @@ type AddPolicyBody struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// network
+	Network string `json:"network,omitempty"`
+
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
+
 	// project Id
 	ProjectID int64 `json:"projectId,omitempty"`
+
+	// storage
+	Storage string `json:"storage,omitempty"`
 
 	// template Id
 	TemplateID int64 `json:"templateId,omitempty"`

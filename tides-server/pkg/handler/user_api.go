@@ -21,17 +21,25 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		return user.NewRegisterUserBadRequest().WithPayload(&user.RegisterUserBadRequestBody{Message: "Username already used!"})
 	}
 
-	res := &user.RegisterUserOKBodyUserInfo{
+	newUser := models.User{
 		CompanyName: body.CompanyName,
+		Email:       body.Email,
 		Password:    body.Password,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}
-	newUser := models.User{Username: body.Username, Password: body.Password, CompanyName: body.CompanyName, Priority: body.Priority}
 
 	err := db.Create(&newUser).Error
 	if err != nil {
 		return user.NewRegisterUserBadRequest()
+	}
+
+	res := &user.RegisterUserOKBodyUserInfo{
+		CompanyName: body.CompanyName,
+		Email:       body.Email,
+		Password:    body.Password,
+		Priority:    body.Priority,
+		Username:    body.Username,
 	}
 
 	return user.NewRegisterUserOK().WithPayload(&user.RegisterUserOKBody{UserInfo: res})

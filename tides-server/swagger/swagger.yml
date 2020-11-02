@@ -572,6 +572,8 @@ paths:
                   - 'High'
               companyName:
                 type: string
+              email:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -592,6 +594,8 @@ paths:
                       - 'Medium'
                       - 'High'
                   companyName:
+                    type: string
+                  email:
                     type: string
         400:
           description: 'bad request'
@@ -641,6 +645,14 @@ paths:
               boincUsername:
                 type: string
               boincPassword:
+                type: string
+              platformType:
+                type: string
+              catalog:
+                type: string
+              network:
+                type: string
+              storage:
                 type: string
       responses:
         200:
@@ -700,6 +712,8 @@ paths:
                       type: string
                     projectName:
                       type: string
+                    platformType:
+                      type: string
         400:
           description: 'bad request'
         401:
@@ -743,6 +757,8 @@ paths:
               hostsAssigned:
                 type: integer
               user:
+                type: string
+              platformType:
                 type: string
         401:
           description: 'Unauthorized'

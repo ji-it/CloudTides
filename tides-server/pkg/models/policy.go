@@ -10,6 +10,26 @@ import (
 	"gorm.io/gorm"
 )
 
+// Vcd policy
+
+type VcdPolicy struct {
+	gorm.Model
+
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
+
+	// network
+	Network string `json:"network,omitempty"`
+
+	// storage
+	Storage string `json:"storage,omitempty"`
+
+	// policy foreign key
+	PolicyID uint
+
+	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
 // Policy policy
 
 type Policy struct {
@@ -37,6 +57,9 @@ type Policy struct {
 
 	// name
 	Name string `json:"name,omitempty" gorm:"unique"`
+
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
 
 	// project foreign key
 	ProjectID uint
