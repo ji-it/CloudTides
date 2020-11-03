@@ -620,11 +620,6 @@ paths:
           schema:
             type: object
             properties:
-              accountType:
-                type: string
-                enum:
-                  - accManager
-                  - boinc
               name:
                 type: string
               isDestroy:
@@ -638,14 +633,8 @@ paths:
                 type: string
               threshold:
                 type: string
-              projectId:
-                type: integer
               templateId:
                 type: integer
-              boincUsername:
-                type: string
-              boincPassword:
-                type: string
               platformType:
                 type: string
               catalog:
@@ -710,8 +699,6 @@ paths:
                       type: string
                     thresholdPolicy:
                       type: string
-                    projectName:
-                      type: string
                     platformType:
                       type: string
         400:
@@ -752,8 +739,6 @@ paths:
                 type: string
               thresholdPolicy:
                 type: string
-              projectName:
-                type: string
               hostsAssigned:
                 type: integer
               user:
@@ -788,11 +773,6 @@ paths:
           schema:
             type: object
             properties:
-              accountType:
-                type: string
-                enum:
-                  - accManager
-                  - boinc
               name:
                 type: string
               isDestroy:
@@ -806,14 +786,8 @@ paths:
                 type: string
               threshold:
                 type: string
-              projectId:
-                type: integer
               templateId:
                 type: integer
-              boincUsername:
-                type: string
-              boincPassword:
-                type: string
       responses:
         200:
           description: 'OK'
@@ -1012,6 +986,56 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
+  /usage/past/{id}:
+    get:
+      operationId: 'getPastUsage'
+      description: 'get past usage of a resource'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              timeLength:
+                type: integer
+      responses:
+        200:
+          description: 'success'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                currentCPU:
+                  type: number
+                currentRAM:
+                  type: number
+                percentCPU:
+                  type: number
+                percentRAM:
+                  type: number
+                time:
+                  type: string
+                  format: date-time
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   /usage/vm:
     post:
       operationId: 'addVMUsage'

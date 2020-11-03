@@ -3,6 +3,8 @@ package handler
 import (
 	"time"
 
+	"github.com/go-openapi/strfmt"
+
 	"github.com/go-openapi/runtime/middleware"
 
 	"tides-server/pkg/restapi/operations/usage"
@@ -157,4 +159,28 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 	return usage.NewAddVMUsageOK().WithPayload(&usage.AddVMUsageOKBody{
 		Message: "success",
 	})
+}
+
+func GetPastUsageHandler(params usage.GetPastUsageParams) middleware.Responder {
+
+	db := config.GetDB()
+	pastTime := time.Now().Local().Add(-time.Hour * time.Duration(params.ReqBody.TimeLength))
+	var pastUsage []*models.ResourcePastUsage
+
+	db.Where("resource_id = ? AND created_at > ?", params.ID, pastTime).Find(&pastUsage)
+	var responses []*usage.GetPastUsageOKBodyItems0
+
+	for _, us := range pastUsage {
+		response := usage.GetPastUsageOKBodyItems0{
+			CurrentCPU: us.CurrentCPU,
+			CurrentRAM: us.CurrentRAM,
+			PercentCPU: us.PercentCPU,
+			PercentRAM: us.PercentRAM,
+			Time:       strfmt.DateTime(us.CreatedAt),
+		}
+
+		responses = append(responses, &response)
+	}
+
+	return usage.NewGetPastUsageOK().WithPayload(responses)
 }

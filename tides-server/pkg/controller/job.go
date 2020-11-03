@@ -91,11 +91,10 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	if c.Token != "" {
 		_ = vcdClient.SetToken(c.Org, govcd.AuthorizationHeader, c.Token)
 	} else {
-		resp, err := vcdClient.GetAuthResponse(c.User, c.Password, c.Org)
+		_, err := vcdClient.GetAuthResponse(c.User, c.Password, c.Org)
 		if err != nil {
 			return nil, fmt.Errorf("unable to authenticate: %s", err)
 		}
-		fmt.Printf("Token: %s\n", resp.Header[govcd.AuthorizationHeader])
 	}
 	return vcdClient, nil
 }
@@ -148,11 +147,11 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) {
 	task.WaitTaskCompletion()
 }
 
+// Cronjob for resource. Query usage, update status, deploy/destroy/suspend Vapps.
 func RunJob(configFile string) {
 
 	// Reads the configuration file
 	conf := getConfig(configFile)
-	fmt.Println(conf.Href)
 
 	client, err := conf.Client() // We now have a client
 	if err != nil {
@@ -188,6 +187,17 @@ func RunJob(configFile string) {
 	resUsage.PercentCPU = currentCPU / totalCPU
 	resUsage.PercentRAM = currentRAM / totalRAM
 	db.Save(&resUsage)
+
+	newVcdPastUsage := models.ResourcePastUsage{
+		CurrentCPU: currentCPU,
+		CurrentRAM: currentRAM,
+		PercentCPU: currentCPU / totalCPU,
+		PercentRAM: currentRAM / totalRAM,
+		TotalCPU:   totalCPU,
+		TotalRAM:   totalRAM,
+		ResourceID: res.ID,
+	}
+	db.Create(&newVcdPastUsage)
 
 	var pol models.Policy
 	db.Where("id = ?", res.PolicyID).First(&pol)

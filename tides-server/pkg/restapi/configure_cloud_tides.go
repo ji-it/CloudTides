@@ -58,8 +58,6 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(handler.DeleteTemplateHandler)
 
-	api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(handler.DestroyVMHandler)
-
 	api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(handler.ListPolicyHandler)
 
 	api.ResourceListVsphereResourceHandler = resource.ListVsphereResourceHandlerFunc(handler.ListVsphereResourceHandler)
@@ -105,6 +103,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.PolicyGetPolicyHandler = policy.GetPolicyHandlerFunc(handler.GetPolicyHandler)
 
 	api.UsageGetResourceUsageHandler = usage.GetResourceUsageHandlerFunc(handler.GetResourceUsageHandler)
+
+	api.UsageGetPastUsageHandler = usage.GetPastUsageHandlerFunc(handler.GetPastUsageHandler)
 
 	api.PreServerShutdown = func() {}
 

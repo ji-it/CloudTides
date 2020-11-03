@@ -21,3 +21,5 @@ var (
 	letters  = []rune("abcdefghijklmnopqrstuvwxyz")
 	cronjobs = map[uint]*cron.Cron{}
 )
+
+const schedule string = "*/5 * * * *"

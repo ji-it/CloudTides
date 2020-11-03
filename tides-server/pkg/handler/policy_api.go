@@ -18,15 +18,11 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	body := params.ReqBody
 
 	newPolicy := models.Policy{
-		AccountType:     body.AccountType,
-		BoincPassword:   body.BoincPassword,
-		BoincUsername:   body.BoincUsername,
 		DeployType:      body.DeployType,
 		IdlePolicy:      body.Idle,
 		IsDestroy:       body.IsDestroy,
 		Name:            body.Name,
 		PlatformType:    body.PlatformType,
-		ProjectID:       uint(body.ProjectID),
 		TemplateID:      uint(body.TemplateID),
 		ThresholdPolicy: body.Threshold,
 		UserID:          uid,
@@ -76,14 +72,10 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 		return policy.NewUpdatePolicyNotFound()
 	}
 
-	pol.AccountType = body.AccountType
-	pol.BoincPassword = body.BoincPassword
-	pol.BoincUsername = body.BoincUsername
 	pol.DeployType = body.DeployType
 	pol.IdlePolicy = body.Idle
 	pol.IsDestroy = body.IsDestroy
 	pol.Name = body.Name
-	pol.ProjectID = uint(body.ProjectID)
 	pol.TemplateID = uint(body.TemplateID)
 	pol.ThresholdPolicy = body.Threshold
 
@@ -109,8 +101,6 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 
 	results := []*policy.ListPolicyOKBodyResultsItems0{}
 	for _, pol := range policies {
-		var pro models.Project
-		db.Where("id = ?", pol.ProjectID).First(&pro)
 		newResult := policy.ListPolicyOKBodyResultsItems0{
 			DeployType:      pol.DeployType,
 			ID:              int64(pol.Model.ID),
@@ -118,7 +108,6 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 			IsDestroy:       pol.IsDestroy,
 			Name:            pol.Name,
 			PlatformType:    pol.PlatformType,
-			ProjectName:     pro.ProjectName,
 			ThresholdPolicy: pol.ThresholdPolicy,
 		}
 
@@ -165,8 +154,6 @@ func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 	db.Where("policy_id = ?", pol.Model.ID).Find(&resources)
 	var user models.User
 	db.Where("id = ?", pol.UserID).First(&user)
-	var pro models.Project
-	db.Where("id = ?", pol.ProjectID).First(&pro)
 
 	response := policy.GetPolicyOKBody{
 		DeployType:      pol.DeployType,
@@ -175,7 +162,6 @@ func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 		IsDestroy:       pol.IsDestroy,
 		Name:            pol.Name,
 		PlatformType:    pol.PlatformType,
-		ProjectName:     pro.ProjectName,
 		ThresholdPolicy: pol.ThresholdPolicy,
 		User:            user.Username,
 	}

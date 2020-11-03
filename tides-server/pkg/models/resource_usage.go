@@ -7,6 +7,35 @@ import (
 	"gorm.io/gorm"
 )
 
+// ResourceUsage past usage
+
+type ResourcePastUsage struct {
+	gorm.Model
+
+	// current CPU
+	CurrentCPU float64 `json:"currentCPU,omitempty"`
+
+	// current RAM
+	CurrentRAM float64 `json:"currentRAM,omitempty"`
+
+	// percent CPU
+	PercentCPU float64 `json:"percentCPU,omitempty"`
+
+	// percent RAM
+	PercentRAM float64 `json:"percentRAM,omitempty"`
+
+	// total CPU
+	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total RAM
+	TotalRAM float64 `json:"totalRAM,omitempty"`
+
+	// resource foreign key
+	ResourceID uint
+
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
 // ResourceUsage host usage
 
 type ResourceUsage struct {

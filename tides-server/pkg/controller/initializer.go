@@ -11,15 +11,40 @@ import (
 
 func InitController() {
 	c := cron.New()
-	c.AddFunc("*/2 * * * *", func() {
-		InitializeJob()
+	c.AddFunc(schedule, func() {
+		InitJob()
 	})
 	c.Start()
 }
 
-func InitializeJob() {
+func InitJob() {
 	db := config.GetDB()
 	var resources []*models.Resource
+
+	db.Where("is_active = ? AND monitored = ?", true, true).Find(&resources)
+	for _, res := range resources {
+		_, ok := cronjobs[res.ID]
+		if !ok {
+			var vcd models.Vcd
+			db.Where("resource_id = ?", res.ID).First(&vcd)
+			newVcdConfig := VcdConfig{
+				User:     res.Username,
+				Password: res.Password,
+				Org:      vcd.Organization,
+				Href:     res.HostAddress,
+				VDC:      res.Datacenter,
+			}
+			filename := "../pkg/controller/cloudtides-" + res.Datacenter + ".json"
+			file, _ := json.MarshalIndent(newVcdConfig, "", "")
+			ioutil.WriteFile(filename, file, 0644)
+			c := cron.New()
+			c.AddFunc(schedule, func() {
+				RunJob(filename)
+			})
+			c.Start()
+			cronjobs[res.ID] = c
+		}
+	}
 
 	db.Where("monitored = ?", false).Find(&resources)
 
@@ -39,7 +64,7 @@ func InitializeJob() {
 			ioutil.WriteFile(filename, file, 0644)
 
 			c := cron.New()
-			c.AddFunc("*/2 * * * *", func() {
+			c.AddFunc(schedule, func() {
 				RunJob(filename)
 			})
 			c.Start()

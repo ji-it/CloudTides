@@ -99,16 +99,6 @@ func (o *AddPolicyBadRequestBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddPolicyBody
 type AddPolicyBody struct {
 
-	// account type
-	// Enum: [accManager boinc]
-	AccountType string `json:"accountType,omitempty"`
-
-	// boinc password
-	BoincPassword string `json:"boincPassword,omitempty"`
-
-	// boinc username
-	BoincUsername string `json:"boincUsername,omitempty"`
-
 	// catalog
 	Catalog string `json:"catalog,omitempty"`
 
@@ -131,9 +121,6 @@ type AddPolicyBody struct {
 	// platform type
 	PlatformType string `json:"platformType,omitempty"`
 
-	// project Id
-	ProjectID int64 `json:"projectId,omitempty"`
-
 	// storage
 	Storage string `json:"storage,omitempty"`
 
@@ -148,10 +135,6 @@ type AddPolicyBody struct {
 func (o *AddPolicyBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateAccountType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateDeployType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -159,49 +142,6 @@ func (o *AddPolicyBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var addPolicyBodyTypeAccountTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["accManager","boinc"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		addPolicyBodyTypeAccountTypePropEnum = append(addPolicyBodyTypeAccountTypePropEnum, v)
-	}
-}
-
-const (
-
-	// AddPolicyBodyAccountTypeAccManager captures enum value "accManager"
-	AddPolicyBodyAccountTypeAccManager string = "accManager"
-
-	// AddPolicyBodyAccountTypeBoinc captures enum value "boinc"
-	AddPolicyBodyAccountTypeBoinc string = "boinc"
-)
-
-// prop value enum
-func (o *AddPolicyBody) validateAccountTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, addPolicyBodyTypeAccountTypePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *AddPolicyBody) validateAccountType(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AccountType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateAccountTypeEnum("reqBody"+"."+"accountType", "body", o.AccountType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

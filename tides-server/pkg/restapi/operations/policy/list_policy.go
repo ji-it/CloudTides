@@ -156,9 +156,6 @@ type ListPolicyOKBodyResultsItems0 struct {
 	// platform type
 	PlatformType string `json:"platformType,omitempty"`
 
-	// project name
-	ProjectName string `json:"projectName,omitempty"`
-
 	// threshold policy
 	ThresholdPolicy string `json:"thresholdPolicy,omitempty"`
 }

@@ -349,159 +349,6 @@ func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middl
 	})
 }
 
-func DeleteResourceHandler(params resource.DeleteResourceParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewListResourceUnauthorized()
-	}
-
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	rid := params.ID
-	var res models.Resource
-
-	db := config.GetDB()
-	// db.Where("id = ? AND user_id = ?", rid, uid).Delete(&res)
-	err := db.Unscoped().Where("id = ? AND user_id = ?", rid, uid).Delete(&res).Error
-	if err != nil {
-		return resource.NewDeleteResourceNotFound()
-	}
-
-	return resource.NewDeleteResourceOK()
-}
-
-func DestroyVMHandler(params resource.DestroyVMParams) middleware.Responder {
-	ip := params.ReqBody.IPAddress
-	var vm models.VM
-
-	db := config.GetDB()
-	err := db.Unscoped().Where("ip_address = ?", ip).Delete(&vm).Error
-	if err != nil {
-		return resource.NewDestroyVMNotFound()
-	}
-
-	return resource.NewDestroyVMOK().WithPayload(&resource.DestroyVMOKBody{
-		Message: "success",
-	})
-}
-
-func ResourceVsphereInfoHandler(params resource.ResourceVsphereInfoParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewResourceVsphereInfoUnauthorized()
-	}
-
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	resources := []*models.Resource{}
-	db := config.GetDB()
-	db.Where("user_id = ?", uid).Find(&resources)
-
-	results := []*models.ResourceInfoItem{}
-	for _, res := range resources {
-		vms := []*models.VM{}
-		db.Where("resource_id = ?", res.Model.ID).Find(&vms)
-		totalVMs := len(vms)
-		var pol models.Policy
-		db.Where("id = ?", res.Policy.Model.ID).First(&pol)
-		var hu models.ResourceUsage
-		db.Where("resource_id = ?", res.Model.ID).First(&hu)
-
-		result := models.ResourceInfoItem{
-			CPUPercent:   hu.PercentCPU,
-			RAMPercent:   hu.PercentRAM,
-			CurrentCPU:   hu.CurrentCPU,
-			CurrentRAM:   hu.CurrentRAM,
-			Datacenter:   res.Datacenter,
-			DateAdded:    time.Time.String(res.Model.CreatedAt),
-			HostAddress:  res.HostAddress,
-			ID:           int64(res.Model.ID),
-			IsActive:     res.IsActive,
-			JobCompleted: res.JobCompleted,
-			Monitored:    res.Monitored,
-			Name:         res.Name,
-			PolicyName:   pol.Name,
-			Status:       res.Status,
-			TotalCPU:     hu.TotalCPU,
-			TotalRAM:     hu.TotalRAM,
-			TotalJobs:    res.TotalJobs,
-			TotalVMs:     int64(totalVMs),
-		}
-
-		if totalVMs > 0 {
-			var activeVMs int64
-			db.Where("resource_id = ? AND is_destroyed = ? AND powered_on = ?",
-				res.Model.ID, false, true).Find(&vms).Count(&activeVMs)
-			var vm models.VM
-			db.Where("resource_id = ?", res.Model.ID).Order("created_at").First(&vm)
-			result.ActiveVMs = int64(activeVMs)
-			result.LastDeployed = time.Time.String(vm.Model.CreatedAt)
-		}
-
-		results = append(results, &result)
-	}
-
-	return resource.NewResourceVsphereInfoOK().WithPayload(&resource.ResourceVsphereInfoOKBody{
-		Message: "success",
-		Results: results,
-	})
-}
-
-func ResourceVsphereVMsInfoHandler(params resource.ResourceVsphereVMsInfoParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
-		return resource.NewResourceVsphereVMsInfoUnauthorized()
-	}
-
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	resources := []*models.Resource{}
-	db := config.GetDB()
-	db.Where("user_id = ?", uid).Find(&resources)
-
-	results := [][]*models.ResourceVMInfoItem{}
-	for _, res := range resources {
-		vms := []*models.VM{}
-		curvms := []*models.ResourceVMInfoItem{}
-		db.Where("resource_id = ?", res.Model.ID).Find(&vms)
-
-		for _, vm := range vms {
-			var vmu models.VMUsage
-			var newvm models.ResourceVMInfoItem
-			if db.Where("vm_id = ?", vm.Model.ID).First(&vmu).Error != nil {
-				newvm = models.ResourceVMInfoItem{
-					BoincTime:   time.Time.String(vm.BoincTime),
-					DateCreated: time.Time.String(vm.Model.CreatedAt),
-					GuestOS:     vm.GuestOS,
-					ID:          int64(vm.Model.ID),
-					IPAddress:   vm.IPAddress,
-					Name:        vm.Name,
-					PoweredOn:   vm.PoweredOn,
-				}
-			} else {
-				newvm = models.ResourceVMInfoItem{
-					CPUPercent:  vmu.CurrentCPU / vmu.TotalCPU,
-					RAMPercent:  vmu.CurrentRAM / vmu.TotalRAM,
-					BoincTime:   time.Time.String(vm.BoincTime),
-					CurrentCPU:  vmu.CurrentCPU,
-					CurrentRAM:  vmu.CurrentRAM,
-					DateCreated: time.Time.String(vm.Model.CreatedAt),
-					GuestOS:     vm.GuestOS,
-					ID:          int64(vm.Model.ID),
-					IPAddress:   vm.IPAddress,
-					Name:        vm.Name,
-					PoweredOn:   vm.PoweredOn,
-					TotalCPU:    vmu.TotalCPU,
-					TotalRAM:    vmu.TotalRAM,
-				}
-			}
-
-			curvms = append(curvms, &newvm)
-		}
-
-		results = append(results, curvms)
-	}
-
-	return resource.NewResourceVsphereVMsInfoOK().WithPayload(&resource.ResourceVsphereVMsInfoOKBody{
-		Message: "success",
-		Results: results,
-	})
-}
-
 func ValidateVcdResourceHandler(params resource.ValidateVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewValidateVcdResourceUnauthorized()
@@ -648,6 +495,17 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	}
 	db.Create(&newVcdUsage)
 
+	newVcdPastUsage := models.ResourcePastUsage{
+		CurrentCPU: CurrentCPU,
+		CurrentRAM: CurrentRAM,
+		PercentCPU: CurrentCPU / TotalCPU,
+		PercentRAM: CurrentRAM / TotalRAM,
+		TotalCPU:   TotalCPU,
+		TotalRAM:   TotalRAM,
+		ResourceID: newres.Model.ID,
+	}
+	db.Create(&newVcdPastUsage)
+
 	return resource.NewAddVcdResourceOK().WithPayload(&resource.AddVcdResourceOKBody{
 		Message: "success",
 		Results: &resource.AddVcdResourceOKBodyResults{
@@ -747,7 +605,7 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 		return resource.NewDeleteVcdResourceNotFound()
 	}
 
-	db.Unscoped().Where("id = ? AND user_id = ?", vcd.Resource.ID, uid).Delete(&models.Resource{})
+	db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{})
 
 	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
 		Message: "success",
