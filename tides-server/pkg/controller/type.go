@@ -18,7 +18,7 @@ type Policy struct {
 }
 
 var (
-	letters  = []rune("abcdefghijklmnopqrstuvwxyz")
+	letters  = []rune("abcdefghijklmnopqrstuvwxyz1234567890")
 	cronjobs = map[uint]*cron.Cron{}
 )
 

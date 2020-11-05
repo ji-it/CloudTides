@@ -441,6 +441,8 @@ paths:
                     type: string
                   position:
                     type: string
+                  phone:
+                    type: string
         401:
           description: 'Unauthorized'
         404:
@@ -478,6 +480,8 @@ paths:
               email:
                 type: string
               position:
+                type: string
+              phone:
                 type: string
       responses:
         200:
@@ -574,6 +578,8 @@ paths:
                 type: string
               email:
                 type: string
+              phone:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -596,6 +602,8 @@ paths:
                   companyName:
                     type: string
                   email:
+                    type: string
+                  phone:
                     type: string
         400:
           description: 'bad request'

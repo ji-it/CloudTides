@@ -1887,6 +1887,9 @@ func init() {
                     "lastName": {
                       "type": "string"
                     },
+                    "phone": {
+                      "type": "string"
+                    },
                     "position": {
                       "type": "string"
                     }
@@ -1946,6 +1949,9 @@ func init() {
                   "type": "string"
                 },
                 "lastName": {
+                  "type": "string"
+                },
+                "phone": {
                   "type": "string"
                 },
                 "position": {
@@ -2013,6 +2019,9 @@ func init() {
                 "password": {
                   "type": "string"
                 },
+                "phone": {
+                  "type": "string"
+                },
                 "priority": {
                   "type": "string",
                   "enum": [
@@ -2044,6 +2053,9 @@ func init() {
                       "type": "string"
                     },
                     "password": {
+                      "type": "string"
+                    },
+                    "phone": {
                       "type": "string"
                     },
                     "priority": {
@@ -3930,6 +3942,9 @@ func init() {
                     "lastName": {
                       "type": "string"
                     },
+                    "phone": {
+                      "type": "string"
+                    },
                     "position": {
                       "type": "string"
                     }
@@ -3989,6 +4004,9 @@ func init() {
                   "type": "string"
                 },
                 "lastName": {
+                  "type": "string"
+                },
+                "phone": {
                   "type": "string"
                 },
                 "position": {
@@ -4056,6 +4074,9 @@ func init() {
                 "password": {
                   "type": "string"
                 },
+                "phone": {
+                  "type": "string"
+                },
                 "priority": {
                   "type": "string",
                   "enum": [
@@ -4087,6 +4108,9 @@ func init() {
                       "type": "string"
                     },
                     "password": {
+                      "type": "string"
+                    },
+                    "phone": {
                       "type": "string"
                     },
                     "priority": {
@@ -4177,6 +4201,9 @@ func init() {
         "lastName": {
           "type": "string"
         },
+        "phone": {
+          "type": "string"
+        },
         "position": {
           "type": "string"
         }
@@ -4238,6 +4265,9 @@ func init() {
           "type": "string"
         },
         "password": {
+          "type": "string"
+        },
+        "phone": {
           "type": "string"
         },
         "priority": {
@@ -4383,30 +4413,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "deployType": {
-          "type": "string",
-          "enum": [
-            "K8S",
-            "VM"
-          ]
-        },
-        "id": {
-          "type": "integer"
-        },
-        "idlePolicy": {
+        "compatibility": {
           "type": "string"
         },
-        "isDestroy": {
-          "type": "boolean"
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
         },
         "name": {
           "type": "string"
         },
-        "platformType": {
-          "type": "string"
+        "provisionedSpace": {
+          "type": "number"
         },
-        "thresholdPolicy": {
-          "type": "string"
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

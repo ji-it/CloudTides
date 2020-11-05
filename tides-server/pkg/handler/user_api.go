@@ -25,6 +25,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		CompanyName: body.CompanyName,
 		Email:       body.Email,
 		Password:    body.Password,
+		Phone:       body.Phone,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}
@@ -38,6 +39,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		CompanyName: body.CompanyName,
 		Email:       body.Email,
 		Password:    body.Password,
+		Phone:       body.Phone,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}
@@ -93,6 +95,7 @@ func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responde
 		Email:       u.Email,
 		FirstName:   u.FirstName,
 		LastName:    u.LastName,
+		Phone:       u.Phone,
 		Position:    u.Position,
 	}
 
@@ -121,6 +124,7 @@ func UpdateUserProfileHandler(params user.UpdateUserProfileParams) middleware.Re
 	u.Email = body.Email
 	u.FirstName = body.FirstName
 	u.LastName = body.LastName
+	u.Phone = body.Phone
 	u.Position = body.Position
 
 	err := db.Save(&u).Error

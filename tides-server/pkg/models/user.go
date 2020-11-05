@@ -36,6 +36,9 @@ type User struct {
 	// password
 	Password string `json:"password,omitempty"`
 
+	// phone
+	Phone string `json:"phone,omitempty"`
+
 	// position
 	Position string `json:"position,omitempty"`
 

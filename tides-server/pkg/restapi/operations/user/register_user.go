@@ -108,6 +108,9 @@ type RegisterUserBody struct {
 	// password
 	Password string `json:"password,omitempty"`
 
+	// phone
+	Phone string `json:"phone,omitempty"`
+
 	// priority
 	// Enum: [Low Medium High]
 	Priority string `json:"priority,omitempty"`
@@ -266,6 +269,9 @@ type RegisterUserOKBodyUserInfo struct {
 
 	// password
 	Password string `json:"password,omitempty"`
+
+	// phone
+	Phone string `json:"phone,omitempty"`
 
 	// priority
 	// Enum: [Low Medium High]

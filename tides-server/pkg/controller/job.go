@@ -9,6 +9,7 @@ import (
 	"os"
 	"tides-server/pkg/config"
 	"tides-server/pkg/models"
+	"time"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"github.com/vmware/go-vcloud-director/v2/types/v56"
@@ -17,6 +18,8 @@ import (
 
 func randSeq(n int) string {
 	b := make([]rune, n)
+	t := time.Now()
+	rand.Seed(int64(t.Nanosecond()))
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
