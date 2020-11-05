@@ -62,6 +62,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
           Validators.maxLength(10),
         ],
       ],
+      email: [
+        '', [
+          Validators.required,
+          Validators.email,
+        ],
+      ],
+      phone: [
+        '', [
+          Validators.required,
+          Validators.minLength(4),
+        ],
+      ],
     });
   }
 
@@ -78,9 +90,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.vo.submitting = true;
         this.vo.loginError = '';
       }),
-      switchMap(({ username, password, companyName }) => {
+      switchMap(({ username, password, companyName, phone, email }) => {
         return this.registerService
-          .register(username, password, companyName)
+          .register(username, password, companyName, phone, email)
           .pipe(
             tap(() => {
               this.vo.submitting = false;
@@ -119,4 +131,6 @@ interface RegisterForm {
   username: string;
   password: string;
   companyName: string,
+  phone: string,
+  email: string,
 }

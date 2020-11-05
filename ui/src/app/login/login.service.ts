@@ -41,11 +41,6 @@ export class LoginService {
   logout() {
     this.removeToken();
     this.document.location.href = '/login';
-    // return this.http.post(`${base.apiPrefix}/session`, {}).pipe(
-    //   tap(() => {
-    //     this.document.location.href = '/login';
-    //   }),
-    // );
   }
 
   storeToken(token: string) {
@@ -79,6 +74,8 @@ export interface UserInfo {
   city: string;
   companyName: string;
   position: boolean;
+  email: string,
+  phone: string,
 }
 
 export interface ServerUserInfo {

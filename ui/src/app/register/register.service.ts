@@ -18,10 +18,12 @@ export class RegisterService {
     username = '',
     password = '',
     companyName = '',
+    phone = '',
+    email = '',
     priority = Priority.LOW,
   ) {
     return this.http.post<RegisterResult>(base.apiPrefix + REGISTER_PATH,
-      { username, password, priority, companyName }).pipe(
+      { username, password, priority, companyName, phone, email }).pipe(
       tap(val => {
 
       }),
