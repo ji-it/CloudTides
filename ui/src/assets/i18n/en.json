@@ -7,7 +7,27 @@
     "PASSWORD": "Password"
   },
   "REGISTER": {
-    "VERIFY_PASSWORD": "Verify Password"
+    "REGISTER": "Register",
+    "SUBTITLE": "Register for Cloudtides",
+    "ACCOUNT": "Account Information",
+    "USERNAME": "Username",
+    "USERNAME_MISSING": "Username is required",
+    "USERNAME_TOO_SHORT": "Username is too short",
+    "PASSWORD": "Password",
+    "PASSWORD_MISSING": "Password is required",
+    "PASSWORD_TOO_SHORT": "Password is too short",
+    "PASSWORD_TOO_LONG": "Password is too long",
+    "PASSWORD_CONFIRM": "Confirm Password",
+    "PASSWORD_NOT_MATCH": "Password does not match",
+    "BASIC_INFORMATION": "Basic Information",
+    "EMAIL": "Email",
+    "EMAIL_MISSING": "Email is required",
+    "EMAIL_WRONG_FORMAT": "Email is not in the correct format",
+    "PHONE": "Phone Number",
+    "PHONE_MISSING": "Phone number is required",
+    "COMPANY": "Company Name",
+    "COMPANY_MISSING": "Company Name is required",
+    "SUBMITTING": "Register"
   },
   "HOME": {
     "RESOURCE": {

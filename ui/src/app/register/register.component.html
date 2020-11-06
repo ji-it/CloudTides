@@ -34,7 +34,7 @@
             *clrIfError="'maxlength'">{{ 'REGISTER.PASSWORD_TOO_LONG' | translate:{} }}</clr-control-error>
         </clr-password-container>
         <clr-password-container>
-          <label> Confirm Password</label>
+          <label>{{ "REGISTER.PASSWORD_CONFIRM" | translate:{} }}</label>
           <input clrPassword formControlName="confirmPassword" />
           <clr-control-error
             *clrIfError="'required'">{{ 'REGISTER.PASSWORD_MISSING' | translate:{} }}</clr-control-error>
