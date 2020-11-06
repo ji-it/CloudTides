@@ -10,20 +10,30 @@ import (
 	"gorm.io/gorm"
 )
 
+// Vcd policy
+
+type VcdPolicy struct {
+	gorm.Model
+
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
+
+	// network
+	Network string `json:"network,omitempty"`
+
+	// storage
+	Storage string `json:"storage,omitempty"`
+
+	// policy foreign key
+	PolicyID uint
+
+	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
 // Policy policy
 
 type Policy struct {
 	gorm.Model
-
-	// account type
-	// Enum: [accManager boinc]
-	AccountType string `json:"accountType,omitempty"`
-
-	// boinc password
-	BoincPassword string `json:"BoincPassword,omitempty"`
-
-	// boinc username
-	BoincUsername string `json:"BoincUsername,omitempty"`
 
 	// deploy type
 	// Enum: [K8S VM]
@@ -38,10 +48,8 @@ type Policy struct {
 	// name
 	Name string `json:"name,omitempty" gorm:"unique"`
 
-	// project foreign key
-	ProjectID uint
-
-	Project Project `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
 
 	// template foreign key
 	TemplateID uint
@@ -60,10 +68,6 @@ type Policy struct {
 // Validate validates this policy
 func (m *Policy) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateAccountType(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateDeployType(formats); err != nil {
 		res = append(res, err)
@@ -101,20 +105,6 @@ func (m *Policy) validateAccountTypeEnum(path, location string, value string) er
 	if err := validate.Enum(path, location, value, policyTypeAccountTypePropEnum); err != nil {
 		return err
 	}
-	return nil
-}
-
-func (m *Policy) validateAccountType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.AccountType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validateAccountTypeEnum("accountType", "body", m.AccountType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

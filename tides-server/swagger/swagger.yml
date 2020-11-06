@@ -441,6 +441,8 @@ paths:
                     type: string
                   position:
                     type: string
+                  phone:
+                    type: string
         401:
           description: 'Unauthorized'
         404:
@@ -478,6 +480,8 @@ paths:
               email:
                 type: string
               position:
+                type: string
+              phone:
                 type: string
       responses:
         200:
@@ -572,6 +576,10 @@ paths:
                   - 'High'
               companyName:
                 type: string
+              email:
+                type: string
+              phone:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -592,6 +600,10 @@ paths:
                       - 'Medium'
                       - 'High'
                   companyName:
+                    type: string
+                  email:
+                    type: string
+                  phone:
                     type: string
         400:
           description: 'bad request'
@@ -616,11 +628,6 @@ paths:
           schema:
             type: object
             properties:
-              accountType:
-                type: string
-                enum:
-                  - accManager
-                  - boinc
               name:
                 type: string
               isDestroy:
@@ -634,13 +641,15 @@ paths:
                 type: string
               threshold:
                 type: string
-              projectId:
-                type: integer
               templateId:
                 type: integer
-              boincUsername:
+              platformType:
                 type: string
-              boincPassword:
+              catalog:
+                type: string
+              network:
+                type: string
+              storage:
                 type: string
       responses:
         200:
@@ -698,7 +707,7 @@ paths:
                       type: string
                     thresholdPolicy:
                       type: string
-                    projectName:
+                    platformType:
                       type: string
         400:
           description: 'bad request'
@@ -738,11 +747,11 @@ paths:
                 type: string
               thresholdPolicy:
                 type: string
-              projectName:
-                type: string
               hostsAssigned:
                 type: integer
               user:
+                type: string
+              platformType:
                 type: string
         401:
           description: 'Unauthorized'
@@ -772,11 +781,6 @@ paths:
           schema:
             type: object
             properties:
-              accountType:
-                type: string
-                enum:
-                  - accManager
-                  - boinc
               name:
                 type: string
               isDestroy:
@@ -790,14 +794,8 @@ paths:
                 type: string
               threshold:
                 type: string
-              projectId:
-                type: integer
               templateId:
                 type: integer
-              boincUsername:
-                type: string
-              boincPassword:
-                type: string
       responses:
         200:
           description: 'OK'
@@ -996,6 +994,56 @@ paths:
           description: 'bad request'
         404:
           description: 'resource not found'
+  /usage/past/{id}:
+    get:
+      operationId: 'getPastUsage'
+      description: 'get past usage of a resource'
+      tags:
+        - 'usage'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              timeLength:
+                type: integer
+      responses:
+        200:
+          description: 'success'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                currentCPU:
+                  type: number
+                currentRAM:
+                  type: number
+                percentCPU:
+                  type: number
+                percentRAM:
+                  type: number
+                time:
+                  type: string
+                  format: date-time
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   /usage/vm:
     post:
       operationId: 'addVMUsage'

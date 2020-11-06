@@ -21,17 +21,27 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		return user.NewRegisterUserBadRequest().WithPayload(&user.RegisterUserBadRequestBody{Message: "Username already used!"})
 	}
 
-	res := &user.RegisterUserOKBodyUserInfo{
+	newUser := models.User{
 		CompanyName: body.CompanyName,
+		Email:       body.Email,
 		Password:    body.Password,
+		Phone:       body.Phone,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}
-	newUser := models.User{Username: body.Username, Password: body.Password, CompanyName: body.CompanyName, Priority: body.Priority}
 
 	err := db.Create(&newUser).Error
 	if err != nil {
 		return user.NewRegisterUserBadRequest()
+	}
+
+	res := &user.RegisterUserOKBodyUserInfo{
+		CompanyName: body.CompanyName,
+		Email:       body.Email,
+		Password:    body.Password,
+		Phone:       body.Phone,
+		Priority:    body.Priority,
+		Username:    body.Username,
 	}
 
 	return user.NewRegisterUserOK().WithPayload(&user.RegisterUserOKBody{UserInfo: res})
@@ -85,6 +95,7 @@ func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responde
 		Email:       u.Email,
 		FirstName:   u.FirstName,
 		LastName:    u.LastName,
+		Phone:       u.Phone,
 		Position:    u.Position,
 	}
 
@@ -113,6 +124,7 @@ func UpdateUserProfileHandler(params user.UpdateUserProfileParams) middleware.Re
 	u.Email = body.Email
 	u.FirstName = body.FirstName
 	u.LastName = body.LastName
+	u.Phone = body.Phone
 	u.Position = body.Position
 
 	err := db.Save(&u).Error

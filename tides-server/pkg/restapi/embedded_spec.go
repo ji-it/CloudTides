@@ -68,7 +68,7 @@ func init() {
                       "name": {
                         "type": "string"
                       },
-                      "projectName": {
+                      "platformType": {
                         "type": "string"
                       },
                       "thresholdPolicy": {
@@ -110,17 +110,7 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
+                "catalog": {
                   "type": "string"
                 },
                 "deployType": {
@@ -139,8 +129,14 @@ func init() {
                 "name": {
                   "type": "string"
                 },
-                "projectId": {
-                  "type": "integer"
+                "network": {
+                  "type": "string"
+                },
+                "platformType": {
+                  "type": "string"
+                },
+                "storage": {
+                  "type": "string"
                 },
                 "templateId": {
                   "type": "integer"
@@ -230,7 +226,7 @@ func init() {
                 "name": {
                   "type": "string"
                 },
-                "projectName": {
+                "platformType": {
                   "type": "string"
                 },
                 "thresholdPolicy": {
@@ -283,19 +279,6 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
-                  "type": "string"
-                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -311,9 +294,6 @@ func init() {
                 },
                 "name": {
                   "type": "string"
-                },
-                "projectId": {
-                  "type": "integer"
                 },
                 "templateId": {
                   "type": "integer"
@@ -1471,6 +1451,84 @@ func init() {
         }
       }
     },
+    "/usage/past/{id}": {
+      "get": {
+        "description": "get past usage of a resource",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "getPastUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "timeLength": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "currentCPU": {
+                    "type": "number"
+                  },
+                  "currentRAM": {
+                    "type": "number"
+                  },
+                  "percentCPU": {
+                    "type": "number"
+                  },
+                  "percentRAM": {
+                    "type": "number"
+                  },
+                  "time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/usage/vm": {
       "post": {
         "description": "add VM usage info into database",
@@ -1829,6 +1887,9 @@ func init() {
                     "lastName": {
                       "type": "string"
                     },
+                    "phone": {
+                      "type": "string"
+                    },
                     "position": {
                       "type": "string"
                     }
@@ -1890,6 +1951,9 @@ func init() {
                 "lastName": {
                   "type": "string"
                 },
+                "phone": {
+                  "type": "string"
+                },
                 "position": {
                   "type": "string"
                 }
@@ -1949,7 +2013,13 @@ func init() {
                 "companyName": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "password": {
+                  "type": "string"
+                },
+                "phone": {
                   "type": "string"
                 },
                 "priority": {
@@ -1979,7 +2049,13 @@ func init() {
                     "companyName": {
                       "type": "string"
                     },
+                    "email": {
+                      "type": "string"
+                    },
                     "password": {
+                      "type": "string"
+                    },
+                    "phone": {
                       "type": "string"
                     },
                     "priority": {
@@ -2209,17 +2285,7 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
+                "catalog": {
                   "type": "string"
                 },
                 "deployType": {
@@ -2238,8 +2304,14 @@ func init() {
                 "name": {
                   "type": "string"
                 },
-                "projectId": {
-                  "type": "integer"
+                "network": {
+                  "type": "string"
+                },
+                "platformType": {
+                  "type": "string"
+                },
+                "storage": {
+                  "type": "string"
                 },
                 "templateId": {
                   "type": "integer"
@@ -2329,7 +2401,7 @@ func init() {
                 "name": {
                   "type": "string"
                 },
-                "projectName": {
+                "platformType": {
                   "type": "string"
                 },
                 "thresholdPolicy": {
@@ -2382,19 +2454,6 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "accountType": {
-                  "type": "string",
-                  "enum": [
-                    "accManager",
-                    "boinc"
-                  ]
-                },
-                "boincPassword": {
-                  "type": "string"
-                },
-                "boincUsername": {
-                  "type": "string"
-                },
                 "deployType": {
                   "type": "string",
                   "enum": [
@@ -2410,9 +2469,6 @@ func init() {
                 },
                 "name": {
                   "type": "string"
-                },
-                "projectId": {
-                  "type": "integer"
                 },
                 "templateId": {
                   "type": "integer"
@@ -3503,6 +3559,66 @@ func init() {
         }
       }
     },
+    "/usage/past/{id}": {
+      "get": {
+        "description": "get past usage of a resource",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "usage"
+        ],
+        "operationId": "getPastUsage",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "timeLength": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GetPastUsageOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/usage/vm": {
       "post": {
         "description": "add VM usage info into database",
@@ -3826,6 +3942,9 @@ func init() {
                     "lastName": {
                       "type": "string"
                     },
+                    "phone": {
+                      "type": "string"
+                    },
                     "position": {
                       "type": "string"
                     }
@@ -3887,6 +4006,9 @@ func init() {
                 "lastName": {
                   "type": "string"
                 },
+                "phone": {
+                  "type": "string"
+                },
                 "position": {
                   "type": "string"
                 }
@@ -3946,7 +4068,13 @@ func init() {
                 "companyName": {
                   "type": "string"
                 },
+                "email": {
+                  "type": "string"
+                },
                 "password": {
+                  "type": "string"
+                },
+                "phone": {
                   "type": "string"
                 },
                 "priority": {
@@ -3976,7 +4104,13 @@ func init() {
                     "companyName": {
                       "type": "string"
                     },
+                    "email": {
+                      "type": "string"
+                    },
                     "password": {
+                      "type": "string"
+                    },
+                    "phone": {
                       "type": "string"
                     },
                     "priority": {
@@ -4025,6 +4159,27 @@ func init() {
         }
       }
     },
+    "GetPastUsageOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "currentCPU": {
+          "type": "number"
+        },
+        "currentRAM": {
+          "type": "number"
+        },
+        "percentCPU": {
+          "type": "number"
+        },
+        "percentRAM": {
+          "type": "number"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "GetUserProfileOKBodyResults": {
       "type": "object",
       "properties": {
@@ -4044,6 +4199,9 @@ func init() {
           "type": "string"
         },
         "lastName": {
+          "type": "string"
+        },
+        "phone": {
           "type": "string"
         },
         "position": {
@@ -4103,7 +4261,13 @@ func init() {
         "companyName": {
           "type": "string"
         },
+        "email": {
+          "type": "string"
+        },
         "password": {
+          "type": "string"
+        },
+        "phone": {
           "type": "string"
         },
         "priority": {
@@ -4249,30 +4413,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "deployType": {
-          "type": "string",
-          "enum": [
-            "K8S",
-            "VM"
-          ]
-        },
-        "id": {
-          "type": "integer"
-        },
-        "idlePolicy": {
+        "compatibility": {
           "type": "string"
         },
-        "isDestroy": {
-          "type": "boolean"
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
         },
         "name": {
           "type": "string"
         },
-        "projectName": {
-          "type": "string"
+        "provisionedSpace": {
+          "type": "number"
         },
-        "thresholdPolicy": {
-          "type": "string"
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

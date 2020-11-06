@@ -18,14 +18,11 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	body := params.ReqBody
 
 	newPolicy := models.Policy{
-		AccountType:     body.AccountType,
-		BoincPassword:   body.BoincPassword,
-		BoincUsername:   body.BoincUsername,
 		DeployType:      body.DeployType,
 		IdlePolicy:      body.Idle,
 		IsDestroy:       body.IsDestroy,
 		Name:            body.Name,
-		ProjectID:       uint(body.ProjectID),
+		PlatformType:    body.PlatformType,
 		TemplateID:      uint(body.TemplateID),
 		ThresholdPolicy: body.Threshold,
 		UserID:          uid,
@@ -35,7 +32,26 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	err := db.Create(&newPolicy).Error
 
 	if err != nil {
-		return policy.NewAddPolicyBadRequest()
+		return policy.NewAddPolicyBadRequest().WithPayload(&policy.AddPolicyBadRequestBody{
+			Message: err.Error(),
+		})
+	}
+
+	if body.PlatformType == "vcd" {
+		newVcdPolicy := models.VcdPolicy{
+			Catalog:  body.Catalog,
+			Network:  body.Network,
+			Storage:  body.Storage,
+			PolicyID: newPolicy.ID,
+		}
+
+		err = db.Create(&newVcdPolicy).Error
+
+		if err != nil {
+			return policy.NewAddPolicyBadRequest().WithPayload(&policy.AddPolicyBadRequestBody{
+				Message: err.Error(),
+			})
+		}
 	}
 
 	return policy.NewAddPolicyOK().WithPayload(&policy.AddPolicyOKBody{
@@ -56,14 +72,10 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 		return policy.NewUpdatePolicyNotFound()
 	}
 
-	pol.AccountType = body.AccountType
-	pol.BoincPassword = body.BoincPassword
-	pol.BoincUsername = body.BoincUsername
 	pol.DeployType = body.DeployType
 	pol.IdlePolicy = body.Idle
 	pol.IsDestroy = body.IsDestroy
 	pol.Name = body.Name
-	pol.ProjectID = uint(body.ProjectID)
 	pol.TemplateID = uint(body.TemplateID)
 	pol.ThresholdPolicy = body.Threshold
 
@@ -89,15 +101,13 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 
 	results := []*policy.ListPolicyOKBodyResultsItems0{}
 	for _, pol := range policies {
-		var pro models.Project
-		db.Where("id = ?", pol.ProjectID).First(&pro)
 		newResult := policy.ListPolicyOKBodyResultsItems0{
 			DeployType:      pol.DeployType,
 			ID:              int64(pol.Model.ID),
 			IdlePolicy:      pol.IdlePolicy,
 			IsDestroy:       pol.IsDestroy,
 			Name:            pol.Name,
-			ProjectName:     pro.ProjectName,
+			PlatformType:    pol.PlatformType,
 			ThresholdPolicy: pol.ThresholdPolicy,
 		}
 
@@ -144,8 +154,6 @@ func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 	db.Where("policy_id = ?", pol.Model.ID).Find(&resources)
 	var user models.User
 	db.Where("id = ?", pol.UserID).First(&user)
-	var pro models.Project
-	db.Where("id = ?", pol.ProjectID).First(&pro)
 
 	response := policy.GetPolicyOKBody{
 		DeployType:      pol.DeployType,
@@ -153,7 +161,7 @@ func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 		IdlePolicy:      pol.IdlePolicy,
 		IsDestroy:       pol.IsDestroy,
 		Name:            pol.Name,
-		ProjectName:     pro.ProjectName,
+		PlatformType:    pol.PlatformType,
 		ThresholdPolicy: pol.ThresholdPolicy,
 		User:            user.Username,
 	}

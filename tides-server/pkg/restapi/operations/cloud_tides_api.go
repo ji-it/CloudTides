@@ -86,6 +86,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceDestroyVMHandler: resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
 		}),
+		UsageGetPastUsageHandler: usage.GetPastUsageHandlerFunc(func(params usage.GetPastUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.GetPastUsage has not yet been implemented")
+		}),
 		PolicyGetPolicyHandler: policy.GetPolicyHandlerFunc(func(params policy.GetPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.GetPolicy has not yet been implemented")
 		}),
@@ -204,6 +207,8 @@ type CloudTidesAPI struct {
 	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
 	// ResourceDestroyVMHandler sets the operation handler for the destroy VM operation
 	ResourceDestroyVMHandler resource.DestroyVMHandler
+	// UsageGetPastUsageHandler sets the operation handler for the get past usage operation
+	UsageGetPastUsageHandler usage.GetPastUsageHandler
 	// PolicyGetPolicyHandler sets the operation handler for the get policy operation
 	PolicyGetPolicyHandler policy.GetPolicyHandler
 	// UsageGetResourceUsageHandler sets the operation handler for the get resource usage operation
@@ -356,6 +361,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ResourceDestroyVMHandler == nil {
 		unregistered = append(unregistered, "resource.DestroyVMHandler")
+	}
+	if o.UsageGetPastUsageHandler == nil {
+		unregistered = append(unregistered, "usage.GetPastUsageHandler")
 	}
 	if o.PolicyGetPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.GetPolicyHandler")
@@ -552,6 +560,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/resource/destroy_vm"] = resource.NewDestroyVM(o.context, o.ResourceDestroyVMHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/usage/past/{id}"] = usage.NewGetPastUsage(o.context, o.UsageGetPastUsageHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
