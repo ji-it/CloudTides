@@ -13,6 +13,7 @@ require (
 	github.com/go-openapi/validate v0.19.10
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/robfig/cron/v3 v3.0.0
+	github.com/rs/cors v1.7.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/vmware/go-vcloud-director/v2 v2.9.0
 	github.com/vmware/govmomi v0.23.1
