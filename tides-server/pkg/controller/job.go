@@ -117,37 +117,76 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, cataName string,
 
 	task, err := vdc.ComposeVApp(networks, vappTem, *storageProf, vAppName, "test purpose", true)
 	task.WaitTaskCompletion()
-	fmt.Println(err)
-	vapp, err := vdc.GetVAppByName(vAppName, true)
 
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	vapp, err := vdc.GetVAppByName(vAppName, true)
 	task, err = vapp.PowerOn()
 	task.WaitTaskCompletion()
+
+	vm, err := vapp.GetVMByName("tides-gromacs", true)
+
+	task, err = vm.Undeploy()
+	task.WaitTaskCompletion()
+
+	/*	task, err = vm.ChangeCPUCount(2)
+		task.WaitTaskCompletion()
+		vm.ChangeMemorySize(2048)
+		task.WaitTaskCompletion()*/
+
+	cus, _ := vm.GetGuestCustomizationSection()
+	cus.Enabled = new(bool)
+	*cus.Enabled = true
+	cus.CustomizationScript = "boinccmd --get_project_status"
+	cus.ComputerName = "tides-" + randSeq(5)
+	vm.SetGuestCustomizationSection(cus)
+	err = vm.PowerOnAndForceCustomization()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return vapp
 }
 
 // Suspend VAPP
-func suspendVapp(vdc *govcd.Vdc, vAppName string) {
-	vapp, _ := vdc.GetVAppByName(vAppName, true)
+func suspendVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
 	if vapp == nil {
 		fmt.Println("Vapp " + vAppName + " not found")
-		return
+		return err
 	}
-	task, _ := vapp.Suspend()
+	task, err := vapp.Suspend()
 	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
 
 // Destroy VAPP
-func destroyVapp(vdc *govcd.Vdc, vAppName string) {
-	vapp, _ := vdc.GetVAppByName(vAppName, true)
+func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
 	if vapp == nil {
 		fmt.Println("Vapp " + vAppName + " not found")
-		return
+		return err
 	}
-	task, _ := vapp.Undeploy()
+	task, err := vapp.Undeploy()
 	task.WaitTaskCompletion()
-	task, _ = vapp.Delete()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	task, err = vapp.Delete()
 	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
 
 // Cronjob for resource. Query usage, update status, deploy/destroy/suspend Vapps.
@@ -218,14 +257,16 @@ func RunJob(configFile string) {
 			var tem models.Template
 			db.Where("id = ?", pol.TemplateID).First(&tem)
 			vapp := deployVapp(org, vdc, tem.Name, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network, vcdPol.Storage)
-			newVapp := models.VM{
-				IPAddress:   vapp.VApp.HREF,
-				IsDestroyed: false,
-				Name:        vapp.VApp.Name,
-				PoweredOn:   true,
-				ResourceID:  res.ID,
+			if vapp != nil {
+				newVapp := models.VM{
+					IPAddress:   vapp.VApp.HREF,
+					IsDestroyed: false,
+					Name:        vapp.VApp.Name,
+					PoweredOn:   true,
+					ResourceID:  res.ID,
+				}
+				db.Create(&newVapp)
 			}
-			db.Create(&newVapp)
 		}
 	} else if resUsage.PercentCPU > thres.CPU && resUsage.PercentRAM > thres.RAM {
 		res.Status = "busy"
@@ -234,12 +275,16 @@ func RunJob(configFile string) {
 			var vapp models.VM
 			db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp)
 			if pol.IsDestroy {
-				destroyVapp(vdc, vapp.Name)
-				db.Unscoped().Delete(&vapp)
+				err := destroyVapp(vdc, vapp.Name)
+				if err == nil {
+					db.Unscoped().Delete(&vapp)
+				}
 			} else {
-				suspendVapp(vdc, vapp.Name)
-				vapp.PoweredOn = false
-				db.Save(&vapp)
+				err := suspendVapp(vdc, vapp.Name)
+				if err == nil {
+					vapp.PoweredOn = false
+					db.Save(&vapp)
+				}
 			}
 		}
 	} else {
