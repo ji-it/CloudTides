@@ -1,10 +1,8 @@
 FROM node:latest
-WORKDIR /app/
+WORKDIR /app
 
-COPY package.json /app/
+COPY . .
 RUN npm install
 
-COPY . /app/
 EXPOSE 4200
-
 CMD ng serve
