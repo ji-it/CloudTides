@@ -1,3 +1,3 @@
 export const base = {
-  apiPrefix: 'http://localhost:3000/v1',
+  apiPrefix: 'http://47.100.27.38:30123/v1',
 };
