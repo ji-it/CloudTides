@@ -177,6 +177,9 @@ type GetUserProfileOKBodyResults struct {
 	// last name
 	LastName string `json:"lastName,omitempty"`
 
+	// phone
+	Phone string `json:"phone,omitempty"`
+
 	// position
 	Position string `json:"position,omitempty"`
 }

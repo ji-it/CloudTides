@@ -1,0 +1,94 @@
+<div class="card" id="reg-card">
+  <div class="card-block">
+
+
+    <form clrForm
+      [formGroup]="registerForm"
+      (ngSubmit)="this.onSubmit()">
+      <h1>
+        {{ "REGISTER.REGISTER" | translate:{} }}
+      </h1>
+      <p class="card-text">
+        {{ "REGISTER.SUBTITLE" | translate:{} }}
+      </p>
+      <br>
+      <br>
+      <div id="account">
+        <h3>{{ "REGISTER.ACCOUNT" | translate:{} }}</h3>
+        <clr-input-container>
+          <label>{{ 'REGISTER.USERNAME' | translate:{} }}</label>
+          <input clrInput formControlName="username" />
+          <clr-control-error
+            *clrIfError="'required'">{{ 'REGISTER.USERNAME_MISSING' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'minlength'">{{ 'REGISTER.USERNAME_TOO_SHORT' | translate:{} }}</clr-control-error>
+        </clr-input-container>
+        <clr-password-container>
+          <label>{{ 'REGISTER.PASSWORD' | translate:{} }}</label>
+          <input clrPassword formControlName="password" />
+          <clr-control-error
+            *clrIfError="'required'">{{ 'REGISTER.PASSWORD_MISSING' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'minlength'">{{ 'REGISTER.PASSWORD_TOO_SHORT' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'maxlength'">{{ 'REGISTER.PASSWORD_TOO_LONG' | translate:{} }}</clr-control-error>
+        </clr-password-container>
+        <clr-password-container>
+          <label>{{ "REGISTER.PASSWORD_CONFIRM" | translate:{} }}</label>
+          <input clrPassword formControlName="confirmPassword" />
+          <clr-control-error
+            *clrIfError="'required'">{{ 'REGISTER.PASSWORD_MISSING' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'minlength'">{{ 'REGISTER.PASSWORD_TOO_SHORT' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'maxlength'">{{ 'REGISTER.PASSWORD_TOO_LONG' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'mismatch'">{{ 'REGISTER.PASSWORD_NOT_MATCH' | translate:{} }}</clr-control-error>
+        </clr-password-container>
+      </div>
+      <br>
+      <br>
+      <div id="basic-information">
+        <h3>{{ "REGISTER.BASIC_INFORMATION" | translate:{} }}</h3>
+        <clr-input-container>
+          <label>{{ 'REGISTER.EMAIL' | translate:{} }}</label>
+          <input clrInput formControlName="email" />
+          <clr-control-error *clrIfError="'required'">{{ 'REGISTER.EMAIL_MISSING' | translate:{} }}</clr-control-error>
+          <clr-control-error
+            *clrIfError="'email'">{{ 'REGISTER.EMAIL_WRONG_FORMAT' | translate:{} }}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>{{ 'REGISTER.PHONE' | translate:{} }}</label>
+          <input clrInput formControlName="phone" />
+          <clr-control-error *clrIfError="'required'">{{ 'REGISTER.PHONE_MISSING' | translate:{} }}</clr-control-error>
+        </clr-input-container>
+        <clr-input-container>
+          <label>{{ 'REGISTER.COMPANY' | translate:{} }}</label>
+          <input clrInput formControlName="companyName" />
+          <clr-control-error
+            *clrIfError="'required'">{{ 'REGISTER.COMPANY_MISSING' | translate:{} }}</clr-control-error>
+        </clr-input-container>
+      </div>
+      <br>
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.loginError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.loginError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+      <br>
+      <button class="btn btn-primary"
+        type="submit"
+        [disabled]="vo.submitting || !this.registerForm.valid">
+        {{ (this.vo.submitting) && ('REGISTER.SUBMITTING'| translate:{}) || ('REGISTER.REGISTER'| translate:{}) }}
+      </button>
+    </form>
+  </div>
+
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+</div>

@@ -1,9 +1,8 @@
 package config
 
 import (
-	"os"
-	// "database/sql"
 	"fmt"
+	"os"
 	"tides-server/pkg/models"
 
 	"gorm.io/driver/postgres"
@@ -27,7 +26,7 @@ func initConfig() {
 	if serverPort != "" {
 		config.Port = serverPort
 	}
-	startDB()
+	StartDB()
 }
 
 // GetConfig returns a pointer to the current config.
@@ -39,7 +38,7 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func startDB() {
+func StartDB() {
 	dbinfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
@@ -51,11 +50,13 @@ func startDB() {
 	db.AutoMigrate(&models.Project{})
 	db.AutoMigrate(&models.Template{})
 	db.AutoMigrate(&models.Policy{})
+	db.AutoMigrate(&models.VcdPolicy{})
 	db.AutoMigrate(&models.Resource{})
 	db.AutoMigrate(&models.Vsphere{})
 	db.AutoMigrate(&models.Vcd{})
 	db.AutoMigrate(&models.VM{})
 	db.AutoMigrate(&models.ResourceUsage{})
+	db.AutoMigrate(&models.ResourcePastUsage{})
 	db.AutoMigrate(&models.VMUsage{})
 	fmt.Println("DB connection success")
 }

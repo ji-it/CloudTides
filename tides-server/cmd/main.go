@@ -6,15 +6,14 @@
 package main
 
 import (
-	config "tides-server/pkg/config"
-	operations "tides-server/pkg/restapi/operations"
+	"tides-server/pkg/config"
+	"tides-server/pkg/controller"
+	"tides-server/pkg/restapi/operations"
 
-	loads "github.com/go-openapi/loads"
+	"github.com/go-openapi/loads"
 
-	// middleware "github.com/go-openapi/runtime/middleware"
-	// swag "github.com/go-openapi/swag"
-	restapi "tides-server/pkg/restapi"
-	// models "tides-server/pkg/models"
+	"tides-server/pkg/restapi"
+
 	"fmt"
 	"log"
 	"os"
@@ -40,6 +39,7 @@ func main() {
 	fmt.Println(name)
 
 	server.Host = "0.0.0.0"
+	controller.InitController()
 
 	/*
 		// Implement the handler functionality.

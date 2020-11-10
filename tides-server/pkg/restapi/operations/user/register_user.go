@@ -102,8 +102,14 @@ type RegisterUserBody struct {
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
 
+	// email
+	Email string `json:"email,omitempty"`
+
 	// password
 	Password string `json:"password,omitempty"`
+
+	// phone
+	Phone string `json:"phone,omitempty"`
 
 	// priority
 	// Enum: [Low Medium High]
@@ -258,8 +264,14 @@ type RegisterUserOKBodyUserInfo struct {
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
 
+	// email
+	Email string `json:"email,omitempty"`
+
 	// password
 	Password string `json:"password,omitempty"`
+
+	// phone
+	Phone string `json:"phone,omitempty"`
 
 	// priority
 	// Enum: [Low Medium High]

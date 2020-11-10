@@ -66,6 +66,9 @@ type Resource struct {
 	// password
 	Password string `json:"password,omitempty"`
 
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
+
 	// policy foreign key
 	PolicyID *uint
 
@@ -129,6 +132,10 @@ const (
 
 	// ResourceStatusUnknown captures enum value "unknown"
 	ResourceStatusUnknown string = "unknown"
+
+	ResourcePlatformTypeVsphere string = "vsphere"
+
+	ResourcePlatformTypeVcd string = "vcd"
 )
 
 // prop value enum
