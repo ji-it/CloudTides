@@ -4,7 +4,8 @@
     "LOGIN": "Login",
     "LOGIN_TITLE": "Cloudtides 云汐",
     "EMAIL": "Email",
-    "PASSWORD": "Password"
+    "PASSWORD": "Password",
+    "SIGNUP": "Sign up"
   },
   "REGISTER": {
     "REGISTER": "Register",

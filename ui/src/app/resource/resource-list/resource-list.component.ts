@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { Item, ResourceService } from '../resource.service';
+import { Item, ItemPayload, ResourceService } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
-import { cloudPlatformList } from '@tide-config/cloudPlatform';
+import { cloudPlatform } from '@tide-config/cloudPlatform';
 
 @Component({
   selector: 'tide-resource-list',
@@ -22,7 +22,7 @@ export class ResourceListComponent implements OnInit {
   list$: Observable<Item[]> = of([]);
   opened = false;
 
-  add(resource: Item) {
+  add(resource: ItemPayload) {
     this.resourceService.addItem(resource).subscribe(item => {
       this.refreshList();
     });
