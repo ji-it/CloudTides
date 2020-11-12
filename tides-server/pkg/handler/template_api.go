@@ -24,6 +24,7 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 		Name:             body.Name,
 		ProvisionedSpace: body.Space,
 		TemplateType:     body.Source,
+		VmName:           body.VMName,
 	}
 
 	db := config.GetDB()
