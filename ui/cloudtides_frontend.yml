@@ -19,6 +19,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 4200
+      nodeSelector:
+        support: frontend
 
 ---
 apiVersion: v1
