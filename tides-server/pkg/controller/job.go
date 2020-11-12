@@ -52,7 +52,7 @@ func check_configuration(conf VcdConfig) {
 		abort("password")
 	}
 	if will_exit {
-		os.Exit(1)
+		return
 	}
 }
 
@@ -103,7 +103,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 }
 
 // Deploy VAPP
-func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, cataName string, vAppName string, netName string, storageName string) *govcd.VApp {
+func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string, storageName string) *govcd.VApp {
 
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
@@ -127,7 +127,7 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, cataName string,
 	task, err = vapp.PowerOn()
 	task.WaitTaskCompletion()
 
-	vm, err := vapp.GetVMByName("tides-gromacs", true)
+	vm, err := vapp.GetVMByName(VmName, true)
 
 	task, err = vm.Undeploy()
 	task.WaitTaskCompletion()
@@ -140,8 +140,7 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, cataName string,
 	cus, _ := vm.GetGuestCustomizationSection()
 	cus.Enabled = new(bool)
 	*cus.Enabled = true
-	cus.CustomizationScript = "boinccmd --get_project_status"
-	cus.ComputerName = "tides-" + randSeq(5)
+	// cus.ComputerName = "tides-" + randSeq(5)
 	vm.SetGuestCustomizationSection(cus)
 	err = vm.PowerOnAndForceCustomization()
 	if err != nil {
@@ -151,14 +150,30 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, cataName string,
 	return vapp
 }
 
-// Suspend VAPP
-func suspendVapp(vdc *govcd.Vdc, vAppName string) error {
+// Power on suspended VAPP
+func powerOnVapp(vdc *govcd.Vdc, vAppName string) error {
 	vapp, err := vdc.GetVAppByName(vAppName, true)
 	if vapp == nil {
 		fmt.Println("Vapp " + vAppName + " not found")
 		return err
 	}
-	task, err := vapp.Suspend()
+	task, err := vapp.PowerOn()
+	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+// Undeploy VAPP
+func undeployVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	if vapp == nil {
+		fmt.Println("Vapp " + vAppName + " not found")
+		return err
+	}
+	task, err := vapp.Undeploy()
 	task.WaitTaskCompletion()
 	if err != nil {
 		fmt.Println(err)
@@ -174,13 +189,15 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 		fmt.Println("Vapp " + vAppName + " not found")
 		return err
 	}
-	task, err := vapp.Undeploy()
-	task.WaitTaskCompletion()
-	if err != nil {
-		fmt.Println(err)
-		return err
+	if vapp.VApp.Deployed {
+		task, err := vapp.Undeploy()
+		task.WaitTaskCompletion()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
-	task, err = vapp.Delete()
+	task, err := vapp.Delete()
 	task.WaitTaskCompletion()
 	if err != nil {
 		fmt.Println(err)
@@ -198,17 +215,17 @@ func RunJob(configFile string) {
 	client, err := conf.Client() // We now have a client
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return
 	}
 	org, err := client.GetOrgByName(conf.Org)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return
 	}
 	vdc, err := org.GetVDCByName(conf.VDC, false)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return
 	}
 
 	db := config.GetDB()
@@ -252,11 +269,20 @@ func RunJob(configFile string) {
 		res.Status = "idle"
 		db.Save(&res)
 		if pol.PlatformType == models.ResourcePlatformTypeVcd {
+			var susVapp models.VM
+			if db.Where("resource_id = ? AND powered_on = ?", res.ID, false).First(&susVapp).RowsAffected > 0 {
+				err := powerOnVapp(vdc, susVapp.Name)
+				if err == nil {
+					susVapp.PoweredOn = true
+					db.Save(&susVapp)
+					return
+				}
+			}
 			var vcdPol models.VcdPolicy
 			db.Where("policy_id = ?", pol.ID).First(&vcdPol)
 			var tem models.Template
 			db.Where("id = ?", pol.TemplateID).First(&tem)
-			vapp := deployVapp(org, vdc, tem.Name, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network, vcdPol.Storage)
+			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network, vcdPol.Storage)
 			if vapp != nil {
 				newVapp := models.VM{
 					IPAddress:   vapp.VApp.HREF,
@@ -275,12 +301,17 @@ func RunJob(configFile string) {
 			var vapp models.VM
 			db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp)
 			if pol.IsDestroy {
-				err := destroyVapp(vdc, vapp.Name)
-				if err == nil {
-					db.Unscoped().Delete(&vapp)
+				// fix destroy failure on Web UI
+				for i := 0; i < 3; i++ {
+					err = destroyVapp(vdc, vapp.Name)
+					vappQuery, _ := vdc.GetVAppByName(vapp.Name, true)
+					if err == nil && vappQuery == nil {
+						db.Unscoped().Delete(&vapp)
+						break
+					}
 				}
 			} else {
-				err := suspendVapp(vdc, vapp.Name)
+				err := undeployVapp(vdc, vapp.Name)
 				if err == nil {
 					vapp.PoweredOn = false
 					db.Save(&vapp)

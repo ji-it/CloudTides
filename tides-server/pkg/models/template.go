@@ -33,6 +33,9 @@ type Template struct {
 	// template type
 	// Enum: [datastore upload]
 	TemplateType string `json:"templateType,omitempty"`
+
+	// vm name
+	VmName string `json:"vmName,omitempty"`
 }
 
 // Validate validates this template

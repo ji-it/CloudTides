@@ -131,7 +131,16 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	handleCORS := cors.Default().Handler
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4200"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: true,
+	})
 
-	return handleCORS(handler)
+	// Insert the middleware
+	handler = c.Handler(handler)
+
+	return handler
 }
