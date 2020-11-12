@@ -81,6 +81,9 @@ type AddTemplateBody struct {
 
 	// space
 	Space float64 `json:"space,omitempty"`
+
+	// vm name
+	VMName string `json:"vmName,omitempty"`
 }
 
 // Validate validates this add template body

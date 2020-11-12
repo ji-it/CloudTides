@@ -1126,6 +1126,8 @@ paths:
                 type: number
               name:
                 type: string
+              vmName:
+                type: string
       responses:
         200:
           description: 'OK'
