@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "start.local": "cd mock && npm start & start_mode=local npm run start",
     "start.e2e": "start_mode=e2e npm run start",
     "build": "ng build",

@@ -1,0 +1,9 @@
+# JS stuff
+node_modules
+e2e
+mock
+
+# Dev stuff
+.git
+.gitignore
+.editorconfig
