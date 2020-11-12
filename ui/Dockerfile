@@ -1,8 +1,10 @@
 FROM node:14
-WORKDIR /app
+WORKDIR /app/
 
-COPY . .
+COPY package.json /app/
 RUN npm install
 
+COPY . /app/
+
 EXPOSE 4200
-RUN ng serve
+CMD ["npm","start"]
