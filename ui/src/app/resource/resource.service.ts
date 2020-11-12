@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { base } from '@tide-environments/base';
+import { POST_VCD_PATH } from '@tide-config/path';
+import { tap } from 'rxjs/operators';
+import { cloudPlatform } from '@tide-config/cloudPlatform';
+import { LoginService } from '../login/login.service';
 
 @Injectable()
 export class ResourceService {
 
   constructor(
     private readonly http: HttpClient,
+    private readonly loginService: LoginService,
   ) {
   }
 
@@ -20,8 +25,18 @@ export class ResourceService {
   }
 
   addItem(payload: ItemPayload) {
-    return this.http.post<ItemDTO>(`${this.prefix}`, `name=${payload.name}`).pipe(
-      map(mapItem),
+    const body = {
+      ...payload,
+      policy: 0,
+    };
+    return this.http.post<any>(base.apiPrefix + POST_VCD_PATH, body, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).pipe(
+      tap(item => {
+        console.log(item);
+      }),
     );
   }
 
@@ -60,7 +75,11 @@ function mapItem(raw: ItemDTO): Item {
 
 // UI
 export interface ItemPayload {
+  datacenter: string;
   name: string;
+  org: string;
+  username: string,
+  password: string,
 }
 
 export type Item = ItemDTO;

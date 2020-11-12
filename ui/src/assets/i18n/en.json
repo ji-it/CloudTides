@@ -48,16 +48,17 @@
       "DIALOG": {
         "ADD_RESOURCE": "Add Resource",
         "NAME": "Name",
-        "REQUIRED": "Required",
+        "REQUIRED": "{{item}} is required",
         "DATACENTER": "Datacenter",
-        "CLUSTER": "Cluster",
+        "ORG": "Tenant",
         "USERNAME": "Username",
         "PASSWORD": "Password",
+        "PASSWORD_HELP_TEXT": "Note: username and password here will only be used for adding resources. It will not be stored in this website.",
         "CANCEL": "Cancel",
         "SAVE": "Save",
-        "RESOURCE_NAME": "Resource Name",
-        "DATACENTER_NAME": "Datacenter Name",
-        "CLUSTER_NAME": "Cluster Name"
+        "RESOURCE_PLACEHOLDER": "Resource Name",
+        "DATACENTER_PLACEHOLDER": "Datacenter Name",
+        "ORG_PLACEHOLDER": "Tenant Name"
       }
     },
     "POLICY": {

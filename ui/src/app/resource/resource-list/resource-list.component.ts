@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 
 import { Item, ResourceService } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
+import { cloudPlatformList } from '@tide-config/cloudPlatform';
 
 @Component({
   selector: 'tide-resource-list',
