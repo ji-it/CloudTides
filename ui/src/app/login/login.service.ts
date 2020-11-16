@@ -1,20 +1,23 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
-import { isEmpty } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { base } from '@tide-environments/base';
-import { LOGIN_PATH } from '@tide-config/path';
+import { LOGIN_PATH, PROFILE_PATH } from '@tide-config/path';
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService {
 
   constructor(
     private readonly http: HttpClient,
+    private readonly router: Router,
     @Inject(DOCUMENT) private readonly document: Document,
-  ) { }
+  ) {
+    this.loginNavigate();
+  }
 
   readonly session$ = new BehaviorSubject<UserInfo>({} as any);
 
@@ -30,9 +33,32 @@ export class LoginService {
     );
   }
 
+  loginNavigate() {
+    if (this.hasLoggedIn) {
+      this.current().subscribe(
+        () => {},
+        error => {
+          switch (error.status) {
+            case 401:
+              this.logout();
+              break;
+            default:
+              break;
+          }
+        });
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
   current() {
-    return this.http.get<UserInfo>(`${base.apiPrefix}/session`).pipe(
+    return this.http.get<UserInfo>(base.apiPrefix + PROFILE_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    }).pipe(
       tap(userInfo => {
+        // todo: handle the condition when userInfo is empty (backend part)
         this.session$.next(userInfo);
       }),
     );
@@ -40,7 +66,7 @@ export class LoginService {
 
   logout() {
     this.removeToken();
-    this.document.location.href = '/login';
+    this.router.navigate(['/']);
   }
 
   storeToken(token: string) {
@@ -66,7 +92,6 @@ export class LoginService {
 
 export interface UserInfo {
   username: string;
-  password: string;
   priority: string;
   firstName: string;
   lastName: string;
