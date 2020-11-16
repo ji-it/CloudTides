@@ -57,17 +57,17 @@ func check_configuration(conf VcdConfig) {
 }
 
 // Retrieves the configuration from a Json or Yaml file
-func getConfig(config_file string) VcdConfig {
+func getConfig(config_file string) (VcdConfig, error) {
 	var configuration VcdConfig
 	buffer, err := ioutil.ReadFile(config_file)
 	if err != nil {
 		fmt.Printf("Configuration file %s not found\n%s\n", config_file, err)
-		os.Exit(1)
+		return configuration, err
 	}
 	err = yaml.Unmarshal(buffer, &configuration)
 	if err != nil {
 		fmt.Printf("Error retrieving configuration from file %s\n%s\n", config_file, err)
-		os.Exit(1)
+		return configuration, err
 	}
 	check_configuration(configuration)
 
@@ -80,7 +80,7 @@ func getConfig(config_file string) VcdConfig {
 		new_conf, _ := yaml.Marshal(configuration)
 		fmt.Printf("YAML configuration: \n%s\n", new_conf)
 	}
-	return configuration
+	return configuration, nil
 }
 
 // Creates a vCD client
@@ -210,7 +210,10 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 func RunJob(configFile string) {
 
 	// Reads the configuration file
-	conf := getConfig(configFile)
+	conf, err := getConfig(configFile)
+	if err != nil {
+		return
+	}
 
 	client, err := conf.Client() // We now have a client
 	if err != nil {
@@ -259,7 +262,9 @@ func RunJob(configFile string) {
 	db.Create(&newVcdPastUsage)
 
 	var pol models.Policy
-	db.Where("id = ?", res.PolicyID).First(&pol)
+	if db.Where("id = ?", res.PolicyID).First(&pol).RowsAffected == 0 {
+		return
+	}
 	idle := Policy{}
 	thres := Policy{}
 	json.Unmarshal([]byte(pol.IdlePolicy), &idle)

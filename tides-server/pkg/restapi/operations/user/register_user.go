@@ -99,17 +99,32 @@ func (o *RegisterUserBadRequestBody) UnmarshalBinary(b []byte) error {
 // swagger:model RegisterUserBody
 type RegisterUserBody struct {
 
+	// city
+	City string `json:"city,omitempty"`
+
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
 
+	// country
+	Country string `json:"country,omitempty"`
+
 	// email
 	Email string `json:"email,omitempty"`
+
+	// first name
+	FirstName string `json:"firstName,omitempty"`
+
+	// last name
+	LastName string `json:"lastName,omitempty"`
 
 	// password
 	Password string `json:"password,omitempty"`
 
 	// phone
 	Phone string `json:"phone,omitempty"`
+
+	// position
+	Position string `json:"position,omitempty"`
 
 	// priority
 	// Enum: [Low Medium High]
@@ -261,17 +276,32 @@ func (o *RegisterUserOKBody) UnmarshalBinary(b []byte) error {
 // swagger:model RegisterUserOKBodyUserInfo
 type RegisterUserOKBodyUserInfo struct {
 
+	// city
+	City string `json:"city,omitempty"`
+
 	// company name
 	CompanyName string `json:"companyName,omitempty"`
 
+	// country
+	Country string `json:"country,omitempty"`
+
 	// email
 	Email string `json:"email,omitempty"`
+
+	// first name
+	FirstName string `json:"firstName,omitempty"`
+
+	// last name
+	LastName string `json:"lastName,omitempty"`
 
 	// password
 	Password string `json:"password,omitempty"`
 
 	// phone
 	Phone string `json:"phone,omitempty"`
+
+	// position
+	Position string `json:"position,omitempty"`
 
 	// priority
 	// Enum: [Low Medium High]
