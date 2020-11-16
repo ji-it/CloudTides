@@ -64,6 +64,7 @@ jobs:
           go test ./...
   
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
