@@ -7,8 +7,8 @@ const {
 } = process.env;
 
 const endpoint = {
-  local: 'http://localhost:3000',
-  e2e: 'http://localhost:8080'
+  local: 'http://0.0.0.0:3000',
+  e2e: 'http://0.0.0.0:8080'
 };
 
 const target = endpoint[MODE];

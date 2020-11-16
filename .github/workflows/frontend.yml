@@ -1,25 +1,50 @@
-name: backend-CD
+name: frontend-CICD
 
 on:
   push:
     branches:
-      - master
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
 
 jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Node 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: |
+          cd ui
+          npm install
+      - name: Build
+        run: |
+          cd ui
+          npm build
+  
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: build
     runs-on: ubuntu-latest
     steps:
 
-      - name: Check out code into the Go module directory
+      - name: Check out code into the module directory
         uses: actions/checkout@v2
 
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ericshen97/cloudtides_backend
+          name: ericshen97/cloudtides_frontend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          workdir: tides-server
+          workdir: ui
           tags: "latest"
 
       - name: Transfer yml file to Aliyun
@@ -29,16 +54,16 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
-          source: "tides-server/cloudtides_backend.yml"
+          source: "ui/cloudtides_frontend.yml"
           target: "/root"
 
       - name: Upgrade the platform using SSH
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd /root/tides-server
-            kubectl delete -f cloudtides_backend.yml
-            kubectl apply -f cloudtides_backend.yml
+            cd /root/ui
+            kubectl delete -f cloudtides_frontend.yml
+            kubectl apply -f cloudtides_frontend.yml
           host: ${{ secrets.REMOTE_HOST }}
           user: ${{ secrets.REMOTE_USER }}
           pass: ${{ secrets.SSH_PASSWORD }}
