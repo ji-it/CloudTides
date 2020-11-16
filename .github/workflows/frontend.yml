@@ -1,4 +1,4 @@
-name: frontend-CI
+name: frontend-CICD
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    name: Build and Test
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,10 +25,6 @@ jobs:
         run: |
           cd ui
           npm build
-      - name: Test
-        run: |
-          cd ui
-          npm test
   
   deploy:
     needs: build
