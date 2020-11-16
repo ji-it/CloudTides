@@ -2013,16 +2013,31 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "city": {
+                  "type": "string"
+                },
                 "companyName": {
                   "type": "string"
                 },
+                "country": {
+                  "type": "string"
+                },
                 "email": {
+                  "type": "string"
+                },
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
                   "type": "string"
                 },
                 "password": {
                   "type": "string"
                 },
                 "phone": {
+                  "type": "string"
+                },
+                "position": {
                   "type": "string"
                 },
                 "priority": {
@@ -2049,16 +2064,31 @@ func init() {
                 "userInfo": {
                   "type": "object",
                   "properties": {
+                    "city": {
+                      "type": "string"
+                    },
                     "companyName": {
                       "type": "string"
                     },
+                    "country": {
+                      "type": "string"
+                    },
                     "email": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
                       "type": "string"
                     },
                     "password": {
                       "type": "string"
                     },
                     "phone": {
+                      "type": "string"
+                    },
+                    "position": {
                       "type": "string"
                     },
                     "priority": {
@@ -4071,16 +4101,31 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "city": {
+                  "type": "string"
+                },
                 "companyName": {
                   "type": "string"
                 },
+                "country": {
+                  "type": "string"
+                },
                 "email": {
+                  "type": "string"
+                },
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
                   "type": "string"
                 },
                 "password": {
                   "type": "string"
                 },
                 "phone": {
+                  "type": "string"
+                },
+                "position": {
                   "type": "string"
                 },
                 "priority": {
@@ -4107,16 +4152,31 @@ func init() {
                 "userInfo": {
                   "type": "object",
                   "properties": {
+                    "city": {
+                      "type": "string"
+                    },
                     "companyName": {
                       "type": "string"
                     },
+                    "country": {
+                      "type": "string"
+                    },
                     "email": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
                       "type": "string"
                     },
                     "password": {
                       "type": "string"
                     },
                     "phone": {
+                      "type": "string"
+                    },
+                    "position": {
                       "type": "string"
                     },
                     "priority": {
@@ -4264,16 +4324,31 @@ func init() {
     "RegisterUserOKBodyUserInfo": {
       "type": "object",
       "properties": {
+        "city": {
+          "type": "string"
+        },
         "companyName": {
           "type": "string"
         },
+        "country": {
+          "type": "string"
+        },
         "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
           "type": "string"
         },
         "password": {
           "type": "string"
         },
         "phone": {
+          "type": "string"
+        },
+        "position": {
           "type": "string"
         },
         "priority": {

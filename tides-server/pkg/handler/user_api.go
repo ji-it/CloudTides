@@ -22,10 +22,15 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	}
 
 	newUser := models.User{
+		City:        body.City,
 		CompanyName: body.CompanyName,
+		Country:     body.Country,
 		Email:       body.Email,
+		FirstName:   body.FirstName,
+		LastName:    body.LastName,
 		Password:    body.Password,
 		Phone:       body.Phone,
+		Position:    body.Position,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}
@@ -36,10 +41,15 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	}
 
 	res := &user.RegisterUserOKBodyUserInfo{
+		City:        body.City,
 		CompanyName: body.CompanyName,
+		Country:     body.Country,
 		Email:       body.Email,
+		FirstName:   body.FirstName,
+		LastName:    body.LastName,
 		Password:    body.Password,
 		Phone:       body.Phone,
+		Position:    body.Position,
 		Priority:    body.Priority,
 		Username:    body.Username,
 	}

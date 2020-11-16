@@ -580,6 +580,16 @@ paths:
                 type: string
               phone:
                 type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              city:
+                type: string
+              country:
+                type: string
+              position:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -604,6 +614,16 @@ paths:
                   email:
                     type: string
                   phone:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  city:
+                    type: string
+                  country:
+                    type: string
+                  position:
                     type: string
         400:
           description: 'bad request'

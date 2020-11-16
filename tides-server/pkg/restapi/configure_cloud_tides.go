@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"net/http"
 
+	interpose "github.com/carbocation/interpose/middleware"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/rs/cors"
@@ -141,6 +142,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
 	// Insert the middleware
 	handler = c.Handler(handler)
+	logViaLogrus := interpose.NegroniLogrus()
 
-	return handler
+	return logViaLogrus(handler)
 }
