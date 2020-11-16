@@ -18,8 +18,14 @@ jobs:
         with:
           node-version: '14.x'
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd ui
+          npm install
       - name: Build
-        run: npm build
+        run: |
+          cd ui
+          npm build
       - name: Test
-        run: npm test
+        run: |
+          cd ui
+          npm test
