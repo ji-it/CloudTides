@@ -2,8 +2,8 @@ name: backend-CD
 
 on:
   push:
-    branches:
-      - master
+    paths:
+      - '**.go'
 
 jobs:
   deploy:
