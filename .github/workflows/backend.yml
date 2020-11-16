@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - 'master'
+    paths:
+      - 'tides-server/**'
   pull_request:
     branches:
       - 'master'
+    paths:
+      - 'tides-server/**'
 
 jobs:
 
