@@ -1,4 +1,4 @@
-name: backend-CICD
+name: CloudTides Server
 
 on:
   push:

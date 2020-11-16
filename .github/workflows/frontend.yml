@@ -1,4 +1,4 @@
-name: frontend-CICD
+name: CloudTides UI
 
 on:
   push:
