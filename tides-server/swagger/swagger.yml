@@ -305,6 +305,10 @@ paths:
                 type: number
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Resource not found'
     delete:
       operationId: 'deleteVcdResource'
       description: 'delete vcd resource'
@@ -327,6 +331,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -568,12 +574,6 @@ paths:
                 type: string
               password:
                 type: string
-              priority:
-                type: string
-                enum:
-                  - 'Low'
-                  - 'Medium'
-                  - 'High'
               companyName:
                 type: string
               email:
@@ -840,6 +840,8 @@ paths:
             properties:
               message:
                 type: string
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
     delete:
@@ -866,6 +868,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -1228,6 +1232,8 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
   /project:

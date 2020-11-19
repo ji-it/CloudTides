@@ -76,9 +76,8 @@ func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Resp
 	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	db := config.GetDB()
 
-	err := db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).Error
-	if err != nil {
-		return template.NewDeleteTemplateNotFound()
+	if db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).RowsAffected == 0 {
+		return template.NewDeleteTemplateForbidden()
 	}
 
 	return template.NewDeleteTemplateOK().WithPayload(&template.DeleteTemplateOKBody{

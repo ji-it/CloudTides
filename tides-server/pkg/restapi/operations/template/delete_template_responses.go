@@ -103,6 +103,30 @@ func (o *DeleteTemplateUnauthorized) WriteResponse(rw http.ResponseWriter, produ
 	rw.WriteHeader(401)
 }
 
+// DeleteTemplateForbiddenCode is the HTTP code returned for type DeleteTemplateForbidden
+const DeleteTemplateForbiddenCode int = 403
+
+/*DeleteTemplateForbidden Forbidden
+
+swagger:response deleteTemplateForbidden
+*/
+type DeleteTemplateForbidden struct {
+}
+
+// NewDeleteTemplateForbidden creates DeleteTemplateForbidden with default headers values
+func NewDeleteTemplateForbidden() *DeleteTemplateForbidden {
+
+	return &DeleteTemplateForbidden{}
+}
+
+// WriteResponse to the client
+func (o *DeleteTemplateForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
 // DeleteTemplateNotFoundCode is the HTTP code returned for type DeleteTemplateNotFound
 const DeleteTemplateNotFoundCode int = 404
 

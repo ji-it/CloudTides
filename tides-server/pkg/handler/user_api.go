@@ -31,7 +31,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		Password:    body.Password,
 		Phone:       body.Phone,
 		Position:    body.Position,
-		Priority:    body.Priority,
+		Priority:    models.UserPriorityLow,
 		Username:    body.Username,
 	}
 
@@ -50,7 +50,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 		Password:    body.Password,
 		Phone:       body.Phone,
 		Position:    body.Position,
-		Priority:    body.Priority,
+		Priority:    models.UserPriorityLow,
 		Username:    body.Username,
 	}
 
