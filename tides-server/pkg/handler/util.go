@@ -57,6 +57,22 @@ func VerifyUser(req *http.Request) bool {
 	return true
 }
 
+func VerifyAdmin(req *http.Request) bool {
+	id, err := ParseUserIdFromToken(req)
+	if err != nil {
+		return false
+	}
+	db := config.GetDB()
+	var queryUser models.User
+	if db.Where("id = ?", id).First(&queryUser).Error != nil {
+		return false
+	}
+	if queryUser.Priority == models.UserPriorityHigh {
+		return true
+	}
+	return false
+}
+
 // Creates a vCD client
 func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	u, err := url.ParseRequestURI(c.Href)

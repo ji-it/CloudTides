@@ -126,71 +126,12 @@ type RegisterUserBody struct {
 	// position
 	Position string `json:"position,omitempty"`
 
-	// priority
-	// Enum: [Low Medium High]
-	Priority string `json:"priority,omitempty"`
-
 	// username
 	Username string `json:"username,omitempty"`
 }
 
 // Validate validates this register user body
 func (o *RegisterUserBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validatePriority(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-var registerUserBodyTypePriorityPropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["Low","Medium","High"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		registerUserBodyTypePriorityPropEnum = append(registerUserBodyTypePriorityPropEnum, v)
-	}
-}
-
-const (
-
-	// RegisterUserBodyPriorityLow captures enum value "Low"
-	RegisterUserBodyPriorityLow string = "Low"
-
-	// RegisterUserBodyPriorityMedium captures enum value "Medium"
-	RegisterUserBodyPriorityMedium string = "Medium"
-
-	// RegisterUserBodyPriorityHigh captures enum value "High"
-	RegisterUserBodyPriorityHigh string = "High"
-)
-
-// prop value enum
-func (o *RegisterUserBody) validatePriorityEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, registerUserBodyTypePriorityPropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *RegisterUserBody) validatePriority(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Priority) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validatePriorityEnum("reqBody"+"."+"priority", "body", o.Priority); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -22,4 +22,7 @@ var (
 	cronjobs = map[uint]*cron.Cron{}
 )
 
-const schedule string = "*/5 * * * *"
+const (
+	schedule      string = "*/2 * * * *"
+	cleanSchedule string = "0 0 1 * *"
+)

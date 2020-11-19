@@ -78,3 +78,51 @@ func (o *GetVcdResourceUnauthorized) WriteResponse(rw http.ResponseWriter, produ
 
 	rw.WriteHeader(401)
 }
+
+// GetVcdResourceForbiddenCode is the HTTP code returned for type GetVcdResourceForbidden
+const GetVcdResourceForbiddenCode int = 403
+
+/*GetVcdResourceForbidden Forbidden
+
+swagger:response getVcdResourceForbidden
+*/
+type GetVcdResourceForbidden struct {
+}
+
+// NewGetVcdResourceForbidden creates GetVcdResourceForbidden with default headers values
+func NewGetVcdResourceForbidden() *GetVcdResourceForbidden {
+
+	return &GetVcdResourceForbidden{}
+}
+
+// WriteResponse to the client
+func (o *GetVcdResourceForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
+// GetVcdResourceNotFoundCode is the HTTP code returned for type GetVcdResourceNotFound
+const GetVcdResourceNotFoundCode int = 404
+
+/*GetVcdResourceNotFound Resource not found
+
+swagger:response getVcdResourceNotFound
+*/
+type GetVcdResourceNotFound struct {
+}
+
+// NewGetVcdResourceNotFound creates GetVcdResourceNotFound with default headers values
+func NewGetVcdResourceNotFound() *GetVcdResourceNotFound {
+
+	return &GetVcdResourceNotFound{}
+}
+
+// WriteResponse to the client
+func (o *GetVcdResourceNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(404)
+}

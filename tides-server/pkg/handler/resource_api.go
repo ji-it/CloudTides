@@ -311,7 +311,11 @@ func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middl
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
-	db.Where("user_id = ?", uid).Find(&resources)
+	if VerifyAdmin(params.HTTPRequest) {
+		db.Find(&resources)
+	} else {
+		db.Where("user_id = ?", uid).Find(&resources)
+	}
 
 	var response []*models.ResourceListItem
 	for _, res := range resources {
@@ -525,7 +529,11 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
-	db.Where("user_id = ?", uid).Find(&resources)
+	if VerifyAdmin(params.HTTPRequest) {
+		db.Find(&resources)
+	} else {
+		db.Where("user_id = ?", uid).Find(&resources)
+	}
 
 	var responses []*resource.ListVcdResourceOKBodyItems0
 	for _, res := range resources {
@@ -554,18 +562,25 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		return resource.NewGetVcdResourceUnauthorized()
 	}
 
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	vcdId := params.ID
 	db := config.GetDB()
 	var vcd models.Vcd
 	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
-		return resource.NewGetVcdResourceUnauthorized()
+		return resource.NewGetVcdResourceNotFound()
 	}
 
 	var vcdUsage models.ResourceUsage
 	db.Where("resource_id = ?", vcd.ResourceID).First(&vcdUsage)
 
 	var res models.Resource
-	db.Where("id = ?", vcd.ResourceID).First(&res)
+	if !VerifyAdmin(params.HTTPRequest) {
+		if db.Where("id = ? AND user_id = ?", vcd.ResourceID, uid).First(&res).RowsAffected == 0 {
+			return resource.NewGetVcdResourceForbidden()
+		}
+	} else {
+		db.Where("id = ?", vcd.ResourceID).First(&res)
+	}
 
 	policy := 0
 	if res.PolicyID != nil {
@@ -605,7 +620,9 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 		return resource.NewDeleteVcdResourceNotFound()
 	}
 
-	db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{})
+	if db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{}).RowsAffected == 0 {
+		return resource.NewDeleteVcdResourceForbidden()
+	}
 
 	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
 		Message: "success",

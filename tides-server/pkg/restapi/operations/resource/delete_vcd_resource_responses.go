@@ -79,6 +79,30 @@ func (o *DeleteVcdResourceUnauthorized) WriteResponse(rw http.ResponseWriter, pr
 	rw.WriteHeader(401)
 }
 
+// DeleteVcdResourceForbiddenCode is the HTTP code returned for type DeleteVcdResourceForbidden
+const DeleteVcdResourceForbiddenCode int = 403
+
+/*DeleteVcdResourceForbidden Forbidden
+
+swagger:response deleteVcdResourceForbidden
+*/
+type DeleteVcdResourceForbidden struct {
+}
+
+// NewDeleteVcdResourceForbidden creates DeleteVcdResourceForbidden with default headers values
+func NewDeleteVcdResourceForbidden() *DeleteVcdResourceForbidden {
+
+	return &DeleteVcdResourceForbidden{}
+}
+
+// WriteResponse to the client
+func (o *DeleteVcdResourceForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
 // DeleteVcdResourceNotFoundCode is the HTTP code returned for type DeleteVcdResourceNotFound
 const DeleteVcdResourceNotFoundCode int = 404
 
