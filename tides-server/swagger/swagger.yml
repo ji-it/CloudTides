@@ -669,8 +669,6 @@ paths:
                 type: string
               network:
                 type: string
-              storage:
-                type: string
       responses:
         200:
           description: 'OK'

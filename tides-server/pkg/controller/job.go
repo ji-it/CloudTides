@@ -103,7 +103,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 }
 
 // Deploy VAPP
-func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string, storageName string) *govcd.VApp {
+func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string) *govcd.VApp {
 
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
@@ -287,7 +287,7 @@ func RunJob(configFile string) {
 			db.Where("policy_id = ?", pol.ID).First(&vcdPol)
 			var tem models.Template
 			db.Where("id = ?", pol.TemplateID).First(&tem)
-			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network, vcdPol.Storage)
+			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network)
 			if vapp != nil {
 				newVapp := models.VM{
 					IPAddress:   vapp.VApp.HREF,
@@ -304,7 +304,9 @@ func RunJob(configFile string) {
 		db.Save(&res)
 		if pol.PlatformType == models.ResourcePlatformTypeVcd {
 			var vapp models.VM
-			db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp)
+			if db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp).RowsAffected == 0 {
+				return
+			}
 			if pol.IsDestroy {
 				// fix destroy failure on Web UI
 				for i := 0; i < 3; i++ {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"tides-server/pkg/controller"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -623,6 +624,7 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 	if db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{}).RowsAffected == 0 {
 		return resource.NewDeleteVcdResourceForbidden()
 	}
+	controller.RemoveJob(vcd.ResourceID)
 
 	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
 		Message: "success",

@@ -135,9 +135,6 @@ func init() {
                 "platformType": {
                   "type": "string"
                 },
-                "storage": {
-                  "type": "string"
-                },
                 "templateId": {
                   "type": "integer"
                 },
@@ -2351,9 +2348,6 @@ func init() {
                   "type": "string"
                 },
                 "platformType": {
-                  "type": "string"
-                },
-                "storage": {
                   "type": "string"
                 },
                 "templateId": {

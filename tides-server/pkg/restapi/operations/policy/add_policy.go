@@ -121,9 +121,6 @@ type AddPolicyBody struct {
 	// platform type
 	PlatformType string `json:"platformType,omitempty"`
 
-	// storage
-	Storage string `json:"storage,omitempty"`
-
 	// template Id
 	TemplateID int64 `json:"templateId,omitempty"`
 

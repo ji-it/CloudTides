@@ -41,7 +41,6 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 		newVcdPolicy := models.VcdPolicy{
 			Catalog:  body.Catalog,
 			Network:  body.Network,
-			Storage:  body.Storage,
 			PolicyID: newPolicy.ID,
 		}
 

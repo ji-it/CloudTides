@@ -91,3 +91,10 @@ func InitCleanUp() {
 	db := config.GetDB()
 	db.Unscoped().Delete(&models.ResourcePastUsage{})
 }
+
+func RemoveJob(ResID uint) {
+	c, ok := cronjobs[ResID]
+	if ok {
+		c.Stop()
+	}
+}
