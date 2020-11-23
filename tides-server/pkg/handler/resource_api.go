@@ -550,6 +550,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			Monitored:       res.Monitored,
 			Organization:    vcd.Organization,
 			Status:          res.Status,
+			ID:              int64(res.ID),
 		}
 		responses = append(responses, &newres)
 	}

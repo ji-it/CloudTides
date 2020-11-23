@@ -44,6 +44,9 @@
           "CPU": "CPU",
           "MEMORY": "Memory",
           "DISK": "Disk"
+        },
+        "FOOTER": {
+          "VALIDATE": "Validate"
         }
       },
       "DIALOG": {

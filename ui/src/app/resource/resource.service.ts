@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { base } from '@tide-environments/base';
-import { POST_VCD_PATH } from '@tide-config/path';
-import { tap } from 'rxjs/operators';
-import { cloudPlatform } from '@tide-config/cloudPlatform';
+import { VCD_URL_PATH } from '@tide-config/path';
 import { LoginService } from '../login/login.service';
+import toFixed from 'accounting-js/lib/toFixed.js';
 
 @Injectable()
 export class ResourceService {
@@ -18,10 +17,34 @@ export class ResourceService {
 
   private prefix = `${base.apiPrefix}/computeResource`;
 
-  getList() {
-    return this.http.get<Item[]>(`${this.prefix}`).pipe(
-      map(mapList),
-    );
+  async getList() {
+    const list = await this.http.get<Item[]>(base.apiPrefix + VCD_URL_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const usage: Item[] = [];
+    for (const resource of list) {
+      const rawUsage = await this.http.get<ItemUsage>(`${base.apiPrefix}/usage/${resource.id}`, {
+        headers: {
+          Authorization: `Bearer ${this.loginService.token}`,
+        },
+      }).toPromise();
+      const resourceItem: Item = {
+        id: resource.id,
+        name: rawUsage.name,
+        cpu: rawUsage.totalCPU / 1000,
+        mem: rawUsage.totalRAM / 1000,
+        disk: NaN,
+        usage: {
+          'cpu%': toFixed(rawUsage.percentCPU * 100, 2),
+          'mem%': toFixed(rawUsage.percentRAM * 100, 2),
+          'disk%': toFixed(NaN, 2),
+        },
+      };
+      usage.push(resourceItem);
+    }
+    return usage;
   }
 
   addItem(payload: ItemPayload) {
@@ -29,15 +52,11 @@ export class ResourceService {
       ...payload,
       policy: 0,
     };
-    return this.http.post<any>(base.apiPrefix + POST_VCD_PATH, body, {
+    return this.http.post<any>(base.apiPrefix + VCD_URL_PATH, body, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
-    }).pipe(
-      tap(item => {
-        console.log(item);
-      }),
-    );
+    });
   }
 
   editItem(id: string, payload: ItemPayload) {
@@ -52,11 +71,24 @@ export class ResourceService {
 }
 
 // Raw
+interface ItemUsage {
+  currentCPU: number;
+  totalCPU: number;
+  currentRAM: number;
+  totalRAM: number;
+  percentCPU: number;
+  percentRAM: number;
+  name: string;
+}
+
 interface ItemDTO {
   id: string;
   name: string;
+  // unit: GHz
   cpu: number;
+  // unit: GB
   mem: number;
+  // unit: GB
   disk: number;
   usage: {
     'cpu%': number;

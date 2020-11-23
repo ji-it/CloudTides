@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { Item, ItemPayload, ResourceService } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
-import { cloudPlatform } from '@tide-config/cloudPlatform';
+import { RESOURCE_USAGE_REFRESH_PERIOD } from '@tide-config/const';
 
 @Component({
   selector: 'tide-resource-list',
   templateUrl: './resource-list.component.html',
   styleUrls: ['./resource-list.component.scss'],
 })
-export class ResourceListComponent implements OnInit {
+export class ResourceListComponent implements OnInit, OnDestroy {
 
   constructor(
     private resourceService: ResourceService,
@@ -21,10 +21,11 @@ export class ResourceListComponent implements OnInit {
 
   list$: Observable<Item[]> = of([]);
   opened = false;
+  refreshInterval: number;
 
   add(resource: ItemPayload) {
-    this.resourceService.addItem(resource).subscribe(item => {
-      this.refreshList();
+    this.resourceService.addItem(resource).subscribe(async item => {
+      await this.refreshList();
     });
   }
 
@@ -32,12 +33,19 @@ export class ResourceListComponent implements OnInit {
     this.opened = false;
   }
 
-  ngOnInit() {
-    this.refreshList();
+  async ngOnInit() {
+    await this.refreshList();
   }
 
-  refreshList() {
-    this.list$ = this.resourceService.getList();
+  async refreshList() {
+    this.list$ = of(await this.resourceService.getList());
+    this.refreshInterval = window.setInterval(async () => {
+      this.list$ = of(await this.resourceService.getList());
+    }, RESOURCE_USAGE_REFRESH_PERIOD);
+  }
+
+  ngOnDestroy(): void {
+    window.clearInterval(this.refreshInterval);
   }
 
 }

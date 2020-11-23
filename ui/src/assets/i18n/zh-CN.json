@@ -44,6 +44,9 @@
           "CPU": "处理器",
           "MEMORY": "内存",
           "DISK": "存储"
+        },
+        "FOOTER": {
+          "VALIDATE": "验证"
         }
       },
       "DIALOG": {
