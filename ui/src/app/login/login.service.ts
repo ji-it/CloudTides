@@ -4,9 +4,10 @@ import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { base } from '@tide-environments/base';
-import { LOGIN_PATH, PROFILE_PATH } from '@tide-config/path';
+import { LOGIN_API_URL, LOGIN_PATH, PROFILE_API_URL } from '@tide-config/path';
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 import { Router } from '@angular/router';
+import { RegisterService } from '../register/register.service';
 
 @Injectable()
 export class LoginService {
@@ -14,6 +15,7 @@ export class LoginService {
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
+    private readonly registerService: RegisterService,
     @Inject(DOCUMENT) private readonly document: Document,
   ) {
     this.loginNavigate();
@@ -25,7 +27,7 @@ export class LoginService {
     username = '',
     password = '',
   ) {
-    return this.http.post<ServerUserInfo>(base.apiPrefix + LOGIN_PATH, { username, password }).pipe(
+    return this.http.post<ServerUserInfo>(base.apiPrefix + LOGIN_API_URL, { username, password }).pipe(
       tap(serverUserInfo => {
         this.storeToken(serverUserInfo.token);
         this.session$.next({ ...serverUserInfo.userInfo });
@@ -33,40 +35,36 @@ export class LoginService {
     );
   }
 
-  loginNavigate() {
+  async loginNavigate() {
     if (this.hasLoggedIn) {
       this.current().subscribe(
         () => {},
-        error => {
-          switch (error.status) {
-            case 401:
-              this.logout();
-              break;
-            default:
-              break;
-          }
+        async error => {
+          await this.logout();
         });
     } else {
-      this.router.navigate(['/']);
+      if (!this.inLoginPage() && !this.registerService.inRegisterPage()) {
+        await this.logout();
+      }
     }
   }
 
   current() {
-    return this.http.get<UserInfo>(base.apiPrefix + PROFILE_PATH, {
+    return this.http.get<any>(base.apiPrefix + PROFILE_API_URL, {
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
     }).pipe(
-      tap(userInfo => {
-        // todo: handle the condition when userInfo is empty (backend part)
+      tap(returnMessage => {
+        const userInfo = returnMessage.results;
         this.session$.next(userInfo);
       }),
     );
   }
 
-  logout() {
+  async logout() {
     this.removeToken();
-    this.router.navigate(['/']);
+    await this.router.navigate([LOGIN_PATH]);
   }
 
   storeToken(token: string) {
@@ -82,11 +80,15 @@ export class LoginService {
   }
 
   get hasLoggedIn() {
-    return localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN);
+    return localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN) !== null;
   }
 
   get token() {
     return localStorage.getItem(LOCAL_STORAGE_KEY.TOKEN);
+  }
+
+  inLoginPage() {
+    return this.document.location.pathname === LOGIN_PATH;
   }
 }
 

@@ -7,6 +7,7 @@ import { EMPTY, Subject } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { RegisterService } from './register.service';
 import { FormBuilder, Validators, FormGroup, FormControl, ValidatorFn } from '@angular/forms';
+import { LOGIN_PATH } from '@tide-config/path';
 
 function passwordMatchValidator(password: string): ValidatorFn {
   return (control: FormControl) => {
@@ -107,7 +108,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       }),
     )
     .subscribe(res => {
-      this.router.navigate(['/login']);
+      this.router.navigate([LOGIN_PATH]);
     })
   ;
 

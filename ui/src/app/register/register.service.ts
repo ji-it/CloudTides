@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { REGISTER_PATH } from '@tide-config/path';
+import { REGISTER_API_URL, REGISTER_PATH } from '@tide-config/path';
 import { base } from '@tide-environments/base';
 import { tap } from 'rxjs/operators';
-import { ServerUserInfo, UserInfo } from '../login/login.service';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class RegisterService {
 
   constructor(
     private readonly http: HttpClient,
+    @Inject(DOCUMENT) private readonly document: Document,
   ) {
 
   }
@@ -22,12 +23,16 @@ export class RegisterService {
     email = '',
     priority = Priority.LOW,
   ) {
-    return this.http.post<RegisterResult>(base.apiPrefix + REGISTER_PATH,
+    return this.http.post<RegisterResult>(base.apiPrefix + REGISTER_API_URL,
       { username, password, priority, companyName, phone, email }).pipe(
       tap(val => {
 
       }),
     );
+  }
+
+  inRegisterPage() {
+    return this.document.location.pathname === REGISTER_PATH;
   }
 }
 
