@@ -305,9 +305,13 @@ paths:
                 type: integer
               currentCPU:
                 type: number
+              currentDisk:
+                type: number
               currentRAM:
                 type: number
               totalCPU:
+                type: number
+              totalDisk:
                 type: number
               totalRAM:
                 type: number
@@ -1087,9 +1091,13 @@ paths:
               properties:
                 currentCPU:
                   type: number
+                currentDisk:
+                  type: number
                 currentRAM:
                   type: number
                 percentCPU:
+                  type: number
+                percentDisk:
                   type: number
                 percentRAM:
                   type: number

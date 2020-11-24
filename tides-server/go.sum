@@ -361,6 +361,8 @@ github.com/vmware/go-vcloud-director v2.0.0+incompatible h1:3B121XZVdEOxRhv5ARsw
 github.com/vmware/go-vcloud-director v2.0.0+incompatible/go.mod h1:imYhjsPjkPsgrNsbA/wE2hoy0RK27MXzpOSPjHW89S8=
 github.com/vmware/go-vcloud-director/v2 v2.9.0 h1:6HxKdIwbRtTkw+up829ZRCTaC1EyuAqSm5jRnd9zHQ4=
 github.com/vmware/go-vcloud-director/v2 v2.9.0/go.mod h1:czvTQZlB4/WsOsL7rMVCb+SYAPJhx/dYoS/Sk7rc/O0=
+github.com/vmware/go-vcloud-director/v2 v2.10.0-alpha.3 h1:59z8QsNGphGOu2Wm7S+1oal1gQdzdVOgMdxGVgEUXWA=
+github.com/vmware/go-vcloud-director/v2 v2.10.0-alpha.3/go.mod h1:czvTQZlB4/WsOsL7rMVCb+SYAPJhx/dYoS/Sk7rc/O0=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=
 github.com/vmware/govmomi v0.23.1/go.mod h1:Y+Wq4lst78L85Ge/F8+ORXIWiKYqaro1vhAulACy9Lc=
 github.com/vmware/vmw-guestinfo v0.0.0-20170707015358-25eff159a728/go.mod h1:x9oS4Wk2s2u4tS29nEaDLdzvuHdB19CvSGJjPgkZJNk=

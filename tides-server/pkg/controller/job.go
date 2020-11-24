@@ -240,22 +240,32 @@ func RunJob(configFile string) {
 	currentRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Used)
 	totalCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Limit)
 	totalRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Limit)
+	storageRef := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0].HREF
+	storage, err := govcd.GetStorageProfileByHref(client, storageRef)
+	currentDisk := float64(storage.StorageUsedMB)
+	totalDisk := float64(storage.Limit)
 	resUsage.CurrentCPU = currentCPU
 	resUsage.CurrentRAM = currentRAM
 	resUsage.TotalCPU = totalCPU
 	resUsage.TotalRAM = totalRAM
 	resUsage.PercentCPU = currentCPU / totalCPU
 	resUsage.PercentRAM = currentRAM / totalRAM
+	resUsage.CurrentDisk = currentDisk
+	resUsage.TotalDisk = totalDisk
+	resUsage.PercentDisk = currentDisk / totalDisk
 	db.Save(&resUsage)
 
 	newVcdPastUsage := models.ResourcePastUsage{
-		CurrentCPU: currentCPU,
-		CurrentRAM: currentRAM,
-		PercentCPU: currentCPU / totalCPU,
-		PercentRAM: currentRAM / totalRAM,
-		TotalCPU:   totalCPU,
-		TotalRAM:   totalRAM,
-		ResourceID: res.ID,
+		CurrentCPU:  currentCPU,
+		CurrentDisk: currentDisk,
+		CurrentRAM:  currentRAM,
+		PercentCPU:  currentCPU / totalCPU,
+		PercentDisk: currentDisk / totalDisk,
+		PercentRAM:  currentRAM / totalRAM,
+		TotalCPU:    totalCPU,
+		TotalDisk:   totalDisk,
+		TotalRAM:    totalRAM,
+		ResourceID:  res.ID,
 	}
 	db.Create(&newVcdPastUsage)
 

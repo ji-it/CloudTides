@@ -927,6 +927,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -958,6 +961,9 @@ func init() {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalJobs": {
@@ -1570,10 +1576,16 @@ func init() {
                   "currentCPU": {
                     "type": "number"
                   },
+                  "currentDisk": {
+                    "type": "number"
+                  },
                   "currentRAM": {
                     "type": "number"
                   },
                   "percentCPU": {
+                    "type": "number"
+                  },
+                  "percentDisk": {
                     "type": "number"
                   },
                   "percentRAM": {
@@ -3159,6 +3171,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -3190,6 +3205,9 @@ func init() {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalJobs": {
@@ -4362,10 +4380,16 @@ func init() {
         "currentCPU": {
           "type": "number"
         },
+        "currentDisk": {
+          "type": "number"
+        },
         "currentRAM": {
           "type": "number"
         },
         "percentCPU": {
+          "type": "number"
+        },
+        "percentDisk": {
           "type": "number"
         },
         "percentRAM": {

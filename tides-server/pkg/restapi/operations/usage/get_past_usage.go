@@ -133,11 +133,17 @@ type GetPastUsageOKBodyItems0 struct {
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
+
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
 	// percent CPU
 	PercentCPU float64 `json:"percentCPU,omitempty"`
+
+	// percent disk
+	PercentDisk float64 `json:"percentDisk,omitempty"`
 
 	// percent RAM
 	PercentRAM float64 `json:"percentRAM,omitempty"`

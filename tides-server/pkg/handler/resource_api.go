@@ -489,27 +489,37 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	TotalCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Limit)
 	CurrentRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Used)
 	TotalRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Limit)
+	storageRef := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0].HREF
+	storage, err := govcd.GetStorageProfileByHref(client, storageRef)
+	CurrentDisk := float64(storage.StorageUsedMB)
+	TotalDisk := float64(storage.Limit)
 	newVcdUsage := models.ResourceUsage{
 		CurrentCPU:  CurrentCPU,
+		CurrentDisk: CurrentDisk,
 		CurrentRAM:  CurrentRAM,
 		HostAddress: body.Href,
 		Name:        body.Datacenter,
 		PercentCPU:  CurrentCPU / TotalCPU,
+		PercentDisk: CurrentDisk / TotalDisk,
 		PercentRAM:  CurrentRAM / TotalRAM,
 		TotalCPU:    TotalCPU,
+		TotalDisk:   TotalDisk,
 		TotalRAM:    TotalRAM,
 		ResourceID:  newres.Model.ID,
 	}
 	db.Create(&newVcdUsage)
 
 	newVcdPastUsage := models.ResourcePastUsage{
-		CurrentCPU: CurrentCPU,
-		CurrentRAM: CurrentRAM,
-		PercentCPU: CurrentCPU / TotalCPU,
-		PercentRAM: CurrentRAM / TotalRAM,
-		TotalCPU:   TotalCPU,
-		TotalRAM:   TotalRAM,
-		ResourceID: newres.Model.ID,
+		CurrentCPU:  CurrentCPU,
+		CurrentDisk: CurrentDisk,
+		CurrentRAM:  CurrentRAM,
+		PercentCPU:  CurrentCPU / TotalCPU,
+		PercentDisk: CurrentDisk / TotalDisk,
+		PercentRAM:  CurrentRAM / TotalRAM,
+		TotalCPU:    TotalCPU,
+		TotalDisk:   TotalDisk,
+		TotalRAM:    TotalRAM,
+		ResourceID:  newres.Model.ID,
 	}
 	db.Create(&newVcdPastUsage)
 
@@ -603,6 +613,7 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	response := resource.GetVcdResourceOKBody{
 		AllocationModel: vcd.AllocationModel,
 		CurrentCPU:      vcdUsage.CurrentCPU,
+		CurrentDisk:     vcdUsage.CurrentDisk,
 		CurrentRAM:      vcdUsage.CurrentRAM,
 		Datacenter:      res.Datacenter,
 		Href:            res.HostAddress,
@@ -614,6 +625,7 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		SetupStatus:     res.SetupStatus,
 		Status:          res.Status,
 		TotalCPU:        vcdUsage.TotalCPU,
+		TotalDisk:       vcdUsage.TotalDisk,
 		TotalJobs:       res.TotalJobs,
 		TotalRAM:        vcdUsage.TotalRAM,
 		TotalVMs:        res.TotalVMs,
