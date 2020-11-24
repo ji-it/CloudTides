@@ -195,6 +195,10 @@ paths:
                 type: string
               org:
                 type: string
+              network:
+                type: string
+              catalog:
+                type: string
       responses:
         200:
           description: 'returns created username'
@@ -289,6 +293,8 @@ paths:
                 type: boolean
               jobCompleted:
                 type: integer
+              setupStatus:
+                type: string
               status:
                 type: string
               totalJobs:
@@ -374,6 +380,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -381,6 +389,33 @@ paths:
             properties:
               message:
                 type: string
+  /resource/activate/{id}:
+    put:
+      operationId: 'activateResource'
+      description: 'activate resource after initialization setup'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Resource not found'
   /resource/destroy_vm:
     put:
       operationId: 'destroyVM'

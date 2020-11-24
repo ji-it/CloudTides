@@ -28,6 +28,7 @@ func initConfig() {
 	}
 	StartDB()
 	CreateAdmin()
+	TemplateSetup()
 }
 
 // GetConfig returns a pointer to the current config.
@@ -40,8 +41,8 @@ func GetDB() *gorm.DB {
 }
 
 func StartDB() {
-	dbinfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-		DB_HOST, DB_USER, DB_PASSWORD, DB_NAME)
+	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+		DB_USER, DB_PASSWORD, DB_NAME)
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	// defer db.Close()
 	if err != nil {
@@ -71,5 +72,20 @@ func CreateAdmin() {
 			Priority: models.UserPriorityHigh,
 		}
 		db.Create(&admin)
+	}
+}
+
+func TemplateSetup() {
+	db := GetDB()
+	var tem models.Template
+	if db.Where("name = ?", "tides-boinc-attached").First(&tem).RowsAffected == 0 {
+		newTem := models.Template{
+			GuestOS:          "Ubuntu-18.04",
+			MemorySize:       8,
+			Name:             "tides-boinc-attached",
+			ProvisionedSpace: 16,
+			VmName:           "tides-gromacs",
+		}
+		db.Create(&newTem)
 	}
 }

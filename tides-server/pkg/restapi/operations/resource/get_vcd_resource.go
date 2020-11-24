@@ -94,6 +94,9 @@ type GetVcdResourceOKBody struct {
 	// policy
 	Policy int64 `json:"policy,omitempty"`
 
+	// setup status
+	SetupStatus string `json:"setupStatus,omitempty"`
+
 	// status
 	Status string `json:"status,omitempty"`
 

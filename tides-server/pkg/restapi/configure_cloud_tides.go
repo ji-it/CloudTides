@@ -104,6 +104,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.UsageGetPastUsageHandler = usage.GetPastUsageHandlerFunc(handler.GetPastUsageHandler)
 
+	api.ResourceActivateResourceHandler = resource.ActivateResourceHandlerFunc(handler.ActivateResourceHandler)
+
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}

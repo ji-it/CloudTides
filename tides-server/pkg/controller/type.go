@@ -23,6 +23,6 @@ var (
 )
 
 const (
-	schedule      string = "*/2 * * * *"
+	schedule      string = "*/5 * * * *"
 	cleanSchedule string = "0 0 1 * *"
 )

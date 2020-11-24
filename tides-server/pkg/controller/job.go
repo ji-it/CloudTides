@@ -132,10 +132,8 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, c
 	task, err = vm.Undeploy()
 	task.WaitTaskCompletion()
 
-	/*	task, err = vm.ChangeCPUCount(2)
-		task.WaitTaskCompletion()
-		vm.ChangeMemorySize(2048)
-		task.WaitTaskCompletion()*/
+	task, err = vm.ChangeMemorySize(4096)
+	task.WaitTaskCompletion()
 
 	cus, _ := vm.GetGuestCustomizationSection()
 	cus.Enabled = new(bool)

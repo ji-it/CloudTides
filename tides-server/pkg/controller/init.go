@@ -28,7 +28,7 @@ func InitJob() {
 	db := config.GetDB()
 	var resources []*models.Resource
 
-	db.Where("is_active = ? AND monitored = ?", true, true).Find(&resources)
+	db.Where("activated = ? AND is_active = ? AND monitored = ?", true, true, true).Find(&resources)
 	for _, res := range resources {
 		_, ok := cronjobs[res.ID]
 		if !ok {
@@ -53,7 +53,7 @@ func InitJob() {
 		}
 	}
 
-	db.Where("monitored = ?", false).Find(&resources)
+	db.Where("activated = ? AND monitored = ?", true, false).Find(&resources)
 
 	for _, res := range resources {
 		if res.IsActive && res.PlatformType == models.ResourcePlatformTypeVcd {

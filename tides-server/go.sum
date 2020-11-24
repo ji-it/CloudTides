@@ -358,6 +358,7 @@ github.com/urfave/negroni v1.0.0 h1:kIimOitoypq34K7TG7DUaJ9kq/N4Ofuwi1sjz0KipXc=
 github.com/urfave/negroni v1.0.0/go.mod h1:Meg73S6kFm/4PpbYdq35yYWoCZ9mS/YSx+lKnmiohz4=
 github.com/vektah/gqlparser v1.1.2/go.mod h1:1ycwN7Ij5njmMkPPAOaRFY4rET2Enx7IkVv3vaXspKw=
 github.com/vmware/go-vcloud-director v2.0.0+incompatible h1:3B121XZVdEOxRhv5ARswKVxXt4KznAbun8GoXNbbZWs=
+github.com/vmware/go-vcloud-director v2.0.0+incompatible/go.mod h1:imYhjsPjkPsgrNsbA/wE2hoy0RK27MXzpOSPjHW89S8=
 github.com/vmware/go-vcloud-director/v2 v2.9.0 h1:6HxKdIwbRtTkw+up829ZRCTaC1EyuAqSm5jRnd9zHQ4=
 github.com/vmware/go-vcloud-director/v2 v2.9.0/go.mod h1:czvTQZlB4/WsOsL7rMVCb+SYAPJhx/dYoS/Sk7rc/O0=
 github.com/vmware/govmomi v0.23.1 h1:vU09hxnNR/I7e+4zCJvW+5vHu5dO64Aoe2Lw7Yi/KRg=

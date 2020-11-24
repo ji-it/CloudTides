@@ -591,6 +591,48 @@ func init() {
         }
       }
     },
+    "/resource/activate/{id}": {
+      "put": {
+        "description": "activate resource after initialization setup",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "activateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -713,10 +755,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "catalog": {
+                  "type": "string"
+                },
                 "datacenter": {
                   "type": "string"
                 },
                 "href": {
+                  "type": "string"
+                },
+                "network": {
                   "type": "string"
                 },
                 "org": {
@@ -899,6 +947,9 @@ func init() {
                 },
                 "policy": {
                   "type": "integer"
+                },
+                "setupStatus": {
+                  "type": "string"
                 },
                 "status": {
                   "type": "string"
@@ -1217,6 +1268,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -2792,6 +2846,48 @@ func init() {
         }
       }
     },
+    "/resource/activate/{id}": {
+      "put": {
+        "description": "activate resource after initialization setup",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "activateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -2888,10 +2984,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "catalog": {
+                  "type": "string"
+                },
                 "datacenter": {
                   "type": "string"
                 },
                 "href": {
+                  "type": "string"
+                },
+                "network": {
                   "type": "string"
                 },
                 "org": {
@@ -3074,6 +3176,9 @@ func init() {
                 },
                 "policy": {
                   "type": "integer"
+                },
+                "setupStatus": {
+                  "type": "string"
                 },
                 "status": {
                   "type": "string"
@@ -3392,6 +3497,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
