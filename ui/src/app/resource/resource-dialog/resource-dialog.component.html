@@ -6,32 +6,35 @@
   </h3>
   <div class="modal-body">
     <form clrForm [formGroup]="this.resourceForm">
-      <clr-input-container>
-        <label for="name">{{ "HOME.RESOURCE.DIALOG.NAME" | translate:{} }}</label>
-        <input id="name"
+      <clr-select-container>
+        <label for="href">{{ "HOME.RESOURCE.DIALOG.NAME" | translate:{} }}</label>
+        <select
+          clrSelect
+          id="href"
           class="clr-col-12 clr-col-md-8"
-          type="text"
-          [placeholder]="'HOME.RESOURCE.DIALOG.RESOURCE_NAME' | translate:{} "
-          formControlName="name"
-          clrInput />
-        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{} }}</clr-control-error>
-      </clr-input-container>
+          formControlName="href"
+        >
+          <option *ngFor="let platform of cloudPlatformList"
+            [ngValue]="cloudPlatform[platform]"> {{ platform }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
       <clr-input-container>
         <label for="datacenter">{{ "HOME.RESOURCE.DIALOG.DATACENTER" | translate:{} }}</label>
         <input id="datacenter"
           class="clr-col-12 clr-col-md-8"
           type="text"
-          [placeholder]="'HOME.RESOURCE.DIALOG.DATACENTER_NAME' | translate:{} "
+          [placeholder]="'HOME.RESOURCE.DIALOG.DATACENTER_PLACEHOLDER' | translate:{} "
           formControlName="datacenter"
           clrInput />
       </clr-input-container>
       <clr-input-container>
-        <label for="cluster">{{ "HOME.RESOURCE.DIALOG.CLUSTER" | translate:{} }}</label>
-        <input id="cluster"
+        <label for="org">{{ "HOME.RESOURCE.DIALOG.ORG" | translate:{} }}</label>
+        <input id="org"
           class="clr-col-12 clr-col-md-8"
           type="text"
-          [placeholder]="'HOME.RESOURCE.DIALOG.CLUSTER_NAME' | translate:{} "
-          formControlName="cluster"
+          [placeholder]="'HOME.RESOURCE.DIALOG.ORG_PLACEHOLDER' | translate:{} "
+          formControlName="org"
           clrInput />
       </clr-input-container>
 
@@ -42,6 +45,7 @@
           type="text"
           formControlName="username"
           clrInput />
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'Username'} }}</clr-control-error>
       </clr-input-container>
 
       <clr-password-container>
@@ -52,6 +56,8 @@
           type="text"
           formControlName="password"
           clrPassword />
+        <clr-control-helper>{{ 'HOME.RESOURCE.DIALOG.PASSWORD_HELP_TEXT' | translate:{} }}</clr-control-helper>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'Password'} }}</clr-control-error>
       </clr-password-container>
 
     </form>

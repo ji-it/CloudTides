@@ -107,6 +107,7 @@ func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responde
 		LastName:    u.LastName,
 		Phone:       u.Phone,
 		Position:    u.Position,
+		Username:    u.Username,
 	}
 
 	return user.NewGetUserProfileOK().WithPayload(&user.GetUserProfileOKBody{

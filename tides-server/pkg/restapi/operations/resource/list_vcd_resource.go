@@ -73,6 +73,9 @@ type ListVcdResourceOKBodyItems0 struct {
 	// href
 	Href string `json:"href,omitempty"`
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// is active
 	IsActive bool `json:"isActive,omitempty"`
 

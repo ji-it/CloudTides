@@ -94,7 +94,7 @@ paths:
                 items:
                   $ref: '#/definitions/ResourceAddItem'
         401:
-          description: 'Unauthorized'                  
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
           schema:
@@ -158,7 +158,7 @@ paths:
             type: object
             properties:
               message:
-                type: string               
+                type: string
         401:
           description: "Unauthorized"
         404:
@@ -217,7 +217,7 @@ paths:
                   vcdId:
                     type: integer
         401:
-          description: 'Unauthorized'                  
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
           schema:
@@ -249,13 +249,15 @@ paths:
                 organization:
                   type: string
                 allocationModel:
-                  type: string 
+                  type: string
                 isActive:
                   type: boolean
                 monitored:
                   type: boolean
                 status:
                   type: string
+                id:
+                  type: integer
         401:
           description: 'Unauthorized'
   /resource/vcd/{id}:
@@ -286,7 +288,7 @@ paths:
               organization:
                 type: string
               allocationModel:
-                type: string 
+                type: string
               isActive:
                 type: boolean
               monitored:
@@ -483,6 +485,8 @@ paths:
                   position:
                     type: string
                   phone:
+                    type: string
+                  username:
                     type: string
         401:
           description: 'Unauthorized'
@@ -1118,7 +1122,7 @@ paths:
               name:
                 type: string
               VMs:
-                type: object                
+                type: object
                 additionalProperties:
                   type: object
                   properties:
@@ -1282,7 +1286,7 @@ paths:
           description: 'OK'
           schema:
             type: array
-            items: 
+            items:
               type: object
               properties:
                 ID:
@@ -1392,7 +1396,7 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-      
+
 
 definitions:
   ResourceAddItem:

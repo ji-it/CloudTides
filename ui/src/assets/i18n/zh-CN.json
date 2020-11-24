@@ -4,7 +4,8 @@
     "LOGIN": "登录",
     "LOGIN_TITLE": "Cloudtides 云汐",
     "EMAIL": "邮箱",
-    "PASSWORD": "密码"
+    "PASSWORD": "密码",
+    "SIGNUP": "注册"
   },
   "REGISTER": {
     "REGISTER": "注册",
@@ -43,21 +44,25 @@
           "CPU": "处理器",
           "MEMORY": "内存",
           "DISK": "存储"
+        },
+        "FOOTER": {
+          "VALIDATE": "验证"
         }
       },
       "DIALOG": {
         "ADD_RESOURCE": "添加资源",
         "NAME": "名称",
-        "REQUIRED": "此项不能为空",
+        "REQUIRED": "{{item}}不能为空",
         "DATACENTER": "数据中心",
-        "CLUSTER": "集群",
+        "ORG": "组织",
         "USERNAME": "用户名",
         "PASSWORD": "密码",
         "CANCEL": "取消",
         "SAVE": "保存",
-        "RESOURCE_NAME": "资源名称",
-        "DATACENTER_NAME": "数据中心名称",
-        "CLUSTER_NAME": "集群名称"
+        "RESOURCE_PLACEHOLDER": "资源名称",
+        "DATACENTER_PLACEHOLDER": "数据中心名称",
+        "ORG_NAME": "组织名称",
+        "ORG_PLACEHOLDER": "组织名称"
       }
     },
     "POLICY": {
