@@ -57,17 +57,17 @@ func check_configuration(conf VcdConfig) {
 }
 
 // Retrieves the configuration from a Json or Yaml file
-func getConfig(config_file string) VcdConfig {
+func getConfig(config_file string) (VcdConfig, error) {
 	var configuration VcdConfig
 	buffer, err := ioutil.ReadFile(config_file)
 	if err != nil {
 		fmt.Printf("Configuration file %s not found\n%s\n", config_file, err)
-		os.Exit(1)
+		return configuration, err
 	}
 	err = yaml.Unmarshal(buffer, &configuration)
 	if err != nil {
 		fmt.Printf("Error retrieving configuration from file %s\n%s\n", config_file, err)
-		os.Exit(1)
+		return configuration, err
 	}
 	check_configuration(configuration)
 
@@ -80,7 +80,7 @@ func getConfig(config_file string) VcdConfig {
 		new_conf, _ := yaml.Marshal(configuration)
 		fmt.Printf("YAML configuration: \n%s\n", new_conf)
 	}
-	return configuration
+	return configuration, nil
 }
 
 // Creates a vCD client
@@ -103,7 +103,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 }
 
 // Deploy VAPP
-func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string, storageName string) *govcd.VApp {
+func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string) *govcd.VApp {
 
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
@@ -132,10 +132,8 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, c
 	task, err = vm.Undeploy()
 	task.WaitTaskCompletion()
 
-	/*	task, err = vm.ChangeCPUCount(2)
-		task.WaitTaskCompletion()
-		vm.ChangeMemorySize(2048)
-		task.WaitTaskCompletion()*/
+	task, err = vm.ChangeMemorySize(4096)
+	task.WaitTaskCompletion()
 
 	cus, _ := vm.GetGuestCustomizationSection()
 	cus.Enabled = new(bool)
@@ -210,7 +208,10 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 func RunJob(configFile string) {
 
 	// Reads the configuration file
-	conf := getConfig(configFile)
+	conf, err := getConfig(configFile)
+	if err != nil {
+		return
+	}
 
 	client, err := conf.Client() // We now have a client
 	if err != nil {
@@ -239,27 +240,39 @@ func RunJob(configFile string) {
 	currentRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Used)
 	totalCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Limit)
 	totalRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Limit)
+	storageRef := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0].HREF
+	storage, err := govcd.GetStorageProfileByHref(client, storageRef)
+	currentDisk := float64(storage.StorageUsedMB)
+	totalDisk := float64(storage.Limit)
 	resUsage.CurrentCPU = currentCPU
 	resUsage.CurrentRAM = currentRAM
 	resUsage.TotalCPU = totalCPU
 	resUsage.TotalRAM = totalRAM
 	resUsage.PercentCPU = currentCPU / totalCPU
 	resUsage.PercentRAM = currentRAM / totalRAM
+	resUsage.CurrentDisk = currentDisk
+	resUsage.TotalDisk = totalDisk
+	resUsage.PercentDisk = currentDisk / totalDisk
 	db.Save(&resUsage)
 
 	newVcdPastUsage := models.ResourcePastUsage{
-		CurrentCPU: currentCPU,
-		CurrentRAM: currentRAM,
-		PercentCPU: currentCPU / totalCPU,
-		PercentRAM: currentRAM / totalRAM,
-		TotalCPU:   totalCPU,
-		TotalRAM:   totalRAM,
-		ResourceID: res.ID,
+		CurrentCPU:  currentCPU,
+		CurrentDisk: currentDisk,
+		CurrentRAM:  currentRAM,
+		PercentCPU:  currentCPU / totalCPU,
+		PercentDisk: currentDisk / totalDisk,
+		PercentRAM:  currentRAM / totalRAM,
+		TotalCPU:    totalCPU,
+		TotalDisk:   totalDisk,
+		TotalRAM:    totalRAM,
+		ResourceID:  res.ID,
 	}
 	db.Create(&newVcdPastUsage)
 
 	var pol models.Policy
-	db.Where("id = ?", res.PolicyID).First(&pol)
+	if db.Where("id = ?", res.PolicyID).First(&pol).RowsAffected == 0 {
+		return
+	}
 	idle := Policy{}
 	thres := Policy{}
 	json.Unmarshal([]byte(pol.IdlePolicy), &idle)
@@ -282,7 +295,7 @@ func RunJob(configFile string) {
 			db.Where("policy_id = ?", pol.ID).First(&vcdPol)
 			var tem models.Template
 			db.Where("id = ?", pol.TemplateID).First(&tem)
-			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network, vcdPol.Storage)
+			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network)
 			if vapp != nil {
 				newVapp := models.VM{
 					IPAddress:   vapp.VApp.HREF,
@@ -299,7 +312,9 @@ func RunJob(configFile string) {
 		db.Save(&res)
 		if pol.PlatformType == models.ResourcePlatformTypeVcd {
 			var vapp models.VM
-			db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp)
+			if db.Where("resource_id = ? AND powered_on = ?", res.ID, true).Last(&vapp).RowsAffected == 0 {
+				return
+			}
 			if pol.IsDestroy {
 				// fix destroy failure on Web UI
 				for i := 0; i < 3; i++ {

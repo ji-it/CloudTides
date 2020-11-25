@@ -70,6 +70,9 @@ type GetVcdResourceOKBody struct {
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
+
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
@@ -94,11 +97,17 @@ type GetVcdResourceOKBody struct {
 	// policy
 	Policy int64 `json:"policy,omitempty"`
 
+	// setup status
+	SetupStatus string `json:"setupStatus,omitempty"`
+
 	// status
 	Status string `json:"status,omitempty"`
 
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
 
 	// total jobs
 	TotalJobs int64 `json:"totalJobs,omitempty"`

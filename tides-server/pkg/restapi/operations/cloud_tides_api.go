@@ -50,6 +50,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		ResourceActivateResourceHandler: resource.ActivateResourceHandlerFunc(func(params resource.ActivateResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ActivateResource has not yet been implemented")
+		}),
 		PolicyAddPolicyHandler: policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
 		}),
@@ -183,6 +186,8 @@ type CloudTidesAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// ResourceActivateResourceHandler sets the operation handler for the activate resource operation
+	ResourceActivateResourceHandler resource.ActivateResourceHandler
 	// PolicyAddPolicyHandler sets the operation handler for the add policy operation
 	PolicyAddPolicyHandler policy.AddPolicyHandler
 	// ProjectAddProjectHandler sets the operation handler for the add project operation
@@ -326,6 +331,9 @@ func (o *CloudTidesAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.ResourceActivateResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ActivateResourceHandler")
+	}
 	if o.PolicyAddPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.AddPolicyHandler")
 	}
@@ -512,6 +520,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/activate/{id}"] = resource.NewActivateResource(o.context, o.ResourceActivateResourceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

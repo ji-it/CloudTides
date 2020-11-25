@@ -65,11 +65,17 @@ func (o *AddVcdResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model AddVcdResourceBody
 type AddVcdResourceBody struct {
 
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
+
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
 
 	// href
 	Href string `json:"href,omitempty"`
+
+	// network
+	Network string `json:"network,omitempty"`
 
 	// org
 	Org string `json:"org,omitempty"`

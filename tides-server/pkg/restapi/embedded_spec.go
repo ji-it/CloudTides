@@ -135,9 +135,6 @@ func init() {
                 "platformType": {
                   "type": "string"
                 },
-                "storage": {
-                  "type": "string"
-                },
                 "templateId": {
                   "type": "integer"
                 },
@@ -342,6 +339,9 @@ func init() {
               }
             }
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "resource not found"
           }
@@ -381,6 +381,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -588,6 +591,48 @@ func init() {
         }
       }
     },
+    "/resource/activate/{id}": {
+      "put": {
+        "description": "activate resource after initialization setup",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "activateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -668,6 +713,9 @@ func init() {
                   "href": {
                     "type": "string"
                   },
+                  "id": {
+                    "type": "integer"
+                  },
                   "isActive": {
                     "type": "boolean"
                   },
@@ -710,10 +758,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "catalog": {
+                  "type": "string"
+                },
                 "datacenter": {
                   "type": "string"
                 },
                 "href": {
+                  "type": "string"
+                },
+                "network": {
                   "type": "string"
                 },
                 "org": {
@@ -873,6 +927,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -897,10 +954,16 @@ func init() {
                 "policy": {
                   "type": "integer"
                 },
+                "setupStatus": {
+                  "type": "string"
+                },
                 "status": {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalJobs": {
@@ -917,6 +980,12 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
           }
         }
       },
@@ -951,6 +1020,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -1206,6 +1278,9 @@ func init() {
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "resource not found",
             "schema": {
@@ -1385,6 +1460,9 @@ func init() {
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "resource not found"
           }
@@ -1498,10 +1576,16 @@ func init() {
                   "currentCPU": {
                     "type": "number"
                   },
+                  "currentDisk": {
+                    "type": "number"
+                  },
                   "currentRAM": {
                     "type": "number"
                   },
                   "percentCPU": {
+                    "type": "number"
+                  },
+                  "percentDisk": {
                     "type": "number"
                   },
                   "percentRAM": {
@@ -1895,6 +1979,9 @@ func init() {
                     },
                     "position": {
                       "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
                     }
                   }
                 }
@@ -2013,10 +2100,22 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "city": {
+                  "type": "string"
+                },
                 "companyName": {
                   "type": "string"
                 },
+                "country": {
+                  "type": "string"
+                },
                 "email": {
+                  "type": "string"
+                },
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
                   "type": "string"
                 },
                 "password": {
@@ -2025,13 +2124,8 @@ func init() {
                 "phone": {
                   "type": "string"
                 },
-                "priority": {
-                  "type": "string",
-                  "enum": [
-                    "Low",
-                    "Medium",
-                    "High"
-                  ]
+                "position": {
+                  "type": "string"
                 },
                 "username": {
                   "type": "string"
@@ -2049,16 +2143,31 @@ func init() {
                 "userInfo": {
                   "type": "object",
                   "properties": {
+                    "city": {
+                      "type": "string"
+                    },
                     "companyName": {
                       "type": "string"
                     },
+                    "country": {
+                      "type": "string"
+                    },
                     "email": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
                       "type": "string"
                     },
                     "password": {
                       "type": "string"
                     },
                     "phone": {
+                      "type": "string"
+                    },
+                    "position": {
                       "type": "string"
                     },
                     "priority": {
@@ -2313,9 +2422,6 @@ func init() {
                 "platformType": {
                   "type": "string"
                 },
-                "storage": {
-                  "type": "string"
-                },
                 "templateId": {
                   "type": "integer"
                 },
@@ -2520,6 +2626,9 @@ func init() {
               }
             }
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "resource not found"
           }
@@ -2559,6 +2668,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -2752,6 +2864,48 @@ func init() {
         }
       }
     },
+    "/resource/activate/{id}": {
+      "put": {
+        "description": "activate resource after initialization setup",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "activateResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
     "/resource/destroy_vm": {
       "put": {
         "description": "destroy specified VM",
@@ -2848,10 +3002,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "catalog": {
+                  "type": "string"
+                },
                 "datacenter": {
                   "type": "string"
                 },
                 "href": {
+                  "type": "string"
+                },
+                "network": {
                   "type": "string"
                 },
                 "org": {
@@ -3011,6 +3171,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -3035,10 +3198,16 @@ func init() {
                 "policy": {
                   "type": "integer"
                 },
+                "setupStatus": {
+                  "type": "string"
+                },
                 "status": {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalJobs": {
@@ -3055,6 +3224,12 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
           }
         }
       },
@@ -3089,6 +3264,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -3344,6 +3522,9 @@ func init() {
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "resource not found",
             "schema": {
@@ -3495,6 +3676,9 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found"
@@ -3953,6 +4137,9 @@ func init() {
                     },
                     "position": {
                       "type": "string"
+                    },
+                    "username": {
+                      "type": "string"
                     }
                   }
                 }
@@ -4071,10 +4258,22 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "city": {
+                  "type": "string"
+                },
                 "companyName": {
                   "type": "string"
                 },
+                "country": {
+                  "type": "string"
+                },
                 "email": {
+                  "type": "string"
+                },
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
                   "type": "string"
                 },
                 "password": {
@@ -4083,13 +4282,8 @@ func init() {
                 "phone": {
                   "type": "string"
                 },
-                "priority": {
-                  "type": "string",
-                  "enum": [
-                    "Low",
-                    "Medium",
-                    "High"
-                  ]
+                "position": {
+                  "type": "string"
                 },
                 "username": {
                   "type": "string"
@@ -4107,16 +4301,31 @@ func init() {
                 "userInfo": {
                   "type": "object",
                   "properties": {
+                    "city": {
+                      "type": "string"
+                    },
                     "companyName": {
                       "type": "string"
                     },
+                    "country": {
+                      "type": "string"
+                    },
                     "email": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
                       "type": "string"
                     },
                     "password": {
                       "type": "string"
                     },
                     "phone": {
+                      "type": "string"
+                    },
+                    "position": {
                       "type": "string"
                     },
                     "priority": {
@@ -4171,10 +4380,16 @@ func init() {
         "currentCPU": {
           "type": "number"
         },
+        "currentDisk": {
+          "type": "number"
+        },
         "currentRAM": {
           "type": "number"
         },
         "percentCPU": {
+          "type": "number"
+        },
+        "percentDisk": {
           "type": "number"
         },
         "percentRAM": {
@@ -4212,6 +4427,9 @@ func init() {
         },
         "position": {
           "type": "string"
+        },
+        "username": {
+          "type": "string"
         }
       }
     },
@@ -4244,6 +4462,9 @@ func init() {
         "href": {
           "type": "string"
         },
+        "id": {
+          "type": "integer"
+        },
         "isActive": {
           "type": "boolean"
         },
@@ -4264,16 +4485,31 @@ func init() {
     "RegisterUserOKBodyUserInfo": {
       "type": "object",
       "properties": {
+        "city": {
+          "type": "string"
+        },
         "companyName": {
           "type": "string"
         },
+        "country": {
+          "type": "string"
+        },
         "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
           "type": "string"
         },
         "password": {
           "type": "string"
         },
         "phone": {
+          "type": "string"
+        },
+        "position": {
           "type": "string"
         },
         "priority": {

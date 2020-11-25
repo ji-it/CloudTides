@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"net/http"
 
+	interpose "github.com/carbocation/interpose/middleware"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/rs/cors"
@@ -103,6 +104,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.UsageGetPastUsageHandler = usage.GetPastUsageHandlerFunc(handler.GetPastUsageHandler)
 
+	api.ResourceActivateResourceHandler = resource.ActivateResourceHandlerFunc(handler.ActivateResourceHandler)
+
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
@@ -141,6 +144,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 
 	// Insert the middleware
 	handler = c.Handler(handler)
+	logViaLogrus := interpose.NegroniLogrus()
 
-	return handler
+	return logViaLogrus(handler)
 }

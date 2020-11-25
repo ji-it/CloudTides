@@ -37,11 +37,10 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 		})
 	}
 
-	if body.PlatformType == "vcd" {
+	if body.PlatformType == models.ResourcePlatformTypeVcd {
 		newVcdPolicy := models.VcdPolicy{
 			Catalog:  body.Catalog,
 			Network:  body.Network,
-			Storage:  body.Storage,
 			PolicyID: newPolicy.ID,
 		}
 
@@ -65,11 +64,12 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 		return policy.NewAddPolicyUnauthorized()
 	}
 
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	body := params.ReqBody
 	var pol models.Policy
 	db := config.GetDB()
-	if db.Where("id = ?", params.ID).First(&pol).Error != nil {
-		return policy.NewUpdatePolicyNotFound()
+	if db.Where("id = ? AND user_id = ?", params.ID, uid).First(&pol).RowsAffected == 0 {
+		return policy.NewUpdatePolicyForbidden()
 	}
 
 	pol.DeployType = body.DeployType
@@ -129,9 +129,8 @@ func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder 
 	var pol models.Policy
 	db := config.GetDB()
 
-	err := db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&pol).Error
-	if err != nil {
-		return policy.NewRemovePolicyNotFound()
+	if db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&pol).RowsAffected == 0 {
+		return policy.NewRemovePolicyForbidden()
 	}
 
 	return policy.NewRemovePolicyOK().WithPayload(&policy.RemovePolicyOKBody{

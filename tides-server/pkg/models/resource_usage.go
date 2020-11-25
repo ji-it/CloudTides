@@ -15,17 +15,26 @@ type ResourcePastUsage struct {
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
+
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
 	// percent CPU
 	PercentCPU float64 `json:"percentCPU,omitempty"`
 
+	// percent disk
+	PercentDisk float64 `json:"percentDisk,omitempty"`
+
 	// percent RAM
 	PercentRAM float64 `json:"percentRAM,omitempty"`
 
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
 
 	// total RAM
 	TotalRAM float64 `json:"totalRAM,omitempty"`
@@ -44,6 +53,9 @@ type ResourceUsage struct {
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
+
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
@@ -56,11 +68,17 @@ type ResourceUsage struct {
 	// percent CPU
 	PercentCPU float64 `json:"percentCPU,omitempty"`
 
+	// percent disk
+	PercentDisk float64 `json:"percentDisk,omitempty"`
+
 	// percent RAM
 	PercentRAM float64 `json:"percentRAM,omitempty"`
 
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
 
 	// total RAM
 	TotalRAM float64 `json:"totalRAM,omitempty"`

@@ -16,6 +16,7 @@ const (
 	DB_USER                      string          = "postgres"
 	DB_PASSWORD                  string          = "postgres"
 	DB_NAME                      string          = "test"
+	adminUser                    string          = "admin"
 )
 
 var (

@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
 import { ItemPayload } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
+import { cloudPlatform, defaultCloudPlatformURL } from '@tide-config/cloudPlatform';
 
 @Component({
   selector: 'tide-resource-dialog',
@@ -16,12 +17,14 @@ export class ResourceDialogComponent implements OnInit {
     public readonly translate: TranslateService,
   ) {
     this.resourceForm = this.fb.group({
-      name: ['', Validators.required],
+      href: [defaultCloudPlatformURL, [Validators.required]],
       datacenter: [''],
-      cluster: [''],
+      org: [''],
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
+    this.cloudPlatformList = Object.keys(cloudPlatform);
+    this.cloudPlatform = cloudPlatform;
   }
 
   @Input() opened = false;
@@ -29,6 +32,8 @@ export class ResourceDialogComponent implements OnInit {
   @Output() cancel = new EventEmitter();
 
   resourceForm: FormGroup;
+  cloudPlatformList: string[];
+  cloudPlatform: any;
 
   ngOnInit(): void {
 

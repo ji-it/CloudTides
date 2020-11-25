@@ -182,6 +182,9 @@ type GetUserProfileOKBodyResults struct {
 
 	// position
 	Position string `json:"position,omitempty"`
+
+	// username
+	Username string `json:"username,omitempty"`
 }
 
 // Validate validates this get user profile o k body results

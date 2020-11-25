@@ -21,9 +21,6 @@ type VcdPolicy struct {
 	// network
 	Network string `json:"network,omitempty"`
 
-	// storage
-	Storage string `json:"storage,omitempty"`
-
 	// policy foreign key
 	PolicyID uint
 

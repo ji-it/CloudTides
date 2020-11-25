@@ -1,5 +1,6 @@
 # CloudTides
-![](https://github.com/dzl84/CloudTides/workflows/Tides%20Server%20application/badge.svg) ![](https://github.com/dzl84/CloudTides/server_coverage.svg)
+![](https://github.com/scienterprise/CloudTides/workflows/CloudTides%20UI/badge.svg)
+![](https://github.com/scienterprise/CloudTides/workflows/CloudTides%20Server/badge.svg)
 
 ## Dependencies
 

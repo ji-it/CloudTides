@@ -143,6 +143,30 @@ func (o *UpdatePolicyUnauthorized) WriteResponse(rw http.ResponseWriter, produce
 	}
 }
 
+// UpdatePolicyForbiddenCode is the HTTP code returned for type UpdatePolicyForbidden
+const UpdatePolicyForbiddenCode int = 403
+
+/*UpdatePolicyForbidden Forbidden
+
+swagger:response updatePolicyForbidden
+*/
+type UpdatePolicyForbidden struct {
+}
+
+// NewUpdatePolicyForbidden creates UpdatePolicyForbidden with default headers values
+func NewUpdatePolicyForbidden() *UpdatePolicyForbidden {
+
+	return &UpdatePolicyForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdatePolicyForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
 // UpdatePolicyNotFoundCode is the HTTP code returned for type UpdatePolicyNotFound
 const UpdatePolicyNotFoundCode int = 404
 

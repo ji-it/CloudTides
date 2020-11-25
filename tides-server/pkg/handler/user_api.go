@@ -22,11 +22,16 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	}
 
 	newUser := models.User{
+		City:        body.City,
 		CompanyName: body.CompanyName,
+		Country:     body.Country,
 		Email:       body.Email,
+		FirstName:   body.FirstName,
+		LastName:    body.LastName,
 		Password:    body.Password,
 		Phone:       body.Phone,
-		Priority:    body.Priority,
+		Position:    body.Position,
+		Priority:    models.UserPriorityLow,
 		Username:    body.Username,
 	}
 
@@ -36,11 +41,16 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	}
 
 	res := &user.RegisterUserOKBodyUserInfo{
+		City:        body.City,
 		CompanyName: body.CompanyName,
+		Country:     body.Country,
 		Email:       body.Email,
+		FirstName:   body.FirstName,
+		LastName:    body.LastName,
 		Password:    body.Password,
 		Phone:       body.Phone,
-		Priority:    body.Priority,
+		Position:    body.Position,
+		Priority:    models.UserPriorityLow,
 		Username:    body.Username,
 	}
 
@@ -97,6 +107,7 @@ func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responde
 		LastName:    u.LastName,
 		Phone:       u.Phone,
 		Position:    u.Position,
+		Username:    u.Username,
 	}
 
 	return user.NewGetUserProfileOK().WithPayload(&user.GetUserProfileOKBody{

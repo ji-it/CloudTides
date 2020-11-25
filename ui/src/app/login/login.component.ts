@@ -67,12 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.submit$.next({ username, password });
   }
 
-  ngOnInit() {
-    if (this.loginService.hasLoggedIn) {
-      // this.document.location.href = '/';
-      this.router.navigate(['/']);
-    }
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.submit$$.unsubscribe();

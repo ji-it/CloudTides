@@ -45,13 +45,16 @@ type Vcd struct {
 type Resource struct {
 	gorm.Model
 
+	// activated, controlled by admin, indicate whether the resource is qualified for contribution
+	Activated bool `json:"Activated,omitempty"`
+
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
 
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
 
-	// is active
+	// is active, controlled by user, indicate whether user is willing to contribute the resource
 	IsActive bool `json:"isActive,omitempty"`
 
 	// job completed
@@ -73,6 +76,9 @@ type Resource struct {
 	PolicyID *uint
 
 	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+
+	// setup status
+	SetupStatus string `json:"setupStatus,omitempty"`
 
 	// status
 	// Enum: [idle normal busy unknown]

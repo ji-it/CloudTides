@@ -1,12 +1,16 @@
-name: frontend-CICD
+name: CloudTides UI
 
 on:
   push:
     branches:
       - 'master'
+    paths:
+      - 'ui/**'
   pull_request:
     branches:
       - 'master'
+    paths:
+      - 'ui/**'
 
 jobs:
 

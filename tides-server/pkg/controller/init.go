@@ -10,18 +10,25 @@ import (
 )
 
 func InitController() {
+	// Query usage every 5 mins
 	c := cron.New()
 	c.AddFunc(schedule, func() {
 		InitJob()
 	})
 	c.Start()
+	// Clean up past usage table every month
+	cl := cron.New()
+	cl.AddFunc(cleanSchedule, func() {
+		InitCleanUp()
+	})
+	cl.Start()
 }
 
 func InitJob() {
 	db := config.GetDB()
 	var resources []*models.Resource
 
-	db.Where("is_active = ? AND monitored = ?", true, true).Find(&resources)
+	db.Where("activated = ? AND is_active = ? AND monitored = ?", true, true, true).Find(&resources)
 	for _, res := range resources {
 		_, ok := cronjobs[res.ID]
 		if !ok {
@@ -34,7 +41,7 @@ func InitJob() {
 				Href:     res.HostAddress,
 				VDC:      res.Datacenter,
 			}
-			filename := "../pkg/controller/cloudtides-" + res.Datacenter + ".json"
+			filename := "./cloudtides-" + res.Datacenter + ".json"
 			file, _ := json.MarshalIndent(newVcdConfig, "", "")
 			ioutil.WriteFile(filename, file, 0644)
 			c := cron.New()
@@ -46,7 +53,7 @@ func InitJob() {
 		}
 	}
 
-	db.Where("monitored = ?", false).Find(&resources)
+	db.Where("activated = ? AND monitored = ?", true, false).Find(&resources)
 
 	for _, res := range resources {
 		if res.IsActive && res.PlatformType == models.ResourcePlatformTypeVcd {
@@ -59,7 +66,7 @@ func InitJob() {
 				Href:     res.HostAddress,
 				VDC:      res.Datacenter,
 			}
-			filename := "../pkg/controller/cloudtides-" + res.Datacenter + ".json"
+			filename := "./cloudtides-" + res.Datacenter + ".json"
 			file, _ := json.MarshalIndent(newVcdConfig, "", "")
 			ioutil.WriteFile(filename, file, 0644)
 
@@ -77,5 +84,17 @@ func InitJob() {
 				c.Stop()
 			}
 		}
+	}
+}
+
+func InitCleanUp() {
+	db := config.GetDB()
+	db.Unscoped().Delete(&models.ResourcePastUsage{})
+}
+
+func RemoveJob(ResID uint) {
+	c, ok := cronjobs[ResID]
+	if ok {
+		c.Stop()
 	}
 }

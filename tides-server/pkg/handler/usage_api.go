@@ -172,11 +172,13 @@ func GetPastUsageHandler(params usage.GetPastUsageParams) middleware.Responder {
 
 	for _, us := range pastUsage {
 		response := usage.GetPastUsageOKBodyItems0{
-			CurrentCPU: us.CurrentCPU,
-			CurrentRAM: us.CurrentRAM,
-			PercentCPU: us.PercentCPU,
-			PercentRAM: us.PercentRAM,
-			Time:       strfmt.DateTime(us.CreatedAt),
+			CurrentCPU:  us.CurrentCPU,
+			CurrentDisk: us.CurrentDisk,
+			CurrentRAM:  us.CurrentRAM,
+			PercentCPU:  us.PercentCPU,
+			PercentDisk: us.PercentDisk,
+			PercentRAM:  us.PercentRAM,
+			Time:        strfmt.DateTime(us.CreatedAt),
 		}
 
 		responses = append(responses, &response)

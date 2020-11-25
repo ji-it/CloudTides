@@ -15,6 +15,7 @@ import (
 	"github.com/vmware/govmomi/vim25/soap"
 
 	"tides-server/pkg/config"
+	"tides-server/pkg/controller"
 	"tides-server/pkg/models"
 	"tides-server/pkg/restapi/operations/resource"
 )
@@ -311,7 +312,11 @@ func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middl
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
-	db.Where("user_id = ?", uid).Find(&resources)
+	if VerifyAdmin(params.HTTPRequest) {
+		db.Find(&resources)
+	} else {
+		db.Where("user_id = ?", uid).Find(&resources)
+	}
 
 	var response []*models.ResourceListItem
 	for _, res := range resources {
@@ -445,6 +450,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	}
 
 	newres := models.Resource{
+		Activated:    false,
 		Datacenter:   body.Datacenter,
 		HostAddress:  body.Href,
 		IsActive:     true,
@@ -453,6 +459,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		Name:         body.Datacenter,
 		Password:     password,
 		PlatformType: models.ResourcePlatformTypeVcd,
+		SetupStatus:  "Initializing",
 		Status:       models.ResourceStatusUnknown,
 		TotalJobs:    0,
 		UserID:       uid,
@@ -482,29 +489,49 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	TotalCPU := float64(vdc.Vdc.ComputeCapacity[0].CPU.Limit)
 	CurrentRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Used)
 	TotalRAM := float64(vdc.Vdc.ComputeCapacity[0].Memory.Limit)
+	storageRef := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0].HREF
+	storage, err := govcd.GetStorageProfileByHref(client, storageRef)
+	CurrentDisk := float64(storage.StorageUsedMB)
+	TotalDisk := float64(storage.Limit)
 	newVcdUsage := models.ResourceUsage{
 		CurrentCPU:  CurrentCPU,
+		CurrentDisk: CurrentDisk,
 		CurrentRAM:  CurrentRAM,
 		HostAddress: body.Href,
 		Name:        body.Datacenter,
 		PercentCPU:  CurrentCPU / TotalCPU,
+		PercentDisk: CurrentDisk / TotalDisk,
 		PercentRAM:  CurrentRAM / TotalRAM,
 		TotalCPU:    TotalCPU,
+		TotalDisk:   TotalDisk,
 		TotalRAM:    TotalRAM,
 		ResourceID:  newres.Model.ID,
 	}
 	db.Create(&newVcdUsage)
 
 	newVcdPastUsage := models.ResourcePastUsage{
-		CurrentCPU: CurrentCPU,
-		CurrentRAM: CurrentRAM,
-		PercentCPU: CurrentCPU / TotalCPU,
-		PercentRAM: CurrentRAM / TotalRAM,
-		TotalCPU:   TotalCPU,
-		TotalRAM:   TotalRAM,
-		ResourceID: newres.Model.ID,
+		CurrentCPU:  CurrentCPU,
+		CurrentDisk: CurrentDisk,
+		CurrentRAM:  CurrentRAM,
+		PercentCPU:  CurrentCPU / TotalCPU,
+		PercentDisk: CurrentDisk / TotalDisk,
+		PercentRAM:  CurrentRAM / TotalRAM,
+		TotalCPU:    TotalCPU,
+		TotalDisk:   TotalDisk,
+		TotalRAM:    TotalRAM,
+		ResourceID:  newres.Model.ID,
 	}
 	db.Create(&newVcdPastUsage)
+
+	confi := VcdConfig{
+		User:     username,
+		Password: password,
+		Org:      body.Org,
+		Href:     body.Href,
+		VDC:      body.Datacenter,
+	}
+
+	go initValidation(&confi, body.Catalog, body.Network, &newres)
 
 	return resource.NewAddVcdResourceOK().WithPayload(&resource.AddVcdResourceOKBody{
 		Message: "success",
@@ -525,7 +552,11 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
-	db.Where("user_id = ?", uid).Find(&resources)
+	if VerifyAdmin(params.HTTPRequest) {
+		db.Find(&resources)
+	} else {
+		db.Where("user_id = ?", uid).Find(&resources)
+	}
 
 	var responses []*resource.ListVcdResourceOKBodyItems0
 	for _, res := range resources {
@@ -542,6 +573,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			Monitored:       res.Monitored,
 			Organization:    vcd.Organization,
 			Status:          res.Status,
+			ID:              int64(res.ID),
 		}
 		responses = append(responses, &newres)
 	}
@@ -554,18 +586,25 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		return resource.NewGetVcdResourceUnauthorized()
 	}
 
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	vcdId := params.ID
 	db := config.GetDB()
 	var vcd models.Vcd
 	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
-		return resource.NewGetVcdResourceUnauthorized()
+		return resource.NewGetVcdResourceNotFound()
 	}
 
 	var vcdUsage models.ResourceUsage
 	db.Where("resource_id = ?", vcd.ResourceID).First(&vcdUsage)
 
 	var res models.Resource
-	db.Where("id = ?", vcd.ResourceID).First(&res)
+	if !VerifyAdmin(params.HTTPRequest) {
+		if db.Where("id = ? AND user_id = ?", vcd.ResourceID, uid).First(&res).RowsAffected == 0 {
+			return resource.NewGetVcdResourceForbidden()
+		}
+	} else {
+		db.Where("id = ?", vcd.ResourceID).First(&res)
+	}
 
 	policy := 0
 	if res.PolicyID != nil {
@@ -574,6 +613,7 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	response := resource.GetVcdResourceOKBody{
 		AllocationModel: vcd.AllocationModel,
 		CurrentCPU:      vcdUsage.CurrentCPU,
+		CurrentDisk:     vcdUsage.CurrentDisk,
 		CurrentRAM:      vcdUsage.CurrentRAM,
 		Datacenter:      res.Datacenter,
 		Href:            res.HostAddress,
@@ -582,8 +622,10 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		Monitored:       res.Monitored,
 		Organization:    vcd.Organization,
 		Policy:          int64(policy),
+		SetupStatus:     res.SetupStatus,
 		Status:          res.Status,
 		TotalCPU:        vcdUsage.TotalCPU,
+		TotalDisk:       vcdUsage.TotalDisk,
 		TotalJobs:       res.TotalJobs,
 		TotalRAM:        vcdUsage.TotalRAM,
 		TotalVMs:        res.TotalVMs,
@@ -605,7 +647,10 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 		return resource.NewDeleteVcdResourceNotFound()
 	}
 
-	db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{})
+	if db.Unscoped().Where("id = ? AND user_id = ?", vcd.ResourceID, uid).Delete(&models.Resource{}).RowsAffected == 0 {
+		return resource.NewDeleteVcdResourceForbidden()
+	}
+	controller.RemoveJob(vcd.ResourceID)
 
 	return resource.NewDeleteVcdResourceOK().WithPayload(&resource.DeleteVcdResourceOKBody{
 		Message: "success",
@@ -618,10 +663,11 @@ func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Resp
 	}
 
 	rid := params.ID
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
 	db := config.GetDB()
 	var res models.Resource
-	if db.Where("id = ?", rid).First(&res).RowsAffected == 0 {
-		return resource.NewUpdateResourceNotFound()
+	if db.Where("id = ? AND user_id = ?", rid, uid).First(&res).RowsAffected == 0 {
+		return resource.NewUpdateResourceForbidden()
 	}
 
 	if params.ReqBody.Active == true || params.ReqBody.Active == false {
@@ -646,6 +692,42 @@ func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Resp
 	}
 
 	return resource.NewUpdateResourceOK().WithPayload(&resource.UpdateResourceOKBody{
+		Message: "success",
+	})
+}
+
+func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewActivateResourceUnauthorized()
+	}
+	if !VerifyAdmin(params.HTTPRequest) {
+		return resource.NewActivateResourceForbidden()
+	}
+
+	var res models.Resource
+	db := config.GetDB()
+	if db.Where("id = ?", params.ID).First(&res).RowsAffected == 0 {
+		return resource.NewActivateResourceNotFound()
+	}
+
+	res.Activated = !res.Activated
+	res.SetupStatus = "Validated"
+	db.Save(&res)
+
+	if res.PlatformType == models.ResourcePlatformTypeVcd {
+		var vcd models.Vcd
+		db.Where("resource_id = ?", res.ID).First(&vcd)
+		conf := VcdConfig{
+			User:     res.Username,
+			Password: res.Password,
+			Org:      vcd.Organization,
+			Href:     res.HostAddress,
+			VDC:      res.Datacenter,
+		}
+		go initDestruction(&conf)
+	}
+
+	return resource.NewActivateResourceOK().WithPayload(&resource.ActivateResourceOKBody{
 		Message: "success",
 	})
 }

@@ -79,6 +79,30 @@ func (o *UpdateResourceUnauthorized) WriteResponse(rw http.ResponseWriter, produ
 	rw.WriteHeader(401)
 }
 
+// UpdateResourceForbiddenCode is the HTTP code returned for type UpdateResourceForbidden
+const UpdateResourceForbiddenCode int = 403
+
+/*UpdateResourceForbidden Forbidden
+
+swagger:response updateResourceForbidden
+*/
+type UpdateResourceForbidden struct {
+}
+
+// NewUpdateResourceForbidden creates UpdateResourceForbidden with default headers values
+func NewUpdateResourceForbidden() *UpdateResourceForbidden {
+
+	return &UpdateResourceForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdateResourceForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
+}
+
 // UpdateResourceNotFoundCode is the HTTP code returned for type UpdateResourceNotFound
 const UpdateResourceNotFoundCode int = 404
 

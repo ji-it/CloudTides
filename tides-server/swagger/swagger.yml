@@ -94,7 +94,7 @@ paths:
                 items:
                   $ref: '#/definitions/ResourceAddItem'
         401:
-          description: 'Unauthorized'                  
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
           schema:
@@ -158,7 +158,7 @@ paths:
             type: object
             properties:
               message:
-                type: string               
+                type: string
         401:
           description: "Unauthorized"
         404:
@@ -195,6 +195,10 @@ paths:
                 type: string
               org:
                 type: string
+              network:
+                type: string
+              catalog:
+                type: string
       responses:
         200:
           description: 'returns created username'
@@ -213,7 +217,7 @@ paths:
                   vcdId:
                     type: integer
         401:
-          description: 'Unauthorized'                  
+          description: 'Unauthorized'
         404:
           description: 'resource not found'
           schema:
@@ -245,13 +249,15 @@ paths:
                 organization:
                   type: string
                 allocationModel:
-                  type: string 
+                  type: string
                 isActive:
                   type: boolean
                 monitored:
                   type: boolean
                 status:
                   type: string
+                id:
+                  type: integer
         401:
           description: 'Unauthorized'
   /resource/vcd/{id}:
@@ -282,13 +288,15 @@ paths:
               organization:
                 type: string
               allocationModel:
-                type: string 
+                type: string
               isActive:
                 type: boolean
               monitored:
                 type: boolean
               jobCompleted:
                 type: integer
+              setupStatus:
+                type: string
               status:
                 type: string
               totalJobs:
@@ -297,14 +305,22 @@ paths:
                 type: integer
               currentCPU:
                 type: number
+              currentDisk:
+                type: number
               currentRAM:
                 type: number
               totalCPU:
+                type: number
+              totalDisk:
                 type: number
               totalRAM:
                 type: number
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Resource not found'
     delete:
       operationId: 'deleteVcdResource'
       description: 'delete vcd resource'
@@ -327,6 +343,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -368,6 +386,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -375,6 +395,33 @@ paths:
             properties:
               message:
                 type: string
+  /resource/activate/{id}:
+    put:
+      operationId: 'activateResource'
+      description: 'activate resource after initialization setup'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Resource not found'
   /resource/destroy_vm:
     put:
       operationId: 'destroyVM'
@@ -442,6 +489,8 @@ paths:
                   position:
                     type: string
                   phone:
+                    type: string
+                  username:
                     type: string
         401:
           description: 'Unauthorized'
@@ -568,17 +617,21 @@ paths:
                 type: string
               password:
                 type: string
-              priority:
-                type: string
-                enum:
-                  - 'Low'
-                  - 'Medium'
-                  - 'High'
               companyName:
                 type: string
               email:
                 type: string
               phone:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              city:
+                type: string
+              country:
+                type: string
+              position:
                 type: string
       responses:
         200:
@@ -604,6 +657,16 @@ paths:
                   email:
                     type: string
                   phone:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  city:
+                    type: string
+                  country:
+                    type: string
+                  position:
                     type: string
         400:
           description: 'bad request'
@@ -648,8 +711,6 @@ paths:
               catalog:
                 type: string
               network:
-                type: string
-              storage:
                 type: string
       responses:
         200:
@@ -820,6 +881,8 @@ paths:
             properties:
               message:
                 type: string
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
     delete:
@@ -846,6 +909,8 @@ paths:
                 type: string
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
           schema:
@@ -1026,9 +1091,13 @@ paths:
               properties:
                 currentCPU:
                   type: number
+                currentDisk:
+                  type: number
                 currentRAM:
                   type: number
                 percentCPU:
+                  type: number
+                percentDisk:
                   type: number
                 percentRAM:
                   type: number
@@ -1061,7 +1130,7 @@ paths:
               name:
                 type: string
               VMs:
-                type: object                
+                type: object
                 additionalProperties:
                   type: object
                   properties:
@@ -1208,6 +1277,8 @@ paths:
           description: 'bad request'
         401:
           description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
         404:
           description: 'resource not found'
   /project:
@@ -1223,7 +1294,7 @@ paths:
           description: 'OK'
           schema:
             type: array
-            items: 
+            items:
               type: object
               properties:
                 ID:
@@ -1333,7 +1404,7 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
-      
+
 
 definitions:
   ResourceAddItem:
