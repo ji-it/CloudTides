@@ -12,10 +12,11 @@ const (
 	defaultLoggingPriority       syslog.Priority = syslog.LOG_INFO
 	defaultLoggingTag            string          = "CloudTides-Server"
 	defaultPort                  string          = "80"
-	DB_HOST                      string          = "192.168.0.162"
-	DB_USER                      string          = "postgres"
-	DB_PASSWORD                  string          = "postgres"
-	DB_NAME                      string          = "test"
+	DB_HOST                      string          = "106.14.190.68"
+	DB_PORT                      string          = "30125"
+	DB_USER                      string          = "cloudtides"
+	DB_PASSWORD                  string          = "ca$hc0w"
+	DB_NAME                      string          = "template1"
 	adminUser                    string          = "admin"
 )
 
