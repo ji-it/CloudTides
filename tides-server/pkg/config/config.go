@@ -42,7 +42,7 @@ func GetDB() *gorm.DB {
 
 func StartDB() {
 	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
+		dbHost, dbPort, dbUser, dbPassword, dbName)
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	// defer db.Close()
 	if err != nil {
@@ -69,6 +69,7 @@ func CreateAdmin() {
 	if db.Where("username = ?", adminUser).First(&adm).RowsAffected == 0 {
 		admin := models.User{
 			Username: adminUser,
+			Password: adminPwd,
 			Priority: models.UserPriorityHigh,
 		}
 		db.Create(&admin)
