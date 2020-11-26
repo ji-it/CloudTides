@@ -167,7 +167,9 @@ func GetPastUsageHandler(params usage.GetPastUsageParams) middleware.Responder {
 	pastTime := time.Now().Local().Add(-time.Hour * time.Duration(params.ReqBody.TimeLength))
 	var pastUsage []*models.ResourcePastUsage
 
-	db.Where("resource_id = ? AND created_at > ?", params.ID, pastTime).Find(&pastUsage)
+	if db.Where("resource_id = ? AND created_at > ?", params.ID, pastTime).Find(&pastUsage).RowsAffected == 0 {
+		return usage.NewGetPastUsageNotFound()
+	}
 	var responses []*usage.GetPastUsageOKBodyItems0
 
 	for _, us := range pastUsage {
