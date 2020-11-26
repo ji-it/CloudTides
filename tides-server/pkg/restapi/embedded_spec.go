@@ -1489,6 +1489,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -1499,6 +1502,9 @@ func init() {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -1729,6 +1735,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -1738,10 +1747,16 @@ func init() {
                 "percentCPU": {
                   "type": "number"
                 },
+                "percentDisk": {
+                  "type": "number"
+                },
                 "percentRAM": {
                   "type": "number"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -1791,10 +1806,16 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -2208,6 +2229,9 @@ func init() {
         "CPUPercent": {
           "type": "number"
         },
+        "DiskPercent": {
+          "type": "number"
+        },
         "RAMPercent": {
           "type": "number"
         },
@@ -2215,6 +2239,9 @@ func init() {
           "type": "string"
         },
         "currentCPU": {
+          "type": "number"
+        },
+        "currentDisk": {
           "type": "number"
         },
         "currentRAM": {
@@ -2270,6 +2297,9 @@ func init() {
         "CPUPercent": {
           "type": "number"
         },
+        "DiskPercent": {
+          "type": "number"
+        },
         "RAMPercent": {
           "type": "number"
         },
@@ -2277,6 +2307,9 @@ func init() {
           "type": "string"
         },
         "currentCPU": {
+          "type": "number"
+        },
+        "currentDisk": {
           "type": "number"
         },
         "currentRAM": {
@@ -2319,6 +2352,9 @@ func init() {
           ]
         },
         "totalCPU": {
+          "type": "number"
+        },
+        "totalDisk": {
           "type": "number"
         },
         "totalJobs": {
@@ -3706,6 +3742,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -3716,6 +3755,9 @@ func init() {
                   "type": "string"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -3887,6 +3929,9 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
@@ -3896,10 +3941,16 @@ func init() {
                 "percentCPU": {
                   "type": "number"
                 },
+                "percentDisk": {
+                  "type": "number"
+                },
                 "percentRAM": {
                   "type": "number"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -3949,10 +4000,16 @@ func init() {
                 "currentCPU": {
                   "type": "number"
                 },
+                "currentDisk": {
+                  "type": "number"
+                },
                 "currentRAM": {
                   "type": "number"
                 },
                 "totalCPU": {
+                  "type": "number"
+                },
+                "totalDisk": {
                   "type": "number"
                 },
                 "totalRAM": {
@@ -4531,6 +4588,9 @@ func init() {
         "CPUPercent": {
           "type": "number"
         },
+        "DiskPercent": {
+          "type": "number"
+        },
         "RAMPercent": {
           "type": "number"
         },
@@ -4538,6 +4598,9 @@ func init() {
           "type": "string"
         },
         "currentCPU": {
+          "type": "number"
+        },
+        "currentDisk": {
           "type": "number"
         },
         "currentRAM": {
@@ -4593,6 +4656,9 @@ func init() {
         "CPUPercent": {
           "type": "number"
         },
+        "DiskPercent": {
+          "type": "number"
+        },
         "RAMPercent": {
           "type": "number"
         },
@@ -4600,6 +4666,9 @@ func init() {
           "type": "string"
         },
         "currentCPU": {
+          "type": "number"
+        },
+        "currentDisk": {
           "type": "number"
         },
         "currentRAM": {
@@ -4642,6 +4711,9 @@ func init() {
           ]
         },
         "totalCPU": {
+          "type": "number"
+        },
+        "totalDisk": {
           "type": "number"
         },
         "totalJobs": {

@@ -940,9 +940,13 @@ paths:
                 type: number
               totalCPU:
                 type: number
+              totalDisk:
+                type: number
               currentRAM:
                 type: number
               currentCPU:
+                type: number
+              currentDisk:
                 type: number
       responses:
         200:
@@ -981,13 +985,19 @@ paths:
                 type: number
               currentRAM:
                 type: number
+              currentDisk:
+                type: number
               percentCPU:
                 type: number
               percentRAM:
                 type: number
+              percentDisk:
+                type: number
               totalCPU:
                 type: number
               totalRAM:
+                type: number
+              totalDisk:
                 type: number
               name:
                 type: string
@@ -1021,9 +1031,13 @@ paths:
                 type: number
               currentRAM:
                 type: number
+              currentDisk:
+                type: number
               totalCPU:
                 type: number
               totalRAM:
+                type: number
+              totalDisk:
                 type: number
       responses:
         200:
@@ -1435,6 +1449,8 @@ definitions:
         type: number
       currentCPU:
         type: number
+      currentDisk:
+        type: number
       isActive:
         type: boolean
       totalJobs:
@@ -1444,6 +1460,8 @@ definitions:
       CPUPercent:
         type: number
       RAMPercent:
+        type: number
+      DiskPercent:
         type: number
       monitored:
         type: boolean
@@ -1473,9 +1491,13 @@ definitions:
         type: number
       totalRAM:
         type: number
+      totalDisk:
+        type: number
       currentRAM:
         type: number
       currentCPU:
+        type: number
+      currentDisk:
         type: number
       isActive:
         type: boolean
@@ -1486,6 +1508,8 @@ definitions:
       CPUPercent:
         type: number
       RAMPercent:
+        type: number
+      DiskPercent:
         type: number
       monitored:
         type: boolean
