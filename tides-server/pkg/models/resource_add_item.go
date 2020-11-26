@@ -22,6 +22,9 @@ type ResourceAddItem struct {
 	// CPU percent
 	CPUPercent float64 `json:"CPUPercent,omitempty"`
 
+	// disk percent
+	DiskPercent float64 `json:"DiskPercent,omitempty"`
+
 	// RAM percent
 	RAMPercent float64 `json:"RAMPercent,omitempty"`
 
@@ -30,6 +33,9 @@ type ResourceAddItem struct {
 
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
+
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
 
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`

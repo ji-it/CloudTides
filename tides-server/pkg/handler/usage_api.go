@@ -25,15 +25,19 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 
 	PercentCPU := body.CurrentCPU / body.TotalCPU
 	PercentRAM := body.CurrentRAM / body.TotalRAM
+	PercentDisk := body.CurrentDisk / body.TotalDisk
 
 	newResourceUsage := models.ResourceUsage{
 		CurrentCPU:  body.CurrentCPU,
+		CurrentDisk: body.CurrentDisk,
 		CurrentRAM:  body.CurrentRAM,
 		HostAddress: body.HostAddress,
 		Name:        body.Name,
 		PercentCPU:  PercentCPU,
+		PercentDisk: PercentDisk,
 		PercentRAM:  PercentRAM,
 		TotalCPU:    body.TotalCPU,
+		TotalDisk:   body.TotalDisk,
 		TotalRAM:    body.TotalRAM,
 		ResourceID:  res.Model.ID,
 	}
@@ -57,13 +61,16 @@ func GetResourceUsageHandler(params usage.GetResourceUsageParams) middleware.Res
 	}
 
 	res := usage.GetResourceUsageOKBody{
-		CurrentCPU: us.CurrentCPU,
-		CurrentRAM: us.CurrentRAM,
-		Name:       us.Name,
-		PercentCPU: us.PercentCPU,
-		PercentRAM: us.PercentRAM,
-		TotalCPU:   us.TotalCPU,
-		TotalRAM:   us.TotalRAM,
+		CurrentCPU:  us.CurrentCPU,
+		CurrentDisk: us.CurrentDisk,
+		CurrentRAM:  us.CurrentRAM,
+		Name:        us.Name,
+		PercentCPU:  us.PercentCPU,
+		PercentDisk: us.PercentDisk,
+		PercentRAM:  us.PercentRAM,
+		TotalCPU:    us.TotalCPU,
+		TotalDisk:   us.TotalDisk,
+		TotalRAM:    us.TotalRAM,
 	}
 
 	return usage.NewGetResourceUsageOK().WithPayload(&res)
@@ -79,10 +86,13 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 	}
 
 	hu.CurrentCPU = body.CurrentCPU
+	hu.CurrentDisk = body.CurrentDisk
 	hu.CurrentRAM = body.CurrentRAM
 	hu.TotalCPU = body.TotalCPU
+	hu.TotalDisk = body.TotalDisk
 	hu.TotalRAM = body.TotalRAM
 	hu.PercentCPU = body.CurrentCPU / body.TotalCPU
+	hu.PercentDisk = body.CurrentDisk / body.TotalDisk
 	hu.PercentRAM = body.CurrentRAM / body.TotalRAM
 
 	db.Save(&hu)
@@ -167,7 +177,9 @@ func GetPastUsageHandler(params usage.GetPastUsageParams) middleware.Responder {
 	pastTime := time.Now().Local().Add(-time.Hour * time.Duration(params.ReqBody.TimeLength))
 	var pastUsage []*models.ResourcePastUsage
 
-	db.Where("resource_id = ? AND created_at > ?", params.ID, pastTime).Find(&pastUsage)
+	if db.Where("resource_id = ? AND created_at > ?", params.ID, pastTime).Find(&pastUsage).RowsAffected == 0 {
+		return usage.NewGetPastUsageNotFound()
+	}
 	var responses []*usage.GetPastUsageOKBodyItems0
 
 	for _, us := range pastUsage {

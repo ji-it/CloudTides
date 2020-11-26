@@ -34,12 +34,12 @@ export class ResourceService {
         id: resource.id,
         name: rawUsage.name,
         cpu: rawUsage.totalCPU / 1000,
-        mem: rawUsage.totalRAM / 1000,
-        disk: NaN,
+        mem: rawUsage.totalRAM / 1024,
+        disk: rawUsage.totalDisk / 1024,
         usage: {
           'cpu%': toFixed(rawUsage.percentCPU * 100, 2),
           'mem%': toFixed(rawUsage.percentRAM * 100, 2),
-          'disk%': toFixed(NaN, 2),
+          'disk%': toFixed(rawUsage.percentDisk * 100, 2),
         },
       };
       usage.push(resourceItem);
@@ -76,8 +76,11 @@ interface ItemUsage {
   totalCPU: number;
   currentRAM: number;
   totalRAM: number;
+  currentDisk: number;
+  totalDisk: number;
   percentCPU: number;
   percentRAM: number;
+  percentDisk: number;
   name: string;
 }
 
