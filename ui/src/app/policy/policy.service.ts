@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { base } from '@tide-environments/base';
+import { environment } from '@tide-environments/environment';
 
 @Injectable()
 export class PolicyService {
@@ -11,7 +11,7 @@ export class PolicyService {
   ) {
   }
 
-  private prefix = `${base.apiPrefix}/schedulerPolicie`;
+  private prefix = `${environment.apiPrefix}/schedulerPolicie`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(

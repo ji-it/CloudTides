@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { base } from '@tide-environments/base';
+import { environment } from '@tide-environments/environment';
 
 @Injectable()
 export class TemplateService {
@@ -11,7 +11,7 @@ export class TemplateService {
   ) {
   }
 
-  private prefix = `${base.apiPrefix}/templates`;
+  private prefix = `${environment.apiPrefix}/templates`;
 
   getList() {
     return this.http.get<Item[]>(`${this.prefix}`).pipe(
