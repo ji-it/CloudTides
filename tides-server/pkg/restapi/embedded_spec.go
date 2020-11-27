@@ -2001,6 +2001,14 @@ func init() {
                     "position": {
                       "type": "string"
                     },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "Low",
+                        "Medium",
+                        "High"
+                      ]
+                    },
                     "username": {
                       "type": "string"
                     }
@@ -4195,6 +4203,14 @@ func init() {
                     "position": {
                       "type": "string"
                     },
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "Low",
+                        "Medium",
+                        "High"
+                      ]
+                    },
                     "username": {
                       "type": "string"
                     }
@@ -4485,6 +4501,14 @@ func init() {
         "position": {
           "type": "string"
         },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
         "username": {
           "type": "string"
         }
@@ -4727,30 +4751,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "deployType": {
-          "type": "string",
-          "enum": [
-            "K8S",
-            "VM"
-          ]
-        },
-        "id": {
-          "type": "integer"
-        },
-        "idlePolicy": {
+        "compatibility": {
           "type": "string"
         },
-        "isDestroy": {
-          "type": "boolean"
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
         },
         "name": {
           "type": "string"
         },
-        "platformType": {
-          "type": "string"
+        "provisionedSpace": {
+          "type": "number"
         },
-        "thresholdPolicy": {
-          "type": "string"
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

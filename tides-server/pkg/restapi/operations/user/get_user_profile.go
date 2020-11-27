@@ -6,12 +6,14 @@ package user
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // GetUserProfileHandlerFunc turns a function with the right signature into a get user profile handler
@@ -183,12 +185,71 @@ type GetUserProfileOKBodyResults struct {
 	// position
 	Position string `json:"position,omitempty"`
 
+	// priority
+	// Enum: [Low Medium High]
+	Priority string `json:"priority,omitempty"`
+
 	// username
 	Username string `json:"username,omitempty"`
 }
 
 // Validate validates this get user profile o k body results
 func (o *GetUserProfileOKBodyResults) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validatePriority(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var getUserProfileOKBodyResultsTypePriorityPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Low","Medium","High"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		getUserProfileOKBodyResultsTypePriorityPropEnum = append(getUserProfileOKBodyResultsTypePriorityPropEnum, v)
+	}
+}
+
+const (
+
+	// GetUserProfileOKBodyResultsPriorityLow captures enum value "Low"
+	GetUserProfileOKBodyResultsPriorityLow string = "Low"
+
+	// GetUserProfileOKBodyResultsPriorityMedium captures enum value "Medium"
+	GetUserProfileOKBodyResultsPriorityMedium string = "Medium"
+
+	// GetUserProfileOKBodyResultsPriorityHigh captures enum value "High"
+	GetUserProfileOKBodyResultsPriorityHigh string = "High"
+)
+
+// prop value enum
+func (o *GetUserProfileOKBodyResults) validatePriorityEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, getUserProfileOKBodyResultsTypePriorityPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *GetUserProfileOKBodyResults) validatePriority(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.Priority) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := o.validatePriorityEnum("getUserProfileOK"+"."+"results"+"."+"priority", "body", o.Priority); err != nil {
+		return err
+	}
+
 	return nil
 }
 
