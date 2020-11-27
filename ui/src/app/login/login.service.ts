@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { base } from '@tide-environments/base';
+import { environment } from '@tide-environments/environment';
 import { LOGIN_API_URL, LOGIN_PATH, PROFILE_API_URL } from '@tide-config/path';
 import { LOCAL_STORAGE_KEY } from '@tide-config/const';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ export class LoginService {
     username = '',
     password = '',
   ) {
-    return this.http.post<ServerUserInfo>(base.apiPrefix + LOGIN_API_URL, { username, password }).pipe(
+    return this.http.post<ServerUserInfo>(environment.apiPrefix + LOGIN_API_URL, { username, password }).pipe(
       tap(serverUserInfo => {
         this.storeToken(serverUserInfo.token);
         this.session$.next({ ...serverUserInfo.userInfo });
@@ -50,7 +50,7 @@ export class LoginService {
   }
 
   current() {
-    return this.http.get<any>(base.apiPrefix + PROFILE_API_URL, {
+    return this.http.get<any>(environment.apiPrefix + PROFILE_API_URL, {
       headers: {
         Authorization: `Bearer ${this.token}`,
       },

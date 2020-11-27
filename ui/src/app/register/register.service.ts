@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { REGISTER_API_URL, REGISTER_PATH } from '@tide-config/path';
-import { base } from '@tide-environments/base';
+import { environment } from '@tide-environments/environment';
 import { tap } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 
@@ -23,7 +23,7 @@ export class RegisterService {
     email = '',
     priority = Priority.LOW,
   ) {
-    return this.http.post<RegisterResult>(base.apiPrefix + REGISTER_API_URL,
+    return this.http.post<RegisterResult>(environment.apiPrefix + REGISTER_API_URL,
       { username, password, priority, companyName, phone, email }).pipe(
       tap(val => {
 

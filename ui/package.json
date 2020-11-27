@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
+    "start.prod": "ng serve --host 0.0.0.0 --port 4200 --prod",
     "start.local": "cd mock && npm start & start_mode=local npm run start",
     "start.e2e": "start_mode=e2e npm run start",
+    "start.e2e.prod": "start_mode=e2e npm run start.prod",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

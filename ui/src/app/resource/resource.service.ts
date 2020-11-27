@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { base } from '@tide-environments/base';
+import { environment } from '@tide-environments/environment';
 import { VCD_URL_PATH } from '@tide-config/path';
 import { LoginService } from '../login/login.service';
 import toFixed from 'accounting-js/lib/toFixed.js';
@@ -15,17 +15,17 @@ export class ResourceService {
   ) {
   }
 
-  private prefix = `${base.apiPrefix}/computeResource`;
+  private prefix = `${environment.apiPrefix}/computeResource`;
 
   async getList() {
-    const list = await this.http.get<Item[]>(base.apiPrefix + VCD_URL_PATH, {
+    const list = await this.http.get<Item[]>(environment.apiPrefix + VCD_URL_PATH, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
     }).toPromise();
     const usage: Item[] = [];
     for (const resource of list) {
-      const rawUsage = await this.http.get<ItemUsage>(`${base.apiPrefix}/usage/${resource.id}`, {
+      const rawUsage = await this.http.get<ItemUsage>(`${environment.apiPrefix}/usage/${resource.id}`, {
         headers: {
           Authorization: `Bearer ${this.loginService.token}`,
         },
@@ -52,7 +52,7 @@ export class ResourceService {
       ...payload,
       policy: 0,
     };
-    return this.http.post<any>(base.apiPrefix + VCD_URL_PATH, body, {
+    return this.http.post<any>(environment.apiPrefix + VCD_URL_PATH, body, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
