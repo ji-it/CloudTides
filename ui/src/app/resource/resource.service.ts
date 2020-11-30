@@ -68,6 +68,29 @@ export class ResourceService {
   removeItem(id: string) {
     return this.http.delete<ItemDTO>(`${this.prefix}/${id}`);
   }
+
+  async contributeResource(id: string) {
+    await this.http.put(environment.apiPrefix + `/resource/${id}`, {
+      active: true,
+      policy: 0,
+    }).toPromise().then(
+      (resp) => {
+        return Promise.resolve();
+      }, (errResp) => {
+        return Promise.reject(`${errResp.message}`);
+      },
+    );
+  }
+
+  async activateResource(id: string) {
+    await this.http.put(environment.apiPrefix + `/resource/activate/${id}`, {}).toPromise().then(
+      (resp) => {
+        return Promise.resolve();
+      }, (errResp) => {
+        return Promise.reject(`${errResp.message}`);
+      },
+    );
+  }
 }
 
 // Raw

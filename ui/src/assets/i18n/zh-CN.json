@@ -46,7 +46,9 @@
           "DISK": "存储"
         },
         "FOOTER": {
-          "VALIDATE": "验证"
+          "VALIDATE": "验证资源",
+          "ACTIVATE": "激活资源",
+          "CONTRIBUTE": "贡献资源"
         }
       },
       "DIALOG": {

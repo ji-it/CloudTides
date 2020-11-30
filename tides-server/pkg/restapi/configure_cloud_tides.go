@@ -138,6 +138,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 		AllowedOrigins:   []string{"http://localhost:4200", "http://106.15.92.155:30124", "http://106.15.92.155"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
+		AllowedMethods:   []string{"PUT", "GET", "POST", "PATCH", "DELETE"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})
