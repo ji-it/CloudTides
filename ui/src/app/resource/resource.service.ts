@@ -56,6 +56,10 @@ export class ResourceService {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
+    }).toPromise().then(() => {
+      return Promise.resolve();
+    }, (errResp) => {
+      return Promise.reject(`HTTP ${errResp.status}: ${errResp.error.message}`);
     });
   }
 

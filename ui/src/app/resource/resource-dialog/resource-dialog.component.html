@@ -6,6 +6,18 @@
   </h3>
   <div class="modal-body">
     <form clrForm [formGroup]="this.resourceForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
       <clr-select-container>
         <label for="href">{{ "HOME.RESOURCE.DIALOG.NAME" | translate:{} }}</label>
         <select
@@ -65,13 +77,22 @@
   <div class="modal-footer">
     <button type="button"
       class="btn btn-outline"
-      (click)="this.onCancel()">
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
       {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
     </button>
     <button type="button"
       class="btn btn-primary"
-      (click)="this.onSave()">
-      {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      [disabled]="!resourceForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
     </button>
   </div>
 </clr-modal>

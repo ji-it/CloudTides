@@ -23,10 +23,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   opened = false;
   refreshInterval: number;
 
-  add(resource: ItemPayload) {
-    this.resourceService.addItem(resource).subscribe(async item => {
-      await this.refreshList();
-    });
+  async save() {
+    await this.refreshList();
   }
 
   cancel() {
