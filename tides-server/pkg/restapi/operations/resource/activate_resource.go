@@ -64,6 +64,9 @@ func (o *ActivateResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model ActivateResourceOKBody
 type ActivateResourceOKBody struct {
 
+	// activated
+	Activated bool `json:"activated,omitempty"`
+
 	// message
 	Message string `json:"message,omitempty"`
 }

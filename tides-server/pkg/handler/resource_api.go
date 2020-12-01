@@ -657,7 +657,7 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 	})
 }
 
-func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Responder {
+func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewUpdateResourceUnauthorized()
 	}
@@ -670,12 +670,6 @@ func UpdateResourceHandler(params resource.UpdateResourceParams) middleware.Resp
 		return resource.NewUpdateResourceForbidden()
 	}
 
-	if params.ReqBody.Active == true || params.ReqBody.Active == false {
-		res.IsActive = params.ReqBody.Active
-		if params.ReqBody.Active == false {
-			res.Monitored = false
-		}
-	}
 	if params.ReqBody.Policy > 0 {
 		if res.PolicyID != nil {
 			*res.PolicyID = uint(params.ReqBody.Policy)
@@ -728,6 +722,28 @@ func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.
 	}
 
 	return resource.NewActivateResourceOK().WithPayload(&resource.ActivateResourceOKBody{
-		Message: "success",
+		Message:   "success",
+		Activated: res.Activated,
+	})
+}
+
+func ContributeResourceHandler(params resource.ContributeResourceParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return resource.NewContributeResourceUnauthorized()
+	}
+
+	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	db := config.GetDB()
+	var res models.Resource
+	if db.Where("id = ? AND user_id = ?", params.ID, uid).First(&res).RowsAffected == 0 {
+		return resource.NewContributeResourceForbidden()
+	}
+
+	res.IsActive = !res.IsActive
+	db.Save(&res)
+
+	return resource.NewContributeResourceOK().WithPayload(&resource.ContributeResourceOKBody{
+		Message:     "success",
+		Contributed: res.IsActive,
 	})
 }

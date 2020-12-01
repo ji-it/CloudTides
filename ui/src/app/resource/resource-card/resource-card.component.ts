@@ -27,8 +27,12 @@ export class ResourceCardComponent implements OnInit {
   }
 
   async contribute() {
-    await this.resourceService.contributeResource(this.item.id).then(() => {
-      this.vo.alertText = `Successfully contribute Resource ${this.item.name}`;
+    await this.resourceService.contributeResource(this.item.id).then((resp) => {
+      if (resp.contributed) {
+        this.vo.alertText = `Successfully start contributing Resource ${this.item.name}`;
+      } else {
+        this.vo.alertText = `Successfully stop contributing Resource ${this.item.name}`;
+      }
       this.vo.alertType = 'success';
     }, (error) => {
       this.vo.alertType = 'danger';
@@ -39,8 +43,12 @@ export class ResourceCardComponent implements OnInit {
   }
 
   async activate() {
-    await this.resourceService.activateResource(this.item.id).then(() => {
-      this.vo.alertText = `Successfully activate Resource ${this.item.name}`;
+    await this.resourceService.activateResource(this.item.id).then((resp) => {
+      if (resp.activated) {
+        this.vo.alertText = `Successfully activate Resource ${this.item.name}`;
+      } else {
+        this.vo.alertText = `Successfully deactivate Resource ${this.item.name}`;
+      }
       this.vo.alertType = 'success';
     }, (error) => {
       this.vo.alertType = 'danger';

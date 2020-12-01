@@ -352,10 +352,10 @@ paths:
             properties:
               message:
                 type: string
-  /resource/{id}:
+  /resource/policy/{id}:
     put:
-      operationId: 'updateResource'
-      description: 'toggle active, assign policy'
+      operationId: 'assignPolicy'
+      description: 'assign policy'
       tags:
         - 'resource'
       produces:
@@ -372,8 +372,6 @@ paths:
           schema:
             type: object
             properties:
-              active:
-                type: boolean
               policy:
                 type: integer
       responses:
@@ -395,6 +393,35 @@ paths:
             properties:
               message:
                 type: string
+  /resource/contribute/{id}:
+    put:
+      operationId: 'contributeResource'
+      description: 'toggle active status of resource'
+      tags:
+        - 'resource'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              contributed:
+                type: boolean
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Resource not found'
   /resource/activate/{id}:
     put:
       operationId: 'activateResource'
@@ -416,6 +443,8 @@ paths:
             properties:
               message:
                 type: string
+              activated:
+                type: boolean
         401:
           description: 'Unauthorized'
         403:

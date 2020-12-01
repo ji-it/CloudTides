@@ -615,6 +615,54 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "activated": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    "/resource/contribute/{id}": {
+      "put": {
+        "description": "toggle active status of resource",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "contributeResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contributed": {
+                  "type": "boolean"
+                },
                 "message": {
                   "type": "string"
                 }
@@ -671,6 +719,71 @@ func init() {
                 }
               }
             }
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource/policy/{id}": {
+      "put": {
+        "description": "assign policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "assignPolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "policy": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -1212,74 +1325,6 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resource/{id}": {
-      "put": {
-        "description": "toggle active, assign policy",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "updateResource",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "active": {
-                  "type": "boolean"
-                },
-                "policy": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -2932,6 +2977,54 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "activated": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    "/resource/contribute/{id}": {
+      "put": {
+        "description": "toggle active status of resource",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "contributeResource",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contributed": {
+                  "type": "boolean"
+                },
                 "message": {
                   "type": "string"
                 }
@@ -2988,6 +3081,71 @@ func init() {
                 }
               }
             }
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resource/policy/{id}": {
+      "put": {
+        "description": "assign policy",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "resource"
+        ],
+        "operationId": "assignPolicy",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "policy": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",
@@ -3500,74 +3658,6 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "404": {
-            "description": "resource not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resource/{id}": {
-      "put": {
-        "description": "toggle active, assign policy",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "resource"
-        ],
-        "operationId": "updateResource",
-        "parameters": [
-          {
-            "type": "integer",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "reqBody",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "active": {
-                  "type": "boolean"
-                },
-                "policy": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "success",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",

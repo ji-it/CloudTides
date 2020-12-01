@@ -69,27 +69,37 @@ export class ResourceService {
     return this.http.delete<ItemDTO>(`${this.prefix}/${id}`);
   }
 
-  async contributeResource(id: string) {
-    await this.http.put(environment.apiPrefix + `/resource/${id}`, {
-      active: true,
-      policy: 0,
-    }).toPromise().then(
+  async contributeResource(id: string): Promise<ContributeResp> {
+    let response = null;
+    await this.http.put(environment.apiPrefix + `/resource/contribute/${id}`, null, {
+      headers: {
+      Authorization: `Bearer ${this.loginService.token}`,
+    }, }).toPromise().then(
       (resp) => {
+        response = resp;
         return Promise.resolve();
       }, (errResp) => {
         return Promise.reject(`${errResp.message}`);
       },
     );
+    return response;
   }
 
-  async activateResource(id: string) {
-    await this.http.put(environment.apiPrefix + `/resource/activate/${id}`, {}).toPromise().then(
+  async activateResource(id: string): Promise<ActivateResp> {
+    let response = null;
+    await this.http.put<ActivateResp>(environment.apiPrefix + `/resource/activate/${id}`, null, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise().then(
       (resp) => {
+        response = resp;
         return Promise.resolve();
       }, (errResp) => {
         return Promise.reject(`${errResp.message}`);
       },
     );
+    return response;
   }
 }
 
@@ -121,6 +131,16 @@ interface ItemDTO {
     'mem%': number;
     'disk%': number;
   }
+}
+
+interface ContributeResp {
+  message: string;
+  contributed: boolean;
+}
+
+interface ActivateResp {
+  message: string;
+  activated: boolean;
 }
 
 function mapList(raw: ItemDTO[]): Item[] {
