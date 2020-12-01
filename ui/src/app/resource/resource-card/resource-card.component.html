@@ -1,3 +1,14 @@
+<clr-alert [clrAlertType]="vo.alertType"
+  [clrAlertClosable]="false"
+  *ngIf="this.vo.alertText">
+
+  <clr-alert-item>
+    <div class="alert-text">
+      <span>{{ this.vo.alertText }}</span>
+    </div>
+  </clr-alert-item>
+
+</clr-alert>
 <div class="card">
   <div class="card-block">
     <div class="info-wrapper">
@@ -29,9 +40,24 @@
   </div>
   <div class="card-footer">
     <div class="clr-row clr-justify-content-end">
-      <div class="clr-col-1">
+      <div class="clr-col-2">
         <button class="btn btn-sm btn-link">{{ "HOME.RESOURCE.CARD.FOOTER.VALIDATE" | translate:{} }}</button>
+      </div>
+      <div class="clr-col-2">
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.contribute()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.CONTRIBUTE" | translate:{} }}</button>
+      </div>
+      <div class="clr-col-2">
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.activate()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
       </div>
     </div>
   </div>
 </div>
+
+
+

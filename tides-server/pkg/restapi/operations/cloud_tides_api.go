@@ -74,6 +74,12 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceAddVsphereResourceHandler: resource.AddVsphereResourceHandlerFunc(func(params resource.AddVsphereResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVsphereResource has not yet been implemented")
 		}),
+		ResourceAssignPolicyHandler: resource.AssignPolicyHandlerFunc(func(params resource.AssignPolicyParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.AssignPolicy has not yet been implemented")
+		}),
+		ResourceContributeResourceHandler: resource.ContributeResourceHandlerFunc(func(params resource.ContributeResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ContributeResource has not yet been implemented")
+		}),
 		ProjectDeleteProjectHandler: project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
 		}),
@@ -130,9 +136,6 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		ProjectUpdateProjectHandler: project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
-		}),
-		ResourceUpdateResourceHandler: resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
 		}),
 		UsageUpdateResourceUsageHandler: usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
@@ -202,6 +205,10 @@ type CloudTidesAPI struct {
 	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
 	// ResourceAddVsphereResourceHandler sets the operation handler for the add vsphere resource operation
 	ResourceAddVsphereResourceHandler resource.AddVsphereResourceHandler
+	// ResourceAssignPolicyHandler sets the operation handler for the assign policy operation
+	ResourceAssignPolicyHandler resource.AssignPolicyHandler
+	// ResourceContributeResourceHandler sets the operation handler for the contribute resource operation
+	ResourceContributeResourceHandler resource.ContributeResourceHandler
 	// ProjectDeleteProjectHandler sets the operation handler for the delete project operation
 	ProjectDeleteProjectHandler project.DeleteProjectHandler
 	// UsageDeleteResourceUsageHandler sets the operation handler for the delete resource usage operation
@@ -240,8 +247,6 @@ type CloudTidesAPI struct {
 	PolicyUpdatePolicyHandler policy.UpdatePolicyHandler
 	// ProjectUpdateProjectHandler sets the operation handler for the update project operation
 	ProjectUpdateProjectHandler project.UpdateProjectHandler
-	// ResourceUpdateResourceHandler sets the operation handler for the update resource operation
-	ResourceUpdateResourceHandler resource.UpdateResourceHandler
 	// UsageUpdateResourceUsageHandler sets the operation handler for the update resource usage operation
 	UsageUpdateResourceUsageHandler usage.UpdateResourceUsageHandler
 	// UserUpdateUserProfileHandler sets the operation handler for the update user profile operation
@@ -355,6 +360,12 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceAddVsphereResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVsphereResourceHandler")
 	}
+	if o.ResourceAssignPolicyHandler == nil {
+		unregistered = append(unregistered, "resource.AssignPolicyHandler")
+	}
+	if o.ResourceContributeResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ContributeResourceHandler")
+	}
 	if o.ProjectDeleteProjectHandler == nil {
 		unregistered = append(unregistered, "project.DeleteProjectHandler")
 	}
@@ -411,9 +422,6 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ProjectUpdateProjectHandler == nil {
 		unregistered = append(unregistered, "project.UpdateProjectHandler")
-	}
-	if o.ResourceUpdateResourceHandler == nil {
-		unregistered = append(unregistered, "resource.UpdateResourceHandler")
 	}
 	if o.UsageUpdateResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.UpdateResourceUsageHandler")
@@ -552,6 +560,14 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/resource/vsphere"] = resource.NewAddVsphereResource(o.context, o.ResourceAddVsphereResourceHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/policy/{id}"] = resource.NewAssignPolicy(o.context, o.ResourceAssignPolicyHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/contribute/{id}"] = resource.NewContributeResource(o.context, o.ResourceContributeResourceHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -628,10 +644,6 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/project/{id}"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
-	}
-	o.handlers["PUT"]["/resource/{id}"] = resource.NewUpdateResource(o.context, o.ResourceUpdateResourceHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

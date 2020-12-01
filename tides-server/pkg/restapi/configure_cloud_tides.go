@@ -96,7 +96,7 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.ResourceDeleteVcdResourceHandler = resource.DeleteVcdResourceHandlerFunc(handler.DeleteVcdResourceHandler)
 
-	api.ResourceUpdateResourceHandler = resource.UpdateResourceHandlerFunc(handler.UpdateResourceHandler)
+	api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(handler.AssignPolicyHandler)
 
 	api.PolicyGetPolicyHandler = policy.GetPolicyHandlerFunc(handler.GetPolicyHandler)
 
@@ -105,6 +105,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.UsageGetPastUsageHandler = usage.GetPastUsageHandlerFunc(handler.GetPastUsageHandler)
 
 	api.ResourceActivateResourceHandler = resource.ActivateResourceHandlerFunc(handler.ActivateResourceHandler)
+
+	api.ResourceContributeResourceHandler = resource.ContributeResourceHandlerFunc(handler.ContributeResourceHandler)
 
 	api.PreServerShutdown = func() {}
 
@@ -138,6 +140,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 		AllowedOrigins:   []string{"http://localhost:4200", "http://106.15.92.155:30124", "http://106.15.92.155"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
+		AllowedMethods:   []string{"PUT", "GET", "POST", "PATCH", "DELETE"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: true,
 	})
