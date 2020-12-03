@@ -160,6 +160,8 @@ export interface ItemPayload {
   datacenter: string;
   name: string;
   org: string;
+  network: string;
+  catalog: string;
   username: string,
   password: string,
 }

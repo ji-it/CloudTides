@@ -21,6 +21,8 @@ export class ResourceDialogComponent implements OnInit {
       href: [defaultCloudPlatformURL, [Validators.required]],
       datacenter: [''],
       org: [''],
+      network: [''],
+      catalog: [''],
       username: ['', Validators.required],
       password: ['', Validators.required],
     });

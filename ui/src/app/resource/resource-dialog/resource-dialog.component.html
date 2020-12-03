@@ -51,6 +51,26 @@
       </clr-input-container>
 
       <clr-input-container>
+        <label for="network">{{ "HOME.RESOURCE.DIALOG.NETWORK" | translate:{} }}</label>
+        <input id="network"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.NETWORK_PLACEHOLDER' | translate:{} "
+          formControlName="network"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="catalog">{{ "HOME.RESOURCE.DIALOG.CATALOG" | translate:{} }}</label>
+        <input id="catalog"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.CATALOG_PLACEHOLDER' | translate:{} "
+          formControlName="catalog"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
         <label for="username">{{ "HOME.RESOURCE.DIALOG.USERNAME" | translate:{} }}</label>
         <input id="username"
           class="clr-col-12 clr-col-md-8"
