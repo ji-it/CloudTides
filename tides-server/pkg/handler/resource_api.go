@@ -576,6 +576,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			Organization:    vcd.Organization,
 			Status:          res.Status,
 			ID:              int64(res.ID),
+			VcdID:           int64(vcd.ID),
 		}
 		responses = append(responses, &newres)
 	}

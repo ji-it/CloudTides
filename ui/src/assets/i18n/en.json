@@ -46,9 +46,9 @@
           "DISK": "Disk"
         },
         "FOOTER": {
-          "VALIDATE": "Validate",
           "ACTIVATE": "Activate",
-          "CONTRIBUTE": "Contribute"
+          "CONTRIBUTE": "Contribute",
+          "DELETE": "Delete"
         }
       },
       "DIALOG": {

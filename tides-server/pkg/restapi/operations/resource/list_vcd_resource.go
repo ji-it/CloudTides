@@ -90,6 +90,9 @@ type ListVcdResourceOKBodyItems0 struct {
 
 	// status
 	Status string `json:"status,omitempty"`
+
+	// vcd Id
+	VcdID int64 `json:"vcdId,omitempty"`
 }
 
 // Validate validates this list vcd resource o k body items0
