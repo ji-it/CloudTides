@@ -32,6 +32,7 @@ export class ResourceService {
       }).toPromise();
       const resourceItem: Item = {
         id: resource.id,
+        vcdId: resource.vcdId,
         name: rawUsage.name,
         cpu: rawUsage.totalCPU / 1000,
         mem: rawUsage.totalRAM / 1024,
@@ -69,8 +70,17 @@ export class ResourceService {
     );
   }
 
-  removeItem(id: string) {
-    return this.http.delete<ItemDTO>(`${this.prefix}/${id}`);
+  async removeItem(id: string) {
+    await this.http.delete<any>(environment.apiPrefix + `/resource/vcd/` + id, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+    }, }).toPromise().then(
+      () => {
+        return Promise.resolve();
+      }, (errResp) => {
+        return Promise.reject(`${errResp.message}`);
+      },
+    );
   }
 
   async contributeResource(id: string): Promise<ContributeResp> {
@@ -123,6 +133,7 @@ interface ItemUsage {
 
 interface ItemDTO {
   id: string;
+  vcdId: string;
   name: string;
   // unit: GHz
   cpu: number;

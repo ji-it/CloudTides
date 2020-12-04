@@ -41,9 +41,6 @@
   <div class="card-footer">
     <div class="clr-row clr-justify-content-end">
       <div class="clr-col-2">
-        <button class="btn btn-sm btn-link">{{ "HOME.RESOURCE.CARD.FOOTER.VALIDATE" | translate:{} }}</button>
-      </div>
-      <div class="clr-col-2">
         <button
           class="btn btn-sm btn-link"
           (click)="this.contribute()"
@@ -54,6 +51,12 @@
           class="btn btn-sm btn-link"
           (click)="this.activate()"
         >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
+      </div>
+      <div class="clr-col-2">
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.delete()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
       </div>
     </div>
   </div>

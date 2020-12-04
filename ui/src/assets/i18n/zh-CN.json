@@ -46,9 +46,9 @@
           "DISK": "存储"
         },
         "FOOTER": {
-          "VALIDATE": "验证资源",
           "ACTIVATE": "激活资源",
-          "CONTRIBUTE": "贡献资源"
+          "CONTRIBUTE": "贡献资源",
+          "DELETE": "删除资源"
         }
       },
       "DIALOG": {

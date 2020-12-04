@@ -58,6 +58,18 @@ export class ResourceCardComponent implements OnInit {
     });
   }
 
+  async delete() {
+    await this.resourceService.removeItem(this.item.vcdId).then(() => {
+      this.vo.alertText = `Successfully delete Resource ${this.item.name}`;
+      this.vo.alertType = 'success';
+    }, (error) => {
+      this.vo.alertType = 'danger';
+      this.vo.alertText = error;
+    }).then(() => {
+      this.resetAlert();
+    });
+  }
+
   async resetAlert(time?: number) {
     window.setTimeout(() => {
       this.vo.alertText = '';
