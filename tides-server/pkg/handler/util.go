@@ -281,3 +281,39 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 	}
 	return nil
 }
+
+func PolicySetup(rid uint, uid uint, network string, catalog string) {
+	db := config.GetDB()
+	var tem models.Template
+	if db.Where("name = ?", "tides-boinc-attached").First(&tem).RowsAffected == 0 {
+		return
+	}
+	var pol models.Policy
+	if db.Where("name = ?", "tides-policy").First(&pol).RowsAffected == 0 {
+		pol = models.Policy{
+			IdlePolicy:      idlePolicy,
+			IsDestroy:       true,
+			Name:            "tides-policy",
+			PlatformType:    models.ResourcePlatformTypeVcd,
+			TemplateID:      tem.ID,
+			ThresholdPolicy: thresholdPolicy,
+			UserID:          uid,
+		}
+		db.Create(&pol)
+		vcdPolicy := models.VcdPolicy{
+			Catalog:  catalog,
+			Network:  network,
+			PolicyID: pol.ID,
+		}
+		db.Create(&vcdPolicy)
+	}
+	var res models.Resource
+	db.Where("id = ?", rid).First(&res)
+	if res.PolicyID == nil {
+		res.PolicyID = new(uint)
+		*res.PolicyID = pol.ID
+	} else {
+		*res.PolicyID = pol.ID
+	}
+	db.Save(&res)
+}

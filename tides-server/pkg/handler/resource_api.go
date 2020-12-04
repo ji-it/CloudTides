@@ -531,6 +531,8 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		VDC:      body.Datacenter,
 	}
 
+	network = body.Network
+	catalog = body.Catalog
 	go initValidation(&confi, body.Catalog, body.Network, &newres)
 
 	return resource.NewAddVcdResourceOK().WithPayload(&resource.AddVcdResourceOKBody{
@@ -719,6 +721,7 @@ func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.
 			VDC:      res.Datacenter,
 		}
 		go initDestruction(&conf)
+		go PolicySetup(res.ID, res.UserID, network, catalog)
 	}
 
 	return resource.NewActivateResourceOK().WithPayload(&resource.ActivateResourceOKBody{
