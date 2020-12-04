@@ -38,7 +38,7 @@ func main() {
 	name, err := os.Hostname()
 	fmt.Println(name)
 
-	server.Host = "localhost"
+	server.Host = "0.0.0.0"
 	controller.InitController()
 
 	/*
