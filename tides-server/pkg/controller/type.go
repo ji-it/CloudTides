@@ -19,10 +19,10 @@ type Policy struct {
 
 var (
 	letters  = []rune("abcdefghijklmnopqrstuvwxyz1234567890")
-	cronjobs = map[uint]*cron.Cron{}
+	cronjobs map[uint]*cron.Cron
 )
 
 const (
 	schedule      string = "*/5 * * * *"
-	cleanSchedule string = "0 0 1 * *"
+	cleanSchedule string = "0 0 * * 0"
 )

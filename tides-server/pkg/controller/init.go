@@ -10,13 +10,14 @@ import (
 )
 
 func InitController() {
+	cronjobs = map[uint]*cron.Cron{}
 	// Query usage every 5 mins
 	c := cron.New()
 	c.AddFunc(schedule, func() {
 		InitJob()
 	})
 	c.Start()
-	// Clean up past usage table every month
+	// Clean up past usage table every week
 	cl := cron.New()
 	cl.AddFunc(cleanSchedule, func() {
 		InitCleanUp()
