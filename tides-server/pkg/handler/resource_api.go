@@ -744,6 +744,9 @@ func ContributeResourceHandler(params resource.ContributeResourceParams) middlew
 	}
 
 	res.IsActive = !res.IsActive
+	if !res.IsActive {
+		res.Monitored = false
+	}
 	db.Save(&res)
 
 	return resource.NewContributeResourceOK().WithPayload(&resource.ContributeResourceOKBody{
