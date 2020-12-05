@@ -53,10 +53,10 @@ func InitJob() {
 		}
 	}
 
-	db.Where("activated = ? AND monitored = ?", true, false).Find(&resources)
+	db.Where("activated = ? is_active = ? AND monitored = ?", true, true, false).Find(&resources)
 
 	for _, res := range resources {
-		if res.IsActive && res.PlatformType == models.ResourcePlatformTypeVcd {
+		if res.PlatformType == models.ResourcePlatformTypeVcd {
 			var vcd models.Vcd
 			db.Where("resource_id = ?", res.ID).First(&vcd)
 			newVcdConfig := VcdConfig{
@@ -78,11 +78,6 @@ func InitJob() {
 			cronjobs[res.ID] = c
 			res.Monitored = true
 			db.Save(&res)
-		} else if !res.IsActive {
-			c, ok := cronjobs[res.ID]
-			if ok {
-				c.Stop()
-			}
 		}
 	}
 }

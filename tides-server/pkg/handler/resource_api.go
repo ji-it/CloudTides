@@ -680,6 +680,8 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 			res.PolicyID = new(uint)
 			*res.PolicyID = uint(params.ReqBody.Policy)
 		}
+	} else {
+		res.PolicyID = nil
 	}
 	err := db.Save(&res).Error
 	if err != nil {
@@ -709,6 +711,10 @@ func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.
 
 	res.Activated = !res.Activated
 	res.SetupStatus = "Validated"
+	if !res.Activated {
+		res.Monitored = false
+		controller.RemoveJob(res.ID)
+	}
 	db.Save(&res)
 
 	if res.PlatformType == models.ResourcePlatformTypeVcd {
@@ -746,6 +752,7 @@ func ContributeResourceHandler(params resource.ContributeResourceParams) middlew
 	res.IsActive = !res.IsActive
 	if !res.IsActive {
 		res.Monitored = false
+		controller.RemoveJob(res.ID)
 	}
 	db.Save(&res)
 
