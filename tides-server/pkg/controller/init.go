@@ -54,7 +54,7 @@ func InitJob() {
 		}
 	}
 
-	db.Where("activated = ? is_active = ? AND monitored = ?", true, true, false).Find(&resources)
+	db.Where("activated = ? AND is_active = ? AND monitored = ?", true, true, false).Find(&resources)
 
 	for _, res := range resources {
 		if res.PlatformType == models.ResourcePlatformTypeVcd {
