@@ -25,8 +25,9 @@ var (
 	ContextRoot = context.Background()
 )
 
-// Config consists fields to setup the clouTides server
+// Config consists fields to setup the cloudTides server
 type Config struct {
-	Port string `json:"port"`
-	DB   string `json:"database"`
+	Port  string `json:"port"`
+	DB    string `json:"database"`
+	Debug bool   `json:"debug"`
 }

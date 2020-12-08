@@ -8,5 +8,7 @@ RUN go mod download
 RUN cd cmd && \
     GOARCH=amd64 GOOS=linux go build -o /output/backend .
 
+FROM ubuntu:latest
+COPY --from=0 /output/backend .
 EXPOSE 80
-ENTRYPOINT ["/output/backend"]
+ENTRYPOINT ["./backend"]

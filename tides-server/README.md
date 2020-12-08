@@ -31,10 +31,15 @@ export GO111MODULE=on
 go get -v all
 ```
 
-To start the server,
+Run `dev` server:
 
 ```
 go run ./cmd/main.go
 ```
 
-To add new features, add new API specifications in `swagger.yml` and implement API logics in `./pkg/handler`.
+To run `test` server in local env, set env variables listed in `.env` and run
+```
+go run ./cmd/main.go -local
+```
+
+To add new features, add new API specifications in `./swagger/swagger.yml` and implement API logics in `./pkg/handler`.

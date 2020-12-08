@@ -26,9 +26,6 @@ func initConfig() {
 	if serverPort != "" {
 		config.Port = serverPort
 	}
-	StartDB()
-	CreateAdmin()
-	TemplateSetup()
 }
 
 // GetConfig returns a pointer to the current config.
@@ -41,8 +38,19 @@ func GetDB() *gorm.DB {
 }
 
 func StartDB() {
-	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
+	var dbinfo string
+	if config.Debug {
+		debugDBHost := os.Getenv("HOST_IP")
+		debugDBPort := os.Getenv("DB_PORT")
+		debugDBUser := os.Getenv("POSTGRES_USER")
+		debugDBPass := os.Getenv("POSTGRES_PASSWORD")
+		debugDBName := os.Getenv("POSTGRES_DB")
+		dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			debugDBHost, debugDBPort, debugDBUser, debugDBPass, debugDBName)
+	} else {
+		dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			dbHost, dbPort, dbUser, dbPassword, dbName)
+	}
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	// defer db.Close()
 	if err != nil {
@@ -61,6 +69,8 @@ func StartDB() {
 	db.AutoMigrate(&models.ResourcePastUsage{})
 	db.AutoMigrate(&models.VMUsage{})
 	fmt.Println("DB connection success")
+	CreateAdmin()
+	TemplateSetup()
 }
 
 func CreateAdmin() {
