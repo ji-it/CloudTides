@@ -16,7 +16,6 @@ spec:
       containers:
         - name: cloudtides-frontend
           image: ericshen97/cloudtides_frontend:latest
-          imagePullPolicy: Always
           ports:
             - containerPort: 4200
               hostPort: 80
