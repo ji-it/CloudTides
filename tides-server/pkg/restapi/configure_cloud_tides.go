@@ -137,7 +137,7 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:4200", "http://106.15.92.155:30124", "http://106.15.92.155"},
+		AllowedOrigins:   []string{"http://localhost:4200", "http://www.cloudtides.org.cn", "http://106.15.92.155"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
 		AllowedMethods:   []string{"PUT", "GET", "POST", "PATCH", "DELETE"},
