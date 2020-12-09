@@ -9,6 +9,9 @@ RUN cd cmd && \
     GOARCH=amd64 GOOS=linux go build -o /output/backend .
 
 FROM ubuntu:latest
-COPY --from=0 /output/backend .
+WORKDIR /build
+COPY --from=0 /output/backend /build/
+RUN apt-get update \
+    && apt-get install -y ca-certificates
 EXPOSE 80
-ENTRYPOINT ["./backend"]
+ENTRYPOINT ["/build/backend"]
