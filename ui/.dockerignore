@@ -2,6 +2,7 @@
 node_modules
 e2e
 mock
+dist
 
 # Dev stuff
 .git

@@ -142,7 +142,7 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
 		AllowedMethods:   []string{"PUT", "GET", "POST", "PATCH", "DELETE"},
 		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		Debug: false,
 	})
 
 	// Insert the middleware
