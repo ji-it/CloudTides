@@ -117,7 +117,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.loginService.hasLoggedIn) {
+    if (this.loginService.session.priority !== 'High') {
       // this.document.location.href = '/';
       this.router.navigate(['/']);
     }

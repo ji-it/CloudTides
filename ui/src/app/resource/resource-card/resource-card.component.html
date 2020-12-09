@@ -43,14 +43,15 @@
       <div class="clr-col-2">
         <button
           class="btn btn-sm btn-link"
-          (click)="this.contribute()"
-        >{{ "HOME.RESOURCE.CARD.FOOTER.CONTRIBUTE" | translate:{} }}</button>
+          (click)="this.activate()"
+          *ngIf="this.loginService.inAdminView()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
       </div>
       <div class="clr-col-2">
         <button
           class="btn btn-sm btn-link"
-          (click)="this.activate()"
-        >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
+          (click)="this.contribute()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.CONTRIBUTE" | translate:{} }}</button>
       </div>
       <div class="clr-col-2">
         <button

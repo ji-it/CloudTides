@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Item, ResourceService } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
 import { NOTIFICATION_EXIST_TIME } from '@tide-config/const';
+import { LoginService } from '../../login/login.service';
 
 @Component({
   selector: 'tide-resource-card',
@@ -13,6 +14,7 @@ export class ResourceCardComponent implements OnInit {
   constructor(
     public readonly translate: TranslateService,
     public readonly resourceService: ResourceService,
+    public readonly loginService: LoginService,
   ) { }
 
   @Input() item: Item;

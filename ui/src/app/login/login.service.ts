@@ -90,6 +90,10 @@ export class LoginService {
   inLoginPage() {
     return this.document.location.pathname === LOGIN_PATH;
   }
+
+  inAdminView() {
+    return this.session.priority === 'High';
+  }
 }
 
 export interface UserInfo {

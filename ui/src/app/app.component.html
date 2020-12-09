@@ -26,6 +26,7 @@
               <clr-icon shape="caret down"></clr-icon>
             </button>
             <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+              <a routerLink="/register" clrDropdownItem *ngIf="this.loginService.inAdminView()">{{ "LOGIN.SIGNUP" | translate:{} }}</a>
               <a routerLink="/profile" clrDropdownItem>{{ "HOME.PROFILE" | translate:{} }}</a>
               <a (click)="this.signOut()" clrDropdownItem>{{ "HOME.LOGOUT" | translate:{} }}</a>
             </clr-dropdown-menu>
