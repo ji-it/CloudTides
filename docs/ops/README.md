@@ -17,6 +17,9 @@ Useful third-party actions:
 - [scp](https://github.com/marketplace/actions/scp-files)
 - [remote ssh](https://github.com/marketplace/actions/remote-ssh-commands)
 - [publish to docker hub](https://github.com/elgohr/Publish-Docker-Github-Action)
+  
+Future improvements:
+- The test stage for UI is missing as `npm test` always gives some errors.
 
 ## Kubernetes
 
