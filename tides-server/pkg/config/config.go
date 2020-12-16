@@ -18,7 +18,7 @@ var (
 func InitConfig() {
 	config = &Config{}
 	config.Port = defaultPort
-	serverPort := os.Getenv("envkey_SERVER_PORT")
+	serverPort := os.Getenv("SERVER_PORT")
 	if serverPort != "" {
 		config.Port = serverPort
 	}
@@ -37,11 +37,11 @@ func GetDB() *gorm.DB {
 func StartDB() {
 	var dbinfo string
 
-	dbHost := os.Getenv("envkey_DB_HOST")
-	dbPort := os.Getenv("envkey_DB_PORT")
-	dbUser := os.Getenv("envkey_DB_USER")
-	dbPassword := os.Getenv("envkey_DB_PASSWORD")
-	dbName := os.Getenv("envkey_DB_NAME")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
 	dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
@@ -69,8 +69,8 @@ func StartDB() {
 func CreateAdmin() {
 	db := GetDB()
 	var adm models.User
-	adminUser := os.Getenv("envkey_ADMIN_USER")
-	adminPwd := os.Getenv("envkey_ADMIN_PASSWORD")
+	adminUser := os.Getenv("ADMIN_USER")
+	adminPwd := os.Getenv("ADMIN_PASSWORD")
 	if db.Where("username = ?", adminUser).First(&adm).RowsAffected == 0 {
 		admin := models.User{
 			Username: adminUser,

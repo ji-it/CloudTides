@@ -44,8 +44,8 @@ func main() {
 	config.InitConfig()
 	conf := config.GetConfig()
 	conf.Debug = *boolPtr
-	server.Host = os.Getenv("envkey_SERVER_IP")
-	server.Port, err = strconv.Atoi(os.Getenv("envkey_SERVER_PORT"))
+	server.Host = os.Getenv("SERVER_IP")
+	server.Port, err = strconv.Atoi(os.Getenv("SERVER_PORT"))
 
 	name, err := os.Hostname()
 	fmt.Println(name)
