@@ -13,7 +13,7 @@ Current version of CloudTides only allows admin to register users. To create a n
 All users created by admin has lowest privilege on CloudTides, i.e. they can only view and update their own resources.
 
 Future improvements:
-- Admin should be enable to manage users' privileges
+- Admin should be able to manage users' privileges
 
 ## Resource Management
 
@@ -23,6 +23,8 @@ Admin takes charge of resource activation for all user-registered resources. The
 - For queried hosts, click ID on leftmost column, host details will be shown.
 - Look at "Last RPC" field, check whether the host recently communicates with Scienterprise server. Note that the RPC time is in UTC time, there is an 8 hour time difference.
 - If there is such a host, click "Activate" button on CloudTides resource card. The resource is ready to contribute.
+
+![](_media/rpc.png)
   
 Future improvements:
 - Manually looking up hosts is inconvenient and human error may occur. If Boinc provides API for querying information about hosts, this part can be integrated into CloudTides server.

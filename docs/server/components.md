@@ -1,4 +1,4 @@
-# Server Components
+# Backend Components
 ## Go-swagger
 
 The server side uses [go-swagger](https://github.com/go-swagger/go-swagger) to generate REST APIs. OpenAPI specifications can be found at [OpenAPI](https://swagger.io/specification/v2/).

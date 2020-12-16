@@ -1,7 +1,8 @@
 <!-- docs/_sidebar.md -->
-* Getting started
+* [Overview](/)
 * [Developer Guide](/developer.md)
-    * [Server Components](/server/components.md)
+    * [Backend Components](/server/components.md)
     * [Server-Side Development](/server/development.md)
     * [Operations](/ops/)
+    * [ThinkCloud](/thinkcloud/)
 * [Admin Guide](/admin.md)
