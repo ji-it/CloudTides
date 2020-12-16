@@ -3,6 +3,6 @@
 * [Developer Guide](/developer.md)
     * [Backend Components](/server/components.md)
     * [Server-Side Development](/server/development.md)
-    * [Operations](/ops/)
+    * [Ops](/ops/)
     * [ThinkCloud](/thinkcloud/)
 * [Admin Guide](/admin.md)
