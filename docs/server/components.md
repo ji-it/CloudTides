@@ -85,4 +85,12 @@ CORS policy is implemented in `setupGlobalMiddleware` function in `./pkg/restapi
 
 ## Logger
 
-The server uses [logrus](https://github.com/Sirupsen/logrus) for logging. Implementation refers to https://goswagger.io/use/middleware.html. 
+The server uses [logrus](https://github.com/Sirupsen/logrus) for logging. Implementation refers to https://goswagger.io/use/middleware.html.
+
+## Database
+
+The backend uses [PostgreSQL](https://www.postgresql.org/) for data storage.
+ 
+Current ER diagram:
+
+![](../_media/ER_diagram.png)

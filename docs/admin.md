@@ -18,7 +18,7 @@ Future improvements:
 ## Resource Management
 
 Admin takes charge of resource activation for all user-registered resources. The admin should know what happens when a user registers a new resource, refer to [resource initialization](server/components.md#resource-initialization). During resource initialization, the admin performs following actions:
-- Open [Scienterprise admin page](http://boinc.scienterprise.cn/ops/) in browser. Click "Hosts" in "Browser database" column.
+- Open [Scienterprise admin page](http://boinc.scienterprise.cn/ops/) in browser. Click "Hosts" in "Browse database" column.
 - Query the hosts. If needed, enter some additional clauses like user id, etc. Click "OK".
 - For queried hosts, click ID on leftmost column, host details will be shown.
 - Look at "Last RPC" field, check whether the host recently communicates with Scienterprise server. Note that the RPC time is in UTC time, there is an 8 hour time difference.
