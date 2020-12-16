@@ -10,7 +10,7 @@ RUN cd cmd && \
 
 FROM ubuntu:latest
 WORKDIR /build
-COPY --from=0 /output/backend /build/.env /build/
+COPY --from=0 /output/backend /build/
 RUN apt-get update \
     && apt-get install -y ca-certificates
 EXPOSE 80
