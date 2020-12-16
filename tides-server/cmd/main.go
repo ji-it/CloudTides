@@ -14,15 +14,15 @@ import (
 
 	"github.com/go-openapi/loads"
 
-	"tides-server/pkg/restapi"
-
 	"fmt"
 	"log"
 	"os"
+	"tides-server/pkg/restapi"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	conf := config.GetConfig()
 	boolPtr := flag.Bool("local", false, "a bool")
 	flag.Parse()
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
@@ -35,10 +35,17 @@ func main() {
 	server.ConfigureAPI()
 	defer server.Shutdown()
 
-	server.Host = "0.0.0.0"
+	if !*boolPtr {
+		err := godotenv.Load() // load .env file
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
+	config.InitConfig()
+	conf := config.GetConfig()
 	conf.Debug = *boolPtr
-	server.Port, _ = strconv.Atoi(conf.Port)
-	config.StartDB()
+	server.Host = os.Getenv("envkey_SERVER_IP")
+	server.Port, err = strconv.Atoi(os.Getenv("envkey_SERVER_PORT"))
 
 	name, err := os.Hostname()
 	fmt.Println(name)

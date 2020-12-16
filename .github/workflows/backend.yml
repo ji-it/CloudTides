@@ -76,6 +76,21 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_SERVER_IP: ${{ secrets.SERVER_IP }}
+          envkey_SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_PORT: ${{ secrets.DB_PORT }}
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          envkey_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          directory: tides-server
+          file_name: .env
+
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
