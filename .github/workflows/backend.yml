@@ -76,23 +76,18 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          INPUT_ENVKEY_SERVER_IP: ${{ secrets.SERVER_IP }}
-          INPUT_ENVKEY_SERVER_PORT: ${{ secrets.SERVER_PORT }}
-          INPUT_ENVKEY_DB_HOST: ${{ secrets.DB_HOST }}
-          INPUT_ENVKEY_DB_PORT: ${{ secrets.DB_PORT }}
-          INPUT_ENVKEY_DB_USER: ${{ secrets.DB_USER }}
-          INPUT_ENVKEY_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          INPUT_ENVKEY_DB_NAME: ${{ secrets.DB_NAME }}
-          INPUT_ENVKEY_ADMIN_USER: ${{ secrets.ADMIN_USER }}
-          INPUT_ENVKEY_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          directory: tides-server
-          file_name: .env
-
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         with:
           name: ericshen97/cloudtides_backend
           username: ${{ secrets.DOCKER_USERNAME }}

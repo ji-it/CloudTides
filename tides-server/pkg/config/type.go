@@ -20,7 +20,6 @@ var (
 
 // Config consists fields to setup the cloudTides server
 type Config struct {
-	Port  string `json:"port"`
-	DB    string `json:"database"`
-	Debug bool   `json:"debug"`
+	Port string `json:"port"`
+	DB   string `json:"database"`
 }

@@ -6,7 +6,6 @@
 package main
 
 import (
-	"flag"
 	"strconv"
 	"tides-server/pkg/config"
 	"tides-server/pkg/controller"
@@ -18,13 +17,9 @@ import (
 	"log"
 	"os"
 	"tides-server/pkg/restapi"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	boolPtr := flag.Bool("local", false, "a bool")
-	flag.Parse()
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
 	if err != nil {
 		log.Fatalln(err)
@@ -35,15 +30,7 @@ func main() {
 	server.ConfigureAPI()
 	defer server.Shutdown()
 
-	if !*boolPtr {
-		err := godotenv.Load() // load .env file
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-	}
 	config.InitConfig()
-	conf := config.GetConfig()
-	conf.Debug = *boolPtr
 	server.Host = os.Getenv("SERVER_IP")
 	server.Port, err = strconv.Atoi(os.Getenv("SERVER_PORT"))
 
