@@ -94,3 +94,7 @@ The backend uses [PostgreSQL](https://www.postgresql.org/) for data storage.
 Current ER diagram:
 
 ![](../_media/ER_diagram.png)
+
+Future improvements:
+- Current schema is designed only for functioning. Call for better schema design, possibly following database [normal forms](https://www.geeksforgeeks.org/boyce-codd-normal-form-bcnf/).
+- For vCloud Director resource, the `vm` and `vm_usage` tables is not appropriate. Better to create `vapp` table with vapp-related fields.

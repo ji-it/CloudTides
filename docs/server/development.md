@@ -11,14 +11,24 @@ export GO111MODULE=on
 go get -v all
 ```
 
-Change the server ip to `localhost` in `cmd/main.go`. Change database configuration in `./pkg/config/type.go`
+To run `dev` server, create a `.env` file in the root of this directory with following configurations:
 ```
-cd tides-server/cmd
-go run main.go
+SERVER_IP=
+SERVER_PORT=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+SECRET_KEY=
 ```
 
-Future improvements:
-- The way of starting local mode is not convenient. Better to read from a config file.
+If running in local environment, `SERVER_IP` and `POSTGRES_HOST` would be `localhost`. Then start the server:
+```
+go run ./cmd/main.go
+```
 
 ## API Implementation
 
@@ -35,4 +45,5 @@ Add new REST API:
 ## Future Improvements
 
 - Tests should be added. More sophosticated tests should be added in CI workflow.
-- The credentials are stored in code, which is not safe. Possible solution: Store credentials in GitHub secrets, read them during CD workflow. 
+- Implement cost estimator to inform users about their contribution.
+- Deleting a resource should destroy all the VMs deployed on the resource. Not implemented now.
