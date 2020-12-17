@@ -20,7 +20,7 @@ spec:
             - containerPort: 80
               hostPort: 8080
           envFrom:
-            - configMapRef:
-                name: cloudtides-config
+            - secretRef:
+                name: cloudtides-secret
       nodeSelector:
         support: backend

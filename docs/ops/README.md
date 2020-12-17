@@ -44,12 +44,12 @@ Future improvements:
 
 ## Credentials
 
-The credentials for backend is persistently stored in k8s [config-maps](https://kubernetes.io/docs/concepts/configuration/configmap/). The server container loads the config data when it is deployed on k8s:
+The credentials for backend is persistently stored in k8s [secrets](https://kubernetes.io/docs/concepts/configuration/secret/). The server container loads the secret data when it is deployed on k8s:
 
 ```
 envFrom:
-    - configMapRef:
-        name: cloudtides-config
+    - secretRef:
+        name: cloudtides-secret
 ```
 
 Ensure the security of credentials.
