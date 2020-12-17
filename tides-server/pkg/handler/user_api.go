@@ -79,6 +79,7 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	secretKey := config.GetConfig().SecretKey
 	signedToken, _ := token.SignedString([]byte(secretKey))
 
 	res := user.UserLoginOKBodyUserInfo{Priority: queryUser.Priority, Username: queryUser.Username}

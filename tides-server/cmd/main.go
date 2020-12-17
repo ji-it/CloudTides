@@ -20,6 +20,7 @@ import (
 )
 
 func main() {
+	config.GetConfig()
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
 	if err != nil {
 		log.Fatalln(err)
@@ -32,7 +33,6 @@ func main() {
 
 	server.Host = os.Getenv("SERVER_IP")
 	server.Port, err = strconv.Atoi(os.Getenv("SERVER_PORT"))
-	config.InitConfig()
 
 	name, err := os.Hostname()
 	fmt.Println(name)

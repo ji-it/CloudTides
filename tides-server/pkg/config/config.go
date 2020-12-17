@@ -5,6 +5,7 @@ import (
 	"os"
 	"tides-server/pkg/models"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,13 +16,23 @@ var (
 	err    error
 )
 
-func InitConfig() {
+func init() {
+	initConfig()
+}
+
+func initConfig() {
+	godotenv.Load("../.env")
 	config = &Config{}
-	config.Port = defaultPort
-	serverPort := os.Getenv("SERVER_PORT")
-	if serverPort != "" {
-		config.Port = serverPort
-	}
+	config.ServerIP = os.Getenv("SERVER_IP")
+	config.ServerPort = os.Getenv("SERVER_PORT")
+	config.PostgresHost = os.Getenv("POSTGRES_HOST")
+	config.PostgresPort = os.Getenv("POSTGRES_PORT")
+	config.PostgresUser = os.Getenv("POSTGRES_USER")
+	config.PostgresPassword = os.Getenv("POSTGRES_PASSWORD")
+	config.PostgresDB = os.Getenv("POSTGRES_DB")
+	config.SecretKey = os.Getenv("SECRET_KEY")
+	config.AdminUser = os.Getenv("ADMIN_USER")
+	config.AdminPassword = os.Getenv("ADMIN_PASSWORD")
 	StartDB()
 }
 
@@ -37,13 +48,8 @@ func GetDB() *gorm.DB {
 func StartDB() {
 	var dbinfo string
 
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
 	dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
+		config.PostgresHost, config.PostgresPort, config.PostgresUser, config.PostgresPassword, config.PostgresDB)
 	db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	// defer db.Close()
 	if err != nil {
@@ -69,12 +75,10 @@ func StartDB() {
 func CreateAdmin() {
 	db := GetDB()
 	var adm models.User
-	adminUser := os.Getenv("ADMIN_USER")
-	adminPwd := os.Getenv("ADMIN_PASSWORD")
-	if db.Where("username = ?", adminUser).First(&adm).RowsAffected == 0 {
+	if db.Where("username = ?", config.AdminUser).First(&adm).RowsAffected == 0 {
 		admin := models.User{
-			Username: adminUser,
-			Password: adminPwd,
+			Username: config.AdminUser,
+			Password: config.AdminPassword,
 			Priority: models.UserPriorityHigh,
 		}
 		db.Create(&admin)

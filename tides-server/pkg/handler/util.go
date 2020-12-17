@@ -29,6 +29,7 @@ func ParseUserIdFromToken(req *http.Request) (uint, error) {
 	stringToken := splitToken[1]
 
 	claims := &Claims{}
+	secretKey := config.GetConfig().SecretKey
 	_, err := jwt.ParseWithClaims(
 		stringToken,
 		claims,

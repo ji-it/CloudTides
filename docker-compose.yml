@@ -21,7 +21,7 @@ services:
     tty: true
     depends_on:
       - database
-    entrypoint: ["/build/backend", "--local"]
+    entrypoint: ["/build/backend"]
   frontend:
     build: ./ui
     volumes:

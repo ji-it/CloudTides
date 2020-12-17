@@ -31,15 +31,23 @@ export GO111MODULE=on
 go get -v all
 ```
 
-Run `dev` server:
+To run `dev` server, create a `.env` file in the root of this directory with following configurations:
+```
+SERVER_IP=
+SERVER_PORT=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+SECRET_KEY=
+```
 
+If running in local environment, `SERVER_IP` and `POSTGRES_HOST` would be `localhost`. Then start the server:
 ```
 go run ./cmd/main.go
-```
-
-To run `test` server in local env, set env variables listed in `.env` and run
-```
-go run ./cmd/main.go -local
 ```
 
 To add new features, add new API specifications in `./swagger/swagger.yml` and implement API logics in `./pkg/handler`.
