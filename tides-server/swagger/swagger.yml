@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   title: 'CloudTides-Server'
   version: '0.0.1'
-basePath: /v1
+basePath: /api/v1
 paths:
   /resource/vsphere/validate:
     get:

@@ -23,7 +23,7 @@ func init() {
     "title": "CloudTides-Server",
     "version": "0.0.1"
   },
-  "basePath": "/v1",
+  "basePath": "/api/v1",
   "paths": {
     "/policy": {
       "get": {
@@ -2429,7 +2429,7 @@ func init() {
     "title": "CloudTides-Server",
     "version": "0.0.1"
   },
-  "basePath": "/v1",
+  "basePath": "/api/v1",
   "paths": {
     "/policy": {
       "get": {

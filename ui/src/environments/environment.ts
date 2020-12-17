@@ -6,7 +6,7 @@ import { base } from './base';
 
 export const environment = {
   production: false,
-  apiPrefix: 'http://localhost:80/v1'
+  apiPrefix: 'http://localhost:80/api/v1'
 };
 
 /*
