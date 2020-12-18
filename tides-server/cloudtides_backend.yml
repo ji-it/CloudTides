@@ -18,7 +18,7 @@ spec:
           image: ericshen97/cloudtides_backend:latest
           ports:
             - containerPort: 80
-              hostPort: 8080
+              hostPort: 8081
           envFrom:
             - secretRef:
                 name: cloudtides-secret
