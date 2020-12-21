@@ -7,8 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// VMUsage VM usage
-
+// VMUsage schema
 type VMUsage struct {
 	gorm.Model
 
@@ -25,9 +24,9 @@ type VMUsage struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 
 	// vm foreign key
-	VmID uint
+	VMID uint
 
-	Vm VM `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	VM VM `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this VM usage

@@ -9,6 +9,7 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
+// InitController sets up cronjobs for Initjob and InitCleanUp
 func InitController() {
 	cronjobs = map[uint]*cron.Cron{}
 	// Query usage every 5 mins
@@ -25,6 +26,8 @@ func InitController() {
 	cl.Start()
 }
 
+// InitJob checks active but unmonitored resources and init monitor cronjobs
+// for them
 func InitJob() {
 	db := config.GetDB()
 	var resources []*models.Resource
@@ -83,11 +86,13 @@ func InitJob() {
 	}
 }
 
+// InitCleanUp cleans past usage table
 func InitCleanUp() {
 	db := config.GetDB()
 	db.Unscoped().Delete(&models.ResourcePastUsage{})
 }
 
+// RemoveJob deletes monitor cronjob for a resource with ID ResID
 func RemoveJob(ResID uint) {
 	c, ok := cronjobs[ResID]
 	if ok {

@@ -9,6 +9,7 @@ import (
 	"tides-server/pkg/models"
 )
 
+// AddProjectHandler is API handler for /project POST
 func AddProjectHandler(params project.AddProjectParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -30,6 +31,7 @@ func AddProjectHandler(params project.AddProjectParams) middleware.Responder {
 	})
 }
 
+// ListProjectHandler is API handler for /project GET
 func ListProjectHandler(params project.ListProjectParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return project.NewAddProjectUnauthorized()
@@ -55,6 +57,7 @@ func ListProjectHandler(params project.ListProjectParams) middleware.Responder {
 	return project.NewListProjectOK().WithPayload(res)
 }
 
+// UpdateProjectHandler is API handler for /project/{id} PUT
 func UpdateProjectHandler(params project.UpdateProjectParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -78,6 +81,7 @@ func UpdateProjectHandler(params project.UpdateProjectParams) middleware.Respond
 	})
 }
 
+// DeleteProjectHandler is API handler for /project/{id} DELETE
 func DeleteProjectHandler(params project.DeleteProjectParams) middleware.Responder {
 
 	db := config.GetDB()

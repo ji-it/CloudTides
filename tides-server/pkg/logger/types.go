@@ -1,9 +1,13 @@
 package logger
 
 const (
+	// LogCtxID = "ContextID"
 	LogCtxID string = "ContextID"
-	INFO     string = "INFO"
-	ERROR    string = "ERROR"
+	// INFO = "INFO"
+	INFO string = "INFO"
+	// ERROR = "ERROR"
+	ERROR string = "ERROR"
 )
 
+// Fields ...
 type Fields map[string]interface{}

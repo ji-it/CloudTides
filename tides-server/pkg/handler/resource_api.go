@@ -20,6 +20,7 @@ import (
 	"tides-server/pkg/restapi/operations/resource"
 )
 
+// ValidateVsphereResourceHandler is API handler for /resource/vsphere/validate GET, deprecated
 func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewValidateVsphereResourceUnauthorized()
@@ -63,13 +64,13 @@ func ValidateVsphereResourceHandler(params resource.ValidateVsphereResourceParam
 	return resource.NewValidateVsphereResourceOK().WithPayload(&resBody)
 }
 
-// Register new clusters or resource pools
+// AddVsphereResourceHandler is API handler for /resource/vsphere POST, deprecated
 func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewAddVsphereResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	body := params.ReqBody
 
 	u, err := soap.ParseURL(body.HostAddress)
@@ -124,11 +125,10 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
 					Message: "Child resource pool already registered!",
 				})
-			} else {
-				return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
-					Message: "Cluster already registered!",
-				})
 			}
+			return resource.NewAddVsphereResourceNotFound().WithPayload(&resource.AddVsphereResourceNotFoundBody{
+				Message: "Cluster already registered!",
+			})
 		}
 
 		v, err = m.CreateContainerView(ctx, datacenter.HostFolder, []string{"ClusterComputeResource"}, true)
@@ -303,12 +303,13 @@ func AddVsphereResourceHandler(params resource.AddVsphereResourceParams) middlew
 	})
 }
 
+// ListVsphereResourceHandler is API handler for /resource/vsphere GET, deprecated
 func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewListVsphereResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
@@ -354,6 +355,7 @@ func ListVsphereResourceHandler(params resource.ListVsphereResourceParams) middl
 	})
 }
 
+// ValidateVcdResourceHandler is API handler for /resource/vcd/validate GET
 func ValidateVcdResourceHandler(params resource.ValidateVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewValidateVcdResourceUnauthorized()
@@ -391,12 +393,13 @@ func ValidateVcdResourceHandler(params resource.ValidateVcdResourceParams) middl
 	})
 }
 
+// AddVcdResourceHandler is API handler for /resource/vcd POST
 func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewAddVcdResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	body := params.ReqBody
 	db := config.GetDB()
 	var res models.Resource
@@ -545,12 +548,13 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	})
 }
 
+// ListVcdResourceHandler is API handler for /resource/vcd GET
 func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewListVcdResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	resources := []*models.Resource{}
 	db := config.GetDB()
 
@@ -584,16 +588,17 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 	return resource.NewListVcdResourceOK().WithPayload(responses)
 }
 
+// GetVcdResourceHandler is API handler for /resource/vcd/{id} GET
 func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewGetVcdResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	vcdId := params.ID
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	vcdID := params.ID
 	db := config.GetDB()
 	var vcd models.Vcd
-	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
+	if db.Where("id = ?", vcdID).First(&vcd).RowsAffected == 0 {
 		return resource.NewGetVcdResourceNotFound()
 	}
 
@@ -637,16 +642,17 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	return resource.NewGetVcdResourceOK().WithPayload(&response)
 }
 
+// DeleteVcdResourceHandler is API handler for /resource/vcd/{id} DELETE
 func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewDeleteVcdResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
-	vcdId := params.ID
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	vcdID := params.ID
 	db := config.GetDB()
 	var vcd models.Vcd
-	if db.Where("id = ?", vcdId).First(&vcd).RowsAffected == 0 {
+	if db.Where("id = ?", vcdID).First(&vcd).RowsAffected == 0 {
 		return resource.NewDeleteVcdResourceNotFound()
 	}
 
@@ -660,13 +666,14 @@ func DeleteVcdResourceHandler(params resource.DeleteVcdResourceParams) middlewar
 	})
 }
 
+// AssignPolicyHandler is API handler for /resource/policy/{id} PUT
 func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewUpdateResourceUnauthorized()
 	}
 
 	rid := params.ID
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	db := config.GetDB()
 	var res models.Resource
 	if db.Where("id = ? AND user_id = ?", rid, uid).First(&res).RowsAffected == 0 {
@@ -695,6 +702,7 @@ func AssignPolicyHandler(params resource.AssignPolicyParams) middleware.Responde
 	})
 }
 
+// ActivateResourceHandler is API handler for /resource/activate/{id} PUT
 func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewActivateResourceUnauthorized()
@@ -737,12 +745,13 @@ func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.
 	})
 }
 
+// ContributeResourceHandler is API handler for /resource/contribute/{id} PUT
 func ContributeResourceHandler(params resource.ContributeResourceParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return resource.NewContributeResourceUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	db := config.GetDB()
 	var res models.Resource
 	if db.Where("id = ? AND user_id = ?", params.ID, uid).First(&res).RowsAffected == 0 {

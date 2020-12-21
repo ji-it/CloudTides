@@ -10,8 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Vcd policy
-
+// VcdPolicy schema
 type VcdPolicy struct {
 	gorm.Model
 
@@ -27,8 +26,7 @@ type VcdPolicy struct {
 	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-// Policy policy
-
+// Policy schema
 type Policy struct {
 	gorm.Model
 

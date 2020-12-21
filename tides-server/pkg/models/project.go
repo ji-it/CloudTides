@@ -6,8 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Project project
-
+// Project schema
 type Project struct {
 	gorm.Model
 

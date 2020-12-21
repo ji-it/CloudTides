@@ -10,8 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// User user
-
+// User schema
 type User struct {
 	gorm.Model
 

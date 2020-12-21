@@ -9,12 +9,13 @@ import (
 	"tides-server/pkg/models"
 )
 
+// AddPolicyHandler is API handler for /policy POST
 func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return policy.NewAddPolicyUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	body := params.ReqBody
 
 	newPolicy := models.Policy{
@@ -59,12 +60,13 @@ func AddPolicyHandler(params policy.AddPolicyParams) middleware.Responder {
 	})
 }
 
+// UpdatePolicyHandler is API handler for /policy/{id} PUT
 func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return policy.NewAddPolicyUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	body := params.ReqBody
 	var pol models.Policy
 	db := config.GetDB()
@@ -89,6 +91,7 @@ func UpdatePolicyHandler(params policy.UpdatePolicyParams) middleware.Responder 
 	})
 }
 
+// ListPolicyHandler is API handler for /policy GET
 func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return policy.NewListPolicyUnauthorized()
@@ -120,12 +123,13 @@ func ListPolicyHandler(params policy.ListPolicyParams) middleware.Responder {
 	})
 }
 
+// RemovePolicyHandler is API handler for /policy/{id} DELETE
 func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return policy.NewRemovePolicyUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	var pol models.Policy
 	db := config.GetDB()
 
@@ -138,6 +142,7 @@ func RemovePolicyHandler(params policy.RemovePolicyParams) middleware.Responder 
 	})
 }
 
+// GetPolicyHandler is API handler for /policy/{id} GET
 func GetPolicyHandler(params policy.GetPolicyParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return policy.NewRemovePolicyUnauthorized()

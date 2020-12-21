@@ -11,6 +11,7 @@ import (
 	"tides-server/pkg/models"
 )
 
+// AddTemplateHandler is API handler for /template POST
 func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return template.NewAddTemplateUnauthorized()
@@ -24,7 +25,7 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 		Name:             body.Name,
 		ProvisionedSpace: body.Space,
 		TemplateType:     body.Source,
-		VmName:           body.VMName,
+		VMName:           body.VMName,
 	}
 
 	db := config.GetDB()
@@ -39,6 +40,7 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 	})
 }
 
+// ListTemplateHandler is API handler for /template GET
 func ListTemplateHandler(params template.ListTemplateParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return template.NewListTemplateUnauthorized()
@@ -68,12 +70,13 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 	})
 }
 
+// DeleteTemplateHandler is API handler for /template/{id} DELETE
 func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return template.NewDeleteTemplateUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	db := config.GetDB()
 
 	if db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).RowsAffected == 0 {

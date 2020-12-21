@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	// LogLevel is INFO or ERROR
 	LogLevel string
 	console  *log.Logger
 )
@@ -71,13 +72,14 @@ func isValidLevel(level string) bool {
 	return true
 }
 
-// Print log in simple way
+// Info prints log in simple way
 func Info(msg interface{}) {
 	if LogLevel == INFO {
 		output(msg, INFO)
 	}
 }
 
+// Error prints log in error level
 func Error(msg interface{}) {
 	output(msg, ERROR)
 }
@@ -90,13 +92,14 @@ func output(msg interface{}, prefix string) {
 	)
 }
 
-// Print log with fields
+// InfoFields prints log with fields
 func InfoFields(msg string, fields Fields) {
 	if LogLevel == INFO {
 		outputFields(msg, fields, INFO)
 	}
 }
 
+// ErrorFields prints log with fields
 func ErrorFields(msg string, fields Fields) {
 	outputFields(msg, fields, ERROR)
 }
@@ -121,6 +124,7 @@ func outputFields(msg string, fields Fields, prefix string) {
 	console.Println(fmt.Sprintf("[%s] %s Ln%d %s %s", prefix, file, line, msg, data))
 }
 
+// Locate ...
 func Locate(skip int) (filename string, line int) {
 	if skip < 0 {
 		return "", skip

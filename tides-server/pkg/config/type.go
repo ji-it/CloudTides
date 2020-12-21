@@ -14,6 +14,7 @@ const (
 	defaultPort                  string          = "80"
 )
 
+// ContextRoot
 var (
 	ContextRoot = context.Background()
 )

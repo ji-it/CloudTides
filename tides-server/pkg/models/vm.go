@@ -9,8 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// VM VM
-
+// VM schema
 type VM struct {
 	gorm.Model
 

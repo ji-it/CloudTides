@@ -50,4 +50,4 @@ If running in local environment, `SERVER_IP` and `POSTGRES_HOST` would be `local
 go run ./cmd/main.go
 ```
 
-To add new features, add new API specifications in `./swagger/swagger.yml` and implement API logics in `./pkg/handler`.
+To add new features, add new API specifications in `./swagger/swagger.yml` and implement API logics in `./pkg/handler`. For more details, refer to [developer guide](https://scienterprise.github.io/CloudTides/#/).

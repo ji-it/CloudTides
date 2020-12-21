@@ -12,6 +12,7 @@ import (
 	"tides-server/pkg/models"
 )
 
+// RegisterUserHandler is API handler for /users/register POST
 func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	body := params.ReqBody
 	db := config.GetDB()
@@ -57,6 +58,7 @@ func RegisterUserHandler(params user.RegisterUserParams) middleware.Responder {
 	return user.NewRegisterUserOK().WithPayload(&user.RegisterUserOKBody{UserInfo: res})
 }
 
+// UserLoginHandler is API handler for /users/login POST
 func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -71,7 +73,7 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 
 	expirationTime := time.Now().Add(expireTime)
 	claims := Claims{
-		Id: queryUser.Model.ID,
+		ID: queryUser.Model.ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 			Issuer:    issuer,
@@ -87,12 +89,13 @@ func UserLoginHandler(params user.UserLoginParams) middleware.Responder {
 	return user.NewUserLoginOK().WithPayload(&user.UserLoginOKBody{Token: signedToken, UserInfo: &res})
 }
 
+// GetUserProfileHandler is API handler for /users/profile GET
 func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return user.NewGetUserProfileUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	db := config.GetDB()
 	var u models.User
 	if db.Where("id = ?", uid).First(&u).RowsAffected == 0 {
@@ -118,12 +121,13 @@ func GetUserProfileHandler(params user.GetUserProfileParams) middleware.Responde
 	})
 }
 
+// UpdateUserProfileHandler is API handler for /users/profile PUT
 func UpdateUserProfileHandler(params user.UpdateUserProfileParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return user.NewUpdateUserProfileUnauthorized()
 	}
 
-	uid, _ := ParseUserIdFromToken(params.HTTPRequest)
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	body := params.ReqBody
 	db := config.GetDB()
 	var u models.User

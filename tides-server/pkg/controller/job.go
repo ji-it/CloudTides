@@ -27,11 +27,11 @@ func randSeq(n int) string {
 }
 
 // Checks that a configuration structure is complete
-func check_configuration(conf VcdConfig) {
-	will_exit := false
+func checkConfiguration(conf VcdConfig) {
+	willExit := false
 	abort := func(s string) {
 		fmt.Printf("configuration field '%s' empty or missing\n", s)
-		will_exit = true
+		willExit = true
 	}
 	if conf.Org == "" {
 		abort("org")
@@ -51,25 +51,25 @@ func check_configuration(conf VcdConfig) {
 	if conf.Password == "" {
 		abort("password")
 	}
-	if will_exit {
+	if willExit {
 		return
 	}
 }
 
 // Retrieves the configuration from a Json or Yaml file
-func getConfig(config_file string) (VcdConfig, error) {
+func getConfig(configFile string) (VcdConfig, error) {
 	var configuration VcdConfig
-	buffer, err := ioutil.ReadFile(config_file)
+	buffer, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		fmt.Printf("Configuration file %s not found\n%s\n", config_file, err)
+		fmt.Printf("Configuration file %s not found\n%s\n", configFile, err)
 		return configuration, err
 	}
 	err = yaml.Unmarshal(buffer, &configuration)
 	if err != nil {
-		fmt.Printf("Error retrieving configuration from file %s\n%s\n", config_file, err)
+		fmt.Printf("Error retrieving configuration from file %s\n%s\n", configFile, err)
 		return configuration, err
 	}
-	check_configuration(configuration)
+	checkConfiguration(configuration)
 
 	// If something goes wrong, rerun the program after setting
 	// the environment variable SAMPLES_DEBUG, and you can check how the
@@ -77,13 +77,13 @@ func getConfig(config_file string) (VcdConfig, error) {
 	if os.Getenv("SAMPLES_DEBUG") != "" {
 		fmt.Printf("configuration text: %s\n", buffer)
 		fmt.Printf("configuration rec: %#v\n", configuration)
-		new_conf, _ := yaml.Marshal(configuration)
-		fmt.Printf("YAML configuration: \n%s\n", new_conf)
+		newConf, _ := yaml.Marshal(configuration)
+		fmt.Printf("YAML configuration: \n%s\n", newConf)
 	}
 	return configuration, nil
 }
 
-// Creates a vCD client
+// Client creates a vCD client
 func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	u, err := url.ParseRequestURI(c.Href)
 	if err != nil {
@@ -103,7 +103,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 }
 
 // Deploy VAPP
-func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, cataName string, vAppName string, netName string) *govcd.VApp {
+func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VMName string, cataName string, vAppName string, netName string) *govcd.VApp {
 
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
@@ -127,7 +127,7 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VmName string, c
 	task, err = vapp.PowerOn()
 	task.WaitTaskCompletion()
 
-	vm, err := vapp.GetVMByName(VmName, true)
+	vm, err := vapp.GetVMByName(VMName, true)
 
 	task, err = vm.Undeploy()
 	task.WaitTaskCompletion()
@@ -204,7 +204,7 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 	return nil
 }
 
-// Cronjob for resource. Query usage, update status, deploy/destroy/suspend Vapps.
+// RunJob is a cronjob for resource. Query usage, update status, deploy/destroy/suspend Vapps.
 func RunJob(configFile string) {
 
 	// Reads the configuration file
@@ -295,7 +295,7 @@ func RunJob(configFile string) {
 			db.Where("policy_id = ?", pol.ID).First(&vcdPol)
 			var tem models.Template
 			db.Where("id = ?", pol.TemplateID).First(&tem)
-			vapp := deployVapp(org, vdc, tem.Name, tem.VmName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network)
+			vapp := deployVapp(org, vdc, tem.Name, tem.VMName, vcdPol.Catalog, "cloudtides-vapp-"+randSeq(6), vcdPol.Network)
 			if vapp != nil {
 				newVapp := models.VM{
 					IPAddress:   vapp.VApp.HREF,

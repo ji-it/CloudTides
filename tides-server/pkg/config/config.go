@@ -41,10 +41,12 @@ func GetConfig() *Config {
 	return config
 }
 
+// GetDB returns a pointer to the database
 func GetDB() *gorm.DB {
 	return db
 }
 
+// StartDB initiates database with user configuration, also migrates db schema
 func StartDB() {
 	var dbinfo string
 
@@ -72,6 +74,7 @@ func StartDB() {
 	TemplateSetup()
 }
 
+// CreateAdmin sets up an admin account
 func CreateAdmin() {
 	db := GetDB()
 	var adm models.User
@@ -85,6 +88,7 @@ func CreateAdmin() {
 	}
 }
 
+// TemplateSetup sets up a VM template instance
 func TemplateSetup() {
 	db := GetDB()
 	var tem models.Template
@@ -94,7 +98,7 @@ func TemplateSetup() {
 			MemorySize:       8,
 			Name:             "tides-boinc-attached",
 			ProvisionedSpace: 16,
-			VmName:           "tides-gromacs",
+			VMName:           "tides-gromacs",
 		}
 		db.Create(&newTem)
 	}

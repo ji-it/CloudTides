@@ -22,13 +22,13 @@ var (
 	catalog string
 )
 
-// Configuration of Json Web Token
+// Claims is configuration of Json Web Token
 type Claims struct {
-	Id uint
+	ID uint
 	jwt.StandardClaims
 }
 
-// Configuration of Vcd Connection
+// VcdConfig is configuration for Vcd Connection
 type VcdConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`

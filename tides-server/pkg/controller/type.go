@@ -2,6 +2,7 @@ package controller
 
 import "github.com/robfig/cron/v3"
 
+// VcdConfig is json configuration for vCD resource
 type VcdConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
@@ -12,6 +13,7 @@ type VcdConfig struct {
 	Insecure bool   `json:"insecure"`
 }
 
+// Policy schema
 type Policy struct {
 	CPU float64 `json:"cpu"`
 	RAM float64 `json:"ram"`

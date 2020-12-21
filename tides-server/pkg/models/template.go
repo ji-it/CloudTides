@@ -10,8 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Template template
-
+// Template schema
 type Template struct {
 	gorm.Model
 
@@ -35,7 +34,7 @@ type Template struct {
 	TemplateType string `json:"templateType,omitempty"`
 
 	// vm name
-	VmName string `json:"vmName,omitempty"`
+	VMName string `json:"vmName,omitempty"`
 }
 
 // Validate validates this template

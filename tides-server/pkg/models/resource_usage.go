@@ -7,8 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// ResourceUsage past usage
-
+// ResourcePastUsage schema
 type ResourcePastUsage struct {
 	gorm.Model
 
@@ -45,8 +44,7 @@ type ResourcePastUsage struct {
 	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-// ResourceUsage host usage
-
+// ResourceUsage schema
 type ResourceUsage struct {
 	gorm.Model
 

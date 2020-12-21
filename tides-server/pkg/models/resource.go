@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Vsphere schema
 type Vsphere struct {
 	gorm.Model
 
@@ -25,6 +26,7 @@ type Vsphere struct {
 	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
+// Vcd schema
 type Vcd struct {
 	gorm.Model
 
@@ -40,8 +42,7 @@ type Vcd struct {
 	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-// Resource resource
-
+// Resource schema
 type Resource struct {
 	gorm.Model
 
@@ -139,8 +140,10 @@ const (
 	// ResourceStatusUnknown captures enum value "unknown"
 	ResourceStatusUnknown string = "unknown"
 
+	// ResourcePlatformTypeVsphere = "vsphere"
 	ResourcePlatformTypeVsphere string = "vsphere"
 
+	// ResourcePlatformTypeVcd = "vcd"
 	ResourcePlatformTypeVcd string = "vcd"
 )
 

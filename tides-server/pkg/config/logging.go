@@ -5,10 +5,12 @@ import (
 	"os"
 )
 
+// Logger by default
 type Logger struct {
 	syslog.Writer
 }
 
+// LoggingRemoteOpts remote logging options
 type LoggingRemoteOpts struct {
 	RemoteProtocol string          `json:"protocol"`
 	RemoteServer   string          `json:"remote_server"`
@@ -17,6 +19,7 @@ type LoggingRemoteOpts struct {
 	Tag            string          `json:"tag"`
 }
 
+// LoggingLocalOpts local logging options
 type LoggingLocalOpts struct {
 	Output   *os.File
 	Flag     int

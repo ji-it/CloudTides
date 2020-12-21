@@ -18,13 +18,14 @@ import (
 	"tides-server/pkg/models"
 )
 
-func ParseUserIdFromToken(req *http.Request) (uint, error) {
+// ParseUserIDFromToken parses user ID in database from JWT supplied by client
+func ParseUserIDFromToken(req *http.Request) (uint, error) {
 	reqToken := req.Header.Get("Authorization")
 	splitToken := strings.Split(reqToken, "Bearer ")
 	if len(splitToken) < 2 {
 		logger.SetLogLevel("ERROR")
 		logger.Error("Token not supplied in request")
-		return 0, errors.New("Token not supplied in request!")
+		return 0, errors.New("Token not supplied in request")
 	}
 	stringToken := splitToken[1]
 
@@ -42,11 +43,12 @@ func ParseUserIdFromToken(req *http.Request) (uint, error) {
 		logger.Error("JWT is expired")
 		return 0, errors.New("JWT is expired")
 	}
-	return claims.Id, err
+	return claims.ID, err
 }
 
+// VerifyUser checks if user is registered
 func VerifyUser(req *http.Request) bool {
-	id, err := ParseUserIdFromToken(req)
+	id, err := ParseUserIDFromToken(req)
 	if err != nil {
 		return false
 	}
@@ -59,8 +61,9 @@ func VerifyUser(req *http.Request) bool {
 	return true
 }
 
+// VerifyAdmin checks if user is admin
 func VerifyAdmin(req *http.Request) bool {
-	id, err := ParseUserIdFromToken(req)
+	id, err := ParseUserIDFromToken(req)
 	if err != nil {
 		return false
 	}
@@ -75,7 +78,7 @@ func VerifyAdmin(req *http.Request) bool {
 	return false
 }
 
-// Creates a vCD client
+// Client creates a vCD client
 func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	u, err := url.ParseRequestURI(c.Href)
 	if err != nil {
@@ -283,6 +286,7 @@ func destroyVapp(vdc *govcd.Vdc, vAppName string) error {
 	return nil
 }
 
+// PolicySetup sets up a default policy for vcd resources
 func PolicySetup(rid uint, uid uint, network string, catalog string) {
 	db := config.GetDB()
 	var tem models.Template

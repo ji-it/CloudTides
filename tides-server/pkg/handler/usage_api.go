@@ -13,6 +13,7 @@ import (
 	"tides-server/pkg/models"
 )
 
+// AddResourceUsageHandler is API handler for /usage POST
 func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -52,6 +53,7 @@ func AddResourceUsageHandler(params usage.AddResourceUsageParams) middleware.Res
 	})
 }
 
+// GetResourceUsageHandler is API handler for /usage/{id} GET
 func GetResourceUsageHandler(params usage.GetResourceUsageParams) middleware.Responder {
 	db := config.GetDB()
 
@@ -76,6 +78,7 @@ func GetResourceUsageHandler(params usage.GetResourceUsageParams) middleware.Res
 	return usage.NewGetResourceUsageOK().WithPayload(&res)
 }
 
+// UpdateResourceUsageHandler is API handler for /usage/{id} PUT
 func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middleware.Responder {
 	body := params.ReqBody
 	db := config.GetDB()
@@ -102,6 +105,7 @@ func UpdateResourceUsageHandler(params usage.UpdateResourceUsageParams) middlewa
 	})
 }
 
+// DeleteResourceUsageHandler is API handler for /resource/{id} DELETE
 func DeleteResourceUsageHandler(params usage.DeleteResourceUsageParams) middleware.Responder {
 
 	db := config.GetDB()
@@ -117,6 +121,7 @@ func DeleteResourceUsageHandler(params usage.DeleteResourceUsageParams) middlewa
 	})
 }
 
+// AddVMUsageHandler is API handler for /usage/vm POST, deprecated
 func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -151,7 +156,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 				CurrentRAM: val.CurrentRAM,
 				TotalCPU:   val.TotalCPU,
 				TotalRAM:   val.TotalRAM,
-				VmID:       newvm.Model.ID,
+				VMID:       newvm.Model.ID,
 			}
 
 			db.Create(&newvmUsage)
@@ -171,6 +176,7 @@ func AddVMUsageHandler(params usage.AddVMUsageParams) middleware.Responder {
 	})
 }
 
+// GetPastUsageHandler is API handler for /usage/past/{id} GET
 func GetPastUsageHandler(params usage.GetPastUsageParams) middleware.Responder {
 
 	db := config.GetDB()
