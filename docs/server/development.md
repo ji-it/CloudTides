@@ -11,7 +11,7 @@ export GO111MODULE=on
 go get -v all
 ```
 
-To run `dev` server, create a `.env` file in the root of this directory with following configurations:
+To run `dev` server, create a `.env` file in the root of `tides-server` directory with following configurations:
 ```
 SERVER_IP=
 SERVER_PORT=
