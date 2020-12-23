@@ -2,7 +2,7 @@ FROM node:14-alpine
 WORKDIR /app/
 ARG MOD
 
-COPY package.json package-lock.json /app/
+COPY package.json /app/
 RUN npm install
 COPY . .
 RUN npm run-script build.${MOD}
