@@ -23,18 +23,18 @@ services:
       - database
     entrypoint: ["/build/backend"]
   frontend:
-    build: ./ui
+    build: 
+      context: ./ui
+      args:
+        - MOD=dev
     volumes:
       - ./ui:/app
       # One-way volume to use node_modules from inside image
       - /app/node_modules
     ports:
-      - "4200:4200"
-    environment:
-      - NODE_ENV=development
+      - "4200:80"
     depends_on:
       - backend
-    command: npm start
 
 volumes: 
   server_db:

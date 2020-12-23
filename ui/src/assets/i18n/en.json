@@ -2,14 +2,14 @@
   "LOGIN": {
     "SUBMITTING": "Submitting...",
     "LOGIN": "Login",
-    "LOGIN_TITLE": "Cloudtides 云汐",
+    "LOGIN_TITLE": "CloudTides 云汐",
     "EMAIL": "Email",
     "PASSWORD": "Password",
     "SIGNUP": "Sign up"
   },
   "REGISTER": {
     "REGISTER": "Register",
-    "SUBTITLE": "Register for Cloudtides",
+    "SUBTITLE": "Register for CloudTides",
     "ACCOUNT": "Account Information",
     "USERNAME": "Username",
     "USERNAME_MISSING": "Username is required",
@@ -118,7 +118,7 @@
         "DELETE": "Delete"
       }
     },
-    "PRODUCT_NAME": "Cloudtides",
+    "PRODUCT_NAME": "CloudTides",
     "PROFILE": "Profile",
     "LOGOUT": "Log out"
   }
