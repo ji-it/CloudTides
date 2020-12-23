@@ -17,7 +17,7 @@ spec:
         - name: cloudtides-frontend
           image: ericshen97/cloudtides_frontend:latest
           ports:
-            - containerPort: 4200
+            - containerPort: 80
               hostPort: 80
       nodeSelector:
         support: frontend

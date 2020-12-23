@@ -23,7 +23,10 @@ services:
       - database
     entrypoint: ["/build/backend"]
   frontend:
-    build: ./ui
+    build: 
+      context: ./ui
+      args:
+        - MOD=dev
     volumes:
       - ./ui:/app
       # One-way volume to use node_modules from inside image
