@@ -44,13 +44,10 @@ jobs:
 
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
-        env:
-          MOD: prod
         with:
           name: ericshen97/cloudtides_frontend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          buildargs: MOD
           workdir: ui
           tags: "latest"
 
