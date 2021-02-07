@@ -1,0 +1,71 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add Resource
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.resourceForm">
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          placeholder="Resource Name"
+          formControlName="name"
+          clrInput />
+        <clr-control-error>Required</clr-control-error>
+      </clr-input-container>
+      <clr-input-container>
+        <label for="datacenter">Datacenter</label>
+        <input id="datacenter"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          placeholder="Datacenter Name"
+          formControlName="datacenter"
+          clrInput />
+      </clr-input-container>
+      <clr-input-container>
+        <label for="cluster">Cluster</label>
+        <input id="cluster"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          placeholder="Cluster Name"
+          formControlName="cluster"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="username">Username</label>
+        <input id="username"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          formControlName="username"
+          clrInput />
+      </clr-input-container>
+
+      <clr-password-container>
+        <label for="password">Password</label>
+        <input id="password"
+          type="password"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          formControlName="password"
+          clrPassword />
+      </clr-password-container>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()">
+      Cancel
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      (click)="this.onSave()">
+      Save
+    </button>
+  </div>
+</clr-modal>

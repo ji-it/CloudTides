@@ -18,14 +18,16 @@ export class ResourceListComponent implements OnInit {
   }
 
   list$: Observable<Item[]> = of([]);
+  opened = false;
 
-  add () {
-    this.resourceService.addItem({
-      name: '',
-      description: '',
-    }).subscribe(item => {
+  add (resource: Item) {
+    this.resourceService.addItem(resource).subscribe(item => {
       this.refreshList();
     });
+  }
+
+  cancel() {
+    this.opened = false;
   }
 
   ngOnInit() {

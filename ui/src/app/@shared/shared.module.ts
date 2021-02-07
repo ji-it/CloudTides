@@ -2,6 +2,7 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { BaseModule } from './base.module';
 import { sharedComponents } from './component';
+import { sharedPipes } from './pipe';
 
 @NgModule({
   imports: [
@@ -10,9 +11,11 @@ import { sharedComponents } from './component';
   exports: [
     BaseModule,
     ...sharedComponents,
+    ...sharedPipes,
   ],
   declarations: [
     ...sharedComponents,
+    ...sharedPipes,
   ],
 })
 export class SharedModule {

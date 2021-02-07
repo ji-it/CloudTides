@@ -17,7 +17,7 @@ import { AuthGuard } from '@tide-guard/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    canActivateChild: [ AuthGuard ],
+    // canActivateChild: [ AuthGuard ],
     children: [
       {
         path: '',
