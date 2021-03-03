@@ -36,13 +36,13 @@
 
       <nav class="subnav" *ngIf="!this.registerService.inRegisterPage()">
         <ul class="nav">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link"
               routerLink="/home"
               routerLinkActive="active">
               {{ "HOME.DASHBOARD.DASHBOARD" | translate:{} }}
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/resource"
@@ -50,7 +50,7 @@
               {{ "HOME.RESOURCE.RESOURCE" | translate:{} }}
             </a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link"
               routerLink="/policy"
               routerLinkActive="active">
@@ -63,7 +63,7 @@
               routerLinkActive="active">
               {{ "HOME.TEMPLATE.TEMPLATE" | translate:{} }}
             </a>
-          </li>
+          </li> -->
         </ul>
       </nav>
     </ng-container>
