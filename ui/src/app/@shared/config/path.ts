@@ -2,8 +2,7 @@
 export const LOGIN_PATH_NAME = 'login';
 export const REGISTER_PATH_NAME = 'register';
 export const HOME_PATH_NAME = 'home';
-// export const RESOURCE_PATH_NAME = 'resource';
-export const RESOURCE_PATH_NAME = 'home';
+export const RESOURCE_PATH_NAME = 'resource';
 export const POLICY_PATH_NAME = 'policy';
 export const TEMPLATE_PATH_NAME = 'template';
 
