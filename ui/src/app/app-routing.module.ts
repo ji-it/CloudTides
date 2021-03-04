@@ -25,7 +25,8 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: HOME_PATH_NAME,
+        // redirectTo: HOME_PATH_NAME,
+        redirectTo: RESOURCE_PATH_NAME
       },
       {
         path: LOGIN_PATH_NAME,
