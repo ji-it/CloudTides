@@ -11,7 +11,7 @@
   </div-->
   <clr-datagrid>
     <clr-dg-column>
-      <div class="key">Name</div>
+      <div class="key">Vendor Name</div>
     </clr-dg-column>
     <clr-dg-column>
       <div class="key">Total CPU</div>
@@ -26,7 +26,7 @@
       <div class="key">DataCenter</div>
     </clr-dg-column>
     <clr-dg-column>
-      <div class="key">Tenent</div>
+      <div class="key">Tenant</div>
     </clr-dg-column>
     <clr-dg-column>
       <div class="key">Type</div>
@@ -42,11 +42,11 @@
     </clr-dg-column>
 
     <clr-dg-row *ngFor="let item of list">
-      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">ThinkCloud</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.cpu}} GHz</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.mem}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.Datacenter}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">VMware</div></clr-dg-cell>
       <clr-dg-cell><div class="value">Fixed</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["cpu%"] : "-" }}%</div></clr-dg-cell>
