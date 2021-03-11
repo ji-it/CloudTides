@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewDeleteResourceUsage(ctx *middleware.Context, handler DeleteResourceUsage
 	return &DeleteResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*DeleteResourceUsage swagger:route DELETE /usage/{id} usage deleteResourceUsage
+/* DeleteResourceUsage swagger:route DELETE /usage/{id} usage deleteResourceUsage
 
 delete resource usage info
 
@@ -47,14 +48,12 @@ func (o *DeleteResourceUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		r = rCtx
 	}
 	var Params = NewDeleteResourceUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -70,6 +69,11 @@ type DeleteResourceUsageOKBody struct {
 
 // Validate validates this delete resource usage o k body
 func (o *DeleteResourceUsageOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this delete resource usage o k body based on context it is used
+func (o *DeleteResourceUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

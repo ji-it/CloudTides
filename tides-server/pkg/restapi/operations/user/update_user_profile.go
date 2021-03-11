@@ -6,6 +6,7 @@ package user
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewUpdateUserProfile(ctx *middleware.Context, handler UpdateUserProfileHand
 	return &UpdateUserProfile{Context: ctx, Handler: handler}
 }
 
-/*UpdateUserProfile swagger:route PUT /users/profile user updateUserProfile
+/* UpdateUserProfile swagger:route PUT /users/profile user updateUserProfile
 
 update user profile
 
@@ -47,14 +48,12 @@ func (o *UpdateUserProfile) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewUpdateUserProfileParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -94,6 +93,11 @@ func (o *UpdateUserProfileBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this update user profile body based on context it is used
+func (o *UpdateUserProfileBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *UpdateUserProfileBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -126,6 +130,11 @@ func (o *UpdateUserProfileNotFoundBody) Validate(formats strfmt.Registry) error 
 	return nil
 }
 
+// ContextValidate validates this update user profile not found body based on context it is used
+func (o *UpdateUserProfileNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *UpdateUserProfileNotFoundBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -155,6 +164,11 @@ type UpdateUserProfileOKBody struct {
 
 // Validate validates this update user profile o k body
 func (o *UpdateUserProfileOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update user profile o k body based on context it is used
+func (o *UpdateUserProfileOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

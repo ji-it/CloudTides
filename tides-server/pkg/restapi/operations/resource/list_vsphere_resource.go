@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -35,7 +36,7 @@ func NewListVsphereResource(ctx *middleware.Context, handler ListVsphereResource
 	return &ListVsphereResource{Context: ctx, Handler: handler}
 }
 
-/*ListVsphereResource swagger:route GET /resource/vsphere resource listVsphereResource
+/* ListVsphereResource swagger:route GET /resource/vsphere resource listVsphereResource
 
 returns the list of resources belonging to a user
 
@@ -51,14 +52,12 @@ func (o *ListVsphereResource) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		r = rCtx
 	}
 	var Params = NewListVsphereResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -90,7 +89,6 @@ func (o *ListVsphereResourceOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *ListVsphereResourceOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
@@ -102,6 +100,38 @@ func (o *ListVsphereResourceOKBody) validateResults(formats strfmt.Registry) err
 
 		if o.Results[i] != nil {
 			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("listVsphereResourceOK" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this list vsphere resource o k body based on the context it is used
+func (o *ListVsphereResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ListVsphereResourceOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Results); i++ {
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("listVsphereResourceOK" + "." + "results" + "." + strconv.Itoa(i))
 				}

@@ -15,7 +15,8 @@ import (
 )
 
 // NewDeleteResourceUsageParams creates a new DeleteResourceUsageParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewDeleteResourceUsageParams() DeleteResourceUsageParams {
 
 	return DeleteResourceUsageParams{}
@@ -50,7 +51,6 @@ func (o *DeleteResourceUsageParams) BindRequest(r *http.Request, route *middlewa
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

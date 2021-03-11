@@ -42,12 +42,12 @@
     </clr-dg-column>
 
     <clr-dg-row *ngFor="let item of list">
-      <clr-dg-cell><div class="value">ThinkCloud</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.cpu}} GHz</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.mem}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">VMware</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.organization}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">Fixed</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["cpu%"] : "-" }}%</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["mem%"] : "-"  }}%</div></clr-dg-cell>

@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewGetResourceUsage(ctx *middleware.Context, handler GetResourceUsageHandle
 	return &GetResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*GetResourceUsage swagger:route GET /usage/{id} usage getResourceUsage
+/* GetResourceUsage swagger:route GET /usage/{id} usage getResourceUsage
 
 get resource usage
 
@@ -47,14 +48,12 @@ func (o *GetResourceUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewGetResourceUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -70,6 +69,11 @@ type GetResourceUsageNotFoundBody struct {
 
 // Validate validates this get resource usage not found body
 func (o *GetResourceUsageNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get resource usage not found body based on context it is used
+func (o *GetResourceUsageNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -129,6 +133,11 @@ type GetResourceUsageOKBody struct {
 
 // Validate validates this get resource usage o k body
 func (o *GetResourceUsageOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get resource usage o k body based on context it is used
+func (o *GetResourceUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

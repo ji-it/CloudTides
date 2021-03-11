@@ -15,7 +15,8 @@ import (
 )
 
 // NewGetResourceUsageParams creates a new GetResourceUsageParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewGetResourceUsageParams() GetResourceUsageParams {
 
 	return GetResourceUsageParams{}
@@ -50,7 +51,6 @@ func (o *GetResourceUsageParams) BindRequest(r *http.Request, route *middleware.
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

@@ -581,6 +581,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			Status:          res.Status,
 			ID:              int64(res.ID),
 			VcdID:           int64(vcd.ID),
+			Vendor:			 "ThinkCloud",
 		}
 		responses = append(responses, &newres)
 	}

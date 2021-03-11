@@ -13,7 +13,8 @@ import (
 )
 
 // NewListVcdResourceParams creates a new ListVcdResourceParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewListVcdResourceParams() ListVcdResourceParams {
 
 	return ListVcdResourceParams{}

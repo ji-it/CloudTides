@@ -6,6 +6,7 @@ package user
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewRegisterUser(ctx *middleware.Context, handler RegisterUserHandler) *Regi
 	return &RegisterUser{Context: ctx, Handler: handler}
 }
 
-/*RegisterUser swagger:route POST /users/register user registerUser
+/* RegisterUser swagger:route POST /users/register user registerUser
 
 user registration
 
@@ -50,14 +51,12 @@ func (o *RegisterUser) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewRegisterUserParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type RegisterUserBadRequestBody struct {
 
 // Validate validates this register user bad request body
 func (o *RegisterUserBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this register user bad request body based on context it is used
+func (o *RegisterUserBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -135,6 +139,11 @@ func (o *RegisterUserBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this register user body based on context it is used
+func (o *RegisterUserBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *RegisterUserBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -177,13 +186,40 @@ func (o *RegisterUserOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *RegisterUserOKBody) validateUserInfo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UserInfo) { // not required
 		return nil
 	}
 
 	if o.UserInfo != nil {
 		if err := o.UserInfo.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("registerUserOK" + "." + "userInfo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this register user o k body based on the context it is used
+func (o *RegisterUserOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateUserInfo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *RegisterUserOKBody) contextValidateUserInfo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.UserInfo != nil {
+		if err := o.UserInfo.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("registerUserOK" + "." + "userInfo")
 			}
@@ -299,7 +335,6 @@ func (o *RegisterUserOKBodyUserInfo) validatePriorityEnum(path, location string,
 }
 
 func (o *RegisterUserOKBodyUserInfo) validatePriority(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Priority) { // not required
 		return nil
 	}
@@ -309,6 +344,11 @@ func (o *RegisterUserOKBodyUserInfo) validatePriority(formats strfmt.Registry) e
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this register user o k body user info based on context it is used
+func (o *RegisterUserOKBodyUserInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

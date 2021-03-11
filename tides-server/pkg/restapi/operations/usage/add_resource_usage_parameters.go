@@ -6,15 +6,18 @@ package usage
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/validate"
 )
 
 // NewAddResourceUsageParams creates a new AddResourceUsageParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewAddResourceUsageParams() AddResourceUsageParams {
 
 	return AddResourceUsageParams{}
@@ -52,6 +55,11 @@ func (o *AddResourceUsageParams) BindRequest(r *http.Request, route *middleware.
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			ctx := validate.WithOperationRequest(context.Background())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
 				res = append(res, err)
 			}
 

@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewGetPolicy(ctx *middleware.Context, handler GetPolicyHandler) *GetPolicy 
 	return &GetPolicy{Context: ctx, Handler: handler}
 }
 
-/*GetPolicy swagger:route GET /policy/{id} policy getPolicy
+/* GetPolicy swagger:route GET /policy/{id} policy getPolicy
 
 get info of a policy
 
@@ -50,14 +51,12 @@ func (o *GetPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewGetPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type GetPolicyNotFoundBody struct {
 
 // Validate validates this get policy not found body
 func (o *GetPolicyNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get policy not found body based on context it is used
+func (o *GetPolicyNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -169,7 +173,6 @@ func (o *GetPolicyOKBody) validateDeployTypeEnum(path, location string, value st
 }
 
 func (o *GetPolicyOKBody) validateDeployType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -179,6 +182,11 @@ func (o *GetPolicyOKBody) validateDeployType(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this get policy o k body based on context it is used
+func (o *GetPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

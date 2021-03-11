@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewUpdateResourceUsage(ctx *middleware.Context, handler UpdateResourceUsage
 	return &UpdateResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*UpdateResourceUsage swagger:route PUT /usage/{id} usage updateResourceUsage
+/* UpdateResourceUsage swagger:route PUT /usage/{id} usage updateResourceUsage
 
 update datacenter usage info
 
@@ -47,14 +48,12 @@ func (o *UpdateResourceUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		r = rCtx
 	}
 	var Params = NewUpdateResourceUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -88,6 +87,11 @@ func (o *UpdateResourceUsageBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this update resource usage body based on context it is used
+func (o *UpdateResourceUsageBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *UpdateResourceUsageBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -117,6 +121,11 @@ type UpdateResourceUsageOKBody struct {
 
 // Validate validates this update resource usage o k body
 func (o *UpdateResourceUsageOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update resource usage o k body based on context it is used
+func (o *UpdateResourceUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

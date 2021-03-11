@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -35,7 +36,7 @@ func NewListPolicy(ctx *middleware.Context, handler ListPolicyHandler) *ListPoli
 	return &ListPolicy{Context: ctx, Handler: handler}
 }
 
-/*ListPolicy swagger:route GET /policy policy listPolicy
+/* ListPolicy swagger:route GET /policy policy listPolicy
 
 list all available policies
 
@@ -51,14 +52,12 @@ func (o *ListPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewListPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -90,7 +89,6 @@ func (o *ListPolicyOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *ListPolicyOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
@@ -102,6 +100,38 @@ func (o *ListPolicyOKBody) validateResults(formats strfmt.Registry) error {
 
 		if o.Results[i] != nil {
 			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this list policy o k body based on the context it is used
+func (o *ListPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ListPolicyOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Results); i++ {
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
 				}
@@ -204,7 +234,6 @@ func (o *ListPolicyOKBodyResultsItems0) validateDeployTypeEnum(path, location st
 }
 
 func (o *ListPolicyOKBodyResultsItems0) validateDeployType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -214,6 +243,11 @@ func (o *ListPolicyOKBodyResultsItems0) validateDeployType(formats strfmt.Regist
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this list policy o k body results items0 based on context it is used
+func (o *ListPolicyOKBodyResultsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

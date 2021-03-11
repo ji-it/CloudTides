@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -35,7 +36,7 @@ func NewAddVsphereResource(ctx *middleware.Context, handler AddVsphereResourceHa
 	return &AddVsphereResource{Context: ctx, Handler: handler}
 }
 
-/*AddVsphereResource swagger:route POST /resource/vsphere resource addVsphereResource
+/* AddVsphereResource swagger:route POST /resource/vsphere resource addVsphereResource
 
 AddVsphereResource add vsphere resource API
 
@@ -51,14 +52,12 @@ func (o *AddVsphereResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		r = rCtx
 	}
 	var Params = NewAddVsphereResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -98,6 +97,11 @@ func (o *AddVsphereResourceBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this add vsphere resource body based on context it is used
+func (o *AddVsphereResourceBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *AddVsphereResourceBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -127,6 +131,11 @@ type AddVsphereResourceNotFoundBody struct {
 
 // Validate validates this add vsphere resource not found body
 func (o *AddVsphereResourceNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add vsphere resource not found body based on context it is used
+func (o *AddVsphereResourceNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -175,7 +184,6 @@ func (o *AddVsphereResourceOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *AddVsphereResourceOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
@@ -187,6 +195,38 @@ func (o *AddVsphereResourceOKBody) validateResults(formats strfmt.Registry) erro
 
 		if o.Results[i] != nil {
 			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("addVsphereResourceOK" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this add vsphere resource o k body based on the context it is used
+func (o *AddVsphereResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *AddVsphereResourceOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Results); i++ {
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("addVsphereResourceOK" + "." + "results" + "." + strconv.Itoa(i))
 				}

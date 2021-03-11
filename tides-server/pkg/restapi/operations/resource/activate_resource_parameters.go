@@ -15,7 +15,8 @@ import (
 )
 
 // NewActivateResourceParams creates a new ActivateResourceParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewActivateResourceParams() ActivateResourceParams {
 
 	return ActivateResourceParams{}
@@ -50,7 +51,6 @@ func (o *ActivateResourceParams) BindRequest(r *http.Request, route *middleware.
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
