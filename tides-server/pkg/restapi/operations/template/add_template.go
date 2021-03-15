@@ -6,6 +6,7 @@ package template
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewAddTemplate(ctx *middleware.Context, handler AddTemplateHandler) *AddTem
 	return &AddTemplate{Context: ctx, Handler: handler}
 }
 
-/*AddTemplate swagger:route POST /template template addTemplate
+/* AddTemplate swagger:route POST /template template addTemplate
 
 upload a VM template
 
@@ -47,14 +48,12 @@ func (o *AddTemplate) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddTemplateParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -91,6 +90,11 @@ func (o *AddTemplateBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this add template body based on context it is used
+func (o *AddTemplateBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *AddTemplateBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -123,6 +127,11 @@ type AddTemplateOKBody struct {
 
 // Validate validates this add template o k body
 func (o *AddTemplateOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add template o k body based on context it is used
+func (o *AddTemplateOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

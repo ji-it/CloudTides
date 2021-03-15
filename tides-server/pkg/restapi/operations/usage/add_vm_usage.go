@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewAddVMUsage(ctx *middleware.Context, handler AddVMUsageHandler) *AddVMUsa
 	return &AddVMUsage{Context: ctx, Handler: handler}
 }
 
-/*AddVMUsage swagger:route POST /usage/vm usage addVmUsage
+/* AddVMUsage swagger:route POST /usage/vm usage addVmUsage
 
 add VM usage info into database
 
@@ -50,14 +51,12 @@ func (o *AddVMUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddVMUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -89,7 +88,6 @@ func (o *AddVMUsageBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VMs) { // not required
 		return nil
 	}
@@ -101,6 +99,35 @@ func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
 		}
 		if val, ok := o.VMs[k]; ok {
 			if err := val.Validate(formats); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this add VM usage body based on the context it is used
+func (o *AddVMUsageBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateVMs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *AddVMUsageBody) contextValidateVMs(ctx context.Context, formats strfmt.Registry) error {
+
+	for k := range o.VMs {
+
+		if val, ok := o.VMs[k]; ok {
+			if err := val.ContextValidate(ctx, formats); err != nil {
 				return err
 			}
 		}
@@ -179,7 +206,6 @@ func (o *AddVMUsageOKBody) validateMessageEnum(path, location string, value stri
 }
 
 func (o *AddVMUsageOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -189,6 +215,11 @@ func (o *AddVMUsageOKBody) validateMessage(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add VM usage o k body based on context it is used
+func (o *AddVMUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -251,6 +282,11 @@ type AddVMUsageParamsBodyVMsAnon struct {
 
 // Validate validates this add VM usage params body v ms anon
 func (o *AddVMUsageParamsBodyVMsAnon) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add VM usage params body v ms anon based on context it is used
+func (o *AddVMUsageParamsBodyVMsAnon) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

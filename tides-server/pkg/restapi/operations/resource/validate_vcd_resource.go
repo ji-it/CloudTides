@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewValidateVcdResource(ctx *middleware.Context, handler ValidateVcdResource
 	return &ValidateVcdResource{Context: ctx, Handler: handler}
 }
 
-/*ValidateVcdResource swagger:route GET /resource/vcd/validate resource validateVcdResource
+/* ValidateVcdResource swagger:route GET /resource/vcd/validate resource validateVcdResource
 
 ValidateVcdResource validate vcd resource API
 
@@ -47,14 +48,12 @@ func (o *ValidateVcdResource) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		r = rCtx
 	}
 	var Params = NewValidateVcdResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -82,6 +81,11 @@ type ValidateVcdResourceBody struct {
 
 // Validate validates this validate vcd resource body
 func (o *ValidateVcdResourceBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this validate vcd resource body based on context it is used
+func (o *ValidateVcdResourceBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -117,6 +121,11 @@ func (o *ValidateVcdResourceNotFoundBody) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
+// ContextValidate validates this validate vcd resource not found body based on context it is used
+func (o *ValidateVcdResourceNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *ValidateVcdResourceNotFoundBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -146,6 +155,11 @@ type ValidateVcdResourceOKBody struct {
 
 // Validate validates this validate vcd resource o k body
 func (o *ValidateVcdResourceOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this validate vcd resource o k body based on context it is used
+func (o *ValidateVcdResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

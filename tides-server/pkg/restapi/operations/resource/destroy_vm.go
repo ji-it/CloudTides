@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewDestroyVM(ctx *middleware.Context, handler DestroyVMHandler) *DestroyVM 
 	return &DestroyVM{Context: ctx, Handler: handler}
 }
 
-/*DestroyVM swagger:route PUT /resource/destroy_vm resource destroyVm
+/* DestroyVM swagger:route PUT /resource/destroy_vm resource destroyVm
 
 destroy specified VM
 
@@ -47,14 +48,12 @@ func (o *DestroyVM) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewDestroyVMParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -70,6 +69,11 @@ type DestroyVMBody struct {
 
 // Validate validates this destroy VM body
 func (o *DestroyVMBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this destroy VM body based on context it is used
+func (o *DestroyVMBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -105,6 +109,11 @@ func (o *DestroyVMNotFoundBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this destroy VM not found body based on context it is used
+func (o *DestroyVMNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *DestroyVMNotFoundBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -134,6 +143,11 @@ type DestroyVMOKBody struct {
 
 // Validate validates this destroy VM o k body
 func (o *DestroyVMOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this destroy VM o k body based on context it is used
+func (o *DestroyVMOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

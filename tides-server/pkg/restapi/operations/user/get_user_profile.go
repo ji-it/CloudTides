@@ -6,6 +6,7 @@ package user
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewGetUserProfile(ctx *middleware.Context, handler GetUserProfileHandler) *
 	return &GetUserProfile{Context: ctx, Handler: handler}
 }
 
-/*GetUserProfile swagger:route GET /users/profile user getUserProfile
+/* GetUserProfile swagger:route GET /users/profile user getUserProfile
 
 get user profile
 
@@ -50,14 +51,12 @@ func (o *GetUserProfile) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewGetUserProfileParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type GetUserProfileNotFoundBody struct {
 
 // Validate validates this get user profile not found body
 func (o *GetUserProfileNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this get user profile not found body based on context it is used
+func (o *GetUserProfileNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -121,13 +125,40 @@ func (o *GetUserProfileOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *GetUserProfileOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
 
 	if o.Results != nil {
 		if err := o.Results.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("getUserProfileOK" + "." + "results")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this get user profile o k body based on the context it is used
+func (o *GetUserProfileOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *GetUserProfileOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Results != nil {
+		if err := o.Results.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("getUserProfileOK" + "." + "results")
 			}
@@ -240,7 +271,6 @@ func (o *GetUserProfileOKBodyResults) validatePriorityEnum(path, location string
 }
 
 func (o *GetUserProfileOKBodyResults) validatePriority(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Priority) { // not required
 		return nil
 	}
@@ -250,6 +280,11 @@ func (o *GetUserProfileOKBodyResults) validatePriority(formats strfmt.Registry) 
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this get user profile o k body results based on context it is used
+func (o *GetUserProfileOKBodyResults) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

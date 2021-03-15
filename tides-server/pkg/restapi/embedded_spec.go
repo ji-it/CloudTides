@@ -846,6 +846,9 @@ func init() {
                   },
                   "vcdId": {
                     "type": "integer"
+                  },
+                  "vendor": {
+                    "type": "string"
                   }
                 }
               }
@@ -4656,6 +4659,9 @@ func init() {
         },
         "vcdId": {
           "type": "integer"
+        },
+        "vendor": {
+          "type": "string"
         }
       }
     },

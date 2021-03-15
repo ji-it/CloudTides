@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewContributeResource(ctx *middleware.Context, handler ContributeResourceHa
 	return &ContributeResource{Context: ctx, Handler: handler}
 }
 
-/*ContributeResource swagger:route PUT /resource/contribute/{id} resource contributeResource
+/* ContributeResource swagger:route PUT /resource/contribute/{id} resource contributeResource
 
 toggle active status of resource
 
@@ -47,14 +48,12 @@ func (o *ContributeResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		r = rCtx
 	}
 	var Params = NewContributeResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type ContributeResourceOKBody struct {
 
 // Validate validates this contribute resource o k body
 func (o *ContributeResourceOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this contribute resource o k body based on context it is used
+func (o *ContributeResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

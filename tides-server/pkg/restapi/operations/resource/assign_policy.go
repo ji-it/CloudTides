@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewAssignPolicy(ctx *middleware.Context, handler AssignPolicyHandler) *Assi
 	return &AssignPolicy{Context: ctx, Handler: handler}
 }
 
-/*AssignPolicy swagger:route PUT /resource/policy/{id} resource assignPolicy
+/* AssignPolicy swagger:route PUT /resource/policy/{id} resource assignPolicy
 
 assign policy
 
@@ -47,14 +48,12 @@ func (o *AssignPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAssignPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -70,6 +69,11 @@ type AssignPolicyBody struct {
 
 // Validate validates this assign policy body
 func (o *AssignPolicyBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this assign policy body based on context it is used
+func (o *AssignPolicyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -105,6 +109,11 @@ func (o *AssignPolicyNotFoundBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this assign policy not found body based on context it is used
+func (o *AssignPolicyNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *AssignPolicyNotFoundBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -134,6 +143,11 @@ type AssignPolicyOKBody struct {
 
 // Validate validates this assign policy o k body
 func (o *AssignPolicyOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this assign policy o k body based on context it is used
+func (o *AssignPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

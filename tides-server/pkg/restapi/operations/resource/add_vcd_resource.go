@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -32,7 +33,7 @@ func NewAddVcdResource(ctx *middleware.Context, handler AddVcdResourceHandler) *
 	return &AddVcdResource{Context: ctx, Handler: handler}
 }
 
-/*AddVcdResource swagger:route POST /resource/vcd resource addVcdResource
+/* AddVcdResource swagger:route POST /resource/vcd resource addVcdResource
 
 AddVcdResource add vcd resource API
 
@@ -48,14 +49,12 @@ func (o *AddVcdResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddVcdResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -95,6 +94,11 @@ func (o *AddVcdResourceBody) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this add vcd resource body based on context it is used
+func (o *AddVcdResourceBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (o *AddVcdResourceBody) MarshalBinary() ([]byte, error) {
 	if o == nil {
@@ -124,6 +128,11 @@ type AddVcdResourceNotFoundBody struct {
 
 // Validate validates this add vcd resource not found body
 func (o *AddVcdResourceNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add vcd resource not found body based on context it is used
+func (o *AddVcdResourceNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -172,13 +181,40 @@ func (o *AddVcdResourceOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *AddVcdResourceOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
 
 	if o.Results != nil {
 		if err := o.Results.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("addVcdResourceOK" + "." + "results")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this add vcd resource o k body based on the context it is used
+func (o *AddVcdResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *AddVcdResourceOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Results != nil {
+		if err := o.Results.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("addVcdResourceOK" + "." + "results")
 			}
@@ -224,6 +260,11 @@ type AddVcdResourceOKBodyResults struct {
 
 // Validate validates this add vcd resource o k body results
 func (o *AddVcdResourceOKBodyResults) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add vcd resource o k body results based on context it is used
+func (o *AddVcdResourceOKBodyResults) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

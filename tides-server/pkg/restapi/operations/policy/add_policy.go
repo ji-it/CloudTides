@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewAddPolicy(ctx *middleware.Context, handler AddPolicyHandler) *AddPolicy 
 	return &AddPolicy{Context: ctx, Handler: handler}
 }
 
-/*AddPolicy swagger:route POST /policy policy addPolicy
+/* AddPolicy swagger:route POST /policy policy addPolicy
 
 add a new idle policy and threshold policy
 
@@ -50,14 +51,12 @@ func (o *AddPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type AddPolicyBadRequestBody struct {
 
 // Validate validates this add policy bad request body
 func (o *AddPolicyBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add policy bad request body based on context it is used
+func (o *AddPolicyBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -172,7 +176,6 @@ func (o *AddPolicyBody) validateDeployTypeEnum(path, location string, value stri
 }
 
 func (o *AddPolicyBody) validateDeployType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -182,6 +185,11 @@ func (o *AddPolicyBody) validateDeployType(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add policy body based on context it is used
+func (o *AddPolicyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -257,7 +265,6 @@ func (o *AddPolicyOKBody) validateMessageEnum(path, location string, value strin
 }
 
 func (o *AddPolicyOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -267,6 +274,11 @@ func (o *AddPolicyOKBody) validateMessage(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add policy o k body based on context it is used
+func (o *AddPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

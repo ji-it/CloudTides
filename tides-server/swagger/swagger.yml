@@ -260,6 +260,8 @@ paths:
                   type: integer
                 vcdId:
                   type: integer
+                vendor:
+                  type: string
         401:
           description: 'Unauthorized'
   /resource/vcd/{id}:

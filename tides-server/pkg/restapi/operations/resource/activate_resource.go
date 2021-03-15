@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewActivateResource(ctx *middleware.Context, handler ActivateResourceHandle
 	return &ActivateResource{Context: ctx, Handler: handler}
 }
 
-/*ActivateResource swagger:route PUT /resource/activate/{id} resource activateResource
+/* ActivateResource swagger:route PUT /resource/activate/{id} resource activateResource
 
 activate resource after initialization setup
 
@@ -47,14 +48,12 @@ func (o *ActivateResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewActivateResourceParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type ActivateResourceOKBody struct {
 
 // Validate validates this activate resource o k body
 func (o *ActivateResourceOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this activate resource o k body based on context it is used
+func (o *ActivateResourceOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

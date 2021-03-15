@@ -6,6 +6,7 @@ package resource
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -13,10 +14,12 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // NewAssignPolicyParams creates a new AssignPolicyParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewAssignPolicyParams() AssignPolicyParams {
 
 	return AssignPolicyParams{}
@@ -64,6 +67,11 @@ func (o *AssignPolicyParams) BindRequest(r *http.Request, route *middleware.Matc
 		} else {
 			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			ctx := validate.WithOperationRequest(context.Background())
+			if err := body.ContextValidate(ctx, route.Formats); err != nil {
 				res = append(res, err)
 			}
 

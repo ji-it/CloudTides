@@ -34,6 +34,8 @@ export class ResourceService {
         id: resource.id,
         vcdId: resource.vcdId,
         name: rawUsage.name,
+        organization: resource.organization,
+        vendor: resource.vendor,
         cpu: rawUsage.totalCPU / 1000,
         mem: rawUsage.totalRAM / 1024,
         disk: rawUsage.totalDisk / 1024,
@@ -135,6 +137,8 @@ interface ItemDTO {
   id: string;
   vcdId: string;
   name: string;
+  organization: string;
+  vendor: string;
   // unit: GHz
   cpu: number;
   // unit: GB

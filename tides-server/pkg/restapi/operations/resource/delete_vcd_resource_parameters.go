@@ -15,7 +15,8 @@ import (
 )
 
 // NewDeleteVcdResourceParams creates a new DeleteVcdResourceParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewDeleteVcdResourceParams() DeleteVcdResourceParams {
 
 	return DeleteVcdResourceParams{}
@@ -50,7 +51,6 @@ func (o *DeleteVcdResourceParams) BindRequest(r *http.Request, route *middleware
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

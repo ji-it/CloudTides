@@ -15,7 +15,8 @@ import (
 )
 
 // NewGetPolicyParams creates a new GetPolicyParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewGetPolicyParams() GetPolicyParams {
 
 	return GetPolicyParams{}
@@ -50,7 +51,6 @@ func (o *GetPolicyParams) BindRequest(r *http.Request, route *middleware.Matched
 	if err := o.bindID(rID, rhkID, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
