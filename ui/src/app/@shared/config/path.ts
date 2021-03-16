@@ -5,7 +5,7 @@ export const HOME_PATH_NAME = 'home';
 export const RESOURCE_PATH_NAME = 'resource';
 export const POLICY_PATH_NAME = 'policy';
 export const TEMPLATE_PATH_NAME = 'template';
-export const VENDOR_PATH_NAME = 'vendor'
+export const VENDOR_PATH_NAME = 'vendors'
 
 // Path
 export const BASE_PATH = `/`;

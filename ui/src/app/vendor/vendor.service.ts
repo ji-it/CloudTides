@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
-import { VCD_URL_PATH } from '@tide-config/path';
+import { VENDOR_PATH } from '@tide-config/path';
 import { LoginService } from '../login/login.service';
 import toFixed from 'accounting-js/lib/toFixed.js';
 
@@ -18,7 +18,7 @@ export class VendorService {
   private prefix = `${environment.apiPrefix}/computeResource`;
 
   async getList() {
-    const list = await this.http.get<Item[]>(environment.apiPrefix + VCD_URL_PATH, {
+    const list = await this.http.get<Item[]>(environment.apiPrefix + VENDOR_PATH, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
@@ -29,7 +29,7 @@ export class VendorService {
         id: vendor.id,
         name: vendor.name,
         version: vendor.version,
-        type: vendor.type,
+        vendorType: vendor.vendorType,
         url: vendor.url,
       };
       vendors.push(vendorItem);
@@ -42,7 +42,7 @@ export class VendorService {
       ...payload,
       policy: 0,
     };
-    return this.http.post<any>(environment.apiPrefix + VCD_URL_PATH, body, {
+    return this.http.post<any>(environment.apiPrefix + VENDOR_PATH, body, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
       },
@@ -110,8 +110,8 @@ interface ItemDTO {
   id: number;
   name: string;
   url: string;
-  type: string;
-  version: number;
+  vendorType: string;
+  version: string;
 }
 
 interface ContributeResp {

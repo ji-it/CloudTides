@@ -25,6 +25,7 @@ import (
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
 	"tides-server/pkg/restapi/operations/user"
+	"tides-server/pkg/restapi/operations/vendor_swagger"
 )
 
 // NewCloudTidesAPI creates a new CloudTides instance
@@ -70,6 +71,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		ResourceAddVcdResourceHandler: resource.AddVcdResourceHandlerFunc(func(params resource.AddVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVcdResource has not yet been implemented")
+		}),
+		VendorSwaggerAddVendorHandler: vendor_swagger.AddVendorHandlerFunc(func(params vendor_swagger.AddVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.AddVendor has not yet been implemented")
 		}),
 		ResourceAddVsphereResourceHandler: resource.AddVsphereResourceHandlerFunc(func(params resource.AddVsphereResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVsphereResource has not yet been implemented")
@@ -121,6 +125,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		ResourceListVcdResourceHandler: resource.ListVcdResourceHandlerFunc(func(params resource.ListVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ListVcdResource has not yet been implemented")
+		}),
+		VendorSwaggerListVendorHandler: vendor_swagger.ListVendorHandlerFunc(func(params vendor_swagger.ListVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.ListVendor has not yet been implemented")
 		}),
 		ResourceListVsphereResourceHandler: resource.ListVsphereResourceHandlerFunc(func(params resource.ListVsphereResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ListVsphereResource has not yet been implemented")
@@ -205,6 +212,8 @@ type CloudTidesAPI struct {
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
 	// ResourceAddVcdResourceHandler sets the operation handler for the add vcd resource operation
 	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
+	// VendorSwaggerAddVendorHandler sets the operation handler for the add vendor operation
+	VendorSwaggerAddVendorHandler vendor_swagger.AddVendorHandler
 	// ResourceAddVsphereResourceHandler sets the operation handler for the add vsphere resource operation
 	ResourceAddVsphereResourceHandler resource.AddVsphereResourceHandler
 	// ResourceAssignPolicyHandler sets the operation handler for the assign policy operation
@@ -239,6 +248,8 @@ type CloudTidesAPI struct {
 	TemplateListTemplateHandler template.ListTemplateHandler
 	// ResourceListVcdResourceHandler sets the operation handler for the list vcd resource operation
 	ResourceListVcdResourceHandler resource.ListVcdResourceHandler
+	// VendorSwaggerListVendorHandler sets the operation handler for the list vendor operation
+	VendorSwaggerListVendorHandler vendor_swagger.ListVendorHandler
 	// ResourceListVsphereResourceHandler sets the operation handler for the list vsphere resource operation
 	ResourceListVsphereResourceHandler resource.ListVsphereResourceHandler
 	// UserRegisterUserHandler sets the operation handler for the register user operation
@@ -360,6 +371,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.ResourceAddVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVcdResourceHandler")
 	}
+	if o.VendorSwaggerAddVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.AddVendorHandler")
+	}
 	if o.ResourceAddVsphereResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVsphereResourceHandler")
 	}
@@ -410,6 +424,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ResourceListVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ListVcdResourceHandler")
+	}
+	if o.VendorSwaggerListVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.ListVendorHandler")
 	}
 	if o.ResourceListVsphereResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ListVsphereResourceHandler")
@@ -562,6 +579,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/vendors"] = vendor_swagger.NewAddVendor(o.context, o.VendorSwaggerAddVendorHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/resource/vsphere"] = resource.NewAddVsphereResource(o.context, o.ResourceAddVsphereResourceHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
@@ -627,6 +648,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/resource/vcd"] = resource.NewListVcdResource(o.context, o.ResourceListVcdResourceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vendors"] = vendor_swagger.NewListVendor(o.context, o.VendorSwaggerListVendorHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
