@@ -40,7 +40,6 @@ export class VendorService {
   addItem(payload: ItemPayload) {
     const body = {
       ...payload,
-      policy: 0,
     };
     return this.http.post<any>(environment.apiPrefix + VENDOR_PATH, body, {
       headers: {
@@ -134,13 +133,10 @@ function mapItem(raw: ItemDTO): Item {
 
 // UI
 export interface ItemPayload {
-  datacenter: string;
   name: string;
-  org: string;
-  network: string;
-  catalog: string;
-  username: string,
-  password: string,
+  url: string;
+  version: string;
+  vendorType: string;
 }
 
 export type Item = ItemDTO;

@@ -1,7 +1,7 @@
-<!--button class="btn btn-primary" (click)="this.opened=true">
-    <clr-icon shape="plus"></clr-icon>
-    {{ "HOME.RESOURCE.ADD_RESOURCE" | translate:{} }}
-  </button-->
+<button class="btn btn-primary" (click)="this.opened=true">
+  <clr-icon shape="plus"></clr-icon>
+  Add Vendor
+</button>
   
 <div *ngIf="this.list$ | async as list">
       <!--div class="clr-row" *ngFor="let item of list">
@@ -35,3 +35,10 @@
     </clr-dg-row>
   </clr-datagrid>
 </div>
+
+<tide-vendor-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-vendor-dialog>
