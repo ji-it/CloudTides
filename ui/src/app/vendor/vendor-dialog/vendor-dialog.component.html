@@ -47,7 +47,21 @@
           clrInput />
       </clr-input-container>
 
-      <clr-input-container>
+      <clr-select-container>
+        <label for="type">Type</label>
+        <select
+          clrSelect
+          id="vendorType"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="vendorType"
+        >
+          <option *ngFor="let type of vendorTypeList"
+            [ngValue]="vendorTypes[type]"> {{type}}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
+      <!--clr-input-container>
         <label for="type">Type</label>
         <input id="vendorType"
           class="clr-col-12 clr-col-md-8"
@@ -55,7 +69,7 @@
           [placeholder]="'Vendor Type'"
           formControlName="vendorType"
           clrInput />
-      </clr-input-container>
+      </clr-input-container-->
     </form>
   </div>
   <div class="modal-footer">
