@@ -18,7 +18,7 @@ export class VendorDialogComponent implements OnInit {
     this.vendorForm = this.fb.group({
       name: ['', Validators.required],
       url: ['', Validators.required],
-      type: ['', Validators.required],
+      vendorType: ['', Validators.required],
       version: [''],
     });
   }

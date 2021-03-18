@@ -102,3 +102,47 @@ func (o *AddVendorUnauthorized) WriteResponse(rw http.ResponseWriter, producer r
 
 	rw.WriteHeader(401)
 }
+
+// AddVendorNotFoundCode is the HTTP code returned for type AddVendorNotFound
+const AddVendorNotFoundCode int = 404
+
+/*AddVendorNotFound resource not found
+
+swagger:response addVendorNotFound
+*/
+type AddVendorNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *AddVendorNotFoundBody `json:"body,omitempty"`
+}
+
+// NewAddVendorNotFound creates AddVendorNotFound with default headers values
+func NewAddVendorNotFound() *AddVendorNotFound {
+
+	return &AddVendorNotFound{}
+}
+
+// WithPayload adds the payload to the add vendor not found response
+func (o *AddVendorNotFound) WithPayload(payload *AddVendorNotFoundBody) *AddVendorNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add vendor not found response
+func (o *AddVendorNotFound) SetPayload(payload *AddVendorNotFoundBody) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *AddVendorNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

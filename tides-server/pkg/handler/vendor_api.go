@@ -42,9 +42,8 @@ func AddVendorHandler(params vendor_swagger.AddVendorParams) middleware.Responde
 
 	body := params.ReqBody
 	if db.Where("name = ? AND url = ?", body.Name, body.URL).First(&vendor).RowsAffected > 0 {
-		return vendor_swagger.NewAddVendorOK().WithPayload(&vendor_swagger.AddVendorOKBody{
-			Message: "Vendor already registered",
-			ID: -1,
+		return vendor_swagger.NewAddVendorNotFound().WithPayload(&vendor_swagger.AddVendorNotFoundBody{
+			Message: "This vendor already exist",
 		})
 	}
 

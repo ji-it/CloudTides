@@ -104,6 +104,43 @@ func (o *AddVendorBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
+// AddVendorNotFoundBody add vendor not found body
+//
+// swagger:model AddVendorNotFoundBody
+type AddVendorNotFoundBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this add vendor not found body
+func (o *AddVendorNotFoundBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add vendor not found body based on context it is used
+func (o *AddVendorNotFoundBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *AddVendorNotFoundBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *AddVendorNotFoundBody) UnmarshalBinary(b []byte) error {
+	var res AddVendorNotFoundBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
 // AddVendorOKBody add vendor o k body
 //
 // swagger:model AddVendorOKBody

@@ -134,9 +134,9 @@ function mapItem(raw: ItemDTO): Item {
 // UI
 export interface ItemPayload {
   name: string;
-  url: string;
   version: string;
   vendorType: string;
+  url: string;
 }
 
 export type Item = ItemDTO;
