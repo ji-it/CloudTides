@@ -841,6 +841,9 @@ func init() {
                   "policy": {
                     "type": "integer"
                   },
+                  "resType": {
+                    "type": "string"
+                  },
                   "status": {
                     "type": "string"
                   },
@@ -897,6 +900,9 @@ func init() {
                 },
                 "policy": {
                   "type": "integer"
+                },
+                "resType": {
+                  "type": "string"
                 },
                 "username": {
                   "type": "string"
@@ -3340,6 +3346,9 @@ func init() {
                 "policy": {
                   "type": "integer"
                 },
+                "resType": {
+                  "type": "string"
+                },
                 "username": {
                   "type": "string"
                 }
@@ -4854,6 +4863,9 @@ func init() {
         },
         "policy": {
           "type": "integer"
+        },
+        "resType": {
+          "type": "string"
         },
         "status": {
           "type": "string"

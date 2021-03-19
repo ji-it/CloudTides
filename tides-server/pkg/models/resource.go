@@ -46,6 +46,9 @@ type Vcd struct {
 type Resource struct {
 	gorm.Model
 
+	// type of the resource, fixed or dynamic
+	Type string `json:"Type,omitempty"`
+
 	// activated, controlled by admin, indicate whether the resource is qualified for contribution
 	Activated bool `json:"Activated,omitempty"`
 

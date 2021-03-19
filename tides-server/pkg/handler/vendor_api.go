@@ -7,6 +7,7 @@ import (
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 )
 
+// ListVendorsHandler is API handler for /vendor GET
 func ListVendorsHandler(params vendor_swagger.ListVendorParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vendor_swagger.NewListVendorUnauthorized()
@@ -32,6 +33,7 @@ func ListVendorsHandler(params vendor_swagger.ListVendorParams) middleware.Respo
 	return vendor_swagger.NewListVendorOK().WithPayload(responses)
 }
 
+// AddVendorHandler is API handler for /vendor POST
 func AddVendorHandler(params vendor_swagger.AddVendorParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vendor_swagger.NewListVendorUnauthorized()

@@ -85,6 +85,9 @@ type AddVcdResourceBody struct {
 	// policy
 	Policy int64 `json:"policy,omitempty"`
 
+	// res type
+	ResType string `json:"resType,omitempty"`
+
 	// username
 	Username string `json:"username,omitempty"`
 }

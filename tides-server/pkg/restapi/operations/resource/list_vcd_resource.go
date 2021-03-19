@@ -87,6 +87,9 @@ type ListVcdResourceOKBodyItems0 struct {
 	// policy
 	Policy int64 `json:"policy,omitempty"`
 
+	// res type
+	ResType string `json:"resType,omitempty"`
+
 	// status
 	Status string `json:"status,omitempty"`
 

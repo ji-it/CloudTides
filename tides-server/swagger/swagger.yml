@@ -199,6 +199,8 @@ paths:
                 type: string
               catalog:
                 type: string
+              resType:
+                type: string
       responses:
         200:
           description: 'returns created username'
@@ -261,6 +263,8 @@ paths:
                 vcdId:
                   type: integer
                 vendor:
+                  type: string
+                resType:
                   type: string
         401:
           description: 'Unauthorized'
