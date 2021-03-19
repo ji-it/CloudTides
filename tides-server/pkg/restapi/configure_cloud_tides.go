@@ -5,6 +5,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"tides-server/pkg/restapi/operations/vendor_swagger"
 
 	interpose "github.com/carbocation/interpose/middleware"
 	"github.com/go-openapi/errors"
@@ -107,6 +108,10 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.ResourceActivateResourceHandler = resource.ActivateResourceHandlerFunc(handler.ActivateResourceHandler)
 
 	api.ResourceContributeResourceHandler = resource.ContributeResourceHandlerFunc(handler.ContributeResourceHandler)
+
+	api.VendorSwaggerListVendorHandler = vendor_swagger.ListVendorHandlerFunc(handler.ListVendorsHandler)
+
+	api.VendorSwaggerAddVendorHandler = vendor_swagger.AddVendorHandlerFunc(handler.AddVendorHandler)
 
 	api.PreServerShutdown = func() {}
 

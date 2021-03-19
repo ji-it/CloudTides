@@ -1457,6 +1457,76 @@ paths:
           description: 'Unauthorized'
         404:
           description: 'resource not found'
+  /vendors:
+    get:
+      operationId: 'listVendor'
+      description: 'list vendors'
+      tags:
+        - 'vendor'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                url:
+                  type: string
+                vendorType:
+                  type: string
+                version:
+                  type: string
+        401:
+          description: 'Unauthorized'
+    post:
+      operationId: 'addVendor'
+      description: 'add vendor'
+      tags:
+        - 'vendor'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              url:
+                type: string
+              version:
+                type: string
+              vendorType:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 
 
 definitions:

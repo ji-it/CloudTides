@@ -69,6 +69,7 @@ func StartDB() {
 	db.AutoMigrate(&models.ResourceUsage{})
 	db.AutoMigrate(&models.ResourcePastUsage{})
 	db.AutoMigrate(&models.VMUsage{})
+	db.AutoMigrate(&models.Vendor{})
 	fmt.Println("DB connection success")
 	CreateAdmin()
 	TemplateSetup()
