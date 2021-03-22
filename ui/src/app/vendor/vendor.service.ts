@@ -59,7 +59,7 @@ export class VendorService {
   }
 
   async removeItem(id: string) {
-    await this.http.delete<any>(environment.apiPrefix + `/resource/vcd/` + id, {
+    await this.http.delete<any>(environment.apiPrefix + VENDOR_PATH + `/` + id, {
       headers: {
         Authorization: `Bearer ${this.loginService.token}`,
     }, }).toPromise().then(

@@ -113,6 +113,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.VendorSwaggerAddVendorHandler = vendor_swagger.AddVendorHandlerFunc(handler.AddVendorHandler)
 
+	api.VendorSwaggerDeleteVendorHandler = vendor_swagger.DeleteVendorHandlerFunc((handler.DeleteVendorHandler))
+
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}

@@ -1531,6 +1531,38 @@ paths:
             properties:
               message:
                 type: string
+  /vendors/{id}:
+    delete:
+      operationId: 'deleteVendor'
+      description: 'delete vendor'
+      tags:
+        - 'vendor'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'deletion success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 
 
 definitions:

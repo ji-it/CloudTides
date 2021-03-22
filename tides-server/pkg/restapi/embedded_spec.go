@@ -2394,6 +2394,56 @@ func init() {
           }
         }
       }
+    },
+    "/vendors/{id}": {
+      "delete": {
+        "description": "delete vendor",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vendor"
+        ],
+        "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -4722,6 +4772,56 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/{id}": {
+      "delete": {
+        "description": "delete vendor",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vendor"
+        ],
+        "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",

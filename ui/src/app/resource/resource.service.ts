@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
-import { VCD_URL_PATH } from '@tide-config/path';
+import { VCD_URL_PATH, VENDOR_PATH } from '@tide-config/path';
 import { LoginService } from '../login/login.service';
 import toFixed from 'accounting-js/lib/toFixed.js';
 
@@ -39,6 +39,7 @@ export class ResourceService {
         cpu: rawUsage.totalCPU / 1000,
         mem: rawUsage.totalRAM / 1024,
         disk: rawUsage.totalDisk / 1024,
+        resType: resource.resType,
         usage: {
           'cpu%': toFixed(rawUsage.percentCPU * 100, 2),
           'mem%': toFixed(rawUsage.percentRAM * 100, 2),
@@ -48,6 +49,15 @@ export class ResourceService {
       usage.push(resourceItem);
     }
     return usage;
+  }
+
+  async getVendorList() {
+    const VendorList = await this.http.get<ItemVendor[]>(environment.apiPrefix + VENDOR_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    return VendorList;
   }
 
   addItem(payload: ItemPayload) {
@@ -145,6 +155,7 @@ interface ItemDTO {
   mem: number;
   // unit: GB
   disk: number;
+  resType: string;
   usage: {
     'cpu%': number;
     'mem%': number;
@@ -179,6 +190,17 @@ export interface ItemPayload {
   catalog: string;
   username: string,
   password: string,
+  resType: string,
 }
+
+interface ItemVendor {
+  id: number;
+  name: string;
+  url: string;
+  vendorType: string;
+  version: string;
+}
+
+export type ItemV = ItemVendor;
 
 export type Item = ItemDTO;

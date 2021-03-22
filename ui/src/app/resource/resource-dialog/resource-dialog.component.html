@@ -19,6 +19,19 @@
       </clr-alert>
 
       <clr-select-container>
+        <label for="resType">Type</label>
+        <select
+          clrSelect
+          id="resType"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="resType"
+        >
+        <option *ngFor="let type of resTypeList"
+          [ngValue]="resType[type]"> {{ type }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+      <clr-select-container>
         <label for="href">{{ "HOME.RESOURCE.DIALOG.NAME" | translate:{} }}</label>
         <select
           clrSelect

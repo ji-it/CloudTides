@@ -68,3 +68,27 @@ func AddVendorHandler(params vendor_swagger.AddVendorParams) middleware.Responde
 		ID: int64(id + 1),
 	})
 }
+
+// DeleteVendorHandler is API handler for /vendors/{id} DELETE
+
+func DeleteVendorHandler(params vendor_swagger.DeleteVendorParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vendor_swagger.NewDeleteVendorUnauthorized()
+	}
+
+	vendorId := params.ID
+	db := config.GetDB()
+	var vendor models.Vendor
+
+	if db.Where("id = ?", vendorId).First(&vendor).RowsAffected == 0 {
+		return vendor_swagger.NewDeleteVendorNotFound()
+	}
+
+	if db.Unscoped().Where("id = ?", vendorId).Delete(&models.Vendor{}).RowsAffected == 0 {
+		return vendor_swagger.NewDeleteVendorForbidden()
+	}
+
+	return vendor_swagger.NewDeleteVendorOK().WithPayload(&vendor_swagger.DeleteVendorOKBody{
+		Message: "success",
+	})
+}
