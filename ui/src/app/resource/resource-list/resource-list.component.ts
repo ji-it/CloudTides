@@ -40,6 +40,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.resetAlert();
     });
+    this.refreshList();
   }
 
   async activate(id: string) {
@@ -56,6 +57,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.resetAlert();
     });
+    this.refreshList();
   }
 
   async delete(vcdId: string) {
@@ -68,6 +70,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     }).then(() => {
       this.resetAlert();
     });
+    this.refreshList();
   }
 
   async resetAlert(time?: number) {
