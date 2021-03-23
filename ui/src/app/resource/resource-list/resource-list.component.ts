@@ -79,6 +79,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     }, time || NOTIFICATION_EXIST_TIME);
   }
 
+  vendorList: Object = {};
   list$: Observable<Item[]> = of([]);
   opened = false;
   refreshInterval: number;
@@ -101,6 +102,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     this.refreshInterval = window.setInterval(async () => {
       this.list$ = of(await this.resourceService.getList());
     }, RESOURCE_USAGE_REFRESH_PERIOD);
+    this.vendorList = Object(await this.resourceService.getVendorList())
   }
 
   ngOnDestroy(): void {

@@ -4,6 +4,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ItemPayload, ResourceService } from '../resource.service';
 import { TranslateService } from '@ngx-translate/core';
 import { cloudPlatform, defaultCloudPlatformURL, defaultResType, resTypes } from '@tide-config/cloudPlatform';
+import { ResourceListComponent } from '../resource-list/resource-list.component';
 
 @Component({
   selector: 'tide-resource-dialog',
@@ -16,9 +17,10 @@ export class ResourceDialogComponent implements OnInit {
     private readonly fb: FormBuilder,
     public readonly translate: TranslateService,
     public readonly resourceService: ResourceService,
+    public readonly resourceList: ResourceListComponent,
   ) {
     this.resourceForm = this.fb.group({
-      href: [defaultCloudPlatformURL, [Validators.required]],
+      href: ['', [Validators.required]],
       resType: [defaultResType, [Validators.required]],
       datacenter: [''],
       org: [''],
@@ -27,8 +29,8 @@ export class ResourceDialogComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
-    this.cloudPlatformList = Object.keys(cloudPlatform);
-    this.cloudPlatform = cloudPlatform;
+    this.cloudPlatformList = Object.keys(resourceList.vendorList);
+    this.cloudPlatform = resourceList.vendorList;
     this.resTypeList = Object.keys(resTypes);
     this.resType = resTypes;
   }

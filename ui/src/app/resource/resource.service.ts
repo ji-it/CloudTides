@@ -57,7 +57,11 @@ export class ResourceService {
         Authorization: `Bearer ${this.loginService.token}`,
       },
     }).toPromise();
-    return VendorList;
+    const VendorObject : Object = {};
+    for (let item of VendorList){
+      VendorObject[item.name] = item.url
+    }
+    return VendorObject
   }
 
   addItem(payload: ItemPayload) {
