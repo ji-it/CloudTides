@@ -1563,6 +1563,47 @@ paths:
             properties:
               message:
                 type: string
+  /vapp:
+    post:
+      operationId: 'addVapp'
+      description: 'add vapp'
+      tags:
+        - 'vapp'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              template:
+                type: string
+              resource:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 
 
 definitions:

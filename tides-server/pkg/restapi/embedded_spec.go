@@ -2286,6 +2286,71 @@ func init() {
         }
       }
     },
+    "/vapp": {
+      "post": {
+        "description": "add vapp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "addVapp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "string"
+                },
+                "template": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vendors": {
       "get": {
         "description": "list vendors",
@@ -4695,6 +4760,71 @@ func init() {
         }
       }
     },
+    "/vapp": {
+      "post": {
+        "description": "add vapp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "addVapp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "string"
+                },
+                "template": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vendors": {
       "get": {
         "description": "list vendors",
@@ -5186,30 +5316,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "compatibility": {
+        "deployType": {
+          "type": "string",
+          "enum": [
+            "K8S",
+            "VM"
+          ]
+        },
+        "id": {
+          "type": "integer"
+        },
+        "idlePolicy": {
           "type": "string"
         },
-        "dateAdded": {
-          "type": "string"
-        },
-        "guestOS": {
-          "type": "string"
-        },
-        "memorySize": {
-          "type": "number"
+        "isDestroy": {
+          "type": "boolean"
         },
         "name": {
           "type": "string"
         },
-        "provisionedSpace": {
-          "type": "number"
+        "platformType": {
+          "type": "string"
         },
-        "templateType": {
-          "type": "string",
-          "enum": [
-            "datastore",
-            "upload"
-          ]
+        "thresholdPolicy": {
+          "type": "string"
         }
       }
     },

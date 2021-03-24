@@ -25,6 +25,7 @@ import (
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
 	"tides-server/pkg/restapi/operations/user"
+	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 )
 
@@ -68,6 +69,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		UsageAddVMUsageHandler: usage.AddVMUsageHandlerFunc(func(params usage.AddVMUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.AddVMUsage has not yet been implemented")
+		}),
+		VappAddVappHandler: vapp.AddVappHandlerFunc(func(params vapp.AddVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.AddVapp has not yet been implemented")
 		}),
 		ResourceAddVcdResourceHandler: resource.AddVcdResourceHandlerFunc(func(params resource.AddVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVcdResource has not yet been implemented")
@@ -213,6 +217,8 @@ type CloudTidesAPI struct {
 	TemplateAddTemplateHandler template.AddTemplateHandler
 	// UsageAddVMUsageHandler sets the operation handler for the add VM usage operation
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
+	// VappAddVappHandler sets the operation handler for the add vapp operation
+	VappAddVappHandler vapp.AddVappHandler
 	// ResourceAddVcdResourceHandler sets the operation handler for the add vcd resource operation
 	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
 	// VendorSwaggerAddVendorHandler sets the operation handler for the add vendor operation
@@ -372,6 +378,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.UsageAddVMUsageHandler == nil {
 		unregistered = append(unregistered, "usage.AddVMUsageHandler")
+	}
+	if o.VappAddVappHandler == nil {
+		unregistered = append(unregistered, "vapp.AddVappHandler")
 	}
 	if o.ResourceAddVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVcdResourceHandler")
@@ -580,6 +589,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/usage/vm"] = usage.NewAddVMUsage(o.context, o.UsageAddVMUsageHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/vapp"] = vapp.NewAddVapp(o.context, o.VappAddVappHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
