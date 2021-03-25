@@ -12,8 +12,6 @@ import (
 	"time"
 )
 
-// AddVappHandler is the function
-
 func randSeqT(n int) string {
 	b := make([]rune, n)
 	t := time.Now()
@@ -126,12 +124,13 @@ func DestroyVapp(vdc *govcd.Vdc, vAppName string) error {
 	return nil
 }
 
-
-
+// AddVappHandler is the API handler for /vapp POST
 func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vapp.NewAddVappUnauthorized()
 	}
+
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 
 	body := params.ReqBody
 
@@ -199,6 +198,7 @@ func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
 	Vapp := DeployVapp(org, vdc, tem.Name, tem.VMName, res.Catalog,"cloudtides-vapp-"+randSeqT(6), res.Network)
 	if Vapp != nil{
 		newVapp := models.Vapp{
+			UserId: uid,
 			IPAddress:   Vapp.VApp.HREF,
 			IsDestroyed: false,
 			Name:        Vapp.VApp.Name,
@@ -212,4 +212,39 @@ func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
 		ID: 1,
 		Message: "Create VApp success",
 	})
+}
+
+// ListVappHandler is API handler for /vapp GET
+func ListVappHandler(params vapp.ListVappsParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vapp.NewListVappsUnauthorized()
+	}
+
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	vapps := []*models.Vapp{}
+	db := config.GetDB()
+
+	if VerifyAdmin(params.HTTPRequest) {
+		db.Find(&vapps)
+	} else {
+		db.Where("user_id = ?", uid).Find(&vapps)
+	}
+
+	var response []*vapp.ListVappsOKBodyItems0
+
+	for _, vap := range vapps {
+		var vendor = models.Vendor{}
+		db.Where("url = ?", vap.Resource.HostAddress).First(&vendor)
+		newvapp := vapp.ListVappsOKBodyItems0{
+			Datacenter: vap.Resource.Datacenter,
+			ID: int64(vap.ID),
+			Name: vap.Name,
+			Template: vap.Template,
+			Vendor: vendor.Name,
+		}
+
+		response = append(response, &newvapp)
+	}
+
+	return vapp.NewListVappsOK().WithPayload(response)
 }

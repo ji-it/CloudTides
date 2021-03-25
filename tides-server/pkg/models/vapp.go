@@ -10,6 +10,9 @@ import (
 type Vapp struct {
 	gorm.Model
 
+	// user id
+	UserId uint `json:"userId,omitempty"`
+
 	// ip address
 	IPAddress string `json:"ipAddress,omitempty"`
 
