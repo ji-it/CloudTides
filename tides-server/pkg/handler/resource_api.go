@@ -468,6 +468,8 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		UserID:       uid,
 		Username:     user.User.Name,
 		Type:         body.ResType,
+		Catalog:      body.Catalog,
+		Network:      body.Network,
 	}
 	if body.Policy > 0 {
 		newres.PolicyID = new(uint)

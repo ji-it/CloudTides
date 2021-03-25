@@ -5,6 +5,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 
 	interpose "github.com/carbocation/interpose/middleware"
@@ -114,6 +115,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.VendorSwaggerAddVendorHandler = vendor_swagger.AddVendorHandlerFunc(handler.AddVendorHandler)
 
 	api.VendorSwaggerDeleteVendorHandler = vendor_swagger.DeleteVendorHandlerFunc((handler.DeleteVendorHandler))
+
+	api.VappAddVappHandler = vapp.AddVappHandlerFunc(handler.AddVappHandler)
 
 	api.PreServerShutdown = func() {}
 

@@ -10,17 +10,20 @@ import (
 type Vapp struct {
 	gorm.Model
 
+	// ip address
+	IPAddress string `json:"ipAddress,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
 
 	// template name
 	Template string `json:"template,omitempty"`
 
-	// num CPU
-	NumCPU int64 `json:"numCPU,omitempty"`
-
 	// is destroyed
 	IsDestroyed bool `json:"isDestroyed,omitempty"`
+
+	// is powered on
+	PoweredOn bool `json:"poweredOn,omitempty"`
 
 	// resource foreign key
 	ResourceID uint

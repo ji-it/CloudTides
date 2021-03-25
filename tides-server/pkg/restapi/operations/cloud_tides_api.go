@@ -130,6 +130,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		TemplateListTemplateHandler: template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
 		}),
+		VappListVappsHandler: vapp.ListVappsHandlerFunc(func(params vapp.ListVappsParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.ListVapps has not yet been implemented")
+		}),
 		ResourceListVcdResourceHandler: resource.ListVcdResourceHandlerFunc(func(params resource.ListVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ListVcdResource has not yet been implemented")
 		}),
@@ -257,6 +260,8 @@ type CloudTidesAPI struct {
 	ProjectListProjectHandler project.ListProjectHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
 	TemplateListTemplateHandler template.ListTemplateHandler
+	// VappListVappsHandler sets the operation handler for the list vapps operation
+	VappListVappsHandler vapp.ListVappsHandler
 	// ResourceListVcdResourceHandler sets the operation handler for the list vcd resource operation
 	ResourceListVcdResourceHandler resource.ListVcdResourceHandler
 	// VendorSwaggerListVendorHandler sets the operation handler for the list vendor operation
@@ -438,6 +443,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateListTemplateHandler == nil {
 		unregistered = append(unregistered, "template.ListTemplateHandler")
+	}
+	if o.VappListVappsHandler == nil {
+		unregistered = append(unregistered, "vapp.ListVappsHandler")
 	}
 	if o.ResourceListVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ListVcdResourceHandler")
@@ -669,6 +677,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/template"] = template.NewListTemplate(o.context, o.TemplateListTemplateHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vapp"] = vapp.NewListVapps(o.context, o.VappListVappsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

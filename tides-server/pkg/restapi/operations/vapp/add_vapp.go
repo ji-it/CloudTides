@@ -63,14 +63,17 @@ func (o *AddVapp) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model AddVappBody
 type AddVappBody struct {
 
+	// datacenter
+	Datacenter string `json:"datacenter,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
 
-	// resource
-	Resource string `json:"resource,omitempty"`
-
 	// template
 	Template string `json:"template,omitempty"`
+
+	// vendor
+	Vendor string `json:"vendor,omitempty"`
 }
 
 // Validate validates this add vapp body

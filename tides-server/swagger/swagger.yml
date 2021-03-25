@@ -1581,7 +1581,9 @@ paths:
                 type: string
               template:
                 type: string
-              resource:
+              vendor:
+                type: string
+              datacenter:
                 type: string
       responses:
         200:
@@ -1604,6 +1606,33 @@ paths:
             properties:
               message:
                 type: string
+    get:
+      operationId: 'listVapps'
+      description: 'list Vapps'
+      tags:
+        - 'vapp'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                vendor:
+                  type: string
+                datacenter:
+                  type: string
+                template:
+                  type: string
+        401:
+          description: 'Unauthorized'
 
 
 definitions:

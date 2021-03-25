@@ -101,6 +101,10 @@ type Resource struct {
 
 	// username
 	Username string `json:"username,omitempty"`
+
+	Catalog string `json:"catalog,omitempty"`
+
+	Network string `json:"network,omitempty"`
 }
 
 // Validate validates this resource

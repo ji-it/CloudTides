@@ -2287,6 +2287,47 @@ func init() {
       }
     },
     "/vapp": {
+      "get": {
+        "description": "list Vapps",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "listVapps",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "datacenter": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "template": {
+                    "type": "string"
+                  },
+                  "vendor": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
       "post": {
         "description": "add vapp",
         "consumes": [
@@ -2303,13 +2344,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 },
-                "resource": {
+                "template": {
                   "type": "string"
                 },
-                "template": {
+                "vendor": {
                   "type": "string"
                 }
               }
@@ -4761,6 +4805,30 @@ func init() {
       }
     },
     "/vapp": {
+      "get": {
+        "description": "list Vapps",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "listVapps",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListVappsOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
       "post": {
         "description": "add vapp",
         "consumes": [
@@ -4777,13 +4845,16 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
                 "name": {
                   "type": "string"
                 },
-                "resource": {
+                "template": {
                   "type": "string"
                 },
-                "template": {
+                "vendor": {
                   "type": "string"
                 }
               }
@@ -5063,6 +5134,26 @@ func init() {
           "type": "string"
         },
         "url": {
+          "type": "string"
+        }
+      }
+    },
+    "ListVappsOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "datacenter": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "vendor": {
           "type": "string"
         }
       }

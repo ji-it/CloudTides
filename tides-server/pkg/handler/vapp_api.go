@@ -1,1 +1,215 @@
 package handler
+
+import (
+	"fmt"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+	"github.com/vmware/go-vcloud-director/v2/types/v56"
+	"math/rand"
+	"tides-server/pkg/config"
+	"tides-server/pkg/models"
+	"tides-server/pkg/restapi/operations/vapp"
+	"time"
+)
+
+// AddVappHandler is the function
+
+func randSeqT(n int) string {
+	b := make([]rune, n)
+	t := time.Now()
+	rand.Seed(int64(t.Nanosecond()))
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+// Deploy VAPP
+func DeployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VMName string, cataName string, vAppName string, netName string) *govcd.VApp {
+
+	catalog, _ := org.GetCatalogByName(cataName, true)
+	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
+	vappTem, _ := cataItem.GetVAppTemplate()
+	net, err := vdc.GetOrgVdcNetworkByName(netName, true)
+	networks := []*types.OrgVDCNetwork{}
+
+	networks = append(networks, net.OrgVDCNetwork)
+
+	storageProf := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0]
+
+	task, err := vdc.ComposeVApp(networks, vappTem, *storageProf, vAppName, "test purpose", true)
+	task.WaitTaskCompletion()
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	task, err = vapp.PowerOn()
+	task.WaitTaskCompletion()
+
+	vm, err := vapp.GetVMByName(VMName, true)
+
+	task, err = vm.Undeploy()
+	task.WaitTaskCompletion()
+
+	task, err = vm.ChangeMemorySize(4096)
+	task.WaitTaskCompletion()
+
+	cus, _ := vm.GetGuestCustomizationSection()
+	cus.Enabled = new(bool)
+	*cus.Enabled = true
+	// cus.ComputerName = "tides-" + randSeq(5)
+	vm.SetGuestCustomizationSection(cus)
+	err = vm.PowerOnAndForceCustomization()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return vapp
+}
+
+// Power on suspended VAPP
+func PowerOnVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	if vapp == nil {
+		fmt.Println("Vapp " + vAppName + " not found")
+		return err
+	}
+	task, err := vapp.PowerOn()
+	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+// Undeploy VAPP
+func UndeployVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	if vapp == nil {
+		fmt.Println("Vapp " + vAppName + " not found")
+		return err
+	}
+	task, err := vapp.Undeploy()
+	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+// Destroy VAPP
+func DestroyVapp(vdc *govcd.Vdc, vAppName string) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	if vapp == nil {
+		fmt.Println("Vapp " + vAppName + " not found")
+		return err
+	}
+	if vapp.VApp.Deployed {
+		task, err := vapp.Undeploy()
+		task.WaitTaskCompletion()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+	task, err := vapp.Delete()
+	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+
+
+func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vapp.NewAddVappUnauthorized()
+	}
+
+	body := params.ReqBody
+
+	db := config.GetDB()
+	var vendor models.Vendor
+	var res models.Resource
+	var vcd models.Vcd
+	var tem models.Template
+	if db.Where("name = ?", body.Vendor).First(&vendor).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Vendor not found",
+		})
+	}
+	if db.Where("host_address = ? AND datacenter = ?", vendor.URL, body.Datacenter).First(&res).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Datacenter not found",
+		})
+	}
+	if db.Where("resource_id = ?", res.ID).First(&vcd).RowsAffected == 0{
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Vcd not found",
+		})
+	}
+	if db.Where("Name = ?", body.Template).First(&tem).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Template not found",
+		})
+	}
+
+	if res.Type != "Fixed" {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Resource is not fixed, cannot create Vapp manually",
+		})
+	}
+
+	conf := VcdConfig{
+		Href: vendor.URL,
+		Password: res.Password,
+		User: res.Username,
+		Org: vcd.Organization,
+		VDC: res.Datacenter,
+	}
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		fmt.Println(err)
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create client failed",
+		})
+	}
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		fmt.Println(err)
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create org failed",
+		})
+	}
+	vdc, err := org.GetVDCByName(conf.VDC, false)
+	if err != nil {
+		fmt.Println(err)
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create vdc failed",
+		})
+	}
+
+	Vapp := DeployVapp(org, vdc, tem.Name, tem.VMName, res.Catalog,"cloudtides-vapp-"+randSeqT(6), res.Network)
+	if Vapp != nil{
+		newVapp := models.Vapp{
+			IPAddress:   Vapp.VApp.HREF,
+			IsDestroyed: false,
+			Name:        Vapp.VApp.Name,
+			PoweredOn:   true,
+			ResourceID:  res.ID,
+			Template: tem.Name,
+		}
+		db.Create(&newVapp)
+	}
+	return vapp.NewAddVappOK().WithPayload(&vapp.AddVappOKBody{
+		ID: 1,
+		Message: "Create VApp success",
+	})
+}
