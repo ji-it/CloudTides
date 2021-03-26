@@ -4,3 +4,10 @@ export const cloudPlatform = {
 };
 
 export const defaultCloudPlatformURL = cloudPlatform.ThinkCloud;
+
+export const resTypes = {
+  Fixed: 'Fixed',
+  Dynamic: 'Dynamic',
+};
+
+export const defaultResType = resTypes.Fixed;

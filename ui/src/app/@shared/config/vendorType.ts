@@ -1,6 +1,6 @@
 export const vendorTypes = {
-    Fixed: 'Fixed',
-    Dynamic: 'Dynamic',
+    Vcd: 'Vcd',
+    Others: 'Others',
   };
   
-  export const defaultType = vendorTypes.Fixed;
+  export const defaultType = vendorTypes.Vcd;

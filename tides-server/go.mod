@@ -21,6 +21,7 @@ require (
 	github.com/goods/httpbuf v0.0.0-20120503183857-5709e9bb814c // indirect
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/hashicorp/go-version v1.2.1 // indirect
+	github.com/interpose/middleware v0.0.0-20150216143757-05ed56ed52fa // indirect
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/joho/godotenv v1.3.0
 	github.com/justinas/nosurf v1.1.1 // indirect

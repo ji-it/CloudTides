@@ -96,6 +96,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		ResourceDeleteVcdResourceHandler: resource.DeleteVcdResourceHandlerFunc(func(params resource.DeleteVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DeleteVcdResource has not yet been implemented")
 		}),
+		VendorSwaggerDeleteVendorHandler: vendor_swagger.DeleteVendorHandlerFunc(func(params vendor_swagger.DeleteVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.DeleteVendor has not yet been implemented")
+		}),
 		ResourceDestroyVMHandler: resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
 		}),
@@ -228,6 +231,8 @@ type CloudTidesAPI struct {
 	TemplateDeleteTemplateHandler template.DeleteTemplateHandler
 	// ResourceDeleteVcdResourceHandler sets the operation handler for the delete vcd resource operation
 	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
+	// VendorSwaggerDeleteVendorHandler sets the operation handler for the delete vendor operation
+	VendorSwaggerDeleteVendorHandler vendor_swagger.DeleteVendorHandler
 	// ResourceDestroyVMHandler sets the operation handler for the destroy VM operation
 	ResourceDestroyVMHandler resource.DestroyVMHandler
 	// UsageGetPastUsageHandler sets the operation handler for the get past usage operation
@@ -394,6 +399,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.ResourceDeleteVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.DeleteVcdResourceHandler")
+	}
+	if o.VendorSwaggerDeleteVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.DeleteVendorHandler")
 	}
 	if o.ResourceDestroyVMHandler == nil {
 		unregistered = append(unregistered, "resource.DestroyVMHandler")
@@ -608,6 +616,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/resource/vcd/{id}"] = resource.NewDeleteVcdResource(o.context, o.ResourceDeleteVcdResourceHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vendors/{id}"] = vendor_swagger.NewDeleteVendor(o.context, o.VendorSwaggerDeleteVendorHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

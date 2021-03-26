@@ -7,6 +7,7 @@ import (
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 )
 
+// ListVendorsHandler is API handler for /vendor GET
 func ListVendorsHandler(params vendor_swagger.ListVendorParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vendor_swagger.NewListVendorUnauthorized()
@@ -32,6 +33,7 @@ func ListVendorsHandler(params vendor_swagger.ListVendorParams) middleware.Respo
 	return vendor_swagger.NewListVendorOK().WithPayload(responses)
 }
 
+// AddVendorHandler is API handler for /vendor POST
 func AddVendorHandler(params vendor_swagger.AddVendorParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vendor_swagger.NewListVendorUnauthorized()
@@ -64,5 +66,29 @@ func AddVendorHandler(params vendor_swagger.AddVendorParams) middleware.Responde
 	return vendor_swagger.NewAddVendorOK().WithPayload(&vendor_swagger.AddVendorOKBody{
 		Message: "Add Vendor Success",
 		ID: int64(id + 1),
+	})
+}
+
+// DeleteVendorHandler is API handler for /vendors/{id} DELETE
+
+func DeleteVendorHandler(params vendor_swagger.DeleteVendorParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vendor_swagger.NewDeleteVendorUnauthorized()
+	}
+
+	vendorId := params.ID
+	db := config.GetDB()
+	var vendor models.Vendor
+
+	if db.Where("id = ?", vendorId).First(&vendor).RowsAffected == 0 {
+		return vendor_swagger.NewDeleteVendorNotFound()
+	}
+
+	if db.Unscoped().Where("id = ?", vendorId).Delete(&models.Vendor{}).RowsAffected == 0 {
+		return vendor_swagger.NewDeleteVendorForbidden()
+	}
+
+	return vendor_swagger.NewDeleteVendorOK().WithPayload(&vendor_swagger.DeleteVendorOKBody{
+		Message: "success",
 	})
 }

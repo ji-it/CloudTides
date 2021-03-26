@@ -9,7 +9,15 @@
       <tide-resource-card [item]="item"></tide-resource-card>
     </div>
   </div-->
+  <!--clr-datagrid [(clrDgSelected)]="selected"-->
   <clr-datagrid>
+    <!--clr-dg-action-bar>
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="this.opened=true">
+          <clr-icon shape="plus"></clr-icon>
+        </button>
+      </div>
+    </clr-dg-action-bar-->
     <clr-dg-column>
       <div class="key">Vendor Name</div>
     </clr-dg-column>
@@ -41,14 +49,30 @@
       <div class="key">Disk Usage</div>
     </clr-dg-column>
 
-    <clr-dg-row *ngFor="let item of list">
+    <!--clr-dg-row *ngFor="let item of list"-->
+    <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
+      <clr-dg-action-overflow>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.activate(item.id)"
+          *ngIf="this.loginService.inAdminView()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.contribute(item.id)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.CONTRIBUTE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.delete(item.vcdId)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+      </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.cpu}} GHz</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.mem}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.organization}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">Fixed</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.resType}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["cpu%"] : "-" }}%</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["mem%"] : "-"  }}%</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["disk%"] : "-"  }}%</div></clr-dg-cell>

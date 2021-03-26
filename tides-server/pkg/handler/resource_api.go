@@ -467,6 +467,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 		TotalJobs:    0,
 		UserID:       uid,
 		Username:     user.User.Name,
+		Type:         body.ResType,
 	}
 	if body.Policy > 0 {
 		newres.PolicyID = new(uint)
@@ -582,6 +583,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			ID:              int64(res.ID),
 			VcdID:           int64(vcd.ID),
 			Vendor:			 "ThinkCloud",
+			ResType:         res.Type,
 		}
 		responses = append(responses, &newres)
 	}
