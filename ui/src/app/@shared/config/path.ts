@@ -6,6 +6,7 @@ export const RESOURCE_PATH_NAME = 'resource';
 export const POLICY_PATH_NAME = 'policy';
 export const TEMPLATE_PATH_NAME = 'template';
 export const VENDOR_PATH_NAME = 'vendors'
+export const VAPP_PATH_NAME = 'vapp'
 
 // Path
 export const BASE_PATH = `/`;
@@ -28,3 +29,5 @@ export const POLICY_PATH = `/${POLICY_PATH_NAME}`;
 export const TEMPLATE_PATH = `/${TEMPLATE_PATH_NAME}`;
 
 export const VENDOR_PATH = `/${VENDOR_PATH_NAME}`;
+
+export const VAPP_PATH = `/${VAPP_PATH_NAME}`;

@@ -24,7 +24,6 @@ func randSeqT(n int) string {
 
 // Deploy VAPP
 func DeployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VMName string, cataName string, vAppName string, netName string) *govcd.VApp {
-
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
 	vappTem, _ := cataItem.GetVAppTemplate()
@@ -195,7 +194,7 @@ func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
 		})
 	}
 
-	Vapp := DeployVapp(org, vdc, tem.Name, tem.VMName, res.Catalog,"cloudtides-vapp-"+randSeqT(6), res.Network)
+	Vapp := DeployVapp(org, vdc, tem.Name, tem.VMName, res.Catalog, body.Name, res.Network)
 	if Vapp != nil{
 		newVapp := models.Vapp{
 			UserId: uid,
@@ -234,9 +233,11 @@ func ListVappHandler(params vapp.ListVappsParams) middleware.Responder {
 
 	for _, vap := range vapps {
 		var vendor = models.Vendor{}
-		db.Where("url = ?", vap.Resource.HostAddress).First(&vendor)
+		var res = models.Resource{}
+		db.Where("id = ?", vap.ResourceID).First(&res)
+		db.Where("url = ?", res.HostAddress).First(&vendor)
 		newvapp := vapp.ListVappsOKBodyItems0{
-			Datacenter: vap.Resource.Datacenter,
+			Datacenter: res.Datacenter,
 			ID: int64(vap.ID),
 			Name: vap.Name,
 			Template: vap.Template,
