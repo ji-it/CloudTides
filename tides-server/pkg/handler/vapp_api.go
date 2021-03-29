@@ -249,3 +249,31 @@ func ListVappHandler(params vapp.ListVappsParams) middleware.Responder {
 
 	return vapp.NewListVappsOK().WithPayload(response)
 }
+
+
+func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vapp.NewDeleteVappUnauthorized()
+	}
+
+	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	var vApp models.Vapp
+	db := config.GetDB()
+	if db.Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound()
+	}
+	if VerifyAdmin(params.HTTPRequest) {
+	} else {
+		if(vApp.UserId != uid){
+			return vapp.NewDeleteVappUnauthorized()
+		}
+	}
+
+	if db.Unscoped().Where("id = ?", params.ID).Delete(&models.Vapp{}).RowsAffected == 0 {
+		return vapp.NewDeleteVappForbidden()
+	}
+
+	return vapp.NewDeleteVappOK().WithPayload(&vapp.DeleteVappOKBody{
+		Message: "success",
+	})
+}

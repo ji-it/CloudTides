@@ -97,6 +97,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		TemplateDeleteTemplateHandler: template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
 		}),
+		VappDeleteVappHandler: vapp.DeleteVappHandlerFunc(func(params vapp.DeleteVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.DeleteVapp has not yet been implemented")
+		}),
 		ResourceDeleteVcdResourceHandler: resource.DeleteVcdResourceHandlerFunc(func(params resource.DeleteVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DeleteVcdResource has not yet been implemented")
 		}),
@@ -238,6 +241,8 @@ type CloudTidesAPI struct {
 	UsageDeleteResourceUsageHandler usage.DeleteResourceUsageHandler
 	// TemplateDeleteTemplateHandler sets the operation handler for the delete template operation
 	TemplateDeleteTemplateHandler template.DeleteTemplateHandler
+	// VappDeleteVappHandler sets the operation handler for the delete vapp operation
+	VappDeleteVappHandler vapp.DeleteVappHandler
 	// ResourceDeleteVcdResourceHandler sets the operation handler for the delete vcd resource operation
 	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
 	// VendorSwaggerDeleteVendorHandler sets the operation handler for the delete vendor operation
@@ -410,6 +415,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateDeleteTemplateHandler == nil {
 		unregistered = append(unregistered, "template.DeleteTemplateHandler")
+	}
+	if o.VappDeleteVappHandler == nil {
+		unregistered = append(unregistered, "vapp.DeleteVappHandler")
 	}
 	if o.ResourceDeleteVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.DeleteVcdResourceHandler")
@@ -633,6 +641,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/template/{id}"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vapp/{id}"] = vapp.NewDeleteVapp(o.context, o.VappDeleteVappHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}

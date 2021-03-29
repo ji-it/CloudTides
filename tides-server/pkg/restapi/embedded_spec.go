@@ -2395,6 +2395,56 @@ func init() {
         }
       }
     },
+    "/vapp/{id}": {
+      "delete": {
+        "description": "delete vapp",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "deleteVapp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vendors": {
       "get": {
         "description": "list vendors",
@@ -4881,6 +4931,56 @@ func init() {
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vapp/{id}": {
+      "delete": {
+        "description": "delete vapp",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "deleteVapp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "resource not found",

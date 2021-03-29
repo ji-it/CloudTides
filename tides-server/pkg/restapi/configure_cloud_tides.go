@@ -120,6 +120,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.VappListVappsHandler = vapp.ListVappsHandlerFunc(handler.ListVappHandler)
 
+	api.VappDeleteVappHandler = vapp.DeleteVappHandlerFunc(handler.DeleteVappHandler)
+
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
