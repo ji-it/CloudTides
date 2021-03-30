@@ -22,6 +22,52 @@ func randSeqT(n int) string {
 	return string(b)
 }
 
+func GetVdc(resourceID uint) *govcd.Vdc{
+	var res models.Resource
+	var vendor models.Vendor
+	var vcd models.Vcd
+	db := config.GetDB()
+	if db.Where("id = ?", resourceID).First(&res).RowsAffected == 0 {
+		return nil
+	}
+
+	if db.Where("url = ?", res.HostAddress).First(&vendor).RowsAffected == 0 {
+		return nil
+	}
+
+	if db.Where("resource_id = ?", res.ID).First(&vcd).RowsAffected == 0{
+		return nil
+	}
+
+	conf := VcdConfig{
+		Href: vendor.URL,
+		Password: res.Password,
+		User: res.Username,
+		Org: vcd.Organization,
+		VDC: res.Datacenter,
+	}
+
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	vdc, err := org.GetVDCByName(conf.VDC, false)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return vdc
+}
+
 // Deploy VAPP
 func DeployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VMName string, cataName string, vAppName string, netName string) *govcd.VApp {
 	catalog, _ := org.GetCatalogByName(cataName, true)
@@ -258,9 +304,6 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	var vApp models.Vapp
-	var res models.Resource
-	var vendor models.Vendor
-	var vcd models.Vcd
 	db := config.GetDB()
 	if db.Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
 		return vapp.NewDeleteVappNotFound()
@@ -276,49 +319,15 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 		return vapp.NewDeleteVappNotFound()
 	}
 
-	if db.Where("id = ?", vApp.ResourceID).First(&res).RowsAffected == 0 {
+	vdc := GetVdc(vApp.ResourceID)
+	if vdc == nil {
 		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
-			Message: "Resource not found",
+			Message: "Vdc not found",
 		})
-	}
-
-	if db.Where("url = ?", res.HostAddress).First(&vendor).RowsAffected == 0 {
-		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
-			Message: "Vendor not found",
-		})
-	}
-
-	if db.Where("resource_id = ?", res.ID).First(&vcd).RowsAffected == 0{
-		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
-			Message: "Vcd not found",
-		})
-	}
-
-	conf := VcdConfig{
-		Href: vendor.URL,
-		Password: res.Password,
-		User: res.Username,
-		Org: vcd.Organization,
-		VDC: res.Datacenter,
-	}
-
-	client, err := conf.Client() // We now have a client
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	org, err := client.GetOrgByName(conf.Org)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	vdc, err := org.GetVDCByName(conf.VDC, false)
-	if err != nil {
-		fmt.Println(err)
 	}
 
 	for i := 0; i < 3; i++ {
-		err = destroyVapp(vdc, vApp.Name)
+		err := DestroyVapp(vdc, vApp.Name)
 		vappQuery, _ := vdc.GetVAppByName(vApp.Name, true)
 		if err == nil && vappQuery == nil {
 			db.Unscoped().Delete(&vApp)

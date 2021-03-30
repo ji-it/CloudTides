@@ -9,6 +9,31 @@ import (
 	"gorm.io/gorm"
 )
 
+type VMachine struct {
+	gorm.Model
+
+	// number of vCPU
+	VCPU int `json:"vCPU,omitempty"`
+
+	// number of memeory unit GB
+	VMem int `json:"vMem,omitempty"`
+
+	// number of disk unit GB
+	Disk int `json:"disk,omitempty"`
+
+	// public ip address
+	IpAddress string `json:"ipAddress,omitempty"`
+
+	// initial user name
+	UserName string `json:"userName,omitempty"`
+
+	// initial password
+	PassWord string `json:"password,omitempty"`
+
+	// used money
+	UsedMoney string `json:"usedMoney,omitempty"`
+}
+
 // VM schema
 type VM struct {
 	gorm.Model
