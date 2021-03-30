@@ -258,9 +258,12 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	var vApp models.Vapp
+	var res models.Resource
+	var vendor models.Vendor
+	var vcd models.Vcd
 	db := config.GetDB()
 	if db.Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
-		return vapp.NewAddVappNotFound()
+		return vapp.NewDeleteVappNotFound()
 	}
 	if VerifyAdmin(params.HTTPRequest) {
 	} else {
@@ -269,11 +272,61 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 		}
 	}
 
-	if db.Unscoped().Where("id = ?", params.ID).Delete(&models.Vapp{}).RowsAffected == 0 {
-		return vapp.NewDeleteVappForbidden()
+	if vApp.IsDestroyed {
+		return vapp.NewDeleteVappNotFound()
 	}
 
-	return vapp.NewDeleteVappOK().WithPayload(&vapp.DeleteVappOKBody{
-		Message: "success",
-	})
+	if db.Where("id = ?", vApp.ResourceID).First(&res).RowsAffected == 0 {
+		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
+			Message: "Resource not found",
+		})
+	}
+
+	if db.Where("url = ?", res.HostAddress).First(&vendor).RowsAffected == 0 {
+		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
+			Message: "Vendor not found",
+		})
+	}
+
+	if db.Where("resource_id = ?", res.ID).First(&vcd).RowsAffected == 0{
+		return vapp.NewDeleteVappNotFound().WithPayload(&vapp.DeleteVappNotFoundBody{
+			Message: "Vcd not found",
+		})
+	}
+
+	conf := VcdConfig{
+		Href: vendor.URL,
+		Password: res.Password,
+		User: res.Username,
+		Org: vcd.Organization,
+		VDC: res.Datacenter,
+	}
+
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	vdc, err := org.GetVDCByName(conf.VDC, false)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for i := 0; i < 3; i++ {
+		err = destroyVapp(vdc, vApp.Name)
+		vappQuery, _ := vdc.GetVAppByName(vApp.Name, true)
+		if err == nil && vappQuery == nil {
+			db.Unscoped().Delete(&vApp)
+			return vapp.NewDeleteVappOK().WithPayload(&vapp.DeleteVappOKBody{
+				Message: "success",
+			})
+		}
+	}
+
+	return vapp.NewDeleteVappForbidden()
 }

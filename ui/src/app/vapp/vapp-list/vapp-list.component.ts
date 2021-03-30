@@ -25,7 +25,7 @@ export class VappListComponent implements OnInit {
 
   async delete(id: string) {
     await this.vappService.removeItem(id).then(() => {
-      this.vo.alertText = `Successfully delete vendor with id ${id}`;
+      this.vo.alertText = `Successfully delete vapp with id ${id}`;
       this.vo.alertType = 'success';
     }, (error) => {
       this.vo.alertType = 'danger';
