@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
@@ -62,154 +61,10 @@ func (o *ListTemplate) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-// ListTemplateOKBody list template o k body
+// ListTemplateOKBodyItems0 list template o k body items0
 //
-// swagger:model ListTemplateOKBody
-type ListTemplateOKBody struct {
-
-	// message
-	// Enum: [success]
-	Message string `json:"message,omitempty"`
-
-	// results
-	Results []*ListTemplateOKBodyResultsItems0 `json:"results"`
-}
-
-// Validate validates this list template o k body
-func (o *ListTemplateOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateMessage(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := o.validateResults(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-var listTemplateOKBodyTypeMessagePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["success"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		listTemplateOKBodyTypeMessagePropEnum = append(listTemplateOKBodyTypeMessagePropEnum, v)
-	}
-}
-
-const (
-
-	// ListTemplateOKBodyMessageSuccess captures enum value "success"
-	ListTemplateOKBodyMessageSuccess string = "success"
-)
-
-// prop value enum
-func (o *ListTemplateOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, listTemplateOKBodyTypeMessagePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *ListTemplateOKBody) validateMessage(formats strfmt.Registry) error {
-	if swag.IsZero(o.Message) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateMessageEnum("listTemplateOK"+"."+"message", "body", o.Message); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (o *ListTemplateOKBody) validateResults(formats strfmt.Registry) error {
-	if swag.IsZero(o.Results) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(o.Results); i++ {
-		if swag.IsZero(o.Results[i]) { // not required
-			continue
-		}
-
-		if o.Results[i] != nil {
-			if err := o.Results[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("listTemplateOK" + "." + "results" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this list template o k body based on the context it is used
-func (o *ListTemplateOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.contextValidateResults(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *ListTemplateOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(o.Results); i++ {
-
-		if o.Results[i] != nil {
-			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("listTemplateOK" + "." + "results" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *ListTemplateOKBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *ListTemplateOKBody) UnmarshalBinary(b []byte) error {
-	var res ListTemplateOKBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// ListTemplateOKBodyResultsItems0 list template o k body results items0
-//
-// swagger:model ListTemplateOKBodyResultsItems0
-type ListTemplateOKBodyResultsItems0 struct {
+// swagger:model ListTemplateOKBodyItems0
+type ListTemplateOKBodyItems0 struct {
 
 	// compatibility
 	Compatibility string `json:"compatibility,omitempty"`
@@ -234,8 +89,8 @@ type ListTemplateOKBodyResultsItems0 struct {
 	TemplateType string `json:"templateType,omitempty"`
 }
 
-// Validate validates this list template o k body results items0
-func (o *ListTemplateOKBodyResultsItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this list template o k body items0
+func (o *ListTemplateOKBodyItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateTemplateType(formats); err != nil {
@@ -248,7 +103,7 @@ func (o *ListTemplateOKBodyResultsItems0) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
-var listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum []interface{}
+var listTemplateOKBodyItems0TypeTemplateTypePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -256,28 +111,28 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum = append(listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum, v)
+		listTemplateOKBodyItems0TypeTemplateTypePropEnum = append(listTemplateOKBodyItems0TypeTemplateTypePropEnum, v)
 	}
 }
 
 const (
 
-	// ListTemplateOKBodyResultsItems0TemplateTypeDatastore captures enum value "datastore"
-	ListTemplateOKBodyResultsItems0TemplateTypeDatastore string = "datastore"
+	// ListTemplateOKBodyItems0TemplateTypeDatastore captures enum value "datastore"
+	ListTemplateOKBodyItems0TemplateTypeDatastore string = "datastore"
 
-	// ListTemplateOKBodyResultsItems0TemplateTypeUpload captures enum value "upload"
-	ListTemplateOKBodyResultsItems0TemplateTypeUpload string = "upload"
+	// ListTemplateOKBodyItems0TemplateTypeUpload captures enum value "upload"
+	ListTemplateOKBodyItems0TemplateTypeUpload string = "upload"
 )
 
 // prop value enum
-func (o *ListTemplateOKBodyResultsItems0) validateTemplateTypeEnum(path, location string, value string) error {
-	if err := validate.EnumCase(path, location, value, listTemplateOKBodyResultsItems0TypeTemplateTypePropEnum, true); err != nil {
+func (o *ListTemplateOKBodyItems0) validateTemplateTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, listTemplateOKBodyItems0TypeTemplateTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (o *ListTemplateOKBodyResultsItems0) validateTemplateType(formats strfmt.Registry) error {
+func (o *ListTemplateOKBodyItems0) validateTemplateType(formats strfmt.Registry) error {
 	if swag.IsZero(o.TemplateType) { // not required
 		return nil
 	}
@@ -290,13 +145,13 @@ func (o *ListTemplateOKBodyResultsItems0) validateTemplateType(formats strfmt.Re
 	return nil
 }
 
-// ContextValidate validates this list template o k body results items0 based on context it is used
-func (o *ListTemplateOKBodyResultsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this list template o k body items0 based on context it is used
+func (o *ListTemplateOKBodyItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *ListTemplateOKBodyResultsItems0) MarshalBinary() ([]byte, error) {
+func (o *ListTemplateOKBodyItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -304,8 +159,8 @@ func (o *ListTemplateOKBodyResultsItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *ListTemplateOKBodyResultsItems0) UnmarshalBinary(b []byte) error {
-	var res ListTemplateOKBodyResultsItems0
+func (o *ListTemplateOKBodyItems0) UnmarshalBinary(b []byte) error {
+	var res ListTemplateOKBodyItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

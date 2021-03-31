@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
-import { VAPP_PATH} from '@tide-config/path';
+import { TEMPLATE_PATH, VAPP_PATH, VCD_URL_PATH, VENDOR_PATH} from '@tide-config/path';
 import { LoginService } from '../login/login.service';
 import toFixed from 'accounting-js/lib/toFixed.js';
 
@@ -35,6 +35,70 @@ export class VappService {
       vapps.push(vappItem);
     }
     return vapps;
+  }
+
+  async getVendorList() {
+    const VendorList = await this.http.get<ItemVendor[]>(environment.apiPrefix + VENDOR_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const VendorObject : Object = {};
+    for (let item of VendorList){
+      VendorObject[item.name] = item.url;
+    }
+    return VendorObject;
+  }
+
+  async getTemplateList() {
+    const TemplateList = await this.http.get<ItemTemplate[]>(environment.apiPrefix + TEMPLATE_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const TemplateObject : Object = {};
+    for (let item of TemplateList){
+      TemplateObject[item.name] = item.name;
+    }
+    return TemplateObject;
+  }
+
+  async getResourceList() {
+    const list = await this.http.get<ItemResource[]>(environment.apiPrefix + VCD_URL_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const usage: ItemResource[] = [];
+    for (const resource of list) {
+      const rawUsage = await this.http.get<ItemUsage>(`${environment.apiPrefix}/usage/${resource.id}`, {
+        headers: {
+          Authorization: `Bearer ${this.loginService.token}`,
+        },
+      }).toPromise();
+      const resourceItem: ItemResource = {
+        id: resource.id,
+        vcdId: resource.vcdId,
+        name: rawUsage.name,
+        organization: resource.organization,
+        vendor: resource.vendor,
+        cpu: rawUsage.totalCPU / 1000,
+        mem: rawUsage.totalRAM / 1024,
+        disk: rawUsage.totalDisk / 1024,
+        resType: resource.resType,
+        usage: {
+          'cpu%': toFixed(rawUsage.percentCPU * 100, 2),
+          'mem%': toFixed(rawUsage.percentRAM * 100, 2),
+          'disk%': toFixed(rawUsage.percentDisk * 100, 2),
+        },
+      };
+      usage.push(resourceItem);
+    }
+    const ResourceObject : Object = {};
+    for (let item of usage) {
+      ResourceObject[item.name] = item.name;
+    }
+    return ResourceObject;
   }
 
   addItem(payload: ItemPayload) {
@@ -138,5 +202,54 @@ export interface ItemPayload {
   vendor: string;
   datacenter: string;
 }
+
+interface ItemVendor {
+  id: number;
+  name: string;
+  url: string;
+  vendorType: string;
+  version: string;
+}
+
+interface ItemTemplate {
+  name: string;
+  resourceID: number;
+}
+
+export interface ItemResource {
+  id: string;
+  vcdId: string;
+  name: string;
+  organization: string;
+  vendor: string;
+  // unit: GHz
+  cpu: number;
+  // unit: GB
+  mem: number;
+  // unit: GB
+  disk: number;
+  resType: string;
+  usage: {
+    'cpu%': number;
+    'mem%': number;
+    'disk%': number;
+  }
+}
+
+interface ItemUsage {
+  currentCPU: number;
+  totalCPU: number;
+  currentRAM: number;
+  totalRAM: number;
+  currentDisk: number;
+  totalDisk: number;
+  percentCPU: number;
+  percentRAM: number;
+  percentDisk: number;
+  name: string;
+}
+
+
+export type ItemV = ItemVendor;
 
 export type Item = ItemDTO;

@@ -18,6 +18,48 @@
 
       </clr-alert>
 
+      <clr-select-container>
+        <label for="vendor">Vendor</label>
+        <select
+          clrSelect
+          id="vendor"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="vendor"
+        >
+        <option *ngFor="let ven of vendorList"
+          [ngValue]="ven"> {{ ven }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label for="template">Template</label>
+        <select
+          clrSelect
+          id="template"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="template"
+        >
+        <option *ngFor="let tem of templateList"
+          [ngValue]="template[tem]"> {{ tem }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label for="datacenter">Datacenter</label>
+        <select
+          clrSelect
+          id="datacenter"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="datacenter"
+        >
+        <option *ngFor="let res of resourceList"
+          [ngValue]="res"> {{ res }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
       <clr-input-container>
         <label for="name">Name</label>
         <input id="name"
@@ -27,7 +69,7 @@
           formControlName="name"
           clrInput />
       </clr-input-container>
-      <clr-input-container>
+      <!--clr-input-container>
         <label for="template">Template</label>
         <input id="template"
           class="clr-col-12 clr-col-md-8"
@@ -55,7 +97,7 @@
           [placeholder]="'Datacenter'"
           formControlName="datacenter"
           clrInput />
-      </clr-input-container>
+      </clr-input-container-->
     </form>
   </div>
   <div class="modal-footer">

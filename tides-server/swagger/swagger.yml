@@ -1277,34 +1277,27 @@ paths:
         200:
           description: 'OK'
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-                enum:
-                  - 'success'
-              results:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    dateAdded:
-                      type: string
-                    guestOS:
-                      type: string
-                    compatibility:
-                      type: string
-                    provisionedSpace:
-                      type: number
-                    memorySize:
-                      type: number
-                    templateType:
-                      type: string
-                      enum:
-                        - 'datastore'
-                        - 'upload'
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                dateAdded:
+                  type: string
+                guestOS:
+                  type: string
+                compatibility:
+                  type: string
+                provisionedSpace:
+                  type: number
+                memorySize:
+                  type: number
+                templateType:
+                  type: string
+                  enum:
+                    - 'datastore'
+                    - 'upload'
         400:
           description: 'bad request'
         401:

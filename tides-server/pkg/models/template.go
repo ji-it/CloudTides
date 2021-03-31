@@ -35,6 +35,9 @@ type Template struct {
 
 	// vm name
 	VMName string `json:"vmName,omitempty"`
+
+	// resource id
+	ResourceID uint `json:"resourceID,omitempty"`
 }
 
 // Validate validates this template

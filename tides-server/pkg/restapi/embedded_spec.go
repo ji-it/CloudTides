@@ -1363,45 +1363,34 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                },
-                "results": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "compatibility": {
-                        "type": "string"
-                      },
-                      "dateAdded": {
-                        "type": "string"
-                      },
-                      "guestOS": {
-                        "type": "string"
-                      },
-                      "memorySize": {
-                        "type": "number"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "provisionedSpace": {
-                        "type": "number"
-                      },
-                      "templateType": {
-                        "type": "string",
-                        "enum": [
-                          "datastore",
-                          "upload"
-                        ]
-                      }
-                    }
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "compatibility": {
+                    "type": "string"
+                  },
+                  "dateAdded": {
+                    "type": "string"
+                  },
+                  "guestOS": {
+                    "type": "string"
+                  },
+                  "memorySize": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "provisionedSpace": {
+                    "type": "number"
+                  },
+                  "templateType": {
+                    "type": "string",
+                    "enum": [
+                      "datastore",
+                      "upload"
+                    ]
                   }
                 }
               }
@@ -4017,20 +4006,9 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                },
-                "results": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ResultsItems0"
-                  }
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListTemplateOKBodyItems0"
               }
             }
           },
@@ -5235,6 +5213,36 @@ func init() {
         },
         "url": {
           "type": "string"
+        }
+      }
+    },
+    "ListTemplateOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "compatibility": {
+          "type": "string"
+        },
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "provisionedSpace": {
+          "type": "number"
+        },
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
         }
       }
     },

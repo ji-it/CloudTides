@@ -23,7 +23,7 @@ type ListTemplateOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *ListTemplateOKBody `json:"body,omitempty"`
+	Payload []*ListTemplateOKBodyItems0 `json:"body,omitempty"`
 }
 
 // NewListTemplateOK creates ListTemplateOK with default headers values
@@ -33,13 +33,13 @@ func NewListTemplateOK() *ListTemplateOK {
 }
 
 // WithPayload adds the payload to the list template o k response
-func (o *ListTemplateOK) WithPayload(payload *ListTemplateOKBody) *ListTemplateOK {
+func (o *ListTemplateOK) WithPayload(payload []*ListTemplateOKBodyItems0) *ListTemplateOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the list template o k response
-func (o *ListTemplateOK) SetPayload(payload *ListTemplateOKBody) {
+func (o *ListTemplateOK) SetPayload(payload []*ListTemplateOKBodyItems0) {
 	o.Payload = payload
 }
 
@@ -47,11 +47,14 @@ func (o *ListTemplateOK) SetPayload(payload *ListTemplateOKBody) {
 func (o *ListTemplateOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if payload == nil {
+		// return empty array
+		payload = make([]*ListTemplateOKBodyItems0, 0, 50)
+	}
+
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
 }
 

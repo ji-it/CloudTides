@@ -49,10 +49,10 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 	db := config.GetDB()
 	var templates []*models.Template
 	db.Find(&templates)
-	var result []*template.ListTemplateOKBodyResultsItems0
+	var result []*template.ListTemplateOKBodyItems0
 
 	for _, tem := range templates {
-		newItem := template.ListTemplateOKBodyResultsItems0{
+		newItem := template.ListTemplateOKBodyItems0{
 			Compatibility:    tem.Compatibility,
 			DateAdded:        time.Time.String(tem.Model.CreatedAt),
 			GuestOS:          tem.GuestOS,
@@ -64,10 +64,7 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 		result = append(result, &newItem)
 	}
 
-	return template.NewListTemplateOK().WithPayload(&template.ListTemplateOKBody{
-		Message: "success",
-		Results: result,
-	})
+	return template.NewListTemplateOK().WithPayload(result)
 }
 
 // DeleteTemplateHandler is API handler for /template/{id} DELETE

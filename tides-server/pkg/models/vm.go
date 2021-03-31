@@ -12,6 +12,9 @@ import (
 type VMachine struct {
 	gorm.Model
 
+	// name of VM
+	Name string `json:"name,omitempty"`
+
 	// number of vCPU
 	VCPU int `json:"vCPU,omitempty"`
 
@@ -32,6 +35,8 @@ type VMachine struct {
 
 	// used money
 	UsedMoney string `json:"usedMoney,omitempty"`
+
+	VappID int `json:"vappID,omitempty"`
 }
 
 // VM schema
