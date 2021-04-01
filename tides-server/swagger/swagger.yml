@@ -1277,34 +1277,27 @@ paths:
         200:
           description: 'OK'
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-                enum:
-                  - 'success'
-              results:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    dateAdded:
-                      type: string
-                    guestOS:
-                      type: string
-                    compatibility:
-                      type: string
-                    provisionedSpace:
-                      type: number
-                    memorySize:
-                      type: number
-                    templateType:
-                      type: string
-                      enum:
-                        - 'datastore'
-                        - 'upload'
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                dateAdded:
+                  type: string
+                guestOS:
+                  type: string
+                compatibility:
+                  type: string
+                provisionedSpace:
+                  type: number
+                memorySize:
+                  type: number
+                templateType:
+                  type: string
+                  enum:
+                    - 'datastore'
+                    - 'upload'
         400:
           description: 'bad request'
         401:
@@ -1563,7 +1556,108 @@ paths:
             properties:
               message:
                 type: string
-
+  /vapp:
+    post:
+      operationId: 'addVapp'
+      description: 'add vapp'
+      tags:
+        - 'vapp'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              template:
+                type: string
+              vendor:
+                type: string
+              datacenter:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    get:
+      operationId: 'listVapps'
+      description: 'list Vapps'
+      tags:
+        - 'vapp'
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                vendor:
+                  type: string
+                datacenter:
+                  type: string
+                template:
+                  type: string
+        401:
+          description: 'Unauthorized'
+  /vapp/{id}:
+    delete:
+      operationId: 'deleteVapp'
+      description: 'delete vapp'
+      tags:
+        - 'vapp'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'deletion success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 
 definitions:
   ResourceAddItem:

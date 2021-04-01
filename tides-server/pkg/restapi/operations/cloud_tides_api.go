@@ -25,6 +25,7 @@ import (
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
 	"tides-server/pkg/restapi/operations/user"
+	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 )
 
@@ -69,6 +70,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		UsageAddVMUsageHandler: usage.AddVMUsageHandlerFunc(func(params usage.AddVMUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.AddVMUsage has not yet been implemented")
 		}),
+		VappAddVappHandler: vapp.AddVappHandlerFunc(func(params vapp.AddVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.AddVapp has not yet been implemented")
+		}),
 		ResourceAddVcdResourceHandler: resource.AddVcdResourceHandlerFunc(func(params resource.AddVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AddVcdResource has not yet been implemented")
 		}),
@@ -92,6 +96,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		TemplateDeleteTemplateHandler: template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
+		}),
+		VappDeleteVappHandler: vapp.DeleteVappHandlerFunc(func(params vapp.DeleteVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.DeleteVapp has not yet been implemented")
 		}),
 		ResourceDeleteVcdResourceHandler: resource.DeleteVcdResourceHandlerFunc(func(params resource.DeleteVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DeleteVcdResource has not yet been implemented")
@@ -125,6 +132,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		TemplateListTemplateHandler: template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
+		}),
+		VappListVappsHandler: vapp.ListVappsHandlerFunc(func(params vapp.ListVappsParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.ListVapps has not yet been implemented")
 		}),
 		ResourceListVcdResourceHandler: resource.ListVcdResourceHandlerFunc(func(params resource.ListVcdResourceParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.ListVcdResource has not yet been implemented")
@@ -213,6 +223,8 @@ type CloudTidesAPI struct {
 	TemplateAddTemplateHandler template.AddTemplateHandler
 	// UsageAddVMUsageHandler sets the operation handler for the add VM usage operation
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
+	// VappAddVappHandler sets the operation handler for the add vapp operation
+	VappAddVappHandler vapp.AddVappHandler
 	// ResourceAddVcdResourceHandler sets the operation handler for the add vcd resource operation
 	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
 	// VendorSwaggerAddVendorHandler sets the operation handler for the add vendor operation
@@ -229,6 +241,8 @@ type CloudTidesAPI struct {
 	UsageDeleteResourceUsageHandler usage.DeleteResourceUsageHandler
 	// TemplateDeleteTemplateHandler sets the operation handler for the delete template operation
 	TemplateDeleteTemplateHandler template.DeleteTemplateHandler
+	// VappDeleteVappHandler sets the operation handler for the delete vapp operation
+	VappDeleteVappHandler vapp.DeleteVappHandler
 	// ResourceDeleteVcdResourceHandler sets the operation handler for the delete vcd resource operation
 	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
 	// VendorSwaggerDeleteVendorHandler sets the operation handler for the delete vendor operation
@@ -251,6 +265,8 @@ type CloudTidesAPI struct {
 	ProjectListProjectHandler project.ListProjectHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
 	TemplateListTemplateHandler template.ListTemplateHandler
+	// VappListVappsHandler sets the operation handler for the list vapps operation
+	VappListVappsHandler vapp.ListVappsHandler
 	// ResourceListVcdResourceHandler sets the operation handler for the list vcd resource operation
 	ResourceListVcdResourceHandler resource.ListVcdResourceHandler
 	// VendorSwaggerListVendorHandler sets the operation handler for the list vendor operation
@@ -373,6 +389,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.UsageAddVMUsageHandler == nil {
 		unregistered = append(unregistered, "usage.AddVMUsageHandler")
 	}
+	if o.VappAddVappHandler == nil {
+		unregistered = append(unregistered, "vapp.AddVappHandler")
+	}
 	if o.ResourceAddVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.AddVcdResourceHandler")
 	}
@@ -396,6 +415,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateDeleteTemplateHandler == nil {
 		unregistered = append(unregistered, "template.DeleteTemplateHandler")
+	}
+	if o.VappDeleteVappHandler == nil {
+		unregistered = append(unregistered, "vapp.DeleteVappHandler")
 	}
 	if o.ResourceDeleteVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.DeleteVcdResourceHandler")
@@ -429,6 +451,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateListTemplateHandler == nil {
 		unregistered = append(unregistered, "template.ListTemplateHandler")
+	}
+	if o.VappListVappsHandler == nil {
+		unregistered = append(unregistered, "vapp.ListVappsHandler")
 	}
 	if o.ResourceListVcdResourceHandler == nil {
 		unregistered = append(unregistered, "resource.ListVcdResourceHandler")
@@ -583,6 +608,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/vapp"] = vapp.NewAddVapp(o.context, o.VappAddVappHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/resource/vcd"] = resource.NewAddVcdResource(o.context, o.ResourceAddVcdResourceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -612,6 +641,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/template/{id}"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vapp/{id}"] = vapp.NewDeleteVapp(o.context, o.VappDeleteVappHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -656,6 +689,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/template"] = template.NewListTemplate(o.context, o.TemplateListTemplateHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vapp"] = vapp.NewListVapps(o.context, o.VappListVappsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

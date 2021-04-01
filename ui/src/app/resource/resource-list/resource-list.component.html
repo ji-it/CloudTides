@@ -22,6 +22,15 @@
       <div class="key">Vendor Name</div>
     </clr-dg-column>
     <clr-dg-column>
+      <div class="key">Tenant</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">DataCenter</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Type</div>
+    </clr-dg-column>
+    <clr-dg-column>
       <div class="key">Total CPU</div>
     </clr-dg-column>
     <clr-dg-column>
@@ -29,15 +38,6 @@
     </clr-dg-column>
     <clr-dg-column>
       <div class="key">Total Disk</div>
-    </clr-dg-column>
-    <clr-dg-column>
-      <div class="key">DataCenter</div>
-    </clr-dg-column>
-    <clr-dg-column>
-      <div class="key">Tenant</div>
-    </clr-dg-column>
-    <clr-dg-column>
-      <div class="key">Type</div>
     </clr-dg-column>
     <clr-dg-column>
       <div class="key">CPU Usage</div>
@@ -67,15 +67,15 @@
         >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
       </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.organization}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.resType}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.cpu}} GHz</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.mem}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.organization}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.resType}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["cpu%"] : "-" }}%</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["mem%"] : "-"  }}%</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{ item?.usage ? item?.usage["disk%"] : "-"  }}%</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["cpu"]}}GHz ({{ item?.usage ? item?.usage["cpu%"] : "-" }}%)</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["mem"]}}GB ({{ item?.usage ? item?.usage["mem%"] : "-"  }}%)</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["disk"]}}GB ({{ item?.usage ? item?.usage["disk%"] : "-"  }}%)</div></clr-dg-cell>
     </clr-dg-row>
   </clr-datagrid>
 </div>

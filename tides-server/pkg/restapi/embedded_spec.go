@@ -1363,45 +1363,34 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                },
-                "results": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "compatibility": {
-                        "type": "string"
-                      },
-                      "dateAdded": {
-                        "type": "string"
-                      },
-                      "guestOS": {
-                        "type": "string"
-                      },
-                      "memorySize": {
-                        "type": "number"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "provisionedSpace": {
-                        "type": "number"
-                      },
-                      "templateType": {
-                        "type": "string",
-                        "enum": [
-                          "datastore",
-                          "upload"
-                        ]
-                      }
-                    }
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "compatibility": {
+                    "type": "string"
+                  },
+                  "dateAdded": {
+                    "type": "string"
+                  },
+                  "guestOS": {
+                    "type": "string"
+                  },
+                  "memorySize": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "provisionedSpace": {
+                    "type": "number"
+                  },
+                  "templateType": {
+                    "type": "string",
+                    "enum": [
+                      "datastore",
+                      "upload"
+                    ]
                   }
                 }
               }
@@ -2274,6 +2263,165 @@ func init() {
           },
           "400": {
             "description": "bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vapp": {
+      "get": {
+        "description": "list Vapps",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "listVapps",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "datacenter": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "template": {
+                    "type": "string"
+                  },
+                  "vendor": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "description": "add vapp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "addVapp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "template": {
+                  "type": "string"
+                },
+                "vendor": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vapp/{id}": {
+      "delete": {
+        "description": "delete vapp",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "deleteVapp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
             "schema": {
               "type": "object",
               "properties": {
@@ -3858,20 +4006,9 @@ func init() {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "enum": [
-                    "success"
-                  ]
-                },
-                "results": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ResultsItems0"
-                  }
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListTemplateOKBodyItems0"
               }
             }
           },
@@ -4695,6 +4832,148 @@ func init() {
         }
       }
     },
+    "/vapp": {
+      "get": {
+        "description": "list Vapps",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "listVapps",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListVappsOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "description": "add vapp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "addVapp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datacenter": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "template": {
+                  "type": "string"
+                },
+                "vendor": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vapp/{id}": {
+      "delete": {
+        "description": "delete vapp",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vapp"
+        ],
+        "operationId": "deleteVapp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/vendors": {
       "get": {
         "description": "list vendors",
@@ -4933,6 +5212,56 @@ func init() {
           "type": "string"
         },
         "url": {
+          "type": "string"
+        }
+      }
+    },
+    "ListTemplateOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "compatibility": {
+          "type": "string"
+        },
+        "dateAdded": {
+          "type": "string"
+        },
+        "guestOS": {
+          "type": "string"
+        },
+        "memorySize": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "provisionedSpace": {
+          "type": "number"
+        },
+        "templateType": {
+          "type": "string",
+          "enum": [
+            "datastore",
+            "upload"
+          ]
+        }
+      }
+    },
+    "ListVappsOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "datacenter": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "vendor": {
           "type": "string"
         }
       }
@@ -5186,30 +5515,30 @@ func init() {
     "ResultsItems0": {
       "type": "object",
       "properties": {
-        "compatibility": {
+        "deployType": {
+          "type": "string",
+          "enum": [
+            "K8S",
+            "VM"
+          ]
+        },
+        "id": {
+          "type": "integer"
+        },
+        "idlePolicy": {
           "type": "string"
         },
-        "dateAdded": {
-          "type": "string"
-        },
-        "guestOS": {
-          "type": "string"
-        },
-        "memorySize": {
-          "type": "number"
+        "isDestroy": {
+          "type": "boolean"
         },
         "name": {
           "type": "string"
         },
-        "provisionedSpace": {
-          "type": "number"
+        "platformType": {
+          "type": "string"
         },
-        "templateType": {
-          "type": "string",
-          "enum": [
-            "datastore",
-            "upload"
-          ]
+        "thresholdPolicy": {
+          "type": "string"
         }
       }
     },
