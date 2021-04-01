@@ -44,6 +44,9 @@ export class ResourceService {
           'cpu%': toFixed(rawUsage.percentCPU * 100, 2),
           'mem%': toFixed(rawUsage.percentRAM * 100, 2),
           'disk%': toFixed(rawUsage.percentDisk * 100, 2),
+          'cpu': toFixed(rawUsage.percentCPU * rawUsage.totalCPU / 1000, 1),
+          'mem': toFixed(rawUsage.percentRAM * rawUsage.totalRAM / 1024, 1),
+          'disk': toFixed(rawUsage.percentDisk * rawUsage.totalDisk / 1024, 1),
         },
       };
       usage.push(resourceItem);
@@ -164,6 +167,9 @@ interface ItemDTO {
     'cpu%': number;
     'mem%': number;
     'disk%': number;
+    'cpu': number;
+    'mem': number;
+    'disk': number;
   }
 }
 

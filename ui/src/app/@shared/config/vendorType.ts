@@ -1,6 +1,6 @@
 export const vendorTypes = {
-    Vcd: 'Vcd',
+    VCD: 'VCD',
     Others: 'Others',
   };
   
-  export const defaultType = vendorTypes.Vcd;
+  export const defaultType = vendorTypes.VCD;
