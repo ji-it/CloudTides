@@ -1293,6 +1293,8 @@ paths:
                   type: number
                 memorySize:
                   type: number
+                resourceID:
+                  type: integer
                 templateType:
                   type: string
                   enum:

@@ -22,7 +22,7 @@ const routes: Routes = [
 export const declarations = [
   TemplateComponent,
   TemplateListComponent,
-  TemplateCardComponent,
+  //TemplateCardComponent,
 ];
 
 export const providers = [

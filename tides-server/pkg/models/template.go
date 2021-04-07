@@ -37,7 +37,7 @@ type Template struct {
 	VMName string `json:"vmName,omitempty"`
 
 	// resource id
-	ResourceID uint `json:"resourceID,omitempty"`
+	ResourceID uint `json:"resourceID,omitempty" gorm:"default:1"`
 }
 
 // Validate validates this template

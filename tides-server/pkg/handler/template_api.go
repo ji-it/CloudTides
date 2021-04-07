@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -42,9 +43,9 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 
 // ListTemplateHandler is API handler for /template GET
 func ListTemplateHandler(params template.ListTemplateParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
+	/*if !VerifyUser(params.HTTPRequest) {
 		return template.NewListTemplateUnauthorized()
-	}
+	}*/
 
 	db := config.GetDB()
 	var templates []*models.Template
@@ -52,6 +53,7 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 	var result []*template.ListTemplateOKBodyItems0
 
 	for _, tem := range templates {
+		fmt.Printf("resID is %d" , tem.ResourceID)
 		newItem := template.ListTemplateOKBodyItems0{
 			Compatibility:    tem.Compatibility,
 			DateAdded:        time.Time.String(tem.Model.CreatedAt),
@@ -60,6 +62,7 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 			Name:             tem.Name,
 			ProvisionedSpace: tem.ProvisionedSpace,
 			TemplateType:     tem.TemplateType,
+			ResourceID:       int64(tem.ResourceID),
 		}
 		result = append(result, &newItem)
 	}

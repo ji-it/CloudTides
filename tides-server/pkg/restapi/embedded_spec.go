@@ -1385,6 +1385,9 @@ func init() {
                   "provisionedSpace": {
                     "type": "number"
                   },
+                  "resourceID": {
+                    "type": "integer"
+                  },
                   "templateType": {
                     "type": "string",
                     "enum": [
@@ -5236,6 +5239,9 @@ func init() {
         },
         "provisionedSpace": {
           "type": "number"
+        },
+        "resourceID": {
+          "type": "integer"
         },
         "templateType": {
           "type": "string",

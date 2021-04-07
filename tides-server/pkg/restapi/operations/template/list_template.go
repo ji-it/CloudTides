@@ -84,6 +84,9 @@ type ListTemplateOKBodyItems0 struct {
 	// provisioned space
 	ProvisionedSpace float64 `json:"provisionedSpace,omitempty"`
 
+	// resource ID
+	ResourceID int64 `json:"resourceID,omitempty"`
+
 	// template type
 	// Enum: [datastore upload]
 	TemplateType string `json:"templateType,omitempty"`
