@@ -43,7 +43,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   }
 
   async ngOnInit() {
-    await this.refreshList;
+    await this.refreshList();
   }
 
   async refreshList() {
