@@ -36,8 +36,28 @@ type Template struct {
 	// vm name
 	VMName string `json:"vmName,omitempty"`
 
+	VMTemps []VMTemp
+
 	// resource id
 	ResourceID uint `json:"resourceID,omitempty" gorm:"default:1"`
+}
+
+type VMTemp struct {
+	gorm.Model
+
+	VMName string `json:"vmName,omitempty"`
+
+	// number of vCPU
+	VCPU int `json:"vCPU,omitempty"`
+
+	// number of memeory unit GB
+	VMem int `json:"vMem,omitempty"`
+
+	// number of disk unit GB
+	Disk int `json:"disk,omitempty"`
+
+	// foreign key for Template
+	TemplateID uint `json:"templateID,omitempty"`
 }
 
 // Validate validates this template

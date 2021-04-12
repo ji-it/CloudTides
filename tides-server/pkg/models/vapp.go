@@ -32,6 +32,8 @@ type Vapp struct {
 	ResourceID uint
 
 	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	VMs []VMachine
 }
 
 // Validate validates this VM

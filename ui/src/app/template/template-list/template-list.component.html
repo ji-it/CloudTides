@@ -37,6 +37,12 @@
       <div class="key">Memory Size</div>
     </clr-dg-column>
     <clr-dg-column>
+      <div class="key">Storage Size</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">CPUs</div>
+    </clr-dg-column>
+    <clr-dg-column>
       <div class="key">Create Time</div>
     </clr-dg-column>
   
@@ -51,7 +57,9 @@
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.guestOS}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.memorySize}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.memorySize}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.storageSize}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.cpu}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.dateAdded}}</div></clr-dg-cell>
     </clr-dg-row>
   </clr-datagrid>

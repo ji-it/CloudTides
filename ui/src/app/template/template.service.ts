@@ -40,6 +40,8 @@ export class TemplateService {
         //datacenter: res.organization,
         datacenter: '',
         memorySize: tem.memorySize,
+        storageSize: 32,
+        cpu: 2,
       }
 
       List.push(TempItem);
@@ -73,6 +75,8 @@ interface ItemDTO {
   vendor: string;
   datacenter: string;
   memorySize: number;
+  storageSize: number;
+  cpu: number;
 }
 
 interface ItemRes {
