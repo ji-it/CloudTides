@@ -36,6 +36,9 @@ type VMachine struct {
 	// used money
 	UsedMoney string `json:"usedMoney,omitempty"`
 
+	// status of the vm
+	Status string `json:"status,omitempty"`
+
 	// foreign key for vApp
 	VappID uint `json:"vappID,omitempty"`
 }

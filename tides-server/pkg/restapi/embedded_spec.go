@@ -1473,6 +1473,57 @@ func init() {
         }
       }
     },
+    "/template/vmtemp/{id}": {
+      "get": {
+        "description": "list VMtemplate",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "listVMTemp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "disk": {
+                    "type": "integer"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "vcpu": {
+                    "type": "integer"
+                  },
+                  "vmem": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/template/{id}": {
       "delete": {
         "description": "delete specified template",
@@ -2556,6 +2607,127 @@ func init() {
           "vendor"
         ],
         "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vmtemp": {
+      "post": {
+        "description": "add VMTemp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "addVMTemp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "disk": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "templateID": {
+                  "type": "integer"
+                },
+                "vcpu": {
+                  "type": "integer"
+                },
+                "vmem": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vmtemp/{id}": {
+      "delete": {
+        "description": "delete VMTemplate",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "deleteVMTemp",
         "parameters": [
           {
             "type": "integer",
@@ -4089,6 +4261,40 @@ func init() {
         }
       }
     },
+    "/template/vmtemp/{id}": {
+      "get": {
+        "description": "list VMtemplate",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "listVMTemp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListVMTempOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/template/{id}": {
       "delete": {
         "description": "delete specified template",
@@ -5118,6 +5324,127 @@ func init() {
           }
         }
       }
+    },
+    "/vmtemp": {
+      "post": {
+        "description": "add VMTemp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "addVMTemp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "disk": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "templateID": {
+                  "type": "integer"
+                },
+                "vcpu": {
+                  "type": "integer"
+                },
+                "vmem": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vmtemp/{id}": {
+      "delete": {
+        "description": "delete VMTemplate",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "deleteVMTemp",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -5249,6 +5576,26 @@ func init() {
             "datastore",
             "upload"
           ]
+        }
+      }
+    },
+    "ListVMTempOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "disk": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "vcpu": {
+          "type": "integer"
+        },
+        "vmem": {
+          "type": "integer"
         }
       }
     },

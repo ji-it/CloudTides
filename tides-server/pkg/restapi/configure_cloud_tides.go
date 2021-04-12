@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
+	"tides-server/pkg/restapi/operations/vmtemp"
 
 	interpose "github.com/carbocation/interpose/middleware"
 	"github.com/go-openapi/errors"
@@ -121,6 +122,12 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.VappListVappsHandler = vapp.ListVappsHandlerFunc(handler.ListVappHandler)
 
 	api.VappDeleteVappHandler = vapp.DeleteVappHandlerFunc(handler.DeleteVappHandler)
+
+	api.VmtempAddVMTempHandler = vmtemp.AddVMTempHandlerFunc(handler.AddVMTemplateHandler)
+
+	api.VmtempListVMTempHandler = vmtemp.ListVMTempHandlerFunc(handler.ListVMTemplateHandler)
+
+	api.VmtempDeleteVMTempHandler = vmtemp.DeleteVMTempHandlerFunc(handler.DeleteVMTemplateHandler)
 
 	api.PreServerShutdown = func() {}
 

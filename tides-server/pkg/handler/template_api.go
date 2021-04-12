@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"tides-server/pkg/restapi/operations/vmtemp"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -43,9 +43,9 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 
 // ListTemplateHandler is API handler for /template GET
 func ListTemplateHandler(params template.ListTemplateParams) middleware.Responder {
-	/*if !VerifyUser(params.HTTPRequest) {
+	if !VerifyUser(params.HTTPRequest) {
 		return template.NewListTemplateUnauthorized()
-	}*/
+	}
 
 	db := config.GetDB()
 	var templates []*models.Template
@@ -53,7 +53,6 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 	var result []*template.ListTemplateOKBodyItems0
 
 	for _, tem := range templates {
-		fmt.Printf("resID is %d" , tem.ResourceID)
 		newItem := template.ListTemplateOKBodyItems0{
 			Compatibility:    tem.Compatibility,
 			DateAdded:        time.Time.String(tem.Model.CreatedAt),
@@ -84,6 +83,78 @@ func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Resp
 	}
 
 	return template.NewDeleteTemplateOK().WithPayload(&template.DeleteTemplateOKBody{
+		Message: "success",
+	})
+}
+
+// AddVMTemplateHandler is API handler for /vmtemp POST
+func AddVMTemplateHandler(params vmtemp.AddVMTempParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vmtemp.NewAddVMTempUnauthorized()
+	}
+
+	body := params.ReqBody
+	newVMTemp := models.VMTemp{
+		VMName: body.Name,
+		VCPU: int(body.Vcpu),
+		VMem: int(body.Vmem),
+		Disk: int(body.Disk),
+		TemplateID: uint(body.TemplateID),
+	}
+
+	db := config.GetDB()
+	err := db.Create(&newVMTemp).Error
+	if err != nil {
+		return vmtemp.NewAddVMTempBadRequest()
+	}
+
+	return vmtemp.NewAddVMTempOK().WithPayload(&vmtemp.AddVMTempOKBody{
+		Message: "success",
+		ID:      int64(newVMTemp.Model.ID),
+	})
+}
+
+// ListVMTemplateHandler is API handler for /template/vmtemp/{id} GET
+func ListVMTemplateHandler(params vmtemp.ListVMTempParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vmtemp.NewListVMTempUnauthorized()
+	}
+	templateID := params.ID
+
+	db := config.GetDB()
+	var vmtemps []*models.VMTemp
+	db.Where("template_id = ?", templateID).Find(&vmtemps)
+	var result []*vmtemp.ListVMTempOKBodyItems0
+
+	for _, vmt := range vmtemps {
+		newItem := vmtemp.ListVMTempOKBodyItems0{
+			ID: int64(vmt.ID),
+			Name: vmt.VMName,
+			Vmem: int64(vmt.VMem),
+			Vcpu: int64(vmt.VCPU),
+			Disk: int64(vmt.Disk),
+		}
+
+		result = append(result, &newItem)
+	}
+
+	return vmtemp.NewListVMTempOK().WithPayload(result)
+}
+
+//
+func DeleteVMTemplateHandler(params vmtemp.DeleteVMTempParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vmtemp.NewDeleteVMTempUnauthorized()
+	}
+
+	//uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	db := config.GetDB()
+
+	if db.Unscoped().Where("id = ?", params.ID).Delete(&models.VMTemp{}).RowsAffected == 0 {
+		return vmtemp.NewDeleteVMTempForbidden()
+	}
+
+	return vmtemp.NewDeleteVMTempOK().WithPayload(&vmtemp.DeleteVMTempOKBody{
 		Message: "success",
 	})
 }
