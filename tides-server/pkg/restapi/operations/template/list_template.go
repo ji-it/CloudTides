@@ -75,6 +75,9 @@ type ListTemplateOKBodyItems0 struct {
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// memory size
 	MemorySize float64 `json:"memorySize,omitempty"`
 

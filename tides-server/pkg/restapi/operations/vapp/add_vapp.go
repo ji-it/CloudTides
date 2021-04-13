@@ -70,7 +70,7 @@ type AddVappBody struct {
 	Name string `json:"name,omitempty"`
 
 	// template
-	Template string `json:"template,omitempty"`
+	Template int64 `json:"template,omitempty"`
 
 	// vendor
 	Vendor string `json:"vendor,omitempty"`

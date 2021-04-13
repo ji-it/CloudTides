@@ -1281,6 +1281,8 @@ paths:
             items:
               type: object
               properties:
+                id:
+                  type: integer
                 name:
                   type: string
                 dateAdded:
@@ -1575,7 +1577,7 @@ paths:
               name:
                 type: string
               template:
-                type: string
+                type: integer
               vendor:
                 type: string
               datacenter:

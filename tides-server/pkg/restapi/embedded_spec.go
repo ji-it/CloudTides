@@ -1376,6 +1376,9 @@ func init() {
                   "guestOS": {
                     "type": "string"
                   },
+                  "id": {
+                    "type": "integer"
+                  },
                   "memorySize": {
                     "type": "number"
                   },
@@ -2394,7 +2397,7 @@ func init() {
                   "type": "string"
                 },
                 "template": {
-                  "type": "string"
+                  "type": "integer"
                 },
                 "vendor": {
                   "type": "string"
@@ -5089,7 +5092,7 @@ func init() {
                   "type": "string"
                 },
                 "template": {
-                  "type": "string"
+                  "type": "integer"
                 },
                 "vendor": {
                   "type": "string"
@@ -5557,6 +5560,9 @@ func init() {
         },
         "guestOS": {
           "type": "string"
+        },
+        "id": {
+          "type": "integer"
         },
         "memorySize": {
           "type": "number"

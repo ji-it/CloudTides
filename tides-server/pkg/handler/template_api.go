@@ -54,6 +54,7 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 
 	for _, tem := range templates {
 		newItem := template.ListTemplateOKBodyItems0{
+			ID:               int64(tem.ID),
 			Compatibility:    tem.Compatibility,
 			DateAdded:        time.Time.String(tem.Model.CreatedAt),
 			GuestOS:          tem.GuestOS,

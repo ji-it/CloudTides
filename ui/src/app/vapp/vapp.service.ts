@@ -58,7 +58,7 @@ export class VappService {
     }).toPromise();
     const TemplateObject : Object = {};
     for (let item of TemplateList){
-      TemplateObject[item.name] = item.name;
+      TemplateObject[item.name] = item.id;
     }
     return TemplateObject;
   }
@@ -198,7 +198,7 @@ function mapItem(raw: ItemDTO): Item {
 // UI
 export interface ItemPayload {
   name: string;
-  template: string;
+  template: number;
   vendor: string;
   datacenter: string;
 }
@@ -212,6 +212,7 @@ interface ItemVendor {
 }
 
 interface ItemTemplate {
+  id: number;
   name: string;
   resourceID: number;
 }
