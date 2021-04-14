@@ -1,7 +1,13 @@
-<button class="btn btn-primary action-btn" (click)="this.add()">
+<button class="btn btn-primary" (click)="this.opened = true">
   <clr-icon shape="plus"></clr-icon>
   {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
 </button>
+
+<button class="btn btn-primary" (click)="this.VMopened = true">
+  <clr-icon shape="plus"></clr-icon>
+  ADD VM TEMPLATE
+</button>
+
 
 <!--div class="cards-container clr-row">
   <div class="clr-col-md-6 clr-col-lg-4"
@@ -47,20 +53,34 @@
     </clr-dg-column>
   
     <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
-      <!--clr-dg-action-overflow>
+      <clr-dg-action-overflow>
         <button
           class="btn btn-sm btn-link"
-          (click)="this.add()"
+          (click)="this.delete(item?.id)"
         >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
-      </clr-dg-action-overflow-->
+      </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.guestOS}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.memorySize}} GB</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.storageSize}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.provisionedSpace}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.cpu}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.dateAdded}}</div></clr-dg-cell>
     </clr-dg-row>
   </clr-datagrid>
 </div>
+
+<tide-template-dialog
+    *ngIf="this.opened"
+    [opened]="this.opened"
+    (save)="this.save()"
+    (cancel)="this.cancel()">
+  </tide-template-dialog>
+
+<tide-template-dialogvm
+  *ngIf="this.VMopened"
+  [opened]="this.VMopened"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-template-dialogvm>

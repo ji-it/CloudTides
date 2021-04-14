@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
 import { LoginService } from '../login/login.service';
-import { TEMPLATE_PATH, VCD_URL_PATH } from '@tide-shared/config/path';
+import { TEMPLATEVM_PATH, TEMPLATE_PATH, VCD_URL_PATH} from '@tide-shared/config/path';
 
 @Injectable()
 export class TemplateService {
@@ -24,23 +24,24 @@ export class TemplateService {
     }).toPromise();
     const List: ItemDTO[] = [];
     for (const tem of TemplateList) {
-      /*const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/1`, {
+      const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/2`, {
         headers: {
           Authorization: `Bearer ${this.loginService.token}`,
         },
-      }).toPromise();*/
+      }).toPromise();
       const TempItem: ItemDTO = {
+        id: tem.id,
         name: tem.name,
         guestOS: tem.guestOS,
         //guestOS: '',
         resourceID: tem.resourceID,
         dateAdded: tem.dateAdded,
-        //vendor: res.vendor,
-        vendor: '',
-        //datacenter: res.organization,
-        datacenter: '',
+        vendor: res.vendor,
+        //vendor: '',
+        datacenter: res.name,
+        //datacenter: '',
         memorySize: tem.memorySize,
-        storageSize: 32,
+        provisionedSpace: tem.provisionedSpace,
         cpu: 2,
       }
 
@@ -49,10 +50,47 @@ export class TemplateService {
     return List;
   }
 
+  async getTemplateList() {
+    const TemplateList = await this.http.get<ItemDTO[]>(environment.apiPrefix + TEMPLATE_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const TemplateObject : Object = {};
+    for (let item of TemplateList){
+      TemplateObject[item.name] = item.id;
+    }
+    return TemplateObject;
+  }
+
   addItem(payload: ItemPayload) {
-    return this.http.post<ItemDTO>(`${this.prefix}`, payload).pipe(
-      map(mapItem),
-    );
+    const body = {
+      ...payload,
+    };
+    return this.http.post<any>(environment.apiPrefix + TEMPLATE_PATH, body, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise().then(() => {
+      return Promise.resolve();
+    }, (errResp) => {
+      return Promise.reject(`HTTP ${errResp.status}: ${errResp.error.message}`);
+    });
+  }
+
+  addItemVM(payload: ItemPayloadVM) {
+    const body = {
+      ...payload,
+    };
+    return this.http.post<any>(environment.apiPrefix + TEMPLATEVM_PATH, body, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise().then(() => {
+      return Promise.resolve();
+    }, (errResp) => {
+      return Promise.reject(`HTTP ${errResp.status}: ${errResp.error.message}`);
+    });
   }
 
   editItem(id: string, payload: ItemPayload) {
@@ -61,13 +99,23 @@ export class TemplateService {
     );
   }
 
-  removeItem(id: string) {
-    return this.http.delete<ItemDTO>(`${this.prefix}/${id}`);
+  async removeItem(id: string) {
+    await this.http.delete<any>(environment.apiPrefix + TEMPLATE_PATH + `/` + id, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+    }, }).toPromise().then(
+      () => {
+        return Promise.resolve();
+      }, (errResp) => {
+        return Promise.reject(`${errResp.message}`);
+      },
+    );
   }
 }
 
 // Raw
 interface ItemDTO {
+  id: number;
   name: string;
   resourceID: number;
   guestOS: string;
@@ -75,7 +123,7 @@ interface ItemDTO {
   vendor: string;
   datacenter: string;
   memorySize: number;
-  storageSize: number;
+  provisionedSpace: number;
   cpu: number;
 }
 
@@ -105,8 +153,23 @@ function mapItem(raw: ItemDTO): Item {
 export type Item = ItemDTO;
 
 export interface ItemPayload {
-  name: string;
-  displayName: string;
+  name: string,
+  os: string,
+  source: string,
+  compat: string,
+  space: number,
+  memsize: number,
+  vcpu: number,
+  vmName: string,
+  resourceID: number,
+}
+
+export interface ItemPayloadVM {
+  name: string,
+  disk: number,
+  vmem: number,
+  vcpu: number,
+  templateID: number,
 }
 
 interface ItemTemplate {

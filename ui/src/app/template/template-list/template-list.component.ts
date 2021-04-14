@@ -31,15 +31,22 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   }
 
   list$: Observable<Item[]> = of([]);
+  TemplateList: Object = {};
   opened = false;
+  VMopened = false;
   refreshInterval: number;
 
   async save() {
     await this.refreshList();
   }
 
+  open() {
+    this.opened = true;
+  }
+
   cancel() {
     this.opened = false;
+    this.VMopened = false;
   }
 
   async ngOnInit() {
@@ -51,6 +58,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
     this.refreshInterval = window.setInterval(async () => {
       this.list$ = of(await this.templateService.getList());
     }, VENDOR_USAGE_REFRESH_PERIOD);
+    this.TemplateList = Object(await this.templateService.getTemplateList());
   }
 
   ngOnDestroy(): void {
@@ -59,5 +67,18 @@ export class TemplateListComponent implements OnInit, OnDestroy{
 
   async add() {
     this.list$ = of(await this.templateService.getList());
+  }
+
+  async delete(id: string) {
+    await this.templateService.removeItem(id).then(() => {
+      this.vo.alertText = `Successfully delete vendor with id ${id}`;
+      this.vo.alertType = 'success';
+    }, (error) => {
+      this.vo.alertType = 'danger';
+      this.vo.alertText = error;
+    }).then(() => {
+      this.resetAlert();
+    });
+    this.refreshList();
   }
 }

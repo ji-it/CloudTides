@@ -323,6 +323,8 @@ paths:
                 type: number
               totalRAM:
                 type: number
+              vendor:
+                type: string
         401:
           description: 'Unauthorized'
         403:
@@ -1250,10 +1252,14 @@ paths:
                 type: number
               memsize:
                 type: number
+              vcpu:
+                type: integer
               name:
                 type: string
               vmName:
                 type: string
+              resourceID:
+                type: integer
       responses:
         200:
           description: 'OK'

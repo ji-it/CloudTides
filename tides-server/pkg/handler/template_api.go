@@ -23,10 +23,12 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 		Compatibility:    body.Compat,
 		GuestOS:          body.Os,
 		MemorySize:       body.Memsize,
+		VCPUSize:         body.Vcpu,
 		Name:             body.Name,
 		ProvisionedSpace: body.Space,
 		TemplateType:     body.Source,
 		VMName:           body.VMName,
+		ResourceID:       uint(body.ResourceID),
 	}
 
 	db := config.GetDB()
@@ -76,10 +78,18 @@ func DeleteTemplateHandler(params template.DeleteTemplateParams) middleware.Resp
 		return template.NewDeleteTemplateUnauthorized()
 	}
 
-	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
+	//uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	db := config.GetDB()
 
-	if db.Unscoped().Where("id = ? AND user_id = ?", params.ID, uid).Delete(&models.Template{}).RowsAffected == 0 {
+	var vmtemps []*models.VMTemp
+	db.Where("template_id = ?", params.ID).Find(&vmtemps)
+	for _, vmt := range vmtemps {
+		if db.Unscoped().Where("id = ?", vmt.ID).Delete(&models.VMTemp{}).RowsAffected == 0 {
+			return template.NewDeleteTemplateForbidden()
+		}
+	}
+
+	if db.Unscoped().Where("id = ?", params.ID).Delete(&models.Template{}).RowsAffected == 0 {
 		return template.NewDeleteTemplateForbidden()
 	}
 

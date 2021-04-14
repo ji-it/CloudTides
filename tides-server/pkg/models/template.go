@@ -23,6 +23,9 @@ type Template struct {
 	// memory size
 	MemorySize float64 `json:"memorySize,omitempty"`
 
+	// cpu number
+	VCPUSize int64 `json:"vcpuSize,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty" gorm:"unique"`
 

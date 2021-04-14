@@ -1099,6 +1099,9 @@ func init() {
                 },
                 "totalVMs": {
                   "type": "integer"
+                },
+                "vendor": {
+                  "type": "string"
                 }
               }
             }
@@ -1439,11 +1442,17 @@ func init() {
                 "os": {
                   "type": "string"
                 },
+                "resourceID": {
+                  "type": "integer"
+                },
                 "source": {
                   "type": "string"
                 },
                 "space": {
                   "type": "number"
+                },
+                "vcpu": {
+                  "type": "integer"
                 },
                 "vmName": {
                   "type": "string"
@@ -3920,6 +3929,9 @@ func init() {
                 },
                 "totalVMs": {
                   "type": "integer"
+                },
+                "vendor": {
+                  "type": "string"
                 }
               }
             }
@@ -4227,11 +4239,17 @@ func init() {
                 "os": {
                   "type": "string"
                 },
+                "resourceID": {
+                  "type": "integer"
+                },
                 "source": {
                   "type": "string"
                 },
                 "space": {
                   "type": "number"
+                },
+                "vcpu": {
+                  "type": "integer"
                 },
                 "vmName": {
                   "type": "string"
