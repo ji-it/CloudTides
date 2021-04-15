@@ -3,10 +3,10 @@
   {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
 </button>
 
-<button class="btn btn-primary" (click)="this.VMopened = true">
+<!--button class="btn btn-primary" (click)="this.VMopened = true">
   <clr-icon shape="plus"></clr-icon>
   ADD VM TEMPLATE
-</button>
+</button-->
 
 
 <!--div class="cards-container clr-row">
@@ -58,6 +58,14 @@
           class="btn btn-sm btn-link"
           (click)="this.delete(item?.id)"
         >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.add(item?.id)"
+        >ADD VM TEMPLATE</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.displayVM(item?.id)"
+        >DISPLAY VM TEMPLATE</button>
       </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
@@ -81,6 +89,15 @@
 <tide-template-dialogvm
   *ngIf="this.VMopened"
   [opened]="this.VMopened"
+  [templateid]="this.TemplateID"
   (save)="this.save()"
   (cancel)="this.cancel()">
 </tide-template-dialogvm>
+
+<tide-vm-card
+  *ngIf="this.displayOpened"
+  [opened]="this.displayOpened"
+  [templateid]="this.TemplateID"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-vm-card>

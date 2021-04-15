@@ -25,11 +25,12 @@ export class TemplateDialogVMComponent implements OnInit {
       disk: ['', Validators.required],
       vmem: ['', Validators.required],
       vcpu: ['', Validators.required],
-      templateID: ['', Validators.required],
+      templateID: [this.templateid, Validators.required],
     })
   }
 
   @Input() opened = false;
+  @Input() templateid = 1;
   @Output() save = new EventEmitter();
   @Output() cancel = new EventEmitter();
 

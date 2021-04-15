@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
 import { LoginService } from '../login/login.service';
-import { TEMPLATEVM_PATH, TEMPLATE_PATH, VCD_URL_PATH} from '@tide-shared/config/path';
+import { TEMPLATEVM_PATH, TEMPLATEVM_PATH_NAME, TEMPLATE_PATH, VCD_URL_PATH} from '@tide-shared/config/path';
 
 @Injectable()
 export class TemplateService {
@@ -43,6 +43,27 @@ export class TemplateService {
         memorySize: tem.memorySize,
         provisionedSpace: tem.provisionedSpace,
         cpu: 2,
+      }
+
+      List.push(TempItem);
+    }
+    return List;
+  }
+
+  async getVMList(id: number) {
+    const TemplateList = await this.http.get<ItemVM[]>(environment.apiPrefix + TEMPLATE_PATH + `/` + TEMPLATEVM_PATH_NAME + `/` + id, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const List: ItemVM[] = [];
+    for (const tem of TemplateList) {
+      const TempItem: ItemVM = {
+        id: tem.id,
+        name: tem.name,
+        vcpu: tem.vcpu,
+        vmem: tem.vmem,
+        disk: tem.disk,
       }
 
       List.push(TempItem);
@@ -170,6 +191,14 @@ export interface ItemPayloadVM {
   vmem: number,
   vcpu: number,
   templateID: number,
+}
+
+export interface ItemVM {
+  id: number,
+  name: string,
+  vcpu: number,
+  vmem: number,
+  disk: number,
 }
 
 interface ItemTemplate {

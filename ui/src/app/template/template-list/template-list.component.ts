@@ -34,6 +34,8 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   TemplateList: Object = {};
   opened = false;
   VMopened = false;
+  displayOpened = false;
+  TemplateID = 1;
   refreshInterval: number;
 
   async save() {
@@ -47,6 +49,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   cancel() {
     this.opened = false;
     this.VMopened = false;
+    this.displayOpened = false;
   }
 
   async ngOnInit() {
@@ -65,8 +68,14 @@ export class TemplateListComponent implements OnInit, OnDestroy{
     window.clearInterval(this.refreshInterval);
   }
 
-  async add() {
-    this.list$ = of(await this.templateService.getList());
+  async add(id: number) {
+    this.TemplateID = id;
+    this.VMopened = true;
+  }
+
+  displayVM(id: number) {
+    this.TemplateID = id;
+    this.displayOpened = true;
   }
 
   async delete(id: string) {
