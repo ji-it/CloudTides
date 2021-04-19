@@ -69,7 +69,14 @@ func GetVdc(resourceID uint) *govcd.Vdc{
 }
 
 // New version of deploy VAPP
-func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp, cataName string, vAppName string, netName string) *govcd.VApp {
+func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp, cataName string, vAppName string, netName string, vAppID uint){
+	var vappDB models.Vapp
+	db := config.GetDB()
+
+	if db.Preload("VMs").Where("id = ?", vAppID).First(vappDB).RowsAffected == 0 {
+		fmt.Printf("id is %d", vAppID)
+	}
+
 	catalog, _ := org.GetCatalogByName(cataName, true)
 	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
 	vappTem, _ := cataItem.GetVAppTemplate()
@@ -85,7 +92,6 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 
 	if err != nil {
 		fmt.Println(err)
-		return nil
 	}
 
 	vapp, err := vdc.GetVAppByName(vAppName, true)
@@ -112,7 +118,18 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 		}
 	}
 
-	return vapp
+	if vapp != nil{
+		vappDB.IPAddress = vapp.VApp.HREF
+		vappDB.IsDestroyed = false
+		vappDB.Name = vapp.VApp.Name
+		vappDB.PoweredOn = true
+		vappDB.Status = "Running"
+		db.Save(&vappDB)
+		for _, VM := range vappDB.VMs {
+			VM.Status = "Running"
+			db.Save(&VM)
+		}
+	}
 }
 
 // Deploy VAPP
@@ -287,7 +304,40 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		})
 	}
 
-	Vapp := DeployVapp(org, vdc, tem.Name, tem.VMName, res.Catalog, body.Name, res.Network)
+	newVapp := models.Vapp{
+		UserId: uid,
+		IsDestroyed: false,
+		PoweredOn:   false,
+		ResourceID:  res.ID,
+		Template: tem.Name,
+		Status: "Creating",
+		Name: body.Name,
+	}
+
+	if db.Create(&newVapp).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create vApp failed",
+		})
+	}
+
+	for _, VM := range tem.VMTemps {
+		newVM := models.VMachine{
+			Name: VM.VMName,
+			VMem: VM.VMem,
+			VCPU: VM.VCPU,
+			VappID: newVapp.ID,
+			Disk: VM.Disk,
+			UsedMoney: 0,
+			IpAddress: "TBD",
+			UserName: "TBD",
+			PassWord: "TBD",
+			Status: "Creating",
+		}
+		db.Create(&newVM)
+	}
+
+	go DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
+	/*Vapp := DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network)
 	if Vapp != nil{
 		newVapp := models.Vapp{
 			UserId: uid,
@@ -306,10 +356,15 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 				VCPU: VM.VCPU,
 				VappID: newVapp.ID,
 				Disk: VM.Disk,
+				UsedMoney: 1.1,
+				IpAddress: "TBD",
+				UserName: "TBD",
+				PassWord: "TBD",
+				Status: "creating",
 			}
 			db.Create(&newVM)
 		}
-	}
+	}*/
 	return vapp.NewAddVappOK().WithPayload(&vapp.AddVappOKBody{
 		ID: 1,
 		Message: "Create VApp success",

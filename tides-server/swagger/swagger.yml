@@ -1778,6 +1778,81 @@ paths:
             properties:
               message:
                 type: string
+  /vm/{id}:
+    delete:
+      operationId: 'deleteVM'
+      description: 'delete VMachine'
+      tags:
+        - 'vm'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'deletion success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /vapp/vm/{id}:
+    get:
+      operationId: 'listVM'
+      description: 'list VMachine'
+      tags:
+        - 'vm'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                vcpu:
+                  type: integer
+                vmem:
+                  type: integer
+                disk:
+                  type: integer
+                ipAdress:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                usedMoney:
+                  type: number
+                status:
+                  type: string
+        401:
+          description: 'Unauthorized'
 
 definitions:
   ResourceAddItem:

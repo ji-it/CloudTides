@@ -34,7 +34,7 @@ type VMachine struct {
 	PassWord string `json:"password,omitempty"`
 
 	// used money
-	UsedMoney string `json:"usedMoney,omitempty"`
+	UsedMoney float64 `json:"usedMoney,omitempty"`
 
 	// status of the vm
 	Status string `json:"status,omitempty"`

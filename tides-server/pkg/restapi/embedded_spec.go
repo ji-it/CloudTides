@@ -2450,6 +2450,72 @@ func init() {
         }
       }
     },
+    "/vapp/vm/{id}": {
+      "get": {
+        "description": "list VMachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vm"
+        ],
+        "operationId": "listVM",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "disk": {
+                    "type": "integer"
+                  },
+                  "id": {
+                    "type": "integer"
+                  },
+                  "ipAdress": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "usedMoney": {
+                    "type": "number"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "vcpu": {
+                    "type": "integer"
+                  },
+                  "vmem": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/vapp/{id}": {
       "delete": {
         "description": "delete vapp",
@@ -2619,6 +2685,56 @@ func init() {
           "vendor"
         ],
         "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vm/{id}": {
+      "delete": {
+        "description": "delete VMachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vm"
+        ],
+        "operationId": "deleteVM",
         "parameters": [
           {
             "type": "integer",
@@ -5154,6 +5270,40 @@ func init() {
         }
       }
     },
+    "/vapp/vm/{id}": {
+      "get": {
+        "description": "list VMachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vm"
+        ],
+        "operationId": "listVM",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListVMOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/vapp/{id}": {
       "delete": {
         "description": "delete vapp",
@@ -5306,6 +5456,56 @@ func init() {
           "vendor"
         ],
         "operationId": "deleteVendor",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deletion success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vm/{id}": {
+      "delete": {
+        "description": "delete VMachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "vm"
+        ],
+        "operationId": "deleteVM",
         "parameters": [
           {
             "type": "integer",
@@ -5600,6 +5800,41 @@ func init() {
             "datastore",
             "upload"
           ]
+        }
+      }
+    },
+    "ListVMOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "disk": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "ipAdress": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "usedMoney": {
+          "type": "number"
+        },
+        "username": {
+          "type": "string"
+        },
+        "vcpu": {
+          "type": "integer"
+        },
+        "vmem": {
+          "type": "integer"
         }
       }
     },

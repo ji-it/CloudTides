@@ -28,6 +28,9 @@
     </div-->
   <clr-datagrid>
     <clr-dg-column>
+      <div class="key">ID</div>
+    </clr-dg-column>
+    <clr-dg-column>
       <div class="key">Template Name</div>
     </clr-dg-column>
     <clr-dg-column>
@@ -67,6 +70,7 @@
           (click)="this.displayVM(item?.id)"
         >DISPLAY VM TEMPLATE</button>
       </clr-dg-action-overflow>
+      <clr-dg-cell><div class="value">{{item?.id}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>

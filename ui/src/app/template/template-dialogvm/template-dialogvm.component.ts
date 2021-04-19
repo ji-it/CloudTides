@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { TemplateListComponent } from '../template-list/template-list.component';
-import { TemplateService } from '../template.service';
+import { TemplateService, ItemPayloadVM} from '../template.service';
 
 @Component({
   selector: 'tide-template-dialogvm',
@@ -25,7 +25,7 @@ export class TemplateDialogVMComponent implements OnInit {
       disk: ['', Validators.required],
       vmem: ['', Validators.required],
       vcpu: ['', Validators.required],
-      templateID: [this.templateid, Validators.required],
+      //templateID: ['', Validators.required],
     })
   }
 
@@ -52,9 +52,10 @@ export class TemplateDialogVMComponent implements OnInit {
 
   async onSave() {
     const { value } = this.templateForm;
+    const PayLoad = this.addTemplateID(value)
     this.resetModal();
     this.vo.spinning = true;
-    await this.templateService.addItemVM(value).then(() => {
+    await this.templateService.addItemVM(PayLoad).then(() => {
       this.save.emit('');
       this.close();
       this.vo.spinning = false;
@@ -73,4 +74,22 @@ export class TemplateDialogVMComponent implements OnInit {
     this.vo.spinning = false;
   }
 
+  private addTemplateID(payload: ItemPayload) {
+    const result : ItemPayloadVM = {
+      name: payload.name,
+      disk: payload.disk,
+      vmem: payload.vmem,
+      vcpu: payload.vcpu,
+      templateID: this.templateList.TemplateID,
+    }
+    return result;
+  }
+
+}
+
+interface ItemPayload {
+  name: string,
+  disk: number,
+  vmem: number,
+  vcpu: number,
 }

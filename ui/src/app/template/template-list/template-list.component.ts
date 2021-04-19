@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { TemplateService, Item } from '../template.service';
+import { TemplateService, Item, ItemVM } from '../template.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from 'src/app/login/login.service';
 import { NOTIFICATION_EXIST_TIME, VENDOR_USAGE_REFRESH_PERIOD } from '@tide-shared/config/const';
@@ -31,6 +31,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   }
 
   list$: Observable<Item[]> = of([]);
+  VMlist$: Observable<ItemVM[]> = of([]);
   TemplateList: Object = {};
   opened = false;
   VMopened = false;
@@ -73,9 +74,10 @@ export class TemplateListComponent implements OnInit, OnDestroy{
     this.VMopened = true;
   }
 
-  displayVM(id: number) {
+  async displayVM(id: number) {
     this.TemplateID = id;
     this.displayOpened = true;
+    this.VMlist$ = of(await this.templateService.getVMList(id))
   }
 
   async delete(id: string) {

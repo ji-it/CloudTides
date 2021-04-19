@@ -4,7 +4,8 @@
   <h3 class="modal-title">
     Add VM Template
   </h3>
-  <div *ngIf="this.list$ | async as list">
+  <div class="modal-body">
+  <div *ngIf="TemplateList.VMlist$ | async as list">
     <!--div class="clr-row" *ngFor="let item of list">
     <div class="clr-col-12">
       <tide-resource-card [item]="item"></tide-resource-card>
@@ -38,6 +39,7 @@
     </clr-dg-row>
   </clr-datagrid>
   </div>
+  </div>
   <div class="modal-footer">
     <button type="button"
       class="btn btn-outline"
@@ -45,9 +47,9 @@
     >
       {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
     </button>
-    <button class="btn btn-primary" (click)="this.refreshList()">
+    <!--button class="btn btn-primary" (click)="this.refreshList()">
       <clr-icon shape="plus"></clr-icon>
       {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
-    </button>
+    </button-->
   </div>
 </clr-modal>

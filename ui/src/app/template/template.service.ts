@@ -132,6 +132,19 @@ export class TemplateService {
       },
     );
   }
+
+  async removeItemVM(id: number) {
+    await this.http.delete<any>(environment.apiPrefix + TEMPLATEVM_PATH + `/` + id, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+    }, }).toPromise().then(
+      () => {
+        return Promise.resolve();
+      }, (errResp) => {
+        return Promise.reject(`${errResp.message}`);
+      },
+    );
+  }
 }
 
 // Raw

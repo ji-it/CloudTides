@@ -17,7 +17,7 @@ type Vapp struct {
 	IPAddress string `json:"ipAddress,omitempty"`
 
 	// name
-	Name string `json:"name,omitempty"`
+	Name string `json:"name,omitempty" gorm:"unique"`
 
 	// template name
 	Template string `json:"template,omitempty"`
@@ -32,6 +32,8 @@ type Vapp struct {
 	ResourceID uint
 
 	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+
+	Status string `json:"status"`
 
 	VMs []VMachine
 }
