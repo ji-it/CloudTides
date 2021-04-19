@@ -31,6 +31,9 @@ export class VappService {
         vendor: vapp.vendor,
         template: vapp.template,
         datacenter: vapp.datacenter,
+        ipaddress: vapp.ipaddress,
+        status: vapp.status,
+        poweredOn: vapp.poweredOn,
       };
       vapps.push(vappItem);
     }
@@ -175,6 +178,9 @@ interface ItemDTO {
   vendor: string;
   datacenter: string;
   template: string;
+  ipaddress: string;
+  status: string;
+  poweredOn: boolean;
 }
 
 interface ContributeResp {

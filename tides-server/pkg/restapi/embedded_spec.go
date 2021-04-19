@@ -2365,7 +2365,16 @@ func init() {
                   "id": {
                     "type": "integer"
                   },
+                  "ipaddress": {
+                    "type": "string"
+                  },
                   "name": {
+                    "type": "string"
+                  },
+                  "poweredOn": {
+                    "type": "boolean"
+                  },
+                  "status": {
                     "type": "string"
                   },
                   "template": {
@@ -5867,7 +5876,16 @@ func init() {
         "id": {
           "type": "integer"
         },
+        "ipaddress": {
+          "type": "string"
+        },
         "name": {
+          "type": "string"
+        },
+        "poweredOn": {
+          "type": "boolean"
+        },
+        "status": {
           "type": "string"
         },
         "template": {

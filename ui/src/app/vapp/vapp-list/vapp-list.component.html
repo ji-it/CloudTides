@@ -25,6 +25,15 @@
       <clr-dg-column>
         <div class="key">Template</div>
       </clr-dg-column>
+      <clr-dg-column>
+        <div class="key">IP Address</div>
+      </clr-dg-column>
+      <clr-dg-column>
+        <div class="key">Powered On</div>
+      </clr-dg-column>
+      <clr-dg-column>
+        <div class="key">Status</div>
+      </clr-dg-column>
     
       <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
         <clr-dg-action-overflow>
@@ -38,6 +47,9 @@
         <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
         <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>
         <clr-dg-cell><div class="value">{{item?.template}}</div></clr-dg-cell>
+        <clr-dg-cell><div class="value">{{item?.ipaddress}}</div></clr-dg-cell>
+        <clr-dg-cell><div class="value">{{item?.poweredOn}}</div></clr-dg-cell>
+        <clr-dg-cell><div class="value">{{item?.status}}</div></clr-dg-cell>
       </clr-dg-row>
     </clr-datagrid>
   </div>

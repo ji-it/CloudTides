@@ -73,7 +73,9 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 	var vappDB models.Vapp
 	db := config.GetDB()
 
-	if db.Preload("VMs").Where("id = ?", vAppID).First(vappDB).RowsAffected == 0 {
+	fmt.Println(vAppID)
+
+	if db.Preload("VMs").Where("id = ?", vAppID).First(&vappDB).RowsAffected == 0 {
 		fmt.Printf("id is %d", vAppID)
 	}
 
@@ -210,11 +212,44 @@ func UndeployVapp(vdc *govcd.Vdc, vAppName string) error {
 }
 
 // Destroy VAPP
+func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) error {
+	vapp, err := vdc.GetVAppByName(vAppName, true)
+	if vapp == nil {
+		fmt.Println("Vapp " + vAppName + " not found")
+		return nil
+	}
+	if vapp.VApp.Deployed {
+		task, err := vapp.Undeploy()
+		task.WaitTaskCompletion()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+	task, err := vapp.Delete()
+	task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	db := config.GetDB()
+	vappQuery, _ := vdc.GetVAppByName(vAppName, true)
+	if err == nil && vappQuery == nil {
+		for _, VM := range vApp.VMs {
+			db.Unscoped().Delete(&VM)
+		}
+		db.Unscoped().Delete(&vApp)
+	}
+
+	return nil
+}
+
+// Destroy VAPP
 func DestroyVapp(vdc *govcd.Vdc, vAppName string) error {
 	vapp, err := vdc.GetVAppByName(vAppName, true)
 	if vapp == nil {
 		fmt.Println("Vapp " + vAppName + " not found")
-		return err
+		return nil
 	}
 	if vapp.VApp.Deployed {
 		task, err := vapp.Undeploy()
@@ -490,6 +525,9 @@ func ListVappHandler(params vapp.ListVappsParams) middleware.Responder {
 			Name: vap.Name,
 			Template: vap.Template,
 			Vendor: vendor.Name,
+			Ipaddress: vap.IPAddress,
+			Status: vap.Status,
+			PoweredOn: vap.PoweredOn,
 		}
 
 		response = append(response, &newvapp)
@@ -528,7 +566,14 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 		})
 	}
 
-	for i := 0; i < 3; i++ {
+	vApp.Status = "Deleting"
+	db.Save(&vApp)
+	for _, VM := range vApp.VMs {
+		VM.Status = "Deleting"
+		db.Save(&VM)
+	}
+
+	/*for i := 0; i < 3; i++ {
 		err := DestroyVapp(vdc, vApp.Name)
 		vappQuery, _ := vdc.GetVAppByName(vApp.Name, true)
 		if err == nil && vappQuery == nil {
@@ -542,7 +587,13 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 		}
 	}
 
-	return vapp.NewDeleteVappForbidden()
+	return vapp.NewDeleteVappForbidden()*/
+
+	go DestroyVAPP(vdc, vApp.Name, &vApp)
+
+	return vapp.NewDeleteVappOK().WithPayload(&vapp.DeleteVappOKBody{
+		Message: "success",
+	})
 }
 
 // DeleteVappHandler is API handler for /vapp/{id} DELETE

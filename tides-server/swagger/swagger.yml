@@ -1634,6 +1634,12 @@ paths:
                   type: string
                 template:
                   type: string
+                ipaddress:
+                  type: string
+                status:
+                  type: string
+                poweredOn:
+                  type: boolean
         401:
           description: 'Unauthorized'
   /vapp/{id}:

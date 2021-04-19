@@ -69,8 +69,17 @@ type ListVappsOKBodyItems0 struct {
 	// id
 	ID int64 `json:"id,omitempty"`
 
+	// ipaddress
+	Ipaddress string `json:"ipaddress,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty"`
+
+	// powered on
+	PoweredOn bool `json:"poweredOn,omitempty"`
+
+	// status
+	Status string `json:"status,omitempty"`
 
 	// template
 	Template string `json:"template,omitempty"`
