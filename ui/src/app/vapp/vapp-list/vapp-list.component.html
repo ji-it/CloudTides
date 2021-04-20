@@ -41,6 +41,10 @@
             class="btn btn-sm btn-link"
             (click)="this.delete(item?.id)"
           >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+          <button
+          class="btn btn-sm btn-link"
+          (click)="this.displayVM(item?.id)"
+        >DISPLAY VM</button>
         </clr-dg-action-overflow>
         <clr-dg-cell><div class="value">{{item?.id}}</div></clr-dg-cell>
         <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
@@ -60,3 +64,11 @@
     (save)="this.save()"
     (cancel)="this.cancel()">
   </tide-vapp-dialog>
+
+  <tide-vm-card
+  *ngIf="this.displayOpened"
+  [opened]="this.displayOpened"
+  [vappid]="this.VappID"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-vm-card>
