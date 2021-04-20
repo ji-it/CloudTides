@@ -75,6 +75,9 @@ type ListTemplateOKBodyItems0 struct {
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// memory size
 	MemorySize float64 `json:"memorySize,omitempty"`
 
@@ -83,6 +86,9 @@ type ListTemplateOKBodyItems0 struct {
 
 	// provisioned space
 	ProvisionedSpace float64 `json:"provisionedSpace,omitempty"`
+
+	// resource ID
+	ResourceID int64 `json:"resourceID,omitempty"`
 
 	// template type
 	// Enum: [datastore upload]

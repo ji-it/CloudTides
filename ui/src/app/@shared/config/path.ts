@@ -5,6 +5,7 @@ export const HOME_PATH_NAME = 'home';
 export const RESOURCE_PATH_NAME = 'resource';
 export const POLICY_PATH_NAME = 'policy';
 export const TEMPLATE_PATH_NAME = 'template';
+export const TEMPLATEVM_PATH_NAME = 'vmtemp';
 export const VENDOR_PATH_NAME = 'vendors'
 export const VAPP_PATH_NAME = 'vapp'
 
@@ -27,6 +28,7 @@ export const VCD_URL_PATH = `${RESOURCE_API_URL}/vcd`;
 
 export const POLICY_PATH = `/${POLICY_PATH_NAME}`;
 export const TEMPLATE_PATH = `/${TEMPLATE_PATH_NAME}`;
+export const TEMPLATEVM_PATH = `/${TEMPLATEVM_PATH_NAME}`
 
 export const VENDOR_PATH = `/${VENDOR_PATH_NAME}`;
 

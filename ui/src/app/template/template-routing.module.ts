@@ -4,7 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { TemplateComponent } from './template.component';
 import { TemplateService } from './template.service';
 import { TemplateListComponent } from './template-list/template-list.component';
-import { TemplateCardComponent } from './template-card/template-card.component';
+import { TemplateDialogComponent } from './template-dialog/template-dialog.component';
+import { TemplateDialogVMComponent } from './template-dialogvm/template-dialogvm.component';
+import { VMCardComponent } from './vm-card/vm-card.component';
 
 const routes: Routes = [
   {
@@ -22,7 +24,9 @@ const routes: Routes = [
 export const declarations = [
   TemplateComponent,
   TemplateListComponent,
-  TemplateCardComponent,
+  TemplateDialogComponent,
+  TemplateDialogVMComponent,
+  VMCardComponent,
 ];
 
 export const providers = [

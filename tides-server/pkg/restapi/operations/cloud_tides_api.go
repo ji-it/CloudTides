@@ -27,6 +27,8 @@ import (
 	"tides-server/pkg/restapi/operations/user"
 	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
+	"tides-server/pkg/restapi/operations/vm"
+	"tides-server/pkg/restapi/operations/vmtemp"
 )
 
 // NewCloudTidesAPI creates a new CloudTides instance
@@ -67,6 +69,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		TemplateAddTemplateHandler: template.AddTemplateHandlerFunc(func(params template.AddTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.AddTemplate has not yet been implemented")
 		}),
+		VmtempAddVMTempHandler: vmtemp.AddVMTempHandlerFunc(func(params vmtemp.AddVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.AddVMTemp has not yet been implemented")
+		}),
 		UsageAddVMUsageHandler: usage.AddVMUsageHandlerFunc(func(params usage.AddVMUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.AddVMUsage has not yet been implemented")
 		}),
@@ -96,6 +101,12 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		TemplateDeleteTemplateHandler: template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
+		}),
+		VMDeleteVMHandler: vm.DeleteVMHandlerFunc(func(params vm.DeleteVMParams) middleware.Responder {
+			return middleware.NotImplemented("operation vm.DeleteVM has not yet been implemented")
+		}),
+		VmtempDeleteVMTempHandler: vmtemp.DeleteVMTempHandlerFunc(func(params vmtemp.DeleteVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.DeleteVMTemp has not yet been implemented")
 		}),
 		VappDeleteVappHandler: vapp.DeleteVappHandlerFunc(func(params vapp.DeleteVappParams) middleware.Responder {
 			return middleware.NotImplemented("operation vapp.DeleteVapp has not yet been implemented")
@@ -132,6 +143,12 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		TemplateListTemplateHandler: template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
+		}),
+		VMListVMHandler: vm.ListVMHandlerFunc(func(params vm.ListVMParams) middleware.Responder {
+			return middleware.NotImplemented("operation vm.ListVM has not yet been implemented")
+		}),
+		VmtempListVMTempHandler: vmtemp.ListVMTempHandlerFunc(func(params vmtemp.ListVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.ListVMTemp has not yet been implemented")
 		}),
 		VappListVappsHandler: vapp.ListVappsHandlerFunc(func(params vapp.ListVappsParams) middleware.Responder {
 			return middleware.NotImplemented("operation vapp.ListVapps has not yet been implemented")
@@ -221,6 +238,8 @@ type CloudTidesAPI struct {
 	UsageAddResourceUsageHandler usage.AddResourceUsageHandler
 	// TemplateAddTemplateHandler sets the operation handler for the add template operation
 	TemplateAddTemplateHandler template.AddTemplateHandler
+	// VmtempAddVMTempHandler sets the operation handler for the add VM temp operation
+	VmtempAddVMTempHandler vmtemp.AddVMTempHandler
 	// UsageAddVMUsageHandler sets the operation handler for the add VM usage operation
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
 	// VappAddVappHandler sets the operation handler for the add vapp operation
@@ -241,6 +260,10 @@ type CloudTidesAPI struct {
 	UsageDeleteResourceUsageHandler usage.DeleteResourceUsageHandler
 	// TemplateDeleteTemplateHandler sets the operation handler for the delete template operation
 	TemplateDeleteTemplateHandler template.DeleteTemplateHandler
+	// VMDeleteVMHandler sets the operation handler for the delete VM operation
+	VMDeleteVMHandler vm.DeleteVMHandler
+	// VmtempDeleteVMTempHandler sets the operation handler for the delete VM temp operation
+	VmtempDeleteVMTempHandler vmtemp.DeleteVMTempHandler
 	// VappDeleteVappHandler sets the operation handler for the delete vapp operation
 	VappDeleteVappHandler vapp.DeleteVappHandler
 	// ResourceDeleteVcdResourceHandler sets the operation handler for the delete vcd resource operation
@@ -265,6 +288,10 @@ type CloudTidesAPI struct {
 	ProjectListProjectHandler project.ListProjectHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
 	TemplateListTemplateHandler template.ListTemplateHandler
+	// VMListVMHandler sets the operation handler for the list VM operation
+	VMListVMHandler vm.ListVMHandler
+	// VmtempListVMTempHandler sets the operation handler for the list VM temp operation
+	VmtempListVMTempHandler vmtemp.ListVMTempHandler
 	// VappListVappsHandler sets the operation handler for the list vapps operation
 	VappListVappsHandler vapp.ListVappsHandler
 	// ResourceListVcdResourceHandler sets the operation handler for the list vcd resource operation
@@ -386,6 +413,9 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.TemplateAddTemplateHandler == nil {
 		unregistered = append(unregistered, "template.AddTemplateHandler")
 	}
+	if o.VmtempAddVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.AddVMTempHandler")
+	}
 	if o.UsageAddVMUsageHandler == nil {
 		unregistered = append(unregistered, "usage.AddVMUsageHandler")
 	}
@@ -415,6 +445,12 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateDeleteTemplateHandler == nil {
 		unregistered = append(unregistered, "template.DeleteTemplateHandler")
+	}
+	if o.VMDeleteVMHandler == nil {
+		unregistered = append(unregistered, "vm.DeleteVMHandler")
+	}
+	if o.VmtempDeleteVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.DeleteVMTempHandler")
 	}
 	if o.VappDeleteVappHandler == nil {
 		unregistered = append(unregistered, "vapp.DeleteVappHandler")
@@ -451,6 +487,12 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.TemplateListTemplateHandler == nil {
 		unregistered = append(unregistered, "template.ListTemplateHandler")
+	}
+	if o.VMListVMHandler == nil {
+		unregistered = append(unregistered, "vm.ListVMHandler")
+	}
+	if o.VmtempListVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.ListVMTempHandler")
 	}
 	if o.VappListVappsHandler == nil {
 		unregistered = append(unregistered, "vapp.ListVappsHandler")
@@ -604,6 +646,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/vmtemp"] = vmtemp.NewAddVMTemp(o.context, o.VmtempAddVMTempHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/usage/vm"] = usage.NewAddVMUsage(o.context, o.UsageAddVMUsageHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -641,6 +687,14 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/template/{id}"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vm/{id}"] = vm.NewDeleteVM(o.context, o.VMDeleteVMHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vmtemp/{id}"] = vmtemp.NewDeleteVMTemp(o.context, o.VmtempDeleteVMTempHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
@@ -689,6 +743,14 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/template"] = template.NewListTemplate(o.context, o.TemplateListTemplateHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vapp/vm/{id}"] = vm.NewListVM(o.context, o.VMListVMHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/template/vmtemp/{id}"] = vmtemp.NewListVMTemp(o.context, o.VmtempListVMTempHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

@@ -116,6 +116,9 @@ type GetVcdResourceOKBody struct {
 
 	// total v ms
 	TotalVMs int64 `json:"totalVMs,omitempty"`
+
+	// vendor
+	Vendor string `json:"vendor,omitempty"`
 }
 
 // Validate validates this get vcd resource o k body

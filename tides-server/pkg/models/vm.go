@@ -24,8 +24,11 @@ type VMachine struct {
 	// number of disk unit GB
 	Disk int `json:"disk,omitempty"`
 
-	// public ip address
-	IpAddress string `json:"ipAddress,omitempty"`
+	// internal ip address
+	IPAddress string `json:"ipAddress,omitempty"`
+
+	// external ip address
+	ExternalIPAddress string `json:"externalIPAddress,omitempty"`
 
 	// initial user name
 	UserName string `json:"userName,omitempty"`
@@ -34,9 +37,13 @@ type VMachine struct {
 	PassWord string `json:"password,omitempty"`
 
 	// used money
-	UsedMoney string `json:"usedMoney,omitempty"`
+	UsedMoney float64 `json:"usedMoney,omitempty"`
 
-	VappID int `json:"vappID,omitempty"`
+	// status of the vm
+	Status string `json:"status,omitempty"`
+
+	// foreign key for vApp
+	VappID uint `json:"vappID,omitempty"`
 }
 
 // VM schema

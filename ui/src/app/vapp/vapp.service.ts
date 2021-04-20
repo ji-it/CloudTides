@@ -31,6 +31,9 @@ export class VappService {
         vendor: vapp.vendor,
         template: vapp.template,
         datacenter: vapp.datacenter,
+        ipaddress: vapp.ipaddress,
+        status: vapp.status,
+        poweredOn: vapp.poweredOn,
       };
       vapps.push(vappItem);
     }
@@ -58,7 +61,7 @@ export class VappService {
     }).toPromise();
     const TemplateObject : Object = {};
     for (let item of TemplateList){
-      TemplateObject[item.name] = item.name;
+      TemplateObject[item.name] = item.id;
     }
     return TemplateObject;
   }
@@ -175,6 +178,9 @@ interface ItemDTO {
   vendor: string;
   datacenter: string;
   template: string;
+  ipaddress: string;
+  status: string;
+  poweredOn: boolean;
 }
 
 interface ContributeResp {
@@ -198,7 +204,7 @@ function mapItem(raw: ItemDTO): Item {
 // UI
 export interface ItemPayload {
   name: string;
-  template: string;
+  template: number;
   vendor: string;
   datacenter: string;
 }
@@ -212,6 +218,7 @@ interface ItemVendor {
 }
 
 interface ItemTemplate {
+  id: number;
   name: string;
   resourceID: number;
 }

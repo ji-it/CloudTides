@@ -323,6 +323,8 @@ paths:
                 type: number
               totalRAM:
                 type: number
+              vendor:
+                type: string
         401:
           description: 'Unauthorized'
         403:
@@ -1250,10 +1252,14 @@ paths:
                 type: number
               memsize:
                 type: number
+              vcpu:
+                type: integer
               name:
                 type: string
               vmName:
                 type: string
+              resourceID:
+                type: integer
       responses:
         200:
           description: 'OK'
@@ -1281,6 +1287,8 @@ paths:
             items:
               type: object
               properties:
+                id:
+                  type: integer
                 name:
                   type: string
                 dateAdded:
@@ -1293,6 +1301,8 @@ paths:
                   type: number
                 memorySize:
                   type: number
+                resourceID:
+                  type: integer
                 templateType:
                   type: string
                   enum:
@@ -1573,7 +1583,7 @@ paths:
               name:
                 type: string
               template:
-                type: string
+                type: integer
               vendor:
                 type: string
               datacenter:
@@ -1624,6 +1634,12 @@ paths:
                   type: string
                 template:
                   type: string
+                ipaddress:
+                  type: string
+                status:
+                  type: string
+                poweredOn:
+                  type: boolean
         401:
           description: 'Unauthorized'
   /vapp/{id}:
@@ -1658,6 +1674,193 @@ paths:
             properties:
               message:
                 type: string
+  /vmtemp:
+    post:
+      operationId: 'addVMTemp'
+      description: 'add VMTemp'
+      tags:
+        - 'vmtemp'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              vcpu:
+                type: integer
+              vmem:
+                type: integer
+              disk:
+                type: integer
+              templateID:
+                type: integer
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /template/vmtemp/{id}:
+    get:
+      operationId: 'listVMTemp'
+      description: 'list VMtemplate'
+      tags:
+        - 'vmtemp'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                vcpu:
+                  type: integer
+                vmem:
+                  type: integer
+                disk:
+                  type: integer
+        401:
+          description: 'Unauthorized'
+  /vmtemp/{id}:
+    delete:
+      operationId: 'deleteVMTemp'
+      description: 'delete VMTemplate'
+      tags:
+        - 'vmtemp'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'deletion success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /vm/{id}:
+    delete:
+      operationId: 'deleteVM'
+      description: 'delete VMachine'
+      tags:
+        - 'vm'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'deletion success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        401:
+          description: 'Unauthorized'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /vapp/vm/{id}:
+    get:
+      operationId: 'listVM'
+      description: 'list VMachine'
+      tags:
+        - 'vm'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                vcpu:
+                  type: integer
+                vmem:
+                  type: integer
+                disk:
+                  type: integer
+                IPAdress:
+                  type: string
+                externalIPAdress:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                usedMoney:
+                  type: number
+                status:
+                  type: string
+        401:
+          description: 'Unauthorized'
 
 definitions:
   ResourceAddItem:

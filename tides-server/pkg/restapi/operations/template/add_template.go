@@ -75,11 +75,17 @@ type AddTemplateBody struct {
 	// os
 	Os string `json:"os,omitempty"`
 
+	// resource ID
+	ResourceID int64 `json:"resourceID,omitempty"`
+
 	// source
 	Source string `json:"source,omitempty"`
 
 	// space
 	Space float64 `json:"space,omitempty"`
+
+	// vcpu
+	Vcpu int64 `json:"vcpu,omitempty"`
 
 	// vm name
 	VMName string `json:"vmName,omitempty"`

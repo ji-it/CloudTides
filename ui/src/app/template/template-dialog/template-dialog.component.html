@@ -1,0 +1,133 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add Template
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.templateForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Template Name'"
+          formControlName="name"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="os">GuestOS</label>
+        <input id="os"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'GuestOS'"
+          formControlName="os"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="source">Source</label>
+        <input id="source"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Source Type'"
+          formControlName="source"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="compat">Compat Type</label>
+        <input id="compat"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Compat Type'"
+          formControlName="compat"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="space">Disk Space</label>
+        <input id="space"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'Space Size (GB)'"
+          formControlName="space"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="memsize">Memory Size</label>
+        <input id="memsize"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'Memory Size'"
+          formControlName="memsize"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="vcpu">vCPU Number</label>
+        <input id="vcpu"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'vCPU Number'"
+          formControlName="vcpu"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="vmName">VMName</label>
+        <input id="vmName"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'VMName'"
+          formControlName="vmName"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="resourceID">ResourceID</label>
+        <input id="resourceID"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'ResourceID'"
+          formControlName="resourceID"
+          clrInput />
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!templateForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

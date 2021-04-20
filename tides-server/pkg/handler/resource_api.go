@@ -574,6 +574,9 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			continue
 		}
 
+		var vendor models.Vendor
+		db.Where("url = ?", res.HostAddress).First(&vendor)
+
 		newres := resource.ListVcdResourceOKBodyItems0{
 			AllocationModel: vcd.AllocationModel,
 			Datacenter:      res.Datacenter,
@@ -584,7 +587,7 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 			Status:          res.Status,
 			ID:              int64(res.ID),
 			VcdID:           int64(vcd.ID),
-			Vendor:			 "ThinkCloud",
+			Vendor:			 vendor.Name,
 			ResType:         res.Type,
 		}
 		responses = append(responses, &newres)
@@ -595,9 +598,9 @@ func ListVcdResourceHandler(params resource.ListVcdResourceParams) middleware.Re
 
 // GetVcdResourceHandler is API handler for /resource/vcd/{id} GET
 func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Responder {
-	if !VerifyUser(params.HTTPRequest) {
+	/*if !VerifyUser(params.HTTPRequest) {
 		return resource.NewGetVcdResourceUnauthorized()
-	}
+	}*/
 
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	vcdID := params.ID
@@ -623,6 +626,10 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 	if res.PolicyID != nil {
 		policy = int(*res.PolicyID)
 	}
+
+	var vendor models.Vendor
+	db.Where("url = ?", res.HostAddress).First(&vendor)
+
 	response := resource.GetVcdResourceOKBody{
 		AllocationModel: vcd.AllocationModel,
 		CurrentCPU:      vcdUsage.CurrentCPU,
@@ -642,6 +649,7 @@ func GetVcdResourceHandler(params resource.GetVcdResourceParams) middleware.Resp
 		TotalJobs:       res.TotalJobs,
 		TotalRAM:        vcdUsage.TotalRAM,
 		TotalVMs:        res.TotalVMs,
+		Vendor:          vendor.Name,
 	}
 
 	return resource.NewGetVcdResourceOK().WithPayload(&response)
