@@ -24,8 +24,11 @@ type VMachine struct {
 	// number of disk unit GB
 	Disk int `json:"disk,omitempty"`
 
-	// public ip address
-	IpAddress string `json:"ipAddress,omitempty"`
+	// internal ip address
+	IPAddress string `json:"ipAddress,omitempty"`
+
+	// external ip address
+	ExternalIPAddress string `json:"externalIPAddress,omitempty"`
 
 	// initial user name
 	UserName string `json:"userName,omitempty"`

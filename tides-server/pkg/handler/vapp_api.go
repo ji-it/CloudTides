@@ -112,6 +112,12 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 		cus, _ := vm.GetGuestCustomizationSection()
 		cus.Enabled = new(bool)
 		*cus.Enabled = true
+		cus.AdminPasswordAuto = new(bool)
+		*cus.AdminPasswordAuto = false
+		cus.AdminPasswordEnabled = new(bool)
+		*cus.AdminPasswordEnabled = true
+		passWord := randSeqT(10)
+		cus.AdminPassword = passWord
 		// cus.ComputerName = "tides-" + randSeq(5)
 		vm.SetGuestCustomizationSection(cus)
 		err = vm.PowerOnAndForceCustomization()
@@ -128,7 +134,18 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 		vappDB.Status = "Running"
 		db.Save(&vappDB)
 		for _, VM := range vappDB.VMs {
+			vm, err := vapp.GetVMByName(VM.Name, true)
+			if err != nil {
+				VM.Status = "Error"
+				return
+			}
 			VM.Status = "Running"
+			if len(vm.VM.NetworkConnectionSection.NetworkConnection) > 0 {
+				VM.ExternalIPAddress = vm.VM.NetworkConnectionSection.NetworkConnection[0].ExternalIPAddress
+				VM.IPAddress = vm.VM.NetworkConnectionSection.NetworkConnection[0].IPAddress
+				VM.UserName = "root"
+				VM.PassWord = vm.VM.GuestCustomizationSection.AdminPassword
+			}
 			db.Save(&VM)
 		}
 	}
@@ -363,7 +380,8 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 			VappID: newVapp.ID,
 			Disk: VM.Disk,
 			UsedMoney: 0,
-			IpAddress: "TBD",
+			IPAddress: "TBD",
+			ExternalIPAddress: "TBD",
 			UserName: "TBD",
 			PassWord: "TBD",
 			Status: "Creating",
@@ -553,6 +571,10 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 		if(vApp.UserId != uid){
 			return vapp.NewDeleteVappUnauthorized()
 		}
+	}
+
+	if(vApp.Status == "Creating" || vApp.Status == "Deleting") {
+		return vapp.NewDeleteVappNotFound()
 	}
 
 	if vApp.IsDestroyed {

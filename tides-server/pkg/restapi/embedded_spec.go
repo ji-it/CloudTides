@@ -2485,14 +2485,17 @@ func init() {
               "items": {
                 "type": "object",
                 "properties": {
+                  "IPAdress": {
+                    "type": "string"
+                  },
                   "disk": {
                     "type": "integer"
                   },
+                  "externalIPAdress": {
+                    "type": "string"
+                  },
                   "id": {
                     "type": "integer"
-                  },
-                  "ipAdress": {
-                    "type": "string"
                   },
                   "name": {
                     "type": "string"
@@ -5815,14 +5818,17 @@ func init() {
     "ListVMOKBodyItems0": {
       "type": "object",
       "properties": {
+        "IPAdress": {
+          "type": "string"
+        },
         "disk": {
           "type": "integer"
         },
+        "externalIPAdress": {
+          "type": "string"
+        },
         "id": {
           "type": "integer"
-        },
-        "ipAdress": {
-          "type": "string"
         },
         "name": {
           "type": "string"
