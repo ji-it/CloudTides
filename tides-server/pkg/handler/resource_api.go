@@ -362,7 +362,7 @@ func ValidateVcdResourceHandler(params resource.ValidateVcdResourceParams) middl
 	}
 
 	body := params.ReqBody
-	conf := VcdConfig{
+	conf := config.VcdConfig{
 		User:     body.Username,
 		Password: body.Password,
 		Org:      body.Org,
@@ -408,7 +408,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 			Message: "VCD already registered",
 		})
 	}
-	conf := VcdConfig{
+	conf := config.VcdConfig{
 		User:     body.Username,
 		Password: body.Password,
 		Org:      body.Org,
@@ -529,7 +529,7 @@ func AddVcdResourceHandler(params resource.AddVcdResourceParams) middleware.Resp
 	}
 	db.Create(&newVcdPastUsage)
 
-	confi := VcdConfig{
+	confi := config.VcdConfig{
 		User:     username,
 		Password: password,
 		Org:      body.Org,
@@ -741,7 +741,7 @@ func ActivateResourceHandler(params resource.ActivateResourceParams) middleware.
 	if res.PlatformType == models.ResourcePlatformTypeVcd {
 		var vcd models.Vcd
 		db.Where("resource_id = ?", res.ID).First(&vcd)
-		conf := VcdConfig{
+		conf := config.VcdConfig{
 			User:     res.Username,
 			Password: res.Password,
 			Org:      vcd.Organization,

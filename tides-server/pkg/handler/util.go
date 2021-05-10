@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -79,7 +78,7 @@ func VerifyAdmin(req *http.Request) bool {
 }
 
 // Client creates a vCD client
-func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
+/*func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	u, err := url.ParseRequestURI(c.Href)
 	if err != nil {
 		return nil, fmt.Errorf("unable to pass url: %s", err)
@@ -96,7 +95,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 		// fmt.Printf("Token: %s\n", resp.Header[govcd.AuthorizationHeader])
 	}
 	return vcdClient, nil
-}
+}*/
 
 func randSeq(n int) string {
 	b := make([]rune, n)
@@ -106,7 +105,7 @@ func randSeq(n int) string {
 	return string(b)
 }
 
-func initValidation(conf *VcdConfig, catalog string, network string, res *models.Resource) {
+func initValidation(conf *config.VcdConfig, catalog string, network string, res *models.Resource) {
 	db := config.GetDB()
 	client, err := conf.Client() // We now have a client
 	if err != nil {
@@ -235,7 +234,7 @@ func deployVapp(org *govcd.Org, vdc *govcd.Vdc, cataName string, vAppName string
 	db.Save(&res)
 }
 
-func initDestruction(conf *VcdConfig) {
+func initDestruction(conf *config.VcdConfig) {
 	client, err := conf.Client() // We now have a client
 	if err != nil {
 		fmt.Println(err)

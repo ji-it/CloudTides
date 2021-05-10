@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
-	"net/url"
 	"os"
 	"tides-server/pkg/config"
 	"tides-server/pkg/models"
@@ -27,7 +26,7 @@ func randSeq(n int) string {
 }
 
 // Checks that a configuration structure is complete
-func checkConfiguration(conf VcdConfig) {
+func checkConfiguration(conf config.VcdConfig) {
 	willExit := false
 	abort := func(s string) {
 		fmt.Printf("configuration field '%s' empty or missing\n", s)
@@ -57,8 +56,8 @@ func checkConfiguration(conf VcdConfig) {
 }
 
 // Retrieves the configuration from a Json or Yaml file
-func getConfig(configFile string) (VcdConfig, error) {
-	var configuration VcdConfig
+func getConfig(configFile string) (config.VcdConfig, error) {
+	var configuration config.VcdConfig
 	buffer, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		fmt.Printf("Configuration file %s not found\n%s\n", configFile, err)
@@ -84,7 +83,7 @@ func getConfig(configFile string) (VcdConfig, error) {
 }
 
 // Client creates a vCD client
-func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
+/*func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 	u, err := url.ParseRequestURI(c.Href)
 	if err != nil {
 		return nil, fmt.Errorf("unable to pass url: %s", err)
@@ -100,7 +99,7 @@ func (c *VcdConfig) Client() (*govcd.VCDClient, error) {
 		}
 	}
 	return vcdClient, nil
-}
+}*/
 
 // Deploy VAPP
 func deployVapp(org *govcd.Org, vdc *govcd.Vdc, temName string, VMName string, cataName string, vAppName string, netName string) *govcd.VApp {
