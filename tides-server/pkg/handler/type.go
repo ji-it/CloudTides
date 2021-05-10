@@ -29,7 +29,7 @@ type Claims struct {
 }
 
 // VcdConfig is configuration for Vcd Connection
-type VcdConfig struct {
+/*type VcdConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
 	Org      string `json:"org"`
@@ -37,4 +37,4 @@ type VcdConfig struct {
 	VDC      string `json:"vdc"`
 	Insecure bool   `json:"insecure"`
 	Token    string `json:"token"`
-}
+}*/

@@ -1847,9 +1847,9 @@ paths:
                   type: integer
                 disk:
                   type: integer
-                IPAdress:
+                IPAddress:
                   type: string
-                externalIPAdress:
+                externalIPAddress:
                   type: string
                 username:
                   type: string

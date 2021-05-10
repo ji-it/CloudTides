@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NOTIFICATION_EXIST_TIME, VENDOR_USAGE_REFRESH_PERIOD } from '@tide-shared/config/const';
 import { Observable, of } from 'rxjs';
 import { LoginService } from 'src/app/login/login.service';
-import { Item, ItemResource, VappService } from '../vapp.service';
+import { Item, ItemResource, ItemVM, VappService } from '../vapp.service';
 
 @Component({
   selector: 'tide-vapp-list',
@@ -42,11 +42,14 @@ export class VappListComponent implements OnInit {
     }, time || NOTIFICATION_EXIST_TIME);
   }
 
+  VMlist$: Observable<ItemVM[]> = of([]);
+  VappID = 1;
   resourceList: Object = {};
   vendorList: Object = {};
   templateList: Object = {};
   list$: Observable<Item[]> = of([]);
   opened = false;
+  displayOpened = false;
   refreshInterval: number;
 
   async save() {
@@ -55,10 +58,17 @@ export class VappListComponent implements OnInit {
 
   cancel() {
     this.opened = false;
+    this.displayOpened = false;
   }
 
   async ngOnInit() {
     await this.refreshList();
+  }
+
+  async displayVM(id: number) {
+    this.VappID = id;
+    this.displayOpened = true;
+    this.VMlist$ = of(await this.vappService.getVMList(id))
   }
 
   async refreshList() {

@@ -2,10 +2,10 @@
   [clrModalSize]="'lg'"
   [clrModalClosable]="false">
   <h3 class="modal-title">
-    VM Template
+    VM
   </h3>
   <div class="modal-body">
-  <div *ngIf="TemplateList.VMlist$ | async as list">
+  <div *ngIf="VappList.VMlist$ | async as list">
     <!--div class="clr-row" *ngFor="let item of list">
     <div class="clr-col-12">
       <tide-resource-card [item]="item"></tide-resource-card>
@@ -24,18 +24,34 @@
     <clr-dg-column>
       <div class="key">CPUs</div>
     </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Internal IP Address</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">External IP Address</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Admin Password</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Used Money</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Status</div>
+    </clr-dg-column>
 
     <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
       <clr-dg-action-overflow>
-        <button
-          class="btn btn-sm btn-link"
-          (click)="this.delete(item?.id)"
-        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
       </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vmem}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vcpu}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.IPAddress}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.externalIPAddress}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.password}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usedMoney}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.status}}</div></clr-dg-cell>
     </clr-dg-row>
   </clr-datagrid>
   </div>

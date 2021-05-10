@@ -12,6 +12,9 @@ import (
 // InitController sets up cronjobs for Initjob and InitCleanUp
 func InitController() {
 	cronjobs = map[uint]*cron.Cron{}
+	VMMonitors = NewMonitorStore()
+	VappMonitors = NewMonitorStore()
+	InitMonitor()
 	// Query usage every 5 mins
 	c := cron.New()
 	c.AddFunc(schedule, func() {
@@ -38,7 +41,7 @@ func InitJob() {
 		if !ok {
 			var vcd models.Vcd
 			db.Where("resource_id = ?", res.ID).First(&vcd)
-			newVcdConfig := VcdConfig{
+			newVcdConfig := config.VcdConfig{
 				User:     res.Username,
 				Password: res.Password,
 				Org:      vcd.Organization,
@@ -63,7 +66,7 @@ func InitJob() {
 		if res.PlatformType == models.ResourcePlatformTypeVcd {
 			var vcd models.Vcd
 			db.Where("resource_id = ?", res.ID).First(&vcd)
-			newVcdConfig := VcdConfig{
+			newVcdConfig := config.VcdConfig{
 				User:     res.Username,
 				Password: res.Password,
 				Org:      vcd.Organization,
@@ -97,5 +100,24 @@ func RemoveJob(ResID uint) {
 	c, ok := cronjobs[ResID]
 	if ok {
 		c.Stop()
+	}
+}
+
+func InitMonitor() {
+	db := config.GetDB()
+	vapps := []*models.Vapp{}
+	db.Preload("VMs").Find(&vapps)
+	for _, vapp := range vapps {
+		if vapp.Status == "Creating" || vapp.Status == "Error" || vapp.Status == "Deleting" {
+			vapp.Status = "Error"
+			db.Save(&vapp)
+		}
+		vappMonitor := NewVAppMonitor(vapp.ID)
+		VappMonitors.StoreVapp(vapp.ID, vappMonitor)
+		conf := config.GetVcdConfig(vapp)
+		for _, vm := range vapp.VMs {
+			monitor := NewVMMonitor(vm.ID, conf)
+			VMMonitors.Store(vm.ID, monitor)
+		}
 	}
 }

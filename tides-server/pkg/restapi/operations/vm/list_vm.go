@@ -63,14 +63,14 @@ func (o *ListVM) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model ListVMOKBodyItems0
 type ListVMOKBodyItems0 struct {
 
-	// IP adress
-	IPAdress string `json:"IPAdress,omitempty"`
+	// IP address
+	IPAddress string `json:"IPAddress,omitempty"`
 
 	// disk
 	Disk int64 `json:"disk,omitempty"`
 
-	// external IP adress
-	ExternalIPAdress string `json:"externalIPAdress,omitempty"`
+	// external IP address
+	ExternalIPAddress string `json:"externalIPAddress,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`

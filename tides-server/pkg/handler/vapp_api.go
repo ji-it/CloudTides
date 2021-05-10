@@ -7,6 +7,7 @@ import (
 	"github.com/vmware/go-vcloud-director/v2/types/v56"
 	"math/rand"
 	"tides-server/pkg/config"
+	"tides-server/pkg/controller"
 	"tides-server/pkg/models"
 	"tides-server/pkg/restapi/operations/vapp"
 	"time"
@@ -39,7 +40,7 @@ func GetVdc(resourceID uint) *govcd.Vdc{
 		return nil
 	}
 
-	conf := VcdConfig{
+	conf := config.VcdConfig{
 		Href: vendor.URL,
 		Password: res.Password,
 		User: res.Username,
@@ -69,11 +70,22 @@ func GetVdc(resourceID uint) *govcd.Vdc{
 }
 
 // New version of deploy VAPP
-func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp, cataName string, vAppName string, netName string, vAppID uint){
+func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp,
+	cataName string, vAppName string, netName string, vAppID uint) (err error){
+	defer func() {
+		if err != nil {
+			var vappDB models.Vapp
+			db := config.GetDB()
+
+			if db.Preload("VMs").Where("id = ?", vAppID).First(&vappDB).RowsAffected == 0 {
+				fmt.Printf("id is %d", vAppID)
+			}
+
+			DestroyVAPP(vdc, vAppName, &vappDB)
+		}
+	}()
 	var vappDB models.Vapp
 	db := config.GetDB()
-
-	fmt.Println(vAppID)
 
 	if db.Preload("VMs").Where("id = ?", vAppID).First(&vappDB).RowsAffected == 0 {
 		fmt.Printf("id is %d", vAppID)
@@ -90,18 +102,30 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 	storageProf := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0]
 
 	task, err := vdc.ComposeVApp(networks, vappTem, *storageProf, vAppName, "test purpose", true)
-	task.WaitTaskCompletion()
-
+	if err != nil {
+		return err
+	}
+	err = task.WaitTaskCompletion()
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 
-	vapp, err := vdc.GetVAppByName(vAppName, true)
-	task, err = vapp.PowerOn()
-	task.WaitTaskCompletion()
+	vApp, err := vdc.GetVAppByName(vAppName, true)
+	if err != nil {
+		return err
+	}
+	task, err = vApp.PowerOn()
+	if err != nil {
+		return err
+	}
+	err = task.WaitTaskCompletion()
+	if err != nil {
+		return err
+	}
 
 	for _, VM := range VMs {
-		vm, err := vapp.GetVMByName(VM.VMName, true)
+		vm, err := vApp.GetVMByName(VM.VMName, true)
 
 		task, err = vm.Undeploy()
 		task.WaitTaskCompletion()
@@ -123,21 +147,20 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 		err = vm.PowerOnAndForceCustomization()
 		if err != nil {
 			fmt.Println(err)
+			return err
 		}
 	}
 
-	if vapp != nil{
-		vappDB.IPAddress = vapp.VApp.HREF
+	if vApp != nil{
+		vappDB.IPAddress = vApp.VApp.HREF
 		vappDB.IsDestroyed = false
-		vappDB.Name = vapp.VApp.Name
+		vappDB.Name = vApp.VApp.Name
 		vappDB.PoweredOn = true
 		vappDB.Status = "Running"
-		db.Save(&vappDB)
 		for _, VM := range vappDB.VMs {
-			vm, err := vapp.GetVMByName(VM.Name, true)
+			vm, err := vApp.GetVMByName(VM.Name, true)
 			if err != nil {
-				VM.Status = "Error"
-				return
+				return err
 			}
 			VM.Status = "Running"
 			if len(vm.VM.NetworkConnectionSection.NetworkConnection) > 0 {
@@ -148,7 +171,9 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 			}
 			db.Save(&VM)
 		}
+		db.Save(&vappDB)
 	}
+	return err
 }
 
 // Deploy VAPP
@@ -229,33 +254,57 @@ func UndeployVapp(vdc *govcd.Vdc, vAppName string) error {
 }
 
 // Destroy VAPP
-func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) error {
-	vapp, err := vdc.GetVAppByName(vAppName, true)
-	if vapp == nil {
+func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) (err error) {
+	defer func() {
+		db := config.GetDB()
+		if err != nil {
+			appMonitor, _ := controller.VappMonitors.LoadVapp(vApp.ID)
+			appMonitor.Lock.Lock()
+			vApp.Status = "Error"
+			db.Save(vApp)
+			appMonitor.Lock.Unlock()
+		}
+		vappQuery, _ := vdc.GetVAppByName(vAppName, true)
+		if vappQuery == nil {
+			for _, VM := range vApp.VMs {
+				db.Unscoped().Delete(&VM)
+				if monitor, ok := controller.VMMonitors.Load(VM.ID); ok {
+					monitor.Task.Stop()
+					controller.VMMonitors.Delete(VM.ID)
+				}
+			}
+			if _, ok := controller.VappMonitors.LoadVapp(vApp.ID); ok {
+				controller.VappMonitors.Delete(vApp.ID)
+			}
+			db.Unscoped().Delete(vApp)
+		}
+	}()
+	vappQuery, err := vdc.GetVAppByName(vAppName, true)
+	if vappQuery == nil {
 		fmt.Println("Vapp " + vAppName + " not found")
 		return nil
 	}
-	if vapp.VApp.Deployed {
-		task, err := vapp.Undeploy()
-		task.WaitTaskCompletion()
+	if vappQuery.VApp.Deployed {
+		task, err := vappQuery.Undeploy()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		err = task.WaitTaskCompletion()
 		if err != nil {
 			fmt.Println(err)
 			return err
 		}
 	}
-	task, err := vapp.Delete()
-	task.WaitTaskCompletion()
+	task, err := vappQuery.Delete()
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
-	db := config.GetDB()
-	vappQuery, _ := vdc.GetVAppByName(vAppName, true)
-	if err == nil && vappQuery == nil {
-		for _, VM := range vApp.VMs {
-			db.Unscoped().Delete(&VM)
-		}
-		db.Unscoped().Delete(&vApp)
+	err = task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
 	}
 
 	return nil
@@ -327,7 +376,7 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		})
 	}
 
-	conf := VcdConfig{
+	conf := config.VcdConfig{
 		Href: vendor.URL,
 		Password: res.Password,
 		User: res.Username,
@@ -372,6 +421,9 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		})
 	}
 
+	vappMonitor := controller.NewVAppMonitor(newVapp.ID)
+	controller.VappMonitors.StoreVapp(newVapp.ID, vappMonitor)
+
 	for _, VM := range tem.VMTemps {
 		newVM := models.VMachine{
 			Name: VM.VMName,
@@ -387,6 +439,8 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 			Status: "Creating",
 		}
 		db.Create(&newVM)
+		monitor := controller.NewVMMonitor(VM.ID, &conf)
+		controller.VMMonitors.Store(VM.ID, monitor)
 	}
 
 	go DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
@@ -419,7 +473,7 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		}
 	}*/
 	return vapp.NewAddVappOK().WithPayload(&vapp.AddVappOKBody{
-		ID: 1,
+		ID: int64(uid),
 		Message: "Create VApp success",
 	})
 }
@@ -466,7 +520,7 @@ func AddVappHandler(params vapp.AddVappParams) middleware.Responder {
 		})
 	}
 
-	conf := VcdConfig{
+	conf := config.VcdConfig{
 		Href: vendor.URL,
 		Password: res.Password,
 		User: res.Username,
@@ -563,18 +617,15 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 	uid, _ := ParseUserIDFromToken(params.HTTPRequest)
 	var vApp models.Vapp
 	db := config.GetDB()
-	if db.Preload("VMs").Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
+	if db.Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
 		return vapp.NewDeleteVappNotFound()
 	}
+
 	if VerifyAdmin(params.HTTPRequest) {
 	} else {
 		if(vApp.UserId != uid){
 			return vapp.NewDeleteVappUnauthorized()
 		}
-	}
-
-	if(vApp.Status == "Creating" || vApp.Status == "Deleting") {
-		return vapp.NewDeleteVappNotFound()
 	}
 
 	if vApp.IsDestroyed {
@@ -588,28 +639,27 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 		})
 	}
 
+	appMonitor, _ := controller.VappMonitors.LoadVapp(vApp.ID)
+	appMonitor.Lock.Lock()
+
+	if db.Preload("VMs").Where("id = ?", params.ID).First(&vApp).RowsAffected == 0 {
+		return vapp.NewDeleteVappNotFound()
+	}
+
+	if(vApp.Status == "Creating" || vApp.Status == "Deleting") {
+		appMonitor.Lock.Unlock()
+		return vapp.NewDeleteVappForbidden()
+	}
+
 	vApp.Status = "Deleting"
 	db.Save(&vApp)
+
 	for _, VM := range vApp.VMs {
 		VM.Status = "Deleting"
 		db.Save(&VM)
 	}
 
-	/*for i := 0; i < 3; i++ {
-		err := DestroyVapp(vdc, vApp.Name)
-		vappQuery, _ := vdc.GetVAppByName(vApp.Name, true)
-		if err == nil && vappQuery == nil {
-			for _, VM := range vApp.VMs {
-				db.Unscoped().Delete(&VM)
-			}
-			db.Unscoped().Delete(&vApp)
-			return vapp.NewDeleteVappOK().WithPayload(&vapp.DeleteVappOKBody{
-				Message: "success",
-			})
-		}
-	}
-
-	return vapp.NewDeleteVappForbidden()*/
+	appMonitor.Lock.Unlock()
 
 	go DestroyVAPP(vdc, vApp.Name, &vApp)
 
