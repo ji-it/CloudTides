@@ -18,6 +18,20 @@
 
       </clr-alert>
 
+      <clr-select-container>
+        <label for="resourceID">ResourceID</label>
+        <select
+          clrSelect
+          id="resourceID"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="resourceID"
+        >
+        <option *ngFor="let res of resourceList"
+          [ngValue]="resource[res]"> {{ res }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
       <clr-input-container>
         <label for="name">Name</label>
         <input id="name"
@@ -98,7 +112,7 @@
           clrInput />
       </clr-input-container>
 
-      <clr-input-container>
+      <!--clr-input-container>
         <label for="resourceID">ResourceID</label>
         <input id="resourceID"
           class="clr-col-12 clr-col-md-8"
@@ -106,7 +120,7 @@
           [placeholder]="'ResourceID'"
           formControlName="resourceID"
           clrInput />
-      </clr-input-container>
+      </clr-input-container-->
     </form>
   </div>
   <div class="modal-footer">

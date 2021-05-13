@@ -16,7 +16,10 @@ export class TemplateDialogComponent implements OnInit {
     private readonly fb: FormBuilder,
     public readonly translate: TranslateService,
     private readonly templateService: TemplateService,
+    private readonly  templateList: TemplateListComponent,
   ) {
+    this.resourceList = Object.keys(templateList.ResList);
+    this.resource = templateList.ResList;
     this.templateForm = this.fb.group({
       name: ['', Validators.required],
       os: ['', Validators.required],
@@ -36,6 +39,8 @@ export class TemplateDialogComponent implements OnInit {
   @Output() cancel = new EventEmitter();
 
   templateForm: FormGroup;
+  resourceList: string[];
+  resource: any;
 
   readonly vo = {
     serverError: '',

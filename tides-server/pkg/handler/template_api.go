@@ -65,6 +65,7 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 			ProvisionedSpace: tem.ProvisionedSpace,
 			TemplateType:     tem.TemplateType,
 			ResourceID:       int64(tem.ResourceID),
+			Vcpu:             tem.VCPUSize,
 		}
 		result = append(result, &newItem)
 	}

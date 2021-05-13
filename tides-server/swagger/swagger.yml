@@ -1301,6 +1301,8 @@ paths:
                   type: number
                 memorySize:
                   type: number
+                vcpu:
+                  type: integer
                 resourceID:
                   type: integer
                 templateType:
