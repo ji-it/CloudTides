@@ -162,7 +162,8 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 			if err != nil {
 				return err
 			}
-			VM.Status = "Running"
+			vmMonitor, _ := controller.VMMonitors.Load(VM.ID)
+			vmMonitor.Task.Start()
 			if len(vm.VM.NetworkConnectionSection.NetworkConnection) > 0 {
 				VM.ExternalIPAddress = vm.VM.NetworkConnectionSection.NetworkConnection[0].ExternalIPAddress
 				VM.IPAddress = vm.VM.NetworkConnectionSection.NetworkConnection[0].IPAddress
@@ -439,8 +440,8 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 			Status: "Creating",
 		}
 		db.Create(&newVM)
-		monitor := controller.NewVMMonitor(VM.ID, &conf)
-		controller.VMMonitors.Store(VM.ID, monitor)
+		monitor := controller.NewVMMonitor(newVM.ID, &conf)
+		controller.VMMonitors.Store(newVM.ID, monitor)
 	}
 
 	go DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
@@ -654,10 +655,10 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 	vApp.Status = "Deleting"
 	db.Save(&vApp)
 
-	for _, VM := range vApp.VMs {
+	/*for _, VM := range vApp.VMs {
 		VM.Status = "Deleting"
 		db.Save(&VM)
-	}
+	}*/
 
 	appMonitor.Lock.Unlock()
 

@@ -1400,6 +1400,9 @@ func init() {
                       "datastore",
                       "upload"
                     ]
+                  },
+                  "vcpu": {
+                    "type": "integer"
                   }
                 }
               }
@@ -5812,6 +5815,9 @@ func init() {
             "datastore",
             "upload"
           ]
+        },
+        "vcpu": {
+          "type": "integer"
         }
       }
     },

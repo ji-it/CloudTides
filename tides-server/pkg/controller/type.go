@@ -100,7 +100,15 @@ func (vm *VMMonitor) CheckStatus() {
 		return
 	}
 	Vapp, err := vdc.GetVAppByName(vapp.Name, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	VM, err := Vapp.GetVMByName(vmachine.Name, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	status, err := VM.GetStatus()
 	if err != nil {
 		fmt.Println(err)
@@ -162,6 +170,6 @@ func (ms *MoniterStore) Range(f func(key, value interface{}) bool) {
 }
 
 const (
-	schedule      string = "*/5 * * * *"
+	schedule      string = "*/1 * * * *"
 	cleanSchedule string = "0 0 * * 0"
 )

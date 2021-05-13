@@ -93,6 +93,9 @@ type ListTemplateOKBodyItems0 struct {
 	// template type
 	// Enum: [datastore upload]
 	TemplateType string `json:"templateType,omitempty"`
+
+	// vcpu
+	Vcpu int64 `json:"vcpu,omitempty"`
 }
 
 // Validate validates this list template o k body items0

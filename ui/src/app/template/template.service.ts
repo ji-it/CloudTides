@@ -24,7 +24,7 @@ export class TemplateService {
     }).toPromise();
     const List: ItemDTO[] = [];
     for (const tem of TemplateList) {
-      const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/2`, {
+      const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/` + tem.resourceID, {
         headers: {
           Authorization: `Bearer ${this.loginService.token}`,
         },
@@ -38,16 +38,29 @@ export class TemplateService {
         dateAdded: tem.dateAdded,
         vendor: res.vendor,
         //vendor: '',
-        datacenter: res.name,
+        datacenter: res.datacenter,
         //datacenter: '',
         memorySize: tem.memorySize,
         provisionedSpace: tem.provisionedSpace,
-        cpu: 2,
+        vcpu: tem.vcpu,
       }
 
       List.push(TempItem);
     }
     return List;
+  }
+
+  async getResList() {
+    const res = await this.http.get<ItemRes[]>(environment.apiPrefix + VCD_URL_PATH, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    const ResourceObject : Object = {};
+    for (let item of res) {
+      ResourceObject[item.datacenter] = item.id;
+    }
+    return ResourceObject;
   }
 
   async getVMList(id: number) {
@@ -158,13 +171,13 @@ interface ItemDTO {
   datacenter: string;
   memorySize: number;
   provisionedSpace: number;
-  cpu: number;
+  vcpu: number;
 }
 
 interface ItemRes {
   id: string;
   vcdId: string;
-  name: string;
+  datacenter: string;
   organization: string;
   vendor: string;
   // unit: GHz

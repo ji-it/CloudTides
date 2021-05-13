@@ -117,6 +117,7 @@ func InitMonitor() {
 		conf := config.GetVcdConfig(vapp)
 		for _, vm := range vapp.VMs {
 			monitor := NewVMMonitor(vm.ID, conf)
+			monitor.Task.Start()
 			VMMonitors.Store(vm.ID, monitor)
 		}
 	}
