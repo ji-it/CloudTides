@@ -70,7 +70,7 @@ func GetVdc(resourceID uint) *govcd.Vdc{
 }
 
 // New version of deploy VAPP
-func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp,
+func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMTemp,
 	cataName string, vAppName string, netName string, vAppID uint) (err error){
 	defer func() {
 		if err != nil {
@@ -91,18 +91,31 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 		fmt.Printf("id is %d", vAppID)
 	}
 
-	catalog, _ := org.GetCatalogByName(cataName, true)
-	cataItem, _ := catalog.GetCatalogItemByName(temName, true)
-	vappTem, _ := cataItem.GetVAppTemplate()
+	catalog, err := org.GetCatalogByName(cataName, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	cataItem, err := catalog.GetCatalogItemByName(temName, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	vappTem, err := cataItem.GetVAppTemplate()
+	if err != nil {
+		fmt.Println(err)
+	}
 	net, err := vdc.GetOrgVdcNetworkByName(netName, true)
+	if err != nil {
+		fmt.Println(err)
+	}
 	networks := []*types.OrgVDCNetwork{}
 
 	networks = append(networks, net.OrgVDCNetwork)
 
-	storageProf := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[0]
+	storageProf := vdc.Vdc.VdcStorageProfiles.VdcStorageProfile[1]
 
-	task, err := vdc.ComposeVApp(networks, vappTem, *storageProf, vAppName, "test purpose", true)
+	task, err := vdc.ComposeVApp(networks, vappTem, *storageProf, vAppName, "", true)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	err = task.WaitTaskCompletion()
@@ -117,6 +130,48 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 	}
 	task, err = vApp.PowerOn()
 	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = task.WaitTaskCompletion()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	/* Since ComposeVApp can only create one VM in the VApp template, so if there exist more than one VM in the template, we need to
+	   Add these VMs one by one.
+	*/
+	var NetSec *types.NetworkConnectionSection
+	for index, VM := range vappTem.VAppTemplate.Children.VM {
+		if index == 0 {
+			vm, err := vApp.GetVMByName(VM.Name, true)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			NetSec, err = vm.GetNetworkConnectionSection()
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			continue
+		}
+		VMTemp := *govcd.NewVAppTemplate(&client.Client)
+		VMTemp.VAppTemplate = VM
+		task, err := vApp.AddNewVMWithStorageProfile(VM.Name, VMTemp, NetSec, storageProf, true)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		err = task.WaitTaskCompletion()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+
+	task, err = vApp.PowerOn()
+	if err != nil {
 		return err
 	}
 	err = task.WaitTaskCompletion()
@@ -126,11 +181,20 @@ func DeployVAPP(org *govcd.Org, vdc *govcd.Vdc, temName string, VMs []models.VMT
 
 	for _, VM := range VMs {
 		vm, err := vApp.GetVMByName(VM.VMName, true)
+		if err != nil {
+			fmt.Println(err)
+		}
 
-		task, err = vm.Undeploy()
+		task, err := vm.Undeploy()
+		if err != nil {
+			fmt.Println(err)
+		}
 		task.WaitTaskCompletion()
 
 		task, err = vm.ChangeMemorySize(VM.VMem * 1024)
+		if err != nil {
+			fmt.Println(err)
+		}
 		task.WaitTaskCompletion()
 
 		cus, _ := vm.GetGuestCustomizationSection()
@@ -444,7 +508,7 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		controller.VMMonitors.Store(newVM.ID, monitor)
 	}
 
-	go DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
+	go DeployVAPP(client, org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
 	/*Vapp := DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network)
 	if Vapp != nil{
 		newVapp := models.Vapp{
