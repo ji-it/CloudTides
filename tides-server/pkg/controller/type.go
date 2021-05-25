@@ -99,6 +99,42 @@ func (vm *VMMonitor) CheckStatus() {
 		fmt.Println(err)
 		return
 	}
+/*
+	gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+	rule, err := gateway.GetLbAppRuleByName("fqdn-based-routing")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(rule.ID)
+		fmt.Println(rule.Name)
+		fmt.Println(rule.Script)
+		fmt.Println(rule.XMLName.Local)
+		fmt.Println(rule.XMLName.Space)
+	}
+	lbserve, err := gateway.GetLbServerPoolByName("kyligen80")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(lbserve.ID)
+		fmt.Println(lbserve.Name)
+		fmt.Println(lbserve.Algorithm)
+		fmt.Println(lbserve.AlgorithmParameters)
+		fmt.Println(lbserve.MonitorId)
+		fmt.Println(lbserve.XMLName.Space)
+		fmt.Println(lbserve.XMLName.Local)
+		fmt.Println("Here is members")
+		for _, mem := range(lbserve.Members) {
+			fmt.Println(mem.Name)
+			fmt.Println(mem.ID)
+			fmt.Println(mem.IpAddress)
+			fmt.Println(mem.Port)
+			fmt.Println(mem.Condition)
+			fmt.Println(mem.MaxConn)
+			fmt.Println(mem.MinConn)
+			fmt.Println(mem.MonitorPort)
+		}
+	}
+ */
 	Vapp, err := vdc.GetVAppByName(vapp.Name, true)
 	if err != nil {
 		fmt.Println(err)
