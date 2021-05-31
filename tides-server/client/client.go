@@ -26,7 +26,7 @@ func main() {
 	lineServing := "serving_ip_list=("
 	for index, vm := range VAPP.VMs {
 		if(vm.IPAddress != ipaddr) {
-			lineList += (strconv.Itoa(10000 - index))
+			lineList += (strconv.Itoa(10000 - index) + " ")
 			lineIPList += (vm.IPAddress + " ")
 			lineServing += (vm.IPAddress + " ")
 		}
