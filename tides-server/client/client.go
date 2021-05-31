@@ -23,15 +23,15 @@ func main() {
 	lineList := "party_list= "
 	lineIPList := "party_ip_list= "
 	lineServing := "serving_ip_list= "
-	/*for index, vm := range VAPP.VMs {
+	for index, vm := range VAPP.VMs {
 		if(vm.IPAddress != ipaddr) {
 			lineList += (string(rune(10000 - index)) + " ")
 			lineIPList += (vm.IPAddress + " ")
 			lineServing += (vm.IPAddress + " ")
 		}
-	}*/
-	//fi, err := os.OpenFile("/root/docker-deploy/parties.conf", os.O_RDWR, os.ModePerm)
-	fi, err := os.OpenFile("/home/frank/cloudTides/test", os.O_RDWR, os.ModePerm)
+	}
+	fi, err := os.OpenFile("/root/docker-deploy/parties.conf", os.O_RDWR, os.ModePerm)
+	//fi, err := os.OpenFile("/home/frank/cloudTides/test", os.O_RDWR, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
