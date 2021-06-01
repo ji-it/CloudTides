@@ -1,9 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net"
 	"os"
 	"strconv"
@@ -34,8 +33,8 @@ func main() {
 	lineList += ")"
 	lineIPList += ")"
 	lineServing += ")"
-	fi, err := os.OpenFile("/root/docker-deploy/parties.conf", os.O_RDWR, os.ModePerm)
-	//fi, err := os.OpenFile("/home/frank/cloudTides/test", os.O_RDWR, os.ModePerm)
+	//fi, err := os.OpenFile("/root/docker-deploy/parties.conf", os.O_RDWR, os.ModePerm)
+	/*fi, err := os.OpenFile("/home/frank/cloudTides/parties.conf", os.O_RDWR, os.ModePerm)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -46,11 +45,15 @@ func main() {
 	seekP := 0
 	for {
 		bs, _, err := reader.ReadLine()
+
 		if err == io.EOF {
 			fmt.Println("Done")
 			return
 		}
+		fmt.Println(bs)
+		fmt.Println(string(bs))
 		lineCnt = len(bs) + 1
+		fmt.Printf("lineCnt is %d\n", lineCnt)
 		if strings.Contains(string(bs), "party_list") {
 			delByte := make([]byte, 0)
 			for i := 0; i < lineCnt; i++ {
@@ -105,6 +108,27 @@ func main() {
 		}
 
 		seekP += lineCnt
+	}*/
+	input, err := ioutil.ReadFile("/root/docker-deploy/parties.conf")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	lines := strings.Split(string(input), "\n")
+	for i, line := range lines {
+		if strings.Contains(line, "party_list") {
+			lines[i] = lineList
+		} else if strings.Contains(line, "party_ip_list") {
+			lines[i] = lineIPList
+		} else if strings.Contains(line, "serving_ip_list") {
+			lines[i] = lineServing
+		}
+	}
+	output := strings.Join(lines, "\n")
+	err = ioutil.WriteFile("/root/docker-deploy/parties.conf", []byte(output), os.ModePerm)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }
 
