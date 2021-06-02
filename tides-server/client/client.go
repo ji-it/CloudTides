@@ -74,9 +74,14 @@ func main() {
 			db.Where("ip_address = ?", ipaddr).First(&VM)
 			db.Where("id = ?", VM.VappID).First(&VAPP)
 			if VAPP.Status == "Creating" {
+				log.Println("VAPP is still under Creating status")
 				continue
-			} else {
+			} else if VAPP.Status == "Running"{
+				log.Println("Now VAPP is under status " + VAPP.Status)
 				break checking
+			} else {
+				log.Println("Now VAPP is under status " + VAPP.Status)
+				continue
 			}
 		}
 	}
