@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	defaultCheckDur = 30 * time.Second
+	defaultCheckDur = 10 * time.Second
 )
 
 func main() {
@@ -28,12 +28,24 @@ func main() {
 	var dbinfo string
 	dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		os.Args[1], os.Args[2], os.Args[3], os.Args[4], os.Args[5])
-	db, err := gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
-	//defer db.Close()
-	if err != nil {
-		log.Println(err)
-		return
+	ticker := time.NewTicker(defaultCheckDur)
+	var db *gorm.DB
+	waiting:
+	for {
+		select {
+		case <-ticker.C:
+			db, err = gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
+			//defer db.Close()
+			if err != nil {
+				log.Println(err)
+				continue
+			} else {
+				break waiting
+			}
+		}
 	}
+	//db, err := gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
+	//defer db.Close()
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
 	db.AutoMigrate(&models.Template{})
@@ -55,7 +67,6 @@ func main() {
 	log.Println(ipaddr)
 	var VM models.VMachine
 	var VAPP models.Vapp
-	ticker := time.NewTicker(defaultCheckDur)
 	checking:
 	for {
 		select {

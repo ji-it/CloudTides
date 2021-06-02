@@ -207,7 +207,7 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		passWord := randSeqT(10)
 		cus.AdminPassword = passWord
 		if VM.VMName == "Deploy" {
-			cus.CustomizationScript = "cd /root && git clone https://github.com/cloudtides/CloudTides.git && cd CloudTides && git checkout feature/KubeFATE/automation && ./tides-server/client/client 106.14.190.68 30125 cloudtides ca$hc0w template1"
+			cus.CustomizationScript = "cd /root && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 >> test"
 		}
 		// cus.ComputerName = "tides-" + randSeq(5)
 		vm.SetGuestCustomizationSection(cus)
