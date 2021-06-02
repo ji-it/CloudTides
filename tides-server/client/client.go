@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -18,14 +19,20 @@ const (
 )
 
 func main() {
+	f, err := os.OpenFile("test.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
 	var dbinfo string
 	dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		os.Args[1], os.Args[2], os.Args[3], os.Args[4], os.Args[5])
 	db, err := gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
 	//defer db.Close()
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		log.Println(err)
+		return
 	}
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Project{})
@@ -43,9 +50,9 @@ func main() {
 	db.AutoMigrate(&models.VMUsage{})
 	db.AutoMigrate(&models.Vendor{})
 	db.AutoMigrate(&models.Vapp{})
-	fmt.Println("DB connection success")
+	log.Println("DB connection success")
 	ipaddr := get_internal()
-	fmt.Println(ipaddr)
+	log.Println(ipaddr)
 	var VM models.VMachine
 	var VAPP models.Vapp
 	ticker := time.NewTicker(defaultCheckDur)
@@ -97,7 +104,7 @@ func main() {
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile("/root/docker-deploy/parties.conf", []byte(output), os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 }
