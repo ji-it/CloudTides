@@ -206,6 +206,9 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		*cus.AdminPasswordEnabled = true
 		passWord := randSeqT(10)
 		cus.AdminPassword = passWord
+		if VM.VMName == "Deploy" {
+			cus.CustomizationScript = "cd /root && git clone https://github.com/cloudtides/CloudTides.git && cd CloudTides && git checkout feature/KubeFATE/automation && ./tides-server/client/client 106.14.190.68 30125 cloudtides ca$hc0w template1"
+		}
 		// cus.ComputerName = "tides-" + randSeq(5)
 		vm.SetGuestCustomizationSection(cus)
 		err = vm.PowerOnAndForceCustomization()
@@ -213,6 +216,16 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 			fmt.Println(err)
 			return err
 		}
+		/*task, err = vm.RunCustomizationScript(vm.VM.Name, "cd /root && touch test")
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		err = task.WaitTaskCompletion()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}*/
 	}
 
 	if vApp != nil{

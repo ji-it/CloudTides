@@ -2,113 +2,83 @@ package main
 
 import (
 	"fmt"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"net"
 	"os"
 	"strconv"
 	"strings"
-	"tides-server/pkg/config"
 	"tides-server/pkg/models"
+	"time"
+)
+
+const (
+	defaultCheckDur = 30 * time.Second
 )
 
 func main() {
-	config.GetConfig()
-	db := config.GetDB()
+	var dbinfo string
+	dbinfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		os.Args[1], os.Args[2], os.Args[3], os.Args[4], os.Args[5])
+	db, err := gorm.Open(postgres.Open(dbinfo), &gorm.Config{})
+	//defer db.Close()
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Project{})
+	db.AutoMigrate(&models.Template{})
+	db.AutoMigrate(&models.VMachine{})
+	db.AutoMigrate(&models.VMTemp{})
+	db.AutoMigrate(&models.Policy{})
+	db.AutoMigrate(&models.VcdPolicy{})
+	db.AutoMigrate(&models.Resource{})
+	db.AutoMigrate(&models.Vsphere{})
+	db.AutoMigrate(&models.Vcd{})
+	db.AutoMigrate(&models.VM{})
+	db.AutoMigrate(&models.ResourceUsage{})
+	db.AutoMigrate(&models.ResourcePastUsage{})
+	db.AutoMigrate(&models.VMUsage{})
+	db.AutoMigrate(&models.Vendor{})
+	db.AutoMigrate(&models.Vapp{})
+	fmt.Println("DB connection success")
 	ipaddr := get_internal()
 	fmt.Println(ipaddr)
 	var VM models.VMachine
 	var VAPP models.Vapp
+	ticker := time.NewTicker(defaultCheckDur)
+	checking:
+	for {
+		select {
+		case <-ticker.C:
+			db.Where("ip_address = ?", ipaddr).First(&VM)
+			db.Where("id = ?", VM.VappID).First(&VAPP)
+			if VAPP.Status == "Creating" {
+				continue
+			} else {
+				break checking
+			}
+		}
+	}
 	db.Where("ip_address = ?", ipaddr).First(&VM)
 	db.Preload("VMs").Where("id = ?", VM.VappID).First(&VAPP)
 	lineList := "party_list=("
 	lineIPList := "party_ip_list=("
 	lineServing := "serving_ip_list=("
-	for index, vm := range VAPP.VMs {
+	count := 0
+	for _, vm := range VAPP.VMs {
 		if(vm.IPAddress != ipaddr) {
-			lineList += (strconv.Itoa(10000 - index) + " ")
+			lineList += (strconv.Itoa(10000 - count) + " ")
 			lineIPList += (vm.IPAddress + " ")
 			lineServing += (vm.IPAddress + " ")
+			count++
 		}
 	}
 	lineList += ")"
 	lineIPList += ")"
 	lineServing += ")"
-	//fi, err := os.OpenFile("/root/docker-deploy/parties.conf", os.O_RDWR, os.ModePerm)
-	/*fi, err := os.OpenFile("/home/frank/cloudTides/parties.conf", os.O_RDWR, os.ModePerm)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer fi.Close()
-	reader := bufio.NewReader(fi)
-	lineCnt := 0
-	seekP := 0
-	for {
-		bs, _, err := reader.ReadLine()
-
-		if err == io.EOF {
-			fmt.Println("Done")
-			return
-		}
-		fmt.Println(bs)
-		fmt.Println(string(bs))
-		lineCnt = len(bs) + 1
-		fmt.Printf("lineCnt is %d\n", lineCnt)
-		if strings.Contains(string(bs), "party_list") {
-			delByte := make([]byte, 0)
-			for i := 0; i < lineCnt; i++ {
-				delByte = append(delByte, 127)
-			}
-
-			_, err := fi.WriteAt(delByte, int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			_, err = fi.WriteAt([]byte(lineList + "\n"), int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			lineCnt = len([]byte((lineList + "\n")))
-		} else if strings.Contains(string(bs), "party_ip_list") {
-			delByte := make([]byte, 0)
-			for i := 0; i < lineCnt; i++ {
-				delByte = append(delByte, 127)
-			}
-
-			_, err := fi.WriteAt(delByte, int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			_, err = fi.WriteAt([]byte(lineIPList + "\n"), int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			lineCnt = len([]byte((lineIPList + "\n")))
-		} else if strings.Contains(string(bs), "serving_ip_list") {
-			delByte := make([]byte, 0)
-			for i := 0; i < lineCnt; i++ {
-				delByte = append(delByte, 127)
-			}
-
-			_, err := fi.WriteAt(delByte, int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			_, err = fi.WriteAt([]byte(lineServing + "\n"), int64(seekP))
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			lineCnt = len([]byte((lineServing + "\n")))
-		}
-
-		seekP += lineCnt
-	}*/
 	input, err := ioutil.ReadFile("/root/docker-deploy/parties.conf")
 	if err != nil {
 		fmt.Println(err)
