@@ -207,7 +207,7 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		passWord := randSeqT(10)
 		cus.AdminPassword = passWord
 		if VM.VMName == "Deploy" {
-			cus.CustomizationScript = "cd /root && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 >> test"
+			cus.CustomizationScript = "cd /root && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 && bash generate_config.sh && bash docker-deploy/docker_deploy.sh all"
 		}
 		// cus.ComputerName = "tides-" + randSeq(5)
 		vm.SetGuestCustomizationSection(cus)

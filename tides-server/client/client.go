@@ -71,8 +71,16 @@ func main() {
 	for {
 		select {
 		case <-ticker.C:
-			db.Where("ip_address = ?", ipaddr).First(&VM)
-			db.Where("id = ?", VM.VappID).First(&VAPP)
+			if db.Where("ip_address = ?", ipaddr).First(&VM).RowsAffected == 0 {
+				ipaddr = get_internal()
+				log.Println("No VM available, address is " + ipaddr)
+				continue
+			}
+			if db.Where("id = ?", VM.VappID).First(&VAPP).RowsAffected == 0 {
+				ipaddr = get_internal()
+				log.Println("No VAPP available, address is " + ipaddr)
+				continue
+			}
 			if VAPP.Status == "Creating" {
 				log.Println("VAPP is still under Creating status")
 				continue
