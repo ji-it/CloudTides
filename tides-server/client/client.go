@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"tides-server/pkg/models"
@@ -65,22 +66,12 @@ func main() {
 	log.Println("DB connection success")
 	ipaddr := get_internal()
 	log.Println(ipaddr)
-	var VM models.VMachine
 	var VAPP models.Vapp
+	db.Preload("VMs").Where("id = ?", os.Args[6]).First(&VAPP)
 	checking:
 	for {
 		select {
 		case <-ticker.C:
-			if db.Where("ip_address = ?", ipaddr).First(&VM).RowsAffected == 0 {
-				ipaddr = get_internal()
-				log.Println("No VM available, address is " + ipaddr)
-				continue
-			}
-			if db.Where("id = ?", VM.VappID).First(&VAPP).RowsAffected == 0 {
-				ipaddr = get_internal()
-				log.Println("No VAPP available, address is " + ipaddr)
-				continue
-			}
 			if VAPP.Status == "Creating" {
 				log.Println("VAPP is still under Creating status")
 				continue
@@ -93,14 +84,12 @@ func main() {
 			}
 		}
 	}
-	db.Where("ip_address = ?", ipaddr).First(&VM)
-	db.Preload("VMs").Where("id = ?", VM.VappID).First(&VAPP)
 	lineList := "party_list=("
 	lineIPList := "party_ip_list=("
 	lineServing := "serving_ip_list=("
 	count := 0
 	for _, vm := range VAPP.VMs {
-		if(vm.IPAddress != ipaddr) {
+		if(vm.Name != "Deploy") {
 			lineList += (strconv.Itoa(10000 - count) + " ")
 			lineIPList += (vm.IPAddress + " ")
 			lineServing += (vm.IPAddress + " ")
@@ -127,6 +116,18 @@ func main() {
 	}
 	output := strings.Join(lines, "\n")
 	err = ioutil.WriteFile("/root/docker-deploy/parties.conf", []byte(output), os.ModePerm)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("Here I'm going to run bash script")
+	cmd := exec.Command("/bin/sh", "/root/test.sh")
+	err = cmd.Start()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = cmd.Wait()
 	if err != nil {
 		log.Println(err)
 		return

@@ -180,52 +180,26 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 	}
 
 	for _, VM := range VMs {
-		vm, err := vApp.GetVMByName(VM.VMName, true)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		task, err := vm.Undeploy()
-		if err != nil {
-			fmt.Println(err)
-		}
-		task.WaitTaskCompletion()
-
-		task, err = vm.ChangeMemorySize(VM.VMem * 1024)
-		if err != nil {
-			fmt.Println(err)
-		}
-		task.WaitTaskCompletion()
-
-		cus, _ := vm.GetGuestCustomizationSection()
-		cus.Enabled = new(bool)
-		*cus.Enabled = true
-		cus.AdminPasswordAuto = new(bool)
-		*cus.AdminPasswordAuto = false
-		cus.AdminPasswordEnabled = new(bool)
-		*cus.AdminPasswordEnabled = true
-		passWord := randSeqT(10)
-		cus.AdminPassword = passWord
 		if VM.VMName == "Deploy" {
-			cus.CustomizationScript = "cd /root && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 && ./client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 && bash generate_config.sh && bash docker-deploy/docker_deploy.sh all"
+			continue
+		} else {
+			err := CusVM(vApp, &VM, "")
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
 		}
-		// cus.ComputerName = "tides-" + randSeq(5)
-		vm.SetGuestCustomizationSection(cus)
-		err = vm.PowerOnAndForceCustomization()
-		if err != nil {
-			fmt.Println(err)
-			return err
+	}
+
+	for _, VM := range VMs {
+		if VM.VMName == "Deploy" {
+			script := fmt.Sprintf("cd /root && ./client/client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 %d", vappDB.ID)
+			err := CusVM(vApp, &VM, script)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
 		}
-		/*task, err = vm.RunCustomizationScript(vm.VM.Name, "cd /root && touch test")
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		err = task.WaitTaskCompletion()
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}*/
 	}
 
 	if vApp != nil{
@@ -251,6 +225,41 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		}
 		db.Save(&vappDB)
 	}
+	return err
+}
+
+func CusVM (vApp *govcd.VApp, VM *models.VMTemp, script string) error {
+	vm, err := vApp.GetVMByName(VM.VMName, true)
+	if err != nil {
+		return err
+	}
+
+	task, err := vm.Undeploy()
+	if err != nil {
+		return err
+	}
+	task.WaitTaskCompletion()
+
+	task, err = vm.ChangeMemorySize(VM.VMem * 1024)
+	if err != nil {
+		return err
+	}
+	task.WaitTaskCompletion()
+
+	cus, _ := vm.GetGuestCustomizationSection()
+	cus.Enabled = new(bool)
+	*cus.Enabled = true
+	cus.AdminPasswordAuto = new(bool)
+	*cus.AdminPasswordAuto = false
+	cus.AdminPasswordEnabled = new(bool)
+	*cus.AdminPasswordEnabled = true
+	passWord := randSeqT(10)
+	cus.AdminPassword = passWord
+	if script != "" {
+		cus.CustomizationScript = script
+	}
+	vm.SetGuestCustomizationSection(cus)
+	err = vm.PowerOnAndForceCustomization()
 	return err
 }
 
