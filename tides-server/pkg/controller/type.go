@@ -99,7 +99,7 @@ func (vm *VMMonitor) CheckStatus() {
 		fmt.Println(err)
 		return
 	}
-/*
+
 	gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
 	rule, err := gateway.GetLbAppRuleByName("fqdn-based-routing")
 	if err != nil {
@@ -134,7 +134,7 @@ func (vm *VMMonitor) CheckStatus() {
 			fmt.Println(mem.MonitorPort)
 		}
 	}
- */
+
 	Vapp, err := vdc.GetVAppByName(vapp.Name, true)
 	if err != nil {
 		fmt.Println(err)

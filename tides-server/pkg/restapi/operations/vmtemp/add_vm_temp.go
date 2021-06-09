@@ -69,6 +69,9 @@ type AddVMTempBody struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// ports
+	Ports string `json:"ports,omitempty"`
+
 	// template ID
 	TemplateID int64 `json:"templateID,omitempty"`
 

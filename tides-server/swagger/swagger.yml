@@ -1700,6 +1700,8 @@ paths:
                 type: integer
               templateID:
                 type: integer
+              ports:
+                type: string
       responses:
         200:
           description: 'OK'

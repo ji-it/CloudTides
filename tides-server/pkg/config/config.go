@@ -16,6 +16,10 @@ var (
 	err    error
 )
 
+const (
+	URLSuffix = "kyligen.vthink.cloud"
+)
+
 func init() {
 	initConfig()
 }

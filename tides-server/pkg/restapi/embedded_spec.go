@@ -2813,6 +2813,9 @@ func init() {
                 "name": {
                   "type": "string"
                 },
+                "ports": {
+                  "type": "string"
+                },
                 "templateID": {
                   "type": "integer"
                 },
@@ -5582,6 +5585,9 @@ func init() {
                   "type": "integer"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "ports": {
                   "type": "string"
                 },
                 "templateID": {

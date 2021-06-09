@@ -6,6 +6,8 @@ import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"github.com/vmware/go-vcloud-director/v2/types/v56"
 	"math/rand"
+	"strconv"
+	"strings"
 	"tides-server/pkg/config"
 	"tides-server/pkg/controller"
 	"tides-server/pkg/models"
@@ -228,6 +230,7 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 	return err
 }
 
+// Customize the VM
 func CusVM (vApp *govcd.VApp, VM *models.VMTemp, script string) error {
 	vm, err := vApp.GetVMByName(VM.VMName, true)
 	if err != nil {
@@ -512,6 +515,13 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 	controller.VappMonitors.StoreVapp(newVapp.ID, vappMonitor)
 
 	for _, VM := range tem.VMTemps {
+		ports, err := CheckPorts(VM.Ports)
+		if err != nil {
+			fmt.Println("Wrong format of Ports: " + err.Error())
+			return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+				Message: "Create vdc failed: ports format wrong",
+			})
+		}
 		newVM := models.VMachine{
 			Name: VM.VMName,
 			VMem: VM.VMem,
@@ -528,6 +538,28 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		db.Create(&newVM)
 		monitor := controller.NewVMMonitor(newVM.ID, &conf)
 		controller.VMMonitors.Store(newVM.ID, monitor)
+		for _, port := range ports {
+			newPort := models.Port{
+				Port: uint(port),
+				URL: newVapp.Name + string(rune(port)) + "." + config.URLSuffix ,
+				VMachineID: newVM.ID,
+			}
+			gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+			rule, err := gateway.GetLbAppRuleByName("cloudtides")
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				//gateway.CreateLbServerPool()
+				rule.Script += fmt.Sprintf("acl is_%s hdr(host) -i %s use_backend %s if is_%s", newVapp.Name + string(rune(port)),
+					newPort.URL, newVapp.Name + string(rune(port)), newVapp.Name + string(rune(port)))
+				fmt.Println(rule.Script)
+				_, err := gateway.UpdateLbAppRule(rule)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+			db.Create(&newPort)
+		}
 	}
 
 	go DeployVAPP(client, org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
@@ -798,3 +830,18 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 
 	return vapp.NewDeleteVappForbidden()
 }
+
+func CheckPorts(ports string) ([]int, error){
+	strings := strings.Split(ports, ",")
+	var vals []int
+	for _, port := range strings {
+		val, err := strconv.Atoi(port)
+		if err != nil {
+			return vals, err
+		}
+		vals = append(vals, val)
+	}
+	return vals, nil
+}
+
+//func ExposePorts(vdc *govcd.Vdc)

@@ -106,16 +106,21 @@ func AddVMTemplateHandler(params vmtemp.AddVMTempParams) middleware.Responder {
 	}
 
 	body := params.ReqBody
+	_, err := CheckPorts(body.Ports)
+	if (err != nil) {
+		return vmtemp.NewAddVMTempBadRequest()
+	}
 	newVMTemp := models.VMTemp{
 		VMName: body.Name,
 		VCPU: int(body.Vcpu),
 		VMem: int(body.Vmem),
 		Disk: int(body.Disk),
+		Ports: body.Ports,
 		TemplateID: uint(body.TemplateID),
 	}
 
 	db := config.GetDB()
-	err := db.Create(&newVMTemp).Error
+	err = db.Create(&newVMTemp).Error
 	if err != nil {
 		return vmtemp.NewAddVMTempBadRequest()
 	}
