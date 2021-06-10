@@ -217,6 +217,7 @@ export interface ItemPayloadVM {
   vmem: number,
   vcpu: number,
   templateID: number,
+  ports: string,
 }
 
 export interface ItemVM {

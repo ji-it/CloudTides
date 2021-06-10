@@ -556,7 +556,7 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		monitor := controller.NewVMMonitor(newVM.ID, &conf)
 		controller.VMMonitors.Store(newVM.ID, monitor)
 		for _, port := range ports {
-			prefix := newVapp.Name + "." + newVM.Name + string(rune(port))
+			prefix := newVapp.Name + "-" + newVM.Name + strconv.Itoa(port)
 			newPort := models.Port{
 				Port: uint(port),
 				URL: prefix + "." + config.URLSuffix ,
@@ -838,9 +838,12 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 func CheckPorts(ports string) ([]int, error){
 	strings := strings.Split(ports, ",")
 	var vals []int
+	if ports == "" {
+		return vals, nil
+	}
 	for _, port := range strings {
 		val, err := strconv.Atoi(port)
-		if err != nil {
+		if err != nil || val < 200 || val > 65535{
 			return vals, err
 		}
 		vals = append(vals, val)
@@ -853,7 +856,7 @@ func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
 	var vm models.VMachine
 	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
 	for _, port := range vm.Ports {
-		prefix := VAppName + "." + vm.Name + string(rune(port.Port))
+		prefix := VAppName + "-" + vm.Name + strconv.Itoa(int(port.Port))
 		gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
 		if err != nil {
 			fmt.Println(err)
@@ -876,6 +879,7 @@ func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
 						Port:        int(port.Port),
 						Weight:      1,
 						IpAddress:	 vm.IPAddress,
+						Condition:   "enabled",
 					},
 				},
 			})
@@ -883,7 +887,7 @@ func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
 				fmt.Println(err)
 				return err
 			}
-			rule.Script += fmt.Sprintf("acl is_%s hdr(host) -i %s use_backend %s if is_%s\n", prefix,
+			rule.Script += fmt.Sprintf("\nacl is_%s hdr(host) -i %s \nuse_backend %s if is_%s", prefix,
 				port.URL, prefix, prefix)
 			fmt.Println(rule.Script)
 			_, err = gateway.UpdateLbAppRule(rule)
@@ -900,23 +904,11 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 	var vm models.VMachine
 	var VApp models.Vapp
 	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
-	db.Where("id = ?", vm.VappID).First(VApp)
+	db.Where("id = ?", vm.VappID).First(&VApp)
 	gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
 	if err != nil {
 		fmt.Println(err)
 		return err
-	}
-	for _, port := range vm.Ports {
-		prefix := VApp.Name + "." + vm.Name + string(rune(port.Port))
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		err = gateway.DeleteLbServerPoolByName(prefix)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
 	}
 	rule, err := gateway.GetLbAppRuleByName("cloudtides")
 	if err != nil {
@@ -928,7 +920,7 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 	outloop:
 	for _, line := range lines {
 		for _, port := range vm.Ports {
-			prefix := VApp.Name + "." + vm.Name + string(rune(port.Port))
+			prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
 			if strings.Contains(line, prefix) {
 				continue outloop
 			}
@@ -940,6 +932,14 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 	if err != nil {
 		fmt.Println(err)
 		return err
+	}
+	for _, port := range vm.Ports {
+		prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
+		err = gateway.DeleteLbServerPoolByName(prefix)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
 	for _, port := range vm.Ports {
 		db.Unscoped().Delete(&port)

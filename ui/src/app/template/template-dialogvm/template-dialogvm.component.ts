@@ -27,6 +27,7 @@ export class TemplateDialogVMComponent implements OnInit {
       disk: ['', Validators.required],
       vmem: ['', Validators.required],
       vcpu: ['', Validators.required],
+      ports: [''],
       //templateID: ['', Validators.required],
     })
   }
@@ -85,6 +86,7 @@ export class TemplateDialogVMComponent implements OnInit {
       vmem: payload.vmem,
       vcpu: payload.vcpu,
       templateID: this.templateList.TemplateID,
+      ports: payload.ports,
     }
     return result;
   }
@@ -96,4 +98,5 @@ interface ItemPayload {
   disk: number,
   vmem: number,
   vcpu: number,
+  ports: string,
 }

@@ -77,6 +77,7 @@ func StartDB() {
 	db.AutoMigrate(&models.VMUsage{})
 	db.AutoMigrate(&models.Vendor{})
 	db.AutoMigrate(&models.Vapp{})
+	db.AutoMigrate(&models.Port{})
 	fmt.Println("DB connection success")
 	CreateAdmin()
 	TemplateSetup()
