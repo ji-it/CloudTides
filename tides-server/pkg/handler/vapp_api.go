@@ -227,6 +227,15 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		}
 		db.Save(&vappDB)
 	}
+
+	for _, VM := range vappDB.VMs {
+		err := ExposePorts(vdc, int(VM.ID), vappDB.Name)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+
 	return err
 }
 
@@ -357,6 +366,15 @@ func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) (err error)
 		vappQuery, _ := vdc.GetVAppByName(vAppName, true)
 		if vappQuery == nil {
 			for _, VM := range vApp.VMs {
+				err := DeletePorts(vdc, VM.ID)
+				if err != nil {
+					appMonitor, _ := controller.VappMonitors.LoadVapp(vApp.ID)
+					appMonitor.Lock.Lock()
+					vApp.Status = "Error"
+					db.Save(vApp)
+					appMonitor.Lock.Unlock()
+					return
+				}
 				db.Unscoped().Delete(&VM)
 				if monitor, ok := controller.VMMonitors.Load(VM.ID); ok {
 					monitor.Task.Stop()
@@ -396,7 +414,6 @@ func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) (err error)
 		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -539,24 +556,11 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		monitor := controller.NewVMMonitor(newVM.ID, &conf)
 		controller.VMMonitors.Store(newVM.ID, monitor)
 		for _, port := range ports {
+			prefix := newVapp.Name + "." + newVM.Name + string(rune(port))
 			newPort := models.Port{
 				Port: uint(port),
-				URL: newVapp.Name + string(rune(port)) + "." + config.URLSuffix ,
+				URL: prefix + "." + config.URLSuffix ,
 				VMachineID: newVM.ID,
-			}
-			gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
-			rule, err := gateway.GetLbAppRuleByName("cloudtides")
-			if err != nil {
-				fmt.Println(err)
-			} else {
-				//gateway.CreateLbServerPool()
-				rule.Script += fmt.Sprintf("acl is_%s hdr(host) -i %s use_backend %s if is_%s", newVapp.Name + string(rune(port)),
-					newPort.URL, newVapp.Name + string(rune(port)), newVapp.Name + string(rune(port)))
-				fmt.Println(rule.Script)
-				_, err := gateway.UpdateLbAppRule(rule)
-				if err != nil {
-					fmt.Println(err)
-				}
 			}
 			db.Create(&newPort)
 		}
@@ -844,4 +848,101 @@ func CheckPorts(ports string) ([]int, error){
 	return vals, nil
 }
 
-//func ExposePorts(vdc *govcd.Vdc)
+func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
+	db := config.GetDB()
+	var vm models.VMachine
+	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
+	for _, port := range vm.Ports {
+		prefix := VAppName + "." + vm.Name + string(rune(port.Port))
+		gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		rule, err := gateway.GetLbAppRuleByName("cloudtides")
+		if err != nil {
+			fmt.Println(err)
+			return err
+		} else {
+			_, err := gateway.CreateLbServerPool(&types.LbPool{
+				Name:        prefix,
+				Algorithm:   "round-robin",
+				Transparent: false,
+				MonitorId:   "monitor-1",
+				Members: []types.LbPoolMember{
+					{
+						Name:        prefix,
+						MonitorPort: int(port.Port),
+						Port:        int(port.Port),
+						Weight:      1,
+						IpAddress:	 vm.IPAddress,
+					},
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			rule.Script += fmt.Sprintf("acl is_%s hdr(host) -i %s use_backend %s if is_%s\n", prefix,
+				port.URL, prefix, prefix)
+			fmt.Println(rule.Script)
+			_, err = gateway.UpdateLbAppRule(rule)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}
+	return nil
+}
+
+func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
+	db := config.GetDB()
+	var vm models.VMachine
+	var VApp models.Vapp
+	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
+	db.Where("id = ?", vm.VappID).First(VApp)
+	gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, port := range vm.Ports {
+		prefix := VApp.Name + "." + vm.Name + string(rune(port.Port))
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		err = gateway.DeleteLbServerPoolByName(prefix)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+	rule, err := gateway.GetLbAppRuleByName("cloudtides")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	lines := strings.Split(rule.Script, "\n")
+	newScript := ""
+	outloop:
+	for _, line := range lines {
+		for _, port := range vm.Ports {
+			prefix := VApp.Name + "." + vm.Name + string(rune(port.Port))
+			if strings.Contains(line, prefix) {
+				continue outloop
+			}
+		}
+		newScript += line + "\n"
+	}
+	rule.Script = newScript
+	_, err = gateway.UpdateLbAppRule(rule)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, port := range vm.Ports {
+		db.Unscoped().Delete(&port)
+	}
+	return nil
+}
