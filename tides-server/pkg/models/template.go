@@ -59,6 +59,9 @@ type VMTemp struct {
 	// number of disk unit GB
 	Disk int `json:"disk,omitempty"`
 
+	// the ports wanted to be exposed
+	Ports string `json:"ports,omitempty"`
+
 	// foreign key for Template
 	TemplateID uint `json:"templateID,omitempty"`
 }

@@ -58,6 +58,15 @@
           clrInput />
       </clr-input-container>
 
+      <clr-input-container>
+        <label for="ports">Exposed Ports</label>
+        <input id="ports"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Exposed Ports, use , to seperate ports without space'"
+          formControlName="ports"
+          clrInput />
+      </clr-input-container>
       <!--clr-select-container>
         <label for="templateID">TemplateID</label>
         <select

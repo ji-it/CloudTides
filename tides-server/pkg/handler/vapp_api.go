@@ -6,6 +6,8 @@ import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"github.com/vmware/go-vcloud-director/v2/types/v56"
 	"math/rand"
+	"strconv"
+	"strings"
 	"tides-server/pkg/config"
 	"tides-server/pkg/controller"
 	"tides-server/pkg/models"
@@ -225,9 +227,19 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 		}
 		db.Save(&vappDB)
 	}
+
+	for _, VM := range vappDB.VMs {
+		err := ExposePorts(vdc, int(VM.ID), vappDB.Name)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+
 	return err
 }
 
+// Customize the VM
 func CusVM (vApp *govcd.VApp, VM *models.VMTemp, script string) error {
 	vm, err := vApp.GetVMByName(VM.VMName, true)
 	if err != nil {
@@ -354,6 +366,15 @@ func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) (err error)
 		vappQuery, _ := vdc.GetVAppByName(vAppName, true)
 		if vappQuery == nil {
 			for _, VM := range vApp.VMs {
+				err := DeletePorts(vdc, VM.ID)
+				if err != nil {
+					appMonitor, _ := controller.VappMonitors.LoadVapp(vApp.ID)
+					appMonitor.Lock.Lock()
+					vApp.Status = "Error"
+					db.Save(vApp)
+					appMonitor.Lock.Unlock()
+					return
+				}
 				db.Unscoped().Delete(&VM)
 				if monitor, ok := controller.VMMonitors.Load(VM.ID); ok {
 					monitor.Task.Stop()
@@ -393,7 +414,6 @@ func DestroyVAPP(vdc *govcd.Vdc, vAppName string, vApp *models.Vapp) (err error)
 		fmt.Println(err)
 		return err
 	}
-
 	return nil
 }
 
@@ -512,6 +532,13 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 	controller.VappMonitors.StoreVapp(newVapp.ID, vappMonitor)
 
 	for _, VM := range tem.VMTemps {
+		ports, err := CheckPorts(VM.Ports)
+		if err != nil {
+			fmt.Println("Wrong format of Ports: " + err.Error())
+			return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+				Message: "Create vdc failed: ports format wrong",
+			})
+		}
 		newVM := models.VMachine{
 			Name: VM.VMName,
 			VMem: VM.VMem,
@@ -528,6 +555,15 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		db.Create(&newVM)
 		monitor := controller.NewVMMonitor(newVM.ID, &conf)
 		controller.VMMonitors.Store(newVM.ID, monitor)
+		for _, port := range ports {
+			prefix := newVapp.Name + "-" + newVM.Name + strconv.Itoa(port)
+			newPort := models.Port{
+				Port: uint(port),
+				URL: prefix + "." + config.URLSuffix ,
+				VMachineID: newVM.ID,
+			}
+			db.Create(&newPort)
+		}
 	}
 
 	go DeployVAPP(client, org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
@@ -797,4 +833,116 @@ func DeleteVappHandler(params vapp.DeleteVappParams) middleware.Responder {
 	}
 
 	return vapp.NewDeleteVappForbidden()
+}
+
+func CheckPorts(ports string) ([]int, error){
+	strings := strings.Split(ports, ",")
+	var vals []int
+	if ports == "" {
+		return vals, nil
+	}
+	for _, port := range strings {
+		val, err := strconv.Atoi(port)
+		if err != nil || val < 200 || val > 65535{
+			return vals, err
+		}
+		vals = append(vals, val)
+	}
+	return vals, nil
+}
+
+func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
+	db := config.GetDB()
+	var vm models.VMachine
+	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
+	for _, port := range vm.Ports {
+		prefix := VAppName + "-" + vm.Name + strconv.Itoa(int(port.Port))
+		gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		rule, err := gateway.GetLbAppRuleByName("cloudtides")
+		if err != nil {
+			fmt.Println(err)
+			return err
+		} else {
+			_, err := gateway.CreateLbServerPool(&types.LbPool{
+				Name:        prefix,
+				Algorithm:   "round-robin",
+				Transparent: false,
+				MonitorId:   "monitor-1",
+				Members: []types.LbPoolMember{
+					{
+						Name:        prefix,
+						MonitorPort: int(port.Port),
+						Port:        int(port.Port),
+						Weight:      1,
+						IpAddress:	 vm.IPAddress,
+						Condition:   "enabled",
+					},
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			rule.Script += fmt.Sprintf("\nacl is_%s hdr(host) -i %s \nuse_backend %s if is_%s", prefix,
+				port.URL, prefix, prefix)
+			fmt.Println(rule.Script)
+			_, err = gateway.UpdateLbAppRule(rule)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}
+	return nil
+}
+
+func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
+	db := config.GetDB()
+	var vm models.VMachine
+	var VApp models.Vapp
+	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
+	db.Where("id = ?", vm.VappID).First(&VApp)
+	gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	rule, err := gateway.GetLbAppRuleByName("cloudtides")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	lines := strings.Split(rule.Script, "\n")
+	newScript := ""
+	outloop:
+	for _, line := range lines {
+		for _, port := range vm.Ports {
+			prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
+			if strings.Contains(line, prefix) {
+				continue outloop
+			}
+		}
+		newScript += line + "\n"
+	}
+	rule.Script = newScript
+	_, err = gateway.UpdateLbAppRule(rule)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	for _, port := range vm.Ports {
+		prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
+		err = gateway.DeleteLbServerPoolByName(prefix)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+	for _, port := range vm.Ports {
+		db.Unscoped().Delete(&port)
+	}
+	return nil
 }

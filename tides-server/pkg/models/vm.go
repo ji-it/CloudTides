@@ -42,6 +42,9 @@ type VMachine struct {
 	// status of the vm
 	Status string `json:"status,omitempty"`
 
+	// exposed ports of the vm
+	Ports []Port
+
 	// foreign key for vApp
 	VappID uint `json:"vappID,omitempty"`
 }
