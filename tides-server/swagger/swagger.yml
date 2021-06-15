@@ -1754,6 +1754,8 @@ paths:
                   type: integer
                 disk:
                   type: integer
+                ports:
+                  type: string
         401:
           description: 'Unauthorized'
   /vmtemp/{id}:
@@ -1820,6 +1822,36 @@ paths:
             properties:
               message:
                 type: string
+  /vm/ports/{id}:
+    get:
+      operationId: 'listPorts'
+      description: 'list the exposed ports of a vmachine'
+      tags:
+        - 'port'
+      produces:
+        - 'application/json'
+      parameters:
+        - type: integer
+          in: path
+          name: id
+          required: true
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                port:
+                  type: integer
+                url:
+                  type: string
+        401:
+          description: 'Unauthorized'
+
   /vapp/vm/{id}:
     get:
       operationId: 'listVM'

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '@tide-environments/environment';
-import { TEMPLATE_PATH, VAPP_PATH, VAPP_PATH_NAME, VCD_URL_PATH, VENDOR_PATH, VM_PATH_NAME} from '@tide-config/path';
+import { PORT_PATH_NAME, TEMPLATE_PATH, VAPP_PATH, VAPP_PATH_NAME, VCD_URL_PATH, VENDOR_PATH, VM_PATH_NAME} from '@tide-config/path';
 import { LoginService } from '../login/login.service';
 import toFixed from 'accounting-js/lib/toFixed.js';
 
@@ -129,6 +129,15 @@ export class VappService {
       ResourceObject[item.name] = item.name;
     }
     return ResourceObject;
+  }
+
+  async getPortList(id: number) {
+    const PortList = await this.http.get<ItemPort[]>(environment.apiPrefix + `/` + VM_PATH_NAME + `/` + PORT_PATH_NAME + `/` + id, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise();
+    return PortList;
   }
 
   addItem(payload: ItemPayload) {
@@ -295,6 +304,12 @@ export interface ItemVM {
   password: string,
   usedMoney: number,
   status: string,
+}
+
+export interface ItemPort {
+  id: number,
+  port: number,
+  url: string,
 }
 
 

@@ -9,6 +9,7 @@ export const TEMPLATEVM_PATH_NAME = 'vmtemp';
 export const VENDOR_PATH_NAME = 'vendors'
 export const VAPP_PATH_NAME = 'vapp'
 export const VM_PATH_NAME = 'vm'
+export const PORT_PATH_NAME = 'ports'
 
 // Path
 export const BASE_PATH = `/`;

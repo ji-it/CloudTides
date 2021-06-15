@@ -1523,6 +1523,9 @@ func init() {
                   "name": {
                     "type": "string"
                   },
+                  "ports": {
+                    "type": "string"
+                  },
                   "vcpu": {
                     "type": "integer"
                   },
@@ -2736,6 +2739,51 @@ func init() {
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/vm/ports/{id}": {
+      "get": {
+        "description": "list the exposed ports of a vmachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "port"
+        ],
+        "operationId": "listPorts",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "port": {
+                    "type": "integer"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -5514,6 +5562,40 @@ func init() {
         }
       }
     },
+    "/vm/ports/{id}": {
+      "get": {
+        "description": "list the exposed ports of a vmachine",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "port"
+        ],
+        "operationId": "listPorts",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ListPortsOKBodyItems0"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/vm/{id}": {
       "delete": {
         "description": "delete VMachine",
@@ -5771,6 +5853,20 @@ func init() {
         }
       }
     },
+    "ListPortsOKBodyItems0": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
     "ListProjectOKBodyItems0": {
       "type": "object",
       "properties": {
@@ -5875,6 +5971,9 @@ func init() {
           "type": "integer"
         },
         "name": {
+          "type": "string"
+        },
+        "ports": {
           "type": "string"
         },
         "vcpu": {

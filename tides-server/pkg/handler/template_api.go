@@ -45,9 +45,9 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 
 // ListTemplateHandler is API handler for /template GET
 func ListTemplateHandler(params template.ListTemplateParams) middleware.Responder {
-	/*if !VerifyUser(params.HTTPRequest) {
+	if !VerifyUser(params.HTTPRequest) {
 		return template.NewListTemplateUnauthorized()
-	}*/
+	}
 
 	db := config.GetDB()
 	var templates []*models.Template
@@ -150,6 +150,7 @@ func ListVMTemplateHandler(params vmtemp.ListVMTempParams) middleware.Responder 
 			Vmem: int64(vmt.VMem),
 			Vcpu: int64(vmt.VCPU),
 			Disk: int64(vmt.Disk),
+			Ports: vmt.Ports,
 		}
 
 		result = append(result, &newItem)

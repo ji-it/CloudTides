@@ -42,6 +42,9 @@
 
     <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
       <clr-dg-action-overflow>
+        <button class="btn btn-sm btn-link" (click)="this.displayPort(item?.id)">
+          Display Ports
+        </button>
       </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.vmem}} GB</div></clr-dg-cell>
@@ -63,9 +66,11 @@
     >
       {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
     </button>
-    <!--button class="btn btn-primary" (click)="this.refreshList()">
-      <clr-icon shape="plus"></clr-icon>
-      {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
-    </button-->
   </div>
 </clr-modal>
+<tide-ports-card
+*ngIf="this.PortOpened"
+[opened]="this.PortOpened"
+[vmid]="this.VMID"
+(cancel)="this.cancelPort()">
+</tide-ports-card>

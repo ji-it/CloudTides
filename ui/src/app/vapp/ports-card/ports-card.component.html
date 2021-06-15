@@ -1,0 +1,41 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    VM
+  </h3>
+  <div class="modal-body">
+  <div *ngIf="VMCard.Portslist$ | async as list">
+    <!--div class="clr-row" *ngFor="let item of list">
+    <div class="clr-col-12">
+      <tide-resource-card [item]="item"></tide-resource-card>
+    </div>
+  </div-->
+  <clr-datagrid>
+    <clr-dg-column>
+      <div class="key">Port</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">URL</div>
+    </clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
+      <clr-dg-cell><div class="value">{{item?.port}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.url}}</div></clr-dg-cell>
+    </clr-dg-row>
+  </clr-datagrid>
+  </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <!--button class="btn btn-primary" (click)="this.refreshList()">
+      <clr-icon shape="plus"></clr-icon>
+      {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
+    </button-->
+  </div>
+</clr-modal>

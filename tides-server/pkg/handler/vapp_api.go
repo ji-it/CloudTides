@@ -556,7 +556,7 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 		monitor := controller.NewVMMonitor(newVM.ID, &conf)
 		controller.VMMonitors.Store(newVM.ID, monitor)
 		for _, port := range ports {
-			prefix := newVapp.Name + "-" + newVM.Name + strconv.Itoa(port)
+			prefix := newVapp.Name + "-" + newVM.Name + "-" + strconv.Itoa(port)
 			newPort := models.Port{
 				Port: uint(port),
 				URL: prefix + "." + config.URLSuffix ,
@@ -856,7 +856,7 @@ func ExposePorts(vdc *govcd.Vdc, vmID int, VAppName string) error {
 	var vm models.VMachine
 	db.Preload("Ports").Where("id = ?", vmID).First(&vm)
 	for _, port := range vm.Ports {
-		prefix := VAppName + "-" + vm.Name + strconv.Itoa(int(port.Port))
+		prefix := VAppName + "-" + vm.Name + "-" + strconv.Itoa(int(port.Port))
 		gateway, err := vdc.GetEdgeGatewayByName("edge-cn-bj", true)
 		if err != nil {
 			fmt.Println(err)
@@ -920,7 +920,7 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 	outloop:
 	for _, line := range lines {
 		for _, port := range vm.Ports {
-			prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
+			prefix := VApp.Name + "-" + vm.Name + "-" + strconv.Itoa(int(port.Port))
 			if strings.Contains(line, prefix) {
 				continue outloop
 			}
@@ -934,7 +934,7 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 		return err
 	}
 	for _, port := range vm.Ports {
-		prefix := VApp.Name + "-" + vm.Name + strconv.Itoa(int(port.Port))
+		prefix := VApp.Name + "-" + vm.Name + "-" + strconv.Itoa(int(port.Port))
 		err = gateway.DeleteLbServerPoolByName(prefix)
 		if err != nil {
 			fmt.Println(err)
