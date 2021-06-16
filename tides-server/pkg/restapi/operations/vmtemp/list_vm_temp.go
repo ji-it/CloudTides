@@ -72,6 +72,9 @@ type ListVMTempOKBodyItems0 struct {
 	// name
 	Name string `json:"name,omitempty"`
 
+	// ports
+	Ports string `json:"ports,omitempty"`
+
 	// vcpu
 	Vcpu int64 `json:"vcpu,omitempty"`
 

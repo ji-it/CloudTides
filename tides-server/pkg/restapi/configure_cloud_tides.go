@@ -5,6 +5,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"tides-server/pkg/restapi/operations/port"
 	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vendor_swagger"
 	"tides-server/pkg/restapi/operations/vm"
@@ -131,6 +132,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 	api.VmtempDeleteVMTempHandler = vmtemp.DeleteVMTempHandlerFunc(handler.DeleteVMTemplateHandler)
 
 	api.VMListVMHandler = vm.ListVMHandlerFunc(handler.ListVMHandler)
+
+	api.PortListPortsHandler = port.ListPortsHandlerFunc(handler.ListPortsHandler)
 
 	api.PreServerShutdown = func() {}
 

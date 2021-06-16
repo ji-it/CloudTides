@@ -77,6 +77,7 @@ export class TemplateService {
         vcpu: tem.vcpu,
         vmem: tem.vmem,
         disk: tem.disk,
+        ports: tem.ports,
       }
 
       List.push(TempItem);
@@ -226,6 +227,7 @@ export interface ItemVM {
   vcpu: number,
   vmem: number,
   disk: number,
+  ports: string,
 }
 
 interface ItemTemplate {

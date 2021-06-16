@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"tides-server/pkg/restapi/operations/policy"
+	"tides-server/pkg/restapi/operations/port"
 	"tides-server/pkg/restapi/operations/project"
 	"tides-server/pkg/restapi/operations/resource"
 	"tides-server/pkg/restapi/operations/template"
@@ -137,6 +138,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		}),
 		PolicyListPolicyHandler: policy.ListPolicyHandlerFunc(func(params policy.ListPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.ListPolicy has not yet been implemented")
+		}),
+		PortListPortsHandler: port.ListPortsHandlerFunc(func(params port.ListPortsParams) middleware.Responder {
+			return middleware.NotImplemented("operation port.ListPorts has not yet been implemented")
 		}),
 		ProjectListProjectHandler: project.ListProjectHandlerFunc(func(params project.ListProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
@@ -284,6 +288,8 @@ type CloudTidesAPI struct {
 	ResourceGetVcdResourceHandler resource.GetVcdResourceHandler
 	// PolicyListPolicyHandler sets the operation handler for the list policy operation
 	PolicyListPolicyHandler policy.ListPolicyHandler
+	// PortListPortsHandler sets the operation handler for the list ports operation
+	PortListPortsHandler port.ListPortsHandler
 	// ProjectListProjectHandler sets the operation handler for the list project operation
 	ProjectListProjectHandler project.ListProjectHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
@@ -481,6 +487,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.PolicyListPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.ListPolicyHandler")
+	}
+	if o.PortListPortsHandler == nil {
+		unregistered = append(unregistered, "port.ListPortsHandler")
 	}
 	if o.ProjectListProjectHandler == nil {
 		unregistered = append(unregistered, "project.ListProjectHandler")
@@ -735,6 +744,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/policy"] = policy.NewListPolicy(o.context, o.PolicyListPolicyHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vm/ports/{id}"] = port.NewListPorts(o.context, o.PortListPortsHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
