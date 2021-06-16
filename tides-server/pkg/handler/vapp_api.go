@@ -6,6 +6,7 @@ import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"github.com/vmware/go-vcloud-director/v2/types/v56"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"tides-server/pkg/config"
@@ -195,7 +196,9 @@ func DeployVAPP(client *govcd.VCDClient, org *govcd.Org, vdc *govcd.Vdc, temName
 
 	for _, VM := range VMs {
 		if VM.VMName == "Deploy" {
-			script := fmt.Sprintf("cd /root && ./client/client 106.14.190.68 30125 cloudtides 'ca$hc0w' template1 %d", vappDB.ID)
+			script := fmt.Sprintf("cd /root && ./client/client %s %s %s %s %s %d",
+				os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_USER"),
+				os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB"), vappDB.ID)
 			err := CusVM(vApp, &VM, script)
 			if err != nil {
 				fmt.Println(err)
@@ -567,34 +570,6 @@ func AddVAPPHandler(params vapp.AddVappParams) middleware.Responder {
 	}
 
 	go DeployVAPP(client, org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network, newVapp.ID)
-	/*Vapp := DeployVAPP(org, vdc, tem.Name, tem.VMTemps, res.Catalog, body.Name, res.Network)
-	if Vapp != nil{
-		newVapp := models.Vapp{
-			UserId: uid,
-			IPAddress:   Vapp.VApp.HREF,
-			IsDestroyed: false,
-			Name:        Vapp.VApp.Name,
-			PoweredOn:   true,
-			ResourceID:  res.ID,
-			Template: tem.Name,
-		}
-		db.Create(&newVapp)
-		for _, VM := range tem.VMTemps {
-			newVM := models.VMachine{
-				Name: VM.VMName,
-				VMem: VM.VMem,
-				VCPU: VM.VCPU,
-				VappID: newVapp.ID,
-				Disk: VM.Disk,
-				UsedMoney: 1.1,
-				IpAddress: "TBD",
-				UserName: "TBD",
-				PassWord: "TBD",
-				Status: "creating",
-			}
-			db.Create(&newVM)
-		}
-	}*/
 	return vapp.NewAddVappOK().WithPayload(&vapp.AddVappOKBody{
 		ID: int64(uid),
 		Message: "Create VApp success",
@@ -777,11 +752,6 @@ func DeleteVAPPHandler(params vapp.DeleteVappParams) middleware.Responder {
 	vApp.Status = "Deleting"
 	db.Save(&vApp)
 
-	/*for _, VM := range vApp.VMs {
-		VM.Status = "Deleting"
-		db.Save(&VM)
-	}*/
-
 	appMonitor.Lock.Unlock()
 
 	go DestroyVAPP(vdc, vApp.Name, &vApp)
@@ -935,6 +905,10 @@ func DeletePorts(vdc *govcd.Vdc, vmID uint) error {
 	}
 	for _, port := range vm.Ports {
 		prefix := VApp.Name + "-" + vm.Name + "-" + strconv.Itoa(int(port.Port))
+		_, err = gateway.GetLbServerPoolByName(prefix)
+		if err != nil {
+			continue
+		}
 		err = gateway.DeleteLbServerPoolByName(prefix)
 		if err != nil {
 			fmt.Println(err)
