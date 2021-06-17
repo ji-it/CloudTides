@@ -17,7 +17,7 @@ var (
 )
 
 const (
-	URLSuffix = "kyligen.vthink.cloud"
+	URLSuffix = "cloudtides.vthink.cloud"
 )
 
 func init() {
