@@ -72,6 +72,9 @@ type ListTemplateOKBodyItems0 struct {
 	// date added
 	DateAdded string `json:"dateAdded,omitempty"`
 
+	// description
+	Description string `json:"description,omitempty"`
+
 	// guest o s
 	GuestOS string `json:"guestOS,omitempty"`
 
@@ -89,6 +92,9 @@ type ListTemplateOKBodyItems0 struct {
 
 	// resource ID
 	ResourceID int64 `json:"resourceID,omitempty"`
+
+	// tag
+	Tag string `json:"tag,omitempty"`
 
 	// template type
 	// Enum: [datastore upload]

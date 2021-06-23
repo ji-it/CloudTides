@@ -3,41 +3,42 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { TemplateListComponent } from '../template-list/template-list.component';
-import { TemplateService } from '../template.service';
+import { TemplateService, ItemPayloadVM} from '../template.service';
+import { VMCardComponent } from '../vm-card/vm-card.component';
 
 @Component({
-  selector: 'tide-template-dialog',
-  templateUrl: './template-dialog.component.html',
-  styleUrls: ['./template-dialog.component.scss']
+  selector: 'tide-template-dialogupdate',
+  templateUrl: './template-dialogupdate.component.html',
+  styleUrls: ['./template-dialogupdate.component.scss']
 })
-export class TemplateDialogComponent implements OnInit {
+export class TemplateDialogUpdateComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
     public readonly translate: TranslateService,
     private readonly templateService: TemplateService,
-    private readonly  templateList: TemplateListComponent,
+    private readonly  vmCard: VMCardComponent,
   ) {
-    //this.resourceList = Object.keys(templateList.ResList);
     this.templateForm = this.fb.group({
-      type: ['', Validators.required],
-      name: ['', Validators.required],
-      tag: ['', Validators.required],
-      description: ['', Validators.required],
-      path: ['', Validators.required]
+      id: [],
+      disk: [vmCard.updateCPU, Validators.required],
+      vmem: [vmCard.updateMem, Validators.required],
+      vcpu: [vmCard.updateDisk, Validators.required],
+      ports: [''],
+      //templateID: ['', Validators.required],
     })
-  
   }
 
   @Input() opened = false;
+  @Input() vmid: number
   @Output() save = new EventEmitter();
   @Output() cancel = new EventEmitter();
 
   templateForm: FormGroup;
-  //resourceList: string[];
+  tempList: string[];
+  template: any;
+  resourceList: string[];
   resource: any;
-  resourceList: string[] = [`Big Data`, `Machine Learning`, `Research`, `Cloud Native`];
-  typeList: string[] = [`OVA`, `Others`]
 
   readonly vo = {
     serverError: '',
@@ -53,9 +54,10 @@ export class TemplateDialogComponent implements OnInit {
 
   async onSave() {
     const { value } = this.templateForm;
+    const payload = this.changeID(value)
     this.resetModal();
     this.vo.spinning = true;
-    await this.templateService.addItem(value).then(() => {
+    await this.templateService.editItemVM(payload).then(() => {
       this.save.emit('');
       this.close();
       this.vo.spinning = false;
@@ -74,4 +76,23 @@ export class TemplateDialogComponent implements OnInit {
     this.vo.spinning = false;
   }
 
+  private changeID (payload: ItemPayload) {
+    const result : ItemPayload = {
+      id: this.vmid,
+      disk: payload.disk,
+      vmem: payload.vmem,
+      vcpu: payload.vcpu,
+      ports: payload.ports,
+    }
+    return result;
+  }
+
+}
+
+interface ItemPayload {
+  id: number,
+  disk: number,
+  vmem: number,
+  vcpu: number,
+  ports: string,
 }

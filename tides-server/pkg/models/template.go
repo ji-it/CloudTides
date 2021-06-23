@@ -39,6 +39,12 @@ type Template struct {
 	// vm name
 	VMName string `json:"vmName,omitempty"`
 
+	// tag
+	Tag string `json:"tag,omitempty"`
+
+	// description
+	Description string `json:"description,omitempty"`
+
 	VMTemps []VMTemp
 
 	// resource id

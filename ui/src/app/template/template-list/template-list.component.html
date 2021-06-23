@@ -34,6 +34,12 @@
       <div class="key">Template Name</div>
     </clr-dg-column>
     <clr-dg-column>
+      <div class="key">Description</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Tag</div>
+    </clr-dg-column>
+    <!--clr-dg-column>
       <div class="key">Vendor</div>
     </clr-dg-column>
     <clr-dg-column>
@@ -50,7 +56,7 @@
     </clr-dg-column>
     <clr-dg-column>
       <div class="key">CPUs</div>
-    </clr-dg-column>
+    </clr-dg-column-->
     <clr-dg-column>
       <div class="key">Create Time</div>
     </clr-dg-column>
@@ -69,15 +75,21 @@
           class="btn btn-sm btn-link"
           (click)="this.displayVM(item?.id)"
         >DISPLAY VM TEMPLATE</button>
+        <button
+        class="btn btn-sm btn-link"
+        (click)="this.publish(item?.id)"
+      >Publish</button>
       </clr-dg-action-overflow>
       <clr-dg-cell><div class="value">{{item?.id}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.description}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.tag}}</div></clr-dg-cell>
+      <!--clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.guestOS}}</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.memorySize}} GB</div></clr-dg-cell>
       <clr-dg-cell><div class="value">{{item?.provisionedSpace}} GB</div></clr-dg-cell>
-      <clr-dg-cell><div class="value">{{item?.vcpu}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.vcpu}}</div></clr-dg-cell-->
       <clr-dg-cell><div class="value">{{item?.dateAdded}}</div></clr-dg-cell>
     </clr-dg-row>
   </clr-datagrid>

@@ -131,6 +131,8 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.VmtempDeleteVMTempHandler = vmtemp.DeleteVMTempHandlerFunc(handler.DeleteVMTemplateHandler)
 
+	api.VmtempUpdateVMTempHandler = vmtemp.UpdateVMTempHandlerFunc(handler.UpdateVMTemplateHandler)
+
 	api.VMListVMHandler = vm.ListVMHandlerFunc(handler.ListVMHandler)
 
 	api.PortListPortsHandler = port.ListPortsHandlerFunc(handler.ListPortsHandler)

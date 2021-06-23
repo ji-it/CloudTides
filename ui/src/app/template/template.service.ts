@@ -24,25 +24,33 @@ export class TemplateService {
     }).toPromise();
     const List: ItemDTO[] = [];
     for (const tem of TemplateList) {
-      const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/` + tem.resourceID, {
+      /*const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/` + tem.resourceID, {
         headers: {
           Authorization: `Bearer ${this.loginService.token}`,
         },
-      }).toPromise();
+      }).toPromise();*/
+      if (tem.name == `KubeFATE-CentOS`) {
+        tem.description = `This is a two parties federal learning cluster.`
+        tem.tag = `Machine Learning`
+      }
+      /*if (tem.name == `Kyligence-Sandbox`) {
+        Description = `This is a sandbox of a single node Kyligence.`
+        Tag = `Big Data`
+      }*/
+      if (tem.name == `tides-boinc-attached`) {
+        tem.description = `This is a boinc client`
+        tem.tag = `Research`
+      }
+      if (tem.name == `Harbor`) {
+        tem.description = `This is a demo environment for harbor`
+        tem.tag = `Cloud Native`
+      }
       const TempItem: ItemDTO = {
         id: tem.id,
         name: tem.name,
-        guestOS: tem.guestOS,
-        //guestOS: '',
-        resourceID: tem.resourceID,
         dateAdded: tem.dateAdded,
-        vendor: res.vendor,
-        //vendor: '',
-        datacenter: res.datacenter,
-        //datacenter: '',
-        memorySize: tem.memorySize,
-        provisionedSpace: tem.provisionedSpace,
-        vcpu: tem.vcpu,
+        description: tem.description,
+        tag: tem.tag,
       }
 
       List.push(TempItem);
@@ -128,6 +136,21 @@ export class TemplateService {
     });
   }
 
+  editItemVM(payload: ItemUpdateVM) {
+    const body = {
+      ...payload,
+    }
+    return this.http.put<any>(environment.apiPrefix + TEMPLATEVM_PATH, body, {
+      headers: {
+        Authorization: `Bearer ${this.loginService.token}`,
+      },
+    }).toPromise().then(() => {
+      return Promise.resolve();
+    }, (errResp) => {
+      return Promise.reject(`HTTP ${errResp.status}: ${errResp.error.message}`);
+    });
+  }
+
   editItem(id: string, payload: ItemPayload) {
     return this.http.put<ItemDTO>(`${this.prefix}/${id}`, payload).pipe(
       map(mapItem),
@@ -165,14 +188,9 @@ export class TemplateService {
 interface ItemDTO {
   id: number;
   name: string;
-  resourceID: number;
-  guestOS: string;
   dateAdded: string;
-  vendor: string;
-  datacenter: string;
-  memorySize: number;
-  provisionedSpace: number;
-  vcpu: number;
+  description: string;
+  tag: string;
 }
 
 interface ItemRes {
@@ -202,14 +220,8 @@ export type Item = ItemDTO;
 
 export interface ItemPayload {
   name: string,
-  os: string,
-  source: string,
-  compat: string,
-  space: number,
-  memsize: number,
-  vcpu: number,
-  vmName: string,
-  resourceID: number,
+  tag: string,
+  description: string,
 }
 
 export interface ItemPayloadVM {
@@ -218,6 +230,13 @@ export interface ItemPayloadVM {
   vmem: number,
   vcpu: number,
   templateID: number,
+  ports: string,
+}
+
+export interface ItemUpdateVM {
+  disk: number,
+  vmem: number,
+  vcpu: number,
   ports: string,
 }
 

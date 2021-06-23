@@ -20,8 +20,8 @@ export class TemplateDialogVMComponent implements OnInit {
   ) {
     this.tempList = Object.keys(templateList.TemplateList);
     this.template = templateList.TemplateList;
-    this.resourceList = Object.keys(templateList.ResList);
-    this.resource = templateList.ResList;
+    //this.resourceList = Object.keys(templateList.ResList);
+    //this.resource = templateList.ResList;
     this.templateForm = this.fb.group({
       name: ['', Validators.required],
       disk: ['', Validators.required],

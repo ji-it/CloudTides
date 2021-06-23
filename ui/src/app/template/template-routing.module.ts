@@ -7,6 +7,7 @@ import { TemplateListComponent } from './template-list/template-list.component';
 import { TemplateDialogComponent } from './template-dialog/template-dialog.component';
 import { TemplateDialogVMComponent } from './template-dialogvm/template-dialogvm.component';
 import { VMCardComponent } from './vm-card/vm-card.component';
+import { TemplateDialogUpdateComponent } from './template-dialogupdate/template-dialogupdate.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,7 @@ export const declarations = [
   TemplateDialogComponent,
   TemplateDialogVMComponent,
   VMCardComponent,
+  TemplateDialogUpdateComponent,
 ];
 
 export const providers = [

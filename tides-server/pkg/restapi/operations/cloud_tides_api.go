@@ -184,6 +184,9 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		UserUpdateUserProfileHandler: user.UpdateUserProfileHandlerFunc(func(params user.UpdateUserProfileParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UpdateUserProfile has not yet been implemented")
 		}),
+		VmtempUpdateVMTempHandler: vmtemp.UpdateVMTempHandlerFunc(func(params vmtemp.UpdateVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.UpdateVMTemp has not yet been implemented")
+		}),
 		UserUserLoginHandler: user.UserLoginHandlerFunc(func(params user.UserLoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UserLogin has not yet been implemented")
 		}),
@@ -318,6 +321,8 @@ type CloudTidesAPI struct {
 	UsageUpdateResourceUsageHandler usage.UpdateResourceUsageHandler
 	// UserUpdateUserProfileHandler sets the operation handler for the update user profile operation
 	UserUpdateUserProfileHandler user.UpdateUserProfileHandler
+	// VmtempUpdateVMTempHandler sets the operation handler for the update VM temp operation
+	VmtempUpdateVMTempHandler vmtemp.UpdateVMTempHandler
 	// UserUserLoginHandler sets the operation handler for the user login operation
 	UserUserLoginHandler user.UserLoginHandler
 	// ResourceValidateVcdResourceHandler sets the operation handler for the validate vcd resource operation
@@ -532,6 +537,9 @@ func (o *CloudTidesAPI) Validate() error {
 	}
 	if o.UserUpdateUserProfileHandler == nil {
 		unregistered = append(unregistered, "user.UpdateUserProfileHandler")
+	}
+	if o.VmtempUpdateVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.UpdateVMTempHandler")
 	}
 	if o.UserUserLoginHandler == nil {
 		unregistered = append(unregistered, "user.UserLoginHandler")
@@ -804,6 +812,10 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/users/profile"] = user.NewUpdateUserProfile(o.context, o.UserUpdateUserProfileHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/vmtemp"] = vmtemp.NewUpdateVMTemp(o.context, o.VmtempUpdateVMTempHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
