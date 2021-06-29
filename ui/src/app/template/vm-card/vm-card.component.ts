@@ -48,6 +48,11 @@ export class VMCardComponent implements OnInit, OnDestroy {
 
   list$: Observable<ItemVM[]> = of([]);
   refreshInterval: number;
+  dialogOpened = false;
+  updateId = 1;
+  updateCPU = 1;
+  updateMem = 1;
+  updateDisk = 1;
 
   ngOnDestroy(): void {
     window.clearInterval(this.refreshInterval);
@@ -55,6 +60,22 @@ export class VMCardComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.refreshList();
+  }
+
+  Cancel() {
+    this.dialogOpened = false;
+  }
+
+  async Save() {
+    await this.refreshList();
+  }
+
+  Click(id: number, cpu: number, mem: number, disk: number) {
+    this.updateId = id;
+    this.updateCPU = cpu;
+    this.updateMem = mem;
+    this.updateDisk = disk;
+    this.dialogOpened = true;
   }
 
   onCancel() {

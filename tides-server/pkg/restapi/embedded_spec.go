@@ -1376,6 +1376,9 @@ func init() {
                   "dateAdded": {
                     "type": "string"
                   },
+                  "description": {
+                    "type": "string"
+                  },
                   "guestOS": {
                     "type": "string"
                   },
@@ -1393,6 +1396,9 @@ func init() {
                   },
                   "resourceID": {
                     "type": "integer"
+                  },
+                  "tag": {
+                    "type": "string"
                   },
                   "templateType": {
                     "type": "string",
@@ -1433,31 +1439,13 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "compat": {
+                "description": {
                   "type": "string"
-                },
-                "memsize": {
-                  "type": "number"
                 },
                 "name": {
                   "type": "string"
                 },
-                "os": {
-                  "type": "string"
-                },
-                "resourceID": {
-                  "type": "integer"
-                },
-                "source": {
-                  "type": "string"
-                },
-                "space": {
-                  "type": "number"
-                },
-                "vcpu": {
-                  "type": "integer"
-                },
-                "vmName": {
+                "tag": {
                   "type": "string"
                 }
               }
@@ -2839,6 +2827,75 @@ func init() {
       }
     },
     "/vmtemp": {
+      "put": {
+        "description": "update VMTemp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "updateVMTemp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "disk": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "ports": {
+                  "type": "string"
+                },
+                "vcpu": {
+                  "type": "integer"
+                },
+                "vmem": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "description": "add VMTemp",
         "consumes": [
@@ -4409,31 +4466,13 @@ func init() {
             "schema": {
               "type": "object",
               "properties": {
-                "compat": {
+                "description": {
                   "type": "string"
-                },
-                "memsize": {
-                  "type": "number"
                 },
                 "name": {
                   "type": "string"
                 },
-                "os": {
-                  "type": "string"
-                },
-                "resourceID": {
-                  "type": "integer"
-                },
-                "source": {
-                  "type": "string"
-                },
-                "space": {
-                  "type": "number"
-                },
-                "vcpu": {
-                  "type": "integer"
-                },
-                "vmName": {
+                "tag": {
                   "type": "string"
                 }
               }
@@ -5647,6 +5686,75 @@ func init() {
       }
     },
     "/vmtemp": {
+      "put": {
+        "description": "update VMTemp",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "vmtemp"
+        ],
+        "operationId": "updateVMTemp",
+        "parameters": [
+          {
+            "name": "reqBody",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "disk": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "ports": {
+                  "type": "string"
+                },
+                "vcpu": {
+                  "type": "integer"
+                },
+                "vmem": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "resource not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "description": "add VMTemp",
         "consumes": [
@@ -5893,6 +6001,9 @@ func init() {
         "dateAdded": {
           "type": "string"
         },
+        "description": {
+          "type": "string"
+        },
         "guestOS": {
           "type": "string"
         },
@@ -5910,6 +6021,9 @@ func init() {
         },
         "resourceID": {
           "type": "integer"
+        },
+        "tag": {
+          "type": "string"
         },
         "templateType": {
           "type": "string",

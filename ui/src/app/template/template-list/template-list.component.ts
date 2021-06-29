@@ -33,7 +33,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   list$: Observable<Item[]> = of([]);
   VMlist$: Observable<ItemVM[]> = of([]);
   TemplateList: Object = {};
-  ResList: Object ={};
+  //ResList: Object ={};
   opened = false;
   VMopened = false;
   displayOpened = false;
@@ -63,7 +63,7 @@ export class TemplateListComponent implements OnInit, OnDestroy{
     this.refreshInterval = window.setInterval(async () => {
       this.list$ = of(await this.templateService.getList());
     }, VENDOR_USAGE_REFRESH_PERIOD);
-    this.ResList = Object(await this.templateService.getResList());
+    //this.ResList = Object(await this.templateService.getResList());
     this.TemplateList = Object(await this.templateService.getTemplateList());
   }
 
@@ -74,6 +74,9 @@ export class TemplateListComponent implements OnInit, OnDestroy{
   async add(id: number) {
     this.TemplateID = id;
     this.VMopened = true;
+  }
+
+  async publish(id: number) {
   }
 
   async displayVM(id: number) {

@@ -1242,24 +1242,12 @@ paths:
           schema:
             type: object
             properties:
-              os:
-                type: string
-              source:
-                type: string
-              compat:
-                type: string
-              space:
-                type: number
-              memsize:
-                type: number
-              vcpu:
-                type: integer
               name:
                 type: string
-              vmName:
+              tag:
                 type: string
-              resourceID:
-                type: integer
+              description:
+                type: string
       responses:
         200:
           description: 'OK'
@@ -1303,6 +1291,10 @@ paths:
                   type: number
                 vcpu:
                   type: integer
+                tag:
+                  type: string
+                description:
+                  type: string
                 resourceID:
                   type: integer
                 templateType:
@@ -1677,6 +1669,50 @@ paths:
               message:
                 type: string
   /vmtemp:
+    put:
+      operationId: 'updateVMTemp'
+      description: 'update VMTemp'
+      tags:
+        - 'vmtemp'
+      consumes:
+        - 'application/json'
+      parameters:
+        - in: body
+          name: reqBody
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              vcpu:
+                type: integer
+              vmem:
+                type: integer
+              disk:
+                type: integer
+              ports:
+                type: string
+      responses:
+        200:
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              id:
+                type: integer
+        400:
+          description: 'bad request'
+        401:
+          description: 'Unauthorized'
+        404:
+          description: 'resource not found'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
     post:
       operationId: 'addVMTemp'
       description: 'add VMTemp'

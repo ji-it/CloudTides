@@ -63,32 +63,14 @@ func (o *AddTemplate) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model AddTemplateBody
 type AddTemplateBody struct {
 
-	// compat
-	Compat string `json:"compat,omitempty"`
-
-	// memsize
-	Memsize float64 `json:"memsize,omitempty"`
+	// description
+	Description string `json:"description,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
 
-	// os
-	Os string `json:"os,omitempty"`
-
-	// resource ID
-	ResourceID int64 `json:"resourceID,omitempty"`
-
-	// source
-	Source string `json:"source,omitempty"`
-
-	// space
-	Space float64 `json:"space,omitempty"`
-
-	// vcpu
-	Vcpu int64 `json:"vcpu,omitempty"`
-
-	// vm name
-	VMName string `json:"vmName,omitempty"`
+	// tag
+	Tag string `json:"tag,omitempty"`
 }
 
 // Validate validates this add template body

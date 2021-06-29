@@ -20,23 +20,83 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 
 	body := params.ReqBody
 	newTem := models.Template{
-		Compatibility:    body.Compat,
-		GuestOS:          body.Os,
-		MemorySize:       body.Memsize,
-		VCPUSize:         body.Vcpu,
-		Name:             body.Name,
-		ProvisionedSpace: body.Space,
-		TemplateType:     body.Source,
-		VMName:           body.VMName,
-		ResourceID:       uint(body.ResourceID),
+		Name:        body.Name,
+		Tag:         body.Tag,
+		Description: body.Description,
 	}
 
+	/*db := config.GetDB()
+	db.Create(&newTem)
+	var vendor models.Vendor
+	var res models.Resource
+	var vcd models.Vcd
+	if db.Where("name = ?", "ThinkCloud").First(&vendor).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Vendor not found",
+		})
+	}
+	if db.Where("host_address = ? AND datacenter = ?", vendor.URL, "ElasticCloudDatacenter").First(&res).RowsAffected == 0 {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Datacenter not found",
+		})
+	}
+	if db.Where("resource_id = ?", res.ID).First(&vcd).RowsAffected == 0{
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Vcd not found",
+		})
+	}
+	if res.Type != "Fixed" {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Resource is not fixed, cannot create Vapp manually",
+		})
+	}
+
+	conf := config.VcdConfig{
+		Href: vendor.URL,
+		Password: res.Password,
+		User: res.Username,
+		Org: vcd.Organization,
+		VDC: res.Datacenter,
+	}
+	client, err := conf.Client() // We now have a client
+	if err != nil {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create client failed",
+		})
+	}
+	org, err := client.GetOrgByName(conf.Org)
+	if err != nil {
+		return vapp.NewAddVappNotFound().WithPayload(&vapp.AddVappNotFoundBody{
+			Message: "Create org failed",
+		})
+	}
+	catalog, err := org.GetCatalogByName(res.Catalog, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	cataItem, err := catalog.GetCatalogItemByName(temName, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	vappTem, err := cataItem.GetVAppTemplate()
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, vm := range vappTem.VAppTemplate.Children.VM {
+		var VMDB models.VMTemp
+		VMDB.VMName = vm.Name
+		VMDB.TemplateID = newTem.ID
+		VMDB.Disk = 64
+		VMDB.VMem = 20
+		VMDB.VCPU = 8
+		db.Create(&VMDB)
+	}*/
 	db := config.GetDB()
 	err := db.Create(&newTem).Error
 	if err != nil {
 		return template.NewAddTemplateBadRequest()
 	}
-
+	
 	return template.NewAddTemplateOK().WithPayload(&template.AddTemplateOKBody{
 		Message: "success",
 		ID:      int64(newTem.Model.ID),
@@ -64,6 +124,8 @@ func ListTemplateHandler(params template.ListTemplateParams) middleware.Responde
 			Name:             tem.Name,
 			ProvisionedSpace: tem.ProvisionedSpace,
 			TemplateType:     tem.TemplateType,
+			Tag:              tem.Tag,
+			Description:      tem.Description,
 			ResourceID:       int64(tem.ResourceID),
 			Vcpu:             tem.VCPUSize,
 		}
@@ -159,7 +221,32 @@ func ListVMTemplateHandler(params vmtemp.ListVMTempParams) middleware.Responder 
 	return vmtemp.NewListVMTempOK().WithPayload(result)
 }
 
-//
+// UpdateVMTemplateHandler is API handler for /vmtemp PUT
+func UpdateVMTemplateHandler(params vmtemp.UpdateVMTempParams) middleware.Responder {
+	if !VerifyUser(params.HTTPRequest) {
+		return vmtemp.NewUpdateVMTempUnauthorized()
+	}
+
+	db := config.GetDB()
+	var VMTemp models.VMTemp
+	body := params.ReqBody
+	if db.Where("id = ?", body.ID).First(&VMTemp).RowsAffected == 0 {
+		return vmtemp.NewUpdateVMTempNotFound()
+	}
+
+	VMTemp.VCPU = int(body.Vcpu)
+	VMTemp.Disk = int(body.Disk)
+	VMTemp.VMem = int(body.Vmem)
+	VMTemp.Ports = body.Ports
+
+	if db.Save(&VMTemp).RowsAffected == 0 {
+		return vmtemp.NewUpdateVMTempBadRequest()
+	}
+
+	return vmtemp.NewUpdateVMTempOK().WithPayload(&vmtemp.UpdateVMTempOKBody{ID: int64(VMTemp.ID), Message: "success"})
+}
+
+// DeleteVMTemplateHandler is API handler for /vmtemp/{id} DELETE
 func DeleteVMTemplateHandler(params vmtemp.DeleteVMTempParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vmtemp.NewDeleteVMTempUnauthorized()

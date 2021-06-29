@@ -32,6 +32,10 @@
       <clr-dg-action-overflow>
         <button
           class="btn btn-sm btn-link"
+          (click)="this.Click(item?.id, item?.vcpu, item?.vmem, item?.disk)"
+        >Update VM</button>
+        <button
+          class="btn btn-sm btn-link"
           (click)="this.delete(item?.id)"
         >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
       </clr-dg-action-overflow>
@@ -57,3 +61,11 @@
     </button-->
   </div>
 </clr-modal>
+
+<tide-template-dialogupdate
+  *ngIf="this.dialogOpened"
+  [opened]="this.dialogOpened"
+  [vmid]="this.updateId"
+  (save)="this.Save()"
+  (cancel)="this.Cancel()">
+</tide-template-dialogupdate>
