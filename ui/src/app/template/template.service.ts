@@ -24,27 +24,6 @@ export class TemplateService {
     }).toPromise();
     const List: ItemDTO[] = [];
     for (const tem of TemplateList) {
-      /*const res = await this.http.get<ItemRes>(environment.apiPrefix + VCD_URL_PATH + `/` + tem.resourceID, {
-        headers: {
-          Authorization: `Bearer ${this.loginService.token}`,
-        },
-      }).toPromise();*/
-      if (tem.name == `KubeFATE-CentOS`) {
-        tem.description = `This is a two parties federal learning cluster.`
-        tem.tag = `Machine Learning`
-      }
-      /*if (tem.name == `Kyligence-Sandbox`) {
-        Description = `This is a sandbox of a single node Kyligence.`
-        Tag = `Big Data`
-      }*/
-      if (tem.name == `tides-boinc-attached`) {
-        tem.description = `This is a boinc client`
-        tem.tag = `Research`
-      }
-      if (tem.name == `Harbor`) {
-        tem.description = `This is a demo environment for harbor`
-        tem.tag = `Cloud Native`
-      }
       const TempItem: ItemDTO = {
         id: tem.id,
         name: tem.name,
