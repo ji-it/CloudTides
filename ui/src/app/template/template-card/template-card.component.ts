@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Item } from '../template.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'tide-template-card',
   templateUrl: './template-card.component.html',
-  styleUrls: ['./template-card.component.scss']
+  styleUrls: ['./template-card.component.scss'],
 })
 export class TemplateCardComponent implements OnInit {
 
-  constructor(
-  ) { }
+  constructor(public readonly translate: TranslateService) { }
 
   @Input() template: Item;
   @Output() delete = new EventEmitter<Item>();

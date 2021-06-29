@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -15,7 +14,7 @@ import { Observable, of } from 'rxjs';
 
 import { LoginService } from '../../login/login.service';
 import { RouterData } from '../../app-routing.module';
-
+import { LOGIN_PATH } from '@tide-config/path';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
@@ -37,14 +36,14 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     return this.check().pipe(
-      tap(valid => {
-        if (valid === true) {
+      tap(async valid => {
+        if (valid) {
           return;
         } else {
-          this.router.navigate([ '/login' ]);
+          await this.router.navigate([LOGIN_PATH]);
           return;
         }
-      })
+      }),
     );
   }
 

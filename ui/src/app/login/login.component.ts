@@ -4,19 +4,22 @@ import { EMPTY, Subject } from 'rxjs';
 import { LoginService } from './login.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { I18nService } from '@tide-shared/service/i18n';
 
 @Component({
   selector: 'cp-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly loginService: LoginService,
     private readonly router: Router,
-  ) {
-  }
+    public readonly translate: TranslateService,
+    public readonly i18nService: I18nService,
+  ) {}
 
   readonly vo = {
 
@@ -27,7 +30,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     submitting: false,
     loginError: '',
-
   };
 
   private readonly submit$ = new Subject<Credential>();
@@ -61,18 +63,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     })
   ;
 
-
   onSubmit({ username = '', password = '' }: Credential) {
     this.submit$.next({ username, password });
   }
 
-
-  ngOnInit() {
-    if (this.loginService.hasLoggedIn) {
-      // this.document.location.href = '/';
-      this.router.navigate(['/']);
-    }
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.submit$$.unsubscribe();

@@ -1,0 +1,124 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add vApp
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.vappForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-select-container>
+        <label for="vendor">Vendor</label>
+        <select
+          clrSelect
+          id="vendor"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="vendor"
+        >
+        <option *ngFor="let ven of vendorList"
+          [ngValue]="ven"> {{ ven }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label for="template">Template</label>
+        <select
+          clrSelect
+          id="template"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="template"
+        >
+        <option *ngFor="let tem of templateList"
+          [ngValue]="template[tem]"> {{ tem }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label for="datacenter">Datacenter</label>
+        <select
+          clrSelect
+          id="datacenter"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="datacenter"
+        >
+        <option *ngFor="let res of resourceList"
+          [ngValue]="res"> {{ res }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Vapp Name'"
+          formControlName="name"
+          clrInput />
+      </clr-input-container>
+      <!--clr-input-container>
+        <label for="template">Template</label>
+        <input id="template"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Template Name'"
+          formControlName="template"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="vendor">Vendor</label>
+        <input id="vendor"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Vendor Name'"
+          formControlName="vendor"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="datacenter">Datacenter</label>
+        <input id="datacenter"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Datacenter'"
+          formControlName="datacenter"
+          clrInput />
+      </clr-input-container-->
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!vappForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

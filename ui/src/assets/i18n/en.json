@@ -1,0 +1,125 @@
+{
+  "LOGIN": {
+    "SUBMITTING": "Submitting...",
+    "LOGIN": "Login",
+    "LOGIN_TITLE": "CloudTides 云汐",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "SIGNUP": "Sign up"
+  },
+  "REGISTER": {
+    "REGISTER": "Register",
+    "SUBTITLE": "Register for CloudTides",
+    "ACCOUNT": "Account Information",
+    "USERNAME": "Username",
+    "USERNAME_MISSING": "Username is required",
+    "USERNAME_TOO_SHORT": "Username is too short",
+    "PASSWORD": "Password",
+    "PASSWORD_MISSING": "Password is required",
+    "PASSWORD_TOO_SHORT": "Password is too short",
+    "PASSWORD_TOO_LONG": "Password is too long",
+    "PASSWORD_CONFIRM": "Confirm Password",
+    "PASSWORD_NOT_MATCH": "Password does not match",
+    "BASIC_INFORMATION": "Basic Information",
+    "EMAIL": "Email",
+    "EMAIL_MISSING": "Email is required",
+    "EMAIL_WRONG_FORMAT": "Email is not in the correct format",
+    "PHONE": "Phone Number",
+    "PHONE_MISSING": "Phone number is required",
+    "COMPANY": "Company Name",
+    "COMPANY_MISSING": "Company Name is required",
+    "SUBMITTING": "Register"
+  },
+  "HOME": {
+    "RESOURCE": {
+      "RESOURCE": "Resource",
+      "ADD_RESOURCE": "Add Resource",
+      "CARD": {
+        "INFO": {
+          "CPU": "CPU",
+          "MEMORY": "Memory",
+          "DISK": "Disk"
+        },
+        "DETAIL": {
+          "CPU": "CPU",
+          "MEMORY": "Memory",
+          "DISK": "Disk"
+        },
+        "FOOTER": {
+          "ACTIVATE": "Activate",
+          "CONTRIBUTE": "Contribute",
+          "DELETE": "Delete"
+        }
+      },
+      "DIALOG": {
+        "ADD_RESOURCE": "Add Resource",
+        "NAME": "Name",
+        "REQUIRED": "{{item}} is required",
+        "DATACENTER": "Datacenter",
+        "ORG": "Tenant",
+        "NETWORK": "Network",
+        "CATALOG": "Catalog",
+        "USERNAME": "Username",
+        "PASSWORD": "Password",
+        "PASSWORD_HELP_TEXT": "Note: username and password here will only be used for adding resources. It will not be stored in this website.",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "RESOURCE_PLACEHOLDER": "Resource Name",
+        "DATACENTER_PLACEHOLDER": "Datacenter Name",
+        "ORG_PLACEHOLDER": "Tenant Name",
+        "NETWORK_PLACEHOLDER": "Network Name",
+        "CATALOG_PLACEHOLDER": "Catalog Name"
+      }
+    },
+    "POLICY": {
+      "POLICY": "Policy",
+      "CONTRIBUTION_POLICY": "Contribution Policy",
+      "ADD_POLICY": "Add Policy",
+      "DATAGRID": {
+        "CRID": "CRID",
+        "TEMPLATE": "Template",
+        "START_CONDITIONS": "Start Conditions",
+        "STOP_CONDITIONS": "Stop Conditions",
+        "EDIT": "Edit",
+        "DELETE": "Delete",
+        "OF": "of",
+        "ITEM": "items"
+      },
+      "DIALOG": {
+        "CREATE_POLICY": "Create Policy",
+        "TEMPLATE": "Template",
+        "START_CONDITION": "Start Condition",
+        "STOP_CONDITION": "Stop Condition",
+        "CPU": "CPU",
+        "MEMORY": "Memory",
+        "DISK": "Disk",
+        "CANCEL": "Cancel",
+        "SAVE": "Save",
+        "SELECT_START": "Select the percentage when to start",
+        "SELECT_STOP": "Select the percentage when to stop",
+        "REQUIRED": "Required"
+      }
+    },
+    "DASHBOARD": {
+      "DASHBOARD": "Dashboard"
+    },
+    "TEMPLATE": {
+      "TEMPLATE": "Template",
+      "ADD_TEMPLATE": "Add Template",
+      "CARD": {
+        "NAME": "Name",
+        "VERSION": "Version",
+        "DATE": "Date",
+        "URL": "URL",
+        "CPU": "CPU",
+        "MEMORY": "Memory",
+        "DISK": "Disk",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      }
+    },
+    "PRODUCT_NAME": "CloudTides",
+    "PROFILE": "Profile",
+    "LOGOUT": "Log out"
+  }
+}

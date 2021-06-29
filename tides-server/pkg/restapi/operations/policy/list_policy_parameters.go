@@ -13,7 +13,8 @@ import (
 )
 
 // NewListPolicyParams creates a new ListPolicyParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewListPolicyParams() ListPolicyParams {
 
 	return ListPolicyParams{}

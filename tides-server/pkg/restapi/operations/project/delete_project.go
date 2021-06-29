@@ -6,6 +6,7 @@ package project
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewDeleteProject(ctx *middleware.Context, handler DeleteProjectHandler) *De
 	return &DeleteProject{Context: ctx, Handler: handler}
 }
 
-/*DeleteProject swagger:route DELETE /project/delete project deleteProject
+/* DeleteProject swagger:route DELETE /project/{id} project deleteProject
 
 delete boinc project
 
@@ -47,48 +48,14 @@ func (o *DeleteProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewDeleteProjectParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
-}
-
-// DeleteProjectBody delete project body
-//
-// swagger:model DeleteProjectBody
-type DeleteProjectBody struct {
-
-	// ID
-	ID int64 `json:"ID,omitempty"`
-}
-
-// Validate validates this delete project body
-func (o *DeleteProjectBody) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DeleteProjectBody) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DeleteProjectBody) UnmarshalBinary(b []byte) error {
-	var res DeleteProjectBody
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
 }
 
 // DeleteProjectOKBody delete project o k body
@@ -102,6 +69,11 @@ type DeleteProjectOKBody struct {
 
 // Validate validates this delete project o k body
 func (o *DeleteProjectOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this delete project o k body based on context it is used
+func (o *DeleteProjectOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

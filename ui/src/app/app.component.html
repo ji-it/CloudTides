@@ -1,59 +1,83 @@
 <clr-main-container>
   <div class="main-container">
 
-    <ng-container *ngIf="!this.inLoginPage()">
+    <ng-container *ngIf="!this.loginService.inLoginPage()">
       <header class="header header-6">
         <div class="branding">
           <a routerLink="/" class="nav-link">
-            <clr-icon shape="vm-bug"></clr-icon>
-            <span class="title">{{ this.vo.title }}</span>
+            <!--            <clr-icon shape="vm-bug"></clr-icon>-->
+            <span class="title">{{ "HOME.PRODUCT_NAME" | translate:{} }}</span>
           </a>
         </div>
         <div class="header-actions">
-          <clr-dropdown>
+          <clr-select-container>
+            <select
+              clrSelect
+              class="i18n-select"
+              [(ngModel)]="i18nService.i18nChoice"
+              (ngModelChange)="i18nService.setLanguage()">
+              <option *ngFor="let lang of i18nService.i18nSupportList" [value]="lang.lang">{{lang.name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-dropdown *ngIf="!this.registerService.inRegisterPage()">
             <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
               <clr-icon shape="user"></clr-icon>
-              {{ (this.vo.user$ | async).name }}
+              {{  (loginService.session$ | async).username  }}
               <clr-icon shape="caret down"></clr-icon>
             </button>
             <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-              <a routerLink="/profile" clrDropdownItem>Profile</a>
-              <a (click)="this.signOut()" clrDropdownItem>Log out</a>
+              <a routerLink="/register" clrDropdownItem *ngIf="this.loginService.inAdminView()">{{ "LOGIN.SIGNUP" | translate:{} }}</a>
+              <a routerLink="/profile" clrDropdownItem>{{ "HOME.PROFILE" | translate:{} }}</a>
+              <a (click)="this.signOut()" clrDropdownItem>{{ "HOME.LOGOUT" | translate:{} }}</a>
             </clr-dropdown-menu>
           </clr-dropdown>
         </div>
       </header>
 
-      <nav class="subnav">
+      <nav class="subnav" *ngIf="!this.registerService.inRegisterPage()">
         <ul class="nav">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link"
               routerLink="/home"
               routerLinkActive="active">
-              Dashboard
+              {{ "HOME.DASHBOARD.DASHBOARD" | translate:{} }}
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/resource"
               routerLinkActive="active">
-              Resource
+              {{ "HOME.RESOURCE.RESOURCE" | translate:{} }}
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link"
-              routerLink="/policy"
+              routerLink="/vendors"
               routerLinkActive="active">
-              Policy
+              Vendors
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/vapp"
+              routerLinkActive="active">
+              vApp
+            </a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/policy"
+              routerLinkActive="active">
+              {{ "HOME.POLICY.POLICY" | translate:{} }}
+            </a>
+          </li-->
           <li class="nav-item">
             <a class="nav-link"
               routerLink="/template"
               routerLinkActive="active">
-              Template
+              {{ "HOME.TEMPLATE.TEMPLATE" | translate:{} }}
             </a>
-          </li>
+          </li> 
         </ul>
       </nav>
     </ng-container>

@@ -1,1 +1,33 @@
-<p>home works!</p>
+<div class="clr-row">
+  <div class="clr-offset-2 clr-col-8 chart-wrapper ">
+    <canvas class="card" baseChart
+      chartType="bar"
+      legend="true"
+      [datasets]="barData"
+      [labels]="barLabels"
+      [options]="barOptions">
+    </canvas>
+  </div>
+  <div>
+  </div>
+  <!-- <div class="clr-col-6 chart-wrapper">
+    <canvas class="card" baseChart
+      chartType="bubble"
+      legend="false"
+      [datasets]="bubbleData"
+      [options]="bubbleOptions">
+    </canvas>
+  </div> -->
+</div>
+
+<div class="clr-row">
+  <div class="clr-offset-2 clr-col-8 chart-wrapper">
+    <canvas class="card" baseChart
+      chartType="line"
+      legend="true"
+      [labels]="lineLabels"
+      [datasets]="lineData"
+      [options]="lineOptions">
+    </canvas>
+  </div>
+</div>

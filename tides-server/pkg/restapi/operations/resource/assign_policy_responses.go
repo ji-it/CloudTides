@@ -14,7 +14,7 @@ import (
 // AssignPolicyOKCode is the HTTP code returned for type AssignPolicyOK
 const AssignPolicyOKCode int = 200
 
-/*AssignPolicyOK returns success message
+/*AssignPolicyOK success
 
 swagger:response assignPolicyOK
 */
@@ -77,6 +77,30 @@ func (o *AssignPolicyUnauthorized) WriteResponse(rw http.ResponseWriter, produce
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(401)
+}
+
+// AssignPolicyForbiddenCode is the HTTP code returned for type AssignPolicyForbidden
+const AssignPolicyForbiddenCode int = 403
+
+/*AssignPolicyForbidden Forbidden
+
+swagger:response assignPolicyForbidden
+*/
+type AssignPolicyForbidden struct {
+}
+
+// NewAssignPolicyForbidden creates AssignPolicyForbidden with default headers values
+func NewAssignPolicyForbidden() *AssignPolicyForbidden {
+
+	return &AssignPolicyForbidden{}
+}
+
+// WriteResponse to the client
+func (o *AssignPolicyForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
 }
 
 // AssignPolicyNotFoundCode is the HTTP code returned for type AssignPolicyNotFound

@@ -35,11 +35,11 @@ func (o *ListPolicyURL) SetBasePath(bp string) {
 func (o *ListPolicyURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/policy/list"
+	var _path = "/policy"
 
 	_basePath := o._basePath
 	if _basePath == "" {
-		_basePath = "/v1"
+		_basePath = "/api/v1"
 	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 

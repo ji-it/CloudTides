@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewAddResourceUsage(ctx *middleware.Context, handler AddResourceUsageHandle
 	return &AddResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*AddResourceUsage swagger:route POST /usage/add_resource usage addResourceUsage
+/* AddResourceUsage swagger:route POST /usage usage addResourceUsage
 
 add resource usage info into database
 
@@ -50,14 +51,12 @@ func (o *AddResourceUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddResourceUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -69,6 +68,9 @@ type AddResourceUsageBody struct {
 
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
+
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
 
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
@@ -82,12 +84,20 @@ type AddResourceUsageBody struct {
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
 
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
+
 	// total RAM
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 }
 
 // Validate validates this add resource usage body
 func (o *AddResourceUsageBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add resource usage body based on context it is used
+func (o *AddResourceUsageBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -153,14 +163,13 @@ const (
 
 // prop value enum
 func (o *AddResourceUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addResourceUsageOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addResourceUsageOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *AddResourceUsageOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -170,6 +179,11 @@ func (o *AddResourceUsageOKBody) validateMessage(formats strfmt.Registry) error 
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add resource usage o k body based on context it is used
+func (o *AddResourceUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

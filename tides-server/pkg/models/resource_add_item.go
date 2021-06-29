@@ -6,6 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -22,6 +23,9 @@ type ResourceAddItem struct {
 	// CPU percent
 	CPUPercent float64 `json:"CPUPercent,omitempty"`
 
+	// disk percent
+	DiskPercent float64 `json:"DiskPercent,omitempty"`
+
 	// RAM percent
 	RAMPercent float64 `json:"RAMPercent,omitempty"`
 
@@ -30,6 +34,9 @@ type ResourceAddItem struct {
 
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
+
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
 
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
@@ -55,10 +62,6 @@ type ResourceAddItem struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// platform type
-	// Enum: [vsphere kvm hyper-v]
-	PlatformType string `json:"platformType,omitempty"`
-
 	// policy name
 	PolicyName string `json:"policyName,omitempty"`
 
@@ -80,10 +83,6 @@ type ResourceAddItem struct {
 func (m *ResourceAddItem) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -91,52 +90,6 @@ func (m *ResourceAddItem) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceAddItemTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceAddItemTypePlatformTypePropEnum = append(resourceAddItemTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourceAddItemPlatformTypeVsphere captures enum value "vsphere"
-	ResourceAddItemPlatformTypeVsphere string = "vsphere"
-
-	// ResourceAddItemPlatformTypeKvm captures enum value "kvm"
-	ResourceAddItemPlatformTypeKvm string = "kvm"
-
-	// ResourceAddItemPlatformTypeHyperv captures enum value "hyper-v"
-	ResourceAddItemPlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *ResourceAddItem) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceAddItemTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ResourceAddItem) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -169,14 +122,13 @@ const (
 
 // prop value enum
 func (m *ResourceAddItem) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceAddItemTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, resourceAddItemTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m *ResourceAddItem) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -186,6 +138,11 @@ func (m *ResourceAddItem) validateStatus(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this resource add item based on context it is used
+func (m *ResourceAddItem) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

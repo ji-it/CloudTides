@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewAddPolicy(ctx *middleware.Context, handler AddPolicyHandler) *AddPolicy 
 	return &AddPolicy{Context: ctx, Handler: handler}
 }
 
-/*AddPolicy swagger:route POST /policy/add policy addPolicy
+/* AddPolicy swagger:route POST /policy policy addPolicy
 
 add a new idle policy and threshold policy
 
@@ -50,14 +51,12 @@ func (o *AddPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -73,6 +72,11 @@ type AddPolicyBadRequestBody struct {
 
 // Validate validates this add policy bad request body
 func (o *AddPolicyBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add policy bad request body based on context it is used
+func (o *AddPolicyBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -99,15 +103,8 @@ func (o *AddPolicyBadRequestBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddPolicyBody
 type AddPolicyBody struct {
 
-	// account type
-	// Enum: [accManager boinc]
-	AccountType string `json:"accountType,omitempty"`
-
-	// boinc password
-	BoincPassword string `json:"boincPassword,omitempty"`
-
-	// boinc username
-	BoincUsername string `json:"boincUsername,omitempty"`
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
 
 	// deploy type
 	// Enum: [K8S VM]
@@ -122,8 +119,11 @@ type AddPolicyBody struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// project Id
-	ProjectID int64 `json:"projectId,omitempty"`
+	// network
+	Network string `json:"network,omitempty"`
+
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
 
 	// template Id
 	TemplateID int64 `json:"templateId,omitempty"`
@@ -136,10 +136,6 @@ type AddPolicyBody struct {
 func (o *AddPolicyBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateAccountType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateDeployType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -147,49 +143,6 @@ func (o *AddPolicyBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var addPolicyBodyTypeAccountTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["accManager","boinc"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		addPolicyBodyTypeAccountTypePropEnum = append(addPolicyBodyTypeAccountTypePropEnum, v)
-	}
-}
-
-const (
-
-	// AddPolicyBodyAccountTypeAccManager captures enum value "accManager"
-	AddPolicyBodyAccountTypeAccManager string = "accManager"
-
-	// AddPolicyBodyAccountTypeBoinc captures enum value "boinc"
-	AddPolicyBodyAccountTypeBoinc string = "boinc"
-)
-
-// prop value enum
-func (o *AddPolicyBody) validateAccountTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyBodyTypeAccountTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *AddPolicyBody) validateAccountType(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AccountType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateAccountTypeEnum("reqBody"+"."+"accountType", "body", o.AccountType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -216,14 +169,13 @@ const (
 
 // prop value enum
 func (o *AddPolicyBody) validateDeployTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyBodyTypeDeployTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addPolicyBodyTypeDeployTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *AddPolicyBody) validateDeployType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -233,6 +185,11 @@ func (o *AddPolicyBody) validateDeployType(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add policy body based on context it is used
+func (o *AddPolicyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -258,6 +215,9 @@ func (o *AddPolicyBody) UnmarshalBinary(b []byte) error {
 //
 // swagger:model AddPolicyOKBody
 type AddPolicyOKBody struct {
+
+	// id
+	ID int64 `json:"id,omitempty"`
 
 	// message
 	// Enum: [success]
@@ -298,14 +258,13 @@ const (
 
 // prop value enum
 func (o *AddPolicyOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addPolicyOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addPolicyOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *AddPolicyOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -315,6 +274,11 @@ func (o *AddPolicyOKBody) validateMessage(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add policy o k body based on context it is used
+func (o *AddPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

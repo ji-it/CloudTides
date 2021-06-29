@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -35,9 +36,9 @@ func NewListPolicy(ctx *middleware.Context, handler ListPolicyHandler) *ListPoli
 	return &ListPolicy{Context: ctx, Handler: handler}
 }
 
-/*ListPolicy swagger:route GET /policy/list policy listPolicy
+/* ListPolicy swagger:route GET /policy policy listPolicy
 
-list policies belonging to a user
+list all available policies
 
 */
 type ListPolicy struct {
@@ -51,14 +52,12 @@ func (o *ListPolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewListPolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -72,7 +71,7 @@ type ListPolicyOKBody struct {
 	Message string `json:"message,omitempty"`
 
 	// results
-	Results []*ResultsItems0 `json:"results"`
+	Results []*ListPolicyOKBodyResultsItems0 `json:"results"`
 }
 
 // Validate validates this list policy o k body
@@ -90,7 +89,6 @@ func (o *ListPolicyOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *ListPolicyOKBody) validateResults(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Results) { // not required
 		return nil
 	}
@@ -102,6 +100,38 @@ func (o *ListPolicyOKBody) validateResults(formats strfmt.Registry) error {
 
 		if o.Results[i] != nil {
 			if err := o.Results[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this list policy o k body based on the context it is used
+func (o *ListPolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateResults(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *ListPolicyOKBody) contextValidateResults(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Results); i++ {
+
+		if o.Results[i] != nil {
+			if err := o.Results[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("listPolicyOK" + "." + "results" + "." + strconv.Itoa(i))
 				}
@@ -132,17 +162,14 @@ func (o *ListPolicyOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// ResultsItems0 results items0
+// ListPolicyOKBodyResultsItems0 list policy o k body results items0
 //
-// swagger:model ResultsItems0
-type ResultsItems0 struct {
+// swagger:model ListPolicyOKBodyResultsItems0
+type ListPolicyOKBodyResultsItems0 struct {
 
 	// deploy type
 	// Enum: [K8S VM]
 	DeployType string `json:"deployType,omitempty"`
-
-	// hosts assigned
-	HostsAssigned int64 `json:"hostsAssigned,omitempty"`
 
 	// id
 	ID int64 `json:"id,omitempty"`
@@ -156,15 +183,15 @@ type ResultsItems0 struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// project name
-	ProjectName string `json:"projectName,omitempty"`
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
 
 	// threshold policy
 	ThresholdPolicy string `json:"thresholdPolicy,omitempty"`
 }
 
-// Validate validates this results items0
-func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
+// Validate validates this list policy o k body results items0
+func (o *ListPolicyOKBodyResultsItems0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := o.validateDeployType(formats); err != nil {
@@ -177,7 +204,7 @@ func (o *ResultsItems0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var resultsItems0TypeDeployTypePropEnum []interface{}
+var listPolicyOKBodyResultsItems0TypeDeployTypePropEnum []interface{}
 
 func init() {
 	var res []string
@@ -185,29 +212,28 @@ func init() {
 		panic(err)
 	}
 	for _, v := range res {
-		resultsItems0TypeDeployTypePropEnum = append(resultsItems0TypeDeployTypePropEnum, v)
+		listPolicyOKBodyResultsItems0TypeDeployTypePropEnum = append(listPolicyOKBodyResultsItems0TypeDeployTypePropEnum, v)
 	}
 }
 
 const (
 
-	// ResultsItems0DeployTypeK8S captures enum value "K8S"
-	ResultsItems0DeployTypeK8S string = "K8S"
+	// ListPolicyOKBodyResultsItems0DeployTypeK8S captures enum value "K8S"
+	ListPolicyOKBodyResultsItems0DeployTypeK8S string = "K8S"
 
-	// ResultsItems0DeployTypeVM captures enum value "VM"
-	ResultsItems0DeployTypeVM string = "VM"
+	// ListPolicyOKBodyResultsItems0DeployTypeVM captures enum value "VM"
+	ListPolicyOKBodyResultsItems0DeployTypeVM string = "VM"
 )
 
 // prop value enum
-func (o *ResultsItems0) validateDeployTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resultsItems0TypeDeployTypePropEnum); err != nil {
+func (o *ListPolicyOKBodyResultsItems0) validateDeployTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, listPolicyOKBodyResultsItems0TypeDeployTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (o *ResultsItems0) validateDeployType(formats strfmt.Registry) error {
-
+func (o *ListPolicyOKBodyResultsItems0) validateDeployType(formats strfmt.Registry) error {
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -220,8 +246,13 @@ func (o *ResultsItems0) validateDeployType(formats strfmt.Registry) error {
 	return nil
 }
 
+// ContextValidate validates this list policy o k body results items0 based on context it is used
+func (o *ListPolicyOKBodyResultsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (o *ResultsItems0) MarshalBinary() ([]byte, error) {
+func (o *ListPolicyOKBodyResultsItems0) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -229,8 +260,8 @@ func (o *ResultsItems0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *ResultsItems0) UnmarshalBinary(b []byte) error {
-	var res ResultsItems0
+func (o *ListPolicyOKBodyResultsItems0) UnmarshalBinary(b []byte) error {
+	var res ListPolicyOKBodyResultsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

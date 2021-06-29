@@ -1,0 +1,107 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add VM Template
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.templateForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'VM Name'"
+          formControlName="name"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="disk">Disk Space</label>
+        <input id="disk"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'Disk Space Size (GB)'"
+          formControlName="disk"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="vmem">Memory Size</label>
+        <input id="vmem"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'Memory Size (GB)'"
+          formControlName="vmem"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="vcpu">vCPU Number</label>
+        <input id="vcpu"
+          class="clr-col-12 clr-col-md-8"
+          type="number"
+          [placeholder]="'vCPU Number'"
+          formControlName="vcpu"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="ports">Exposed Ports</label>
+        <input id="ports"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Exposed Ports, use , to seperate ports without space'"
+          formControlName="ports"
+          clrInput />
+      </clr-input-container>
+      <!--clr-select-container>
+        <label for="templateID">TemplateID</label>
+        <select
+          clrSelect
+          id="templateID"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="templateID"
+        >
+        <option *ngFor="let tem of tempList"
+          [ngValue]="template[tem]"> {{ tem }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container-->
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!templateForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

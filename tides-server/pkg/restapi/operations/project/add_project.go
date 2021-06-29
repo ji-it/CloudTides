@@ -6,6 +6,7 @@ package project
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewAddProject(ctx *middleware.Context, handler AddProjectHandler) *AddProje
 	return &AddProject{Context: ctx, Handler: handler}
 }
 
-/*AddProject swagger:route POST /project/add project addProject
+/* AddProject swagger:route POST /project project addProject
 
 add boinc projects
 
@@ -47,14 +48,12 @@ func (o *AddProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddProjectParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -76,6 +75,11 @@ type AddProjectBody struct {
 
 // Validate validates this add project body
 func (o *AddProjectBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add project body based on context it is used
+func (o *AddProjectBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -102,12 +106,20 @@ func (o *AddProjectBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddProjectOKBody
 type AddProjectOKBody struct {
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// message
 	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this add project o k body
 func (o *AddProjectOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add project o k body based on context it is used
+func (o *AddProjectOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

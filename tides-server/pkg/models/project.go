@@ -3,11 +3,10 @@ package models
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// Project project
-
+// Project schema
 type Project struct {
 	gorm.Model
 

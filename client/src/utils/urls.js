@@ -1,1 +1,0 @@
-export const devURL = "http://10.11.16.83:30135";

@@ -1,0 +1,125 @@
+{
+  "LOGIN": {
+    "SUBMITTING": "正在登录...",
+    "LOGIN": "登录",
+    "LOGIN_TITLE": "CloudTides 云汐",
+    "EMAIL": "邮箱",
+    "PASSWORD": "密码",
+    "SIGNUP": "创建用户"
+  },
+  "REGISTER": {
+    "REGISTER": "注册",
+    "SUBTITLE": "注册以访问云汐服务",
+    "ACCOUNT": "账户信息",
+    "USERNAME": "用户名",
+    "USERNAME_MISSING": "请填写用户名",
+    "USERNAME_TOO_SHORT": "用户名长度过短",
+    "PASSWORD": "密码",
+    "PASSWORD_MISSING": "请填写密码",
+    "PASSWORD_TOO_SHORT": "密码长度过短",
+    "PASSWORD_TOO_LONG": "密码长度过长",
+    "PASSWORD_CONFIRM": "确认密码",
+    "PASSWORD_NOT_MATCH": "两次密码填写不一致",
+    "BASIC_INFORMATION": "基本信息",
+    "EMAIL": "电子邮箱",
+    "EMAIL_MISSING": "请填写邮箱",
+    "EMAIL_WRONG_FORMAT": "邮箱格式不正确",
+    "PHONE": "联系电话",
+    "PHONE_MISSING": "请填写联系电话",
+    "COMPANY": "公司名称",
+    "COMPANY_MISSING": "请填写公司名称",
+    "SUBMITTING": "注册"
+  },
+  "HOME": {
+    "RESOURCE": {
+      "RESOURCE": "资源",
+      "ADD_RESOURCE": "添加资源",
+      "CARD": {
+        "INFO": {
+          "CPU": "处理器",
+          "MEMORY": "内存",
+          "DISK": "存储"
+        },
+        "DETAIL": {
+          "CPU": "处理器",
+          "MEMORY": "内存",
+          "DISK": "存储"
+        },
+        "FOOTER": {
+          "ACTIVATE": "激活资源",
+          "CONTRIBUTE": "贡献资源",
+          "DELETE": "删除资源"
+        }
+      },
+      "DIALOG": {
+        "ADD_RESOURCE": "添加资源",
+        "NAME": "名称",
+        "REQUIRED": "{{item}}不能为空",
+        "DATACENTER": "数据中心",
+        "ORG": "组织",
+        "NETWORK": "网络",
+        "CATALOG": "目录",
+        "USERNAME": "用户名",
+        "PASSWORD": "密码",
+        "CANCEL": "取消",
+        "SAVE": "保存",
+        "RESOURCE_PLACEHOLDER": "资源名称",
+        "DATACENTER_PLACEHOLDER": "数据中心名称",
+        "ORG_NAME": "组织名称",
+        "ORG_PLACEHOLDER": "组织名称",
+        "NETWORK_PLACEHOLDER": "网络名称",
+        "CATALOG_PLACEHOLDER": "目录名称"
+      }
+    },
+    "POLICY": {
+      "POLICY": "策略",
+      "CONTRIBUTION_POLICY": "分配策略",
+      "ADD_POLICY": "添加策略",
+      "DATAGRID": {
+        "CRID": "CRID",
+        "TEMPLATE": "模板",
+        "START_CONDITIONS": "开始条件",
+        "STOP_CONDITIONS": "停止条件",
+        "EDIT": "编辑",
+        "DELETE": "删除",
+        "OF": "个策略，共",
+        "ITEM": "个"
+      },
+      "DIALOG": {
+        "CREATE_POLICY": "新建策略",
+        "TEMPLATE": "模板",
+        "START_CONDITION": "开始条件",
+        "STOP_CONDITION": "停止条件",
+        "CPU": "处理器",
+        "MEMORY": "内存",
+        "DISK": "存储",
+        "CANCEL": "取消",
+        "SAVE": "保存",
+        "SELECT_START": "选择何时开始（%）",
+        "SELECT_STOP": "选择何时停止（%）",
+        "REQUIRED": "此项不能为空"
+      }
+    },
+    "DASHBOARD": {
+      "DASHBOARD": "概要"
+    },
+    "TEMPLATE": {
+      "TEMPLATE": "模板",
+      "ADD_TEMPLATE": "添加模板",
+      "CARD": {
+        "NAME": "名称",
+        "VERSION": "版本",
+        "DATE": "日期",
+        "URL": "链接",
+        "CPU": "处理器",
+        "MEMORY": "内存",
+        "DISK": "存储",
+        "EDIT": "编辑",
+        "DELETE": "删除"
+      }
+    },
+    "PRODUCT_NAME": "云汐",
+    "PROFILE": "个人信息",
+    "LOGOUT": "登出"
+  }
+}

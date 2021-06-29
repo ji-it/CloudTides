@@ -7,11 +7,10 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// Template template
-
+// Template schema
 type Template struct {
 	gorm.Model
 
@@ -24,6 +23,9 @@ type Template struct {
 	// memory size
 	MemorySize float64 `json:"memorySize,omitempty"`
 
+	// cpu number
+	VCPUSize int64 `json:"vcpuSize,omitempty"`
+
 	// name
 	Name string `json:"name,omitempty" gorm:"unique"`
 
@@ -33,6 +35,41 @@ type Template struct {
 	// template type
 	// Enum: [datastore upload]
 	TemplateType string `json:"templateType,omitempty"`
+
+	// vm name
+	VMName string `json:"vmName,omitempty"`
+
+	// tag
+	Tag string `json:"tag,omitempty"`
+
+	// description
+	Description string `json:"description,omitempty"`
+
+	VMTemps []VMTemp
+
+	// resource id
+	ResourceID uint `json:"resourceID,omitempty" gorm:"default:1"`
+}
+
+type VMTemp struct {
+	gorm.Model
+
+	VMName string `json:"vmName,omitempty"`
+
+	// number of vCPU
+	VCPU int `json:"vCPU,omitempty"`
+
+	// number of memeory unit GB
+	VMem int `json:"vMem,omitempty"`
+
+	// number of disk unit GB
+	Disk int `json:"disk,omitempty"`
+
+	// the ports wanted to be exposed
+	Ports string `json:"ports,omitempty"`
+
+	// foreign key for Template
+	TemplateID uint `json:"templateID,omitempty"`
 }
 
 // Validate validates this template

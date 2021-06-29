@@ -3,13 +3,13 @@ package handler
 import (
 	"github.com/go-openapi/runtime/middleware"
 
-	"tides-server/pkg/logger"
 	"tides-server/pkg/restapi/operations/project"
 
 	"tides-server/pkg/config"
 	"tides-server/pkg/models"
 )
 
+// AddProjectHandler is API handler for /project POST
 func AddProjectHandler(params project.AddProjectParams) middleware.Responder {
 	body := params.ReqBody
 
@@ -22,18 +22,16 @@ func AddProjectHandler(params project.AddProjectParams) middleware.Responder {
 
 	err := db.Create(&newProject).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/project/add/: [400] Project creation failure")
 		return project.NewAddProjectBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/policy/add/: [200] Project creation success")
 	return project.NewAddProjectOK().WithPayload(&project.AddProjectOKBody{
 		Message: "success",
+		ID:      int64(newProject.Model.ID),
 	})
 }
 
+// ListProjectHandler is API handler for /project GET
 func ListProjectHandler(params project.ListProjectParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return project.NewAddProjectUnauthorized()
@@ -56,19 +54,16 @@ func ListProjectHandler(params project.ListProjectParams) middleware.Responder {
 		res = append(res, &respro)
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Info("/policy/list/: [200] Project retrieval success")
 	return project.NewListProjectOK().WithPayload(res)
 }
 
+// UpdateProjectHandler is API handler for /project/{id} PUT
 func UpdateProjectHandler(params project.UpdateProjectParams) middleware.Responder {
 	body := params.ReqBody
 
 	var pro models.Project
 	db := config.GetDB()
-	if db.Where("id = ?", body.ID).First(&pro).RecordNotFound() {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/project/update/: [404] Project not found")
+	if db.Where("id = ?", params.ID).First(&pro).Error != nil {
 		return project.NewUpdateProjectNotFound()
 	}
 
@@ -78,32 +73,23 @@ func UpdateProjectHandler(params project.UpdateProjectParams) middleware.Respond
 
 	err := db.Save(&pro).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/project/update/: [400] Project update failure")
 		return project.NewUpdateProjectBadRequest()
 	}
 
-	logger.SetLogLevel("INFO")
-	logger.Error("/project/add/: [200] Project update success")
 	return project.NewUpdateProjectOK().WithPayload(&project.UpdateProjectOKBody{
 		Message: "success",
 	})
 }
 
+// DeleteProjectHandler is API handler for /project/{id} DELETE
 func DeleteProjectHandler(params project.DeleteProjectParams) middleware.Responder {
-	body := params.ReqBody
 
 	db := config.GetDB()
 	var pro models.Project
-	err := db.Unscoped().Where("id = ?", body.ID).Delete(&pro).Error
+	err := db.Unscoped().Where("id = ?", params.ID).Delete(&pro).Error
 	if err != nil {
-		logger.SetLogLevel("ERROR")
-		logger.Error("/project/delete/: [404] Project deletion failure")
 		return project.NewDeleteProjectNotFound()
 	}
-
-	logger.SetLogLevel("INFO")
-	logger.Error("/project/delete/: [200] Project deletion success")
 
 	return project.NewDeleteProjectOK().WithPayload(&project.DeleteProjectOKBody{
 		Message: "success",

@@ -1,0 +1,101 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add Template
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.templateForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-select-container>
+        <label for="type">Type</label>
+        <select
+          clrSelect
+          id="type"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="type"
+        >
+        <option *ngFor="let t of typeList"
+          [ngValue]="t"> {{ t }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Template Name'"
+          formControlName="name"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="description">Description</label>
+        <input id="description"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Description'"
+          formControlName="description"
+          clrInput />
+      </clr-input-container>
+
+      <clr-select-container>
+        <label for="tag">Tag</label>
+        <select
+          clrSelect
+          id="tag"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="tag"
+        >
+        <option *ngFor="let res of resourceList"
+          [ngValue]="res"> {{ res }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
+      <clr-input-container>
+        <label for="path">Path To File</label>
+        <input id="path"
+          class="clr-col-12 clr-col-md-8"
+          type="string"
+          [placeholder]="'Path to the uploading file'"
+          formControlName="path"
+          clrInput />
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!templateForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

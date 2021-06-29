@@ -1,0 +1,96 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    Add Vendor
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.vendorForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-input-container>
+        <label for="name">Name</label>
+        <input id="name"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Vendor Name'"
+          formControlName="name"
+          clrInput />
+      </clr-input-container>
+      <clr-input-container>
+        <label for="url">URL</label>
+        <input id="url"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'URL'"
+          formControlName="url"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="version">Version</label>
+        <input id="version"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'API Version'"
+          formControlName="version"
+          clrInput />
+      </clr-input-container>
+
+      <clr-select-container>
+        <label for="type">Type</label>
+        <select
+          clrSelect
+          id="vendorType"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="vendorType"
+        >
+          <option *ngFor="let type of vendorTypeList"
+            [ngValue]="vendorTypes[type]"> {{type}}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+
+      <!--clr-input-container>
+        <label for="type">Type</label>
+        <input id="vendorType"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'Vendor Type'"
+          formControlName="vendorType"
+          clrInput />
+      </clr-input-container-->
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!vendorForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

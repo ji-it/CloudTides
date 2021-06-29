@@ -20,9 +20,11 @@
       .name {
         font-size: $font-size-md;
       }
+
       .desc {
         font-size: $font-size-sm;
       }
+
       .status {
         font-size: $font-size-xs;
 
@@ -50,4 +52,14 @@
       }
     }
   }
+}
+
+.card-footer button {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+.card-footer .clr-col-1 {
 }

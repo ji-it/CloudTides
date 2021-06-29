@@ -7,16 +7,50 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// Resource resource
-
-type Resource struct {
+// Vsphere schema
+type Vsphere struct {
 	gorm.Model
 
 	// cluster
 	Cluster string `json:"cluster,omitempty"`
+
+	// is resource pool
+	IsResourcePool bool `json:"isResourcePool,omitempty"`
+
+	ResourceID uint
+
+	// owner resource
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+// Vcd schema
+type Vcd struct {
+	gorm.Model
+
+	// allocation model
+	AllocationModel string `json:"allocationModel,omitempty"`
+
+	// organization
+	Organization string `json:"organization,omitempty"`
+
+	ResourceID uint
+
+	// owner resource
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+// Resource schema
+type Resource struct {
+	gorm.Model
+
+	// type of the resource, fixed or dynamic
+	Type string `json:"Type,omitempty"`
+
+	// activated, controlled by admin, indicate whether the resource is qualified for contribution
+	Activated bool `json:"Activated,omitempty"`
 
 	// datacenter
 	Datacenter string `json:"datacenter,omitempty"`
@@ -24,11 +58,8 @@ type Resource struct {
 	// host address
 	HostAddress string `json:"hostAddress,omitempty"`
 
-	// is active
+	// is active, controlled by user, indicate whether user is willing to contribute the resource
 	IsActive bool `json:"isActive,omitempty"`
-
-	// is resource pool
-	IsResourcePool bool `json:"isResourcePool,omitempty"`
 
 	// job completed
 	JobCompleted int64 `json:"jobCompleted,omitempty"`
@@ -43,11 +74,15 @@ type Resource struct {
 	Password string `json:"password,omitempty"`
 
 	// platform type
-	// Enum: [vsphere kvm hyper-v]
 	PlatformType string `json:"platformType,omitempty"`
 
 	// policy foreign key
-	PolicyRef *uint
+	PolicyID *uint
+
+	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+
+	// setup status
+	SetupStatus string `json:"setupStatus,omitempty"`
 
 	// status
 	// Enum: [idle normal busy unknown]
@@ -60,19 +95,21 @@ type Resource struct {
 	TotalVMs int64 `json:"totalVMs,omitempty"`
 
 	// user foreign key
-	UserRef uint
+	UserID uint
+
+	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	// username
 	Username string `json:"username,omitempty"`
+
+	Catalog string `json:"catalog,omitempty"`
+
+	Network string `json:"network,omitempty"`
 }
 
 // Validate validates this resource
 func (m *Resource) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
@@ -81,52 +118,6 @@ func (m *Resource) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceTypePlatformTypePropEnum = append(resourceTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourcePlatformTypeVsphere captures enum value "vsphere"
-	ResourcePlatformTypeVsphere string = "vsphere"
-
-	// ResourcePlatformTypeKvm captures enum value "kvm"
-	ResourcePlatformTypeKvm string = "kvm"
-
-	// ResourcePlatformTypeHyperv captures enum value "hyper-v"
-	ResourcePlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *Resource) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *Resource) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -155,6 +146,12 @@ const (
 
 	// ResourceStatusUnknown captures enum value "unknown"
 	ResourceStatusUnknown string = "unknown"
+
+	// ResourcePlatformTypeVsphere = "vsphere"
+	ResourcePlatformTypeVsphere string = "vsphere"
+
+	// ResourcePlatformTypeVcd = "vcd"
+	ResourcePlatformTypeVcd string = "vcd"
 )
 
 // prop value enum

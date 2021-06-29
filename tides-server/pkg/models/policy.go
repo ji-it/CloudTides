@@ -7,23 +7,28 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// Policy policy
-
-type Policy struct {
+// VcdPolicy schema
+type VcdPolicy struct {
 	gorm.Model
 
-	// account type
-	// Enum: [accManager boinc]
-	AccountType string `json:"accountType,omitempty"`
+	// catalog
+	Catalog string `json:"catalog,omitempty"`
 
-	// boinc password
-	BoincPassword string `json:"BoincPassword,omitempty"`
+	// network
+	Network string `json:"network,omitempty"`
 
-	// boinc username
-	BoincUsername string `json:"BoincUsername,omitempty"`
+	// policy foreign key
+	PolicyID uint
+
+	Policy Policy `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+// Policy schema
+type Policy struct {
+	gorm.Model
 
 	// deploy type
 	// Enum: [K8S VM]
@@ -38,26 +43,26 @@ type Policy struct {
 	// name
 	Name string `json:"name,omitempty" gorm:"unique"`
 
-	// project foreign key
-	ProjectRef uint
+	// platform type
+	PlatformType string `json:"platformType,omitempty"`
 
 	// template foreign key
-	TemplateRef uint
+	TemplateID uint
+
+	Template Template `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
 	// threshold policy
 	ThresholdPolicy string `json:"thresholdPolicy,omitempty"`
 
 	// user foreign key
-	UserRef uint
+	UserID uint
+
+	User User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this policy
 func (m *Policy) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateAccountType(formats); err != nil {
-		res = append(res, err)
-	}
 
 	if err := m.validateDeployType(formats); err != nil {
 		res = append(res, err)
@@ -95,20 +100,6 @@ func (m *Policy) validateAccountTypeEnum(path, location string, value string) er
 	if err := validate.Enum(path, location, value, policyTypeAccountTypePropEnum); err != nil {
 		return err
 	}
-	return nil
-}
-
-func (m *Policy) validateAccountType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.AccountType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validateAccountTypeEnum("accountType", "body", m.AccountType); err != nil {
-		return err
-	}
-
 	return nil
 }
 

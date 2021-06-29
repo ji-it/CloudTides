@@ -6,6 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -22,6 +23,9 @@ type ResourceListItem struct {
 	// CPU percent
 	CPUPercent float64 `json:"CPUPercent,omitempty"`
 
+	// disk percent
+	DiskPercent float64 `json:"DiskPercent,omitempty"`
+
 	// RAM percent
 	RAMPercent float64 `json:"RAMPercent,omitempty"`
 
@@ -30,6 +34,9 @@ type ResourceListItem struct {
 
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
+
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
 
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
@@ -58,10 +65,6 @@ type ResourceListItem struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// platform type
-	// Enum: [vsphere kvm hyper-v]
-	PlatformType string `json:"platformType,omitempty"`
-
 	// policy name
 	PolicyName string `json:"policyName,omitempty"`
 
@@ -71,6 +74,9 @@ type ResourceListItem struct {
 
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
 
 	// total jobs
 	TotalJobs int64 `json:"totalJobs,omitempty"`
@@ -83,10 +89,6 @@ type ResourceListItem struct {
 func (m *ResourceListItem) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validatePlatformType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -94,52 +96,6 @@ func (m *ResourceListItem) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var resourceListItemTypePlatformTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["vsphere","kvm","hyper-v"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		resourceListItemTypePlatformTypePropEnum = append(resourceListItemTypePlatformTypePropEnum, v)
-	}
-}
-
-const (
-
-	// ResourceListItemPlatformTypeVsphere captures enum value "vsphere"
-	ResourceListItemPlatformTypeVsphere string = "vsphere"
-
-	// ResourceListItemPlatformTypeKvm captures enum value "kvm"
-	ResourceListItemPlatformTypeKvm string = "kvm"
-
-	// ResourceListItemPlatformTypeHyperv captures enum value "hyper-v"
-	ResourceListItemPlatformTypeHyperv string = "hyper-v"
-)
-
-// prop value enum
-func (m *ResourceListItem) validatePlatformTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceListItemTypePlatformTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (m *ResourceListItem) validatePlatformType(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.PlatformType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformTypeEnum("platformType", "body", m.PlatformType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -172,14 +128,13 @@ const (
 
 // prop value enum
 func (m *ResourceListItem) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, resourceListItemTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, resourceListItemTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m *ResourceListItem) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -189,6 +144,11 @@ func (m *ResourceListItem) validateStatus(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this resource list item based on context it is used
+func (m *ResourceListItem) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,11 +6,50 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// VM VM
+type VMachine struct {
+	gorm.Model
 
+	// name of VM
+	Name string `json:"name,omitempty"`
+
+	// number of vCPU
+	VCPU int `json:"vCPU,omitempty"`
+
+	// number of memeory unit GB
+	VMem int `json:"vMem,omitempty"`
+
+	// number of disk unit GB
+	Disk int `json:"disk,omitempty"`
+
+	// internal ip address
+	IPAddress string `json:"ipAddress,omitempty"`
+
+	// external ip address
+	ExternalIPAddress string `json:"externalIPAddress,omitempty"`
+
+	// initial user name
+	UserName string `json:"userName,omitempty"`
+
+	// initial password
+	PassWord string `json:"password,omitempty"`
+
+	// used money
+	UsedMoney float64 `json:"usedMoney,omitempty"`
+
+	// status of the vm
+	Status string `json:"status,omitempty"`
+
+	// exposed ports of the vm
+	Ports []Port
+
+	// foreign key for vApp
+	VappID uint `json:"vappID,omitempty"`
+}
+
+// VM schema
 type VM struct {
 	gorm.Model
 
@@ -37,7 +76,9 @@ type VM struct {
 	PoweredOn bool `json:"poweredOn,omitempty"`
 
 	// resource foreign key
-	ResourceRef uint
+	ResourceID uint
+
+	Resource Resource `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 // Validate validates this VM

@@ -1,0 +1,131 @@
+<clr-modal [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  [clrModalClosable]="false">
+  <h3 class="modal-title">
+    {{ "HOME.RESOURCE.DIALOG.ADD_RESOURCE" | translate:{} }}
+  </h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="this.resourceForm">
+      <clr-alert clrAlertType="danger"
+        [clrAlertClosable]="false"
+        *ngIf="this.vo.serverError">
+
+        <clr-alert-item>
+          <div class="alert-text">
+            <span>{{ this.vo.serverError }}</span>
+          </div>
+        </clr-alert-item>
+
+      </clr-alert>
+
+      <clr-select-container>
+        <label for="resType">Type</label>
+        <select
+          clrSelect
+          id="resType"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="resType"
+        >
+        <option *ngFor="let type of resTypeList"
+          [ngValue]="resType[type]"> {{ type }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'type'} }}</clr-control-error>
+      </clr-select-container>
+      <clr-select-container>
+        <label for="href">Vendor Name</label>
+        <select
+          clrSelect
+          id="href"
+          class="clr-col-12 clr-col-md-8"
+          formControlName="href"
+        >
+          <option *ngFor="let platform of cloudPlatformList"
+            [ngValue]="cloudPlatform[platform]"> {{ platform }}</option>
+        </select>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'name'} }}</clr-control-error>
+      </clr-select-container>
+      <clr-input-container>
+        <label for="datacenter">{{ "HOME.RESOURCE.DIALOG.DATACENTER" | translate:{} }}</label>
+        <input id="datacenter"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.DATACENTER_PLACEHOLDER' | translate:{} "
+          formControlName="datacenter"
+          clrInput />
+      </clr-input-container>
+      <clr-input-container>
+        <label for="org">{{ "HOME.RESOURCE.DIALOG.ORG" | translate:{} }}</label>
+        <input id="org"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.ORG_PLACEHOLDER' | translate:{} "
+          formControlName="org"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="network">{{ "HOME.RESOURCE.DIALOG.NETWORK" | translate:{} }}</label>
+        <input id="network"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.NETWORK_PLACEHOLDER' | translate:{} "
+          formControlName="network"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="catalog">{{ "HOME.RESOURCE.DIALOG.CATALOG" | translate:{} }}</label>
+        <input id="catalog"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          [placeholder]="'HOME.RESOURCE.DIALOG.CATALOG_PLACEHOLDER' | translate:{} "
+          formControlName="catalog"
+          clrInput />
+      </clr-input-container>
+
+      <clr-input-container>
+        <label for="username">{{ "HOME.RESOURCE.DIALOG.USERNAME" | translate:{} }}</label>
+        <input id="username"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          formControlName="username"
+          clrInput />
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'Username'} }}</clr-control-error>
+      </clr-input-container>
+
+      <clr-password-container>
+        <label for="password">{{ "HOME.RESOURCE.DIALOG.PASSWORD" | translate:{} }}</label>
+        <input id="password"
+          type="password"
+          class="clr-col-12 clr-col-md-8"
+          type="text"
+          formControlName="password"
+          clrPassword />
+        <clr-control-helper>{{ 'HOME.RESOURCE.DIALOG.PASSWORD_HELP_TEXT' | translate:{} }}</clr-control-helper>
+        <clr-control-error>{{ "HOME.RESOURCE.DIALOG.REQUIRED" | translate:{item: 'Password'} }}</clr-control-error>
+      </clr-password-container>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-outline"
+      (click)="this.onCancel()"
+      [disabled]="vo.spinning"
+    >
+      {{ "HOME.RESOURCE.DIALOG.CANCEL" | translate:{} }}
+    </button>
+    <button type="button"
+      class="btn btn-primary"
+      [disabled]="!resourceForm.valid || vo.spinning"
+      (click)="this.onSave()"
+    >
+      <span *ngIf="!vo.spinning">
+        {{ "HOME.RESOURCE.DIALOG.SAVE" | translate:{} }}
+      </span>
+      <span class="spinner spinner-sm" *ngIf="vo.spinning">
+        Loading...
+      </span>
+    </button>
+  </div>
+</clr-modal>

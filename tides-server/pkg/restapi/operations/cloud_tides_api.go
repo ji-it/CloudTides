@@ -20,11 +20,16 @@ import (
 	"github.com/go-openapi/swag"
 
 	"tides-server/pkg/restapi/operations/policy"
+	"tides-server/pkg/restapi/operations/port"
 	"tides-server/pkg/restapi/operations/project"
 	"tides-server/pkg/restapi/operations/resource"
 	"tides-server/pkg/restapi/operations/template"
 	"tides-server/pkg/restapi/operations/usage"
 	"tides-server/pkg/restapi/operations/user"
+	"tides-server/pkg/restapi/operations/vapp"
+	"tides-server/pkg/restapi/operations/vendor_swagger"
+	"tides-server/pkg/restapi/operations/vm"
+	"tides-server/pkg/restapi/operations/vmtemp"
 )
 
 // NewCloudTidesAPI creates a new CloudTides instance
@@ -39,6 +44,7 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		PreServerShutdown:   func() {},
 		ServerShutdown:      func() {},
 		spec:                spec,
+		useSwaggerUI:        false,
 		ServeError:          errors.ServeError,
 		BasicAuthenticator:  security.BasicAuth,
 		APIKeyAuthenticator: security.APIKeyAuth,
@@ -49,14 +55,14 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		ResourceActivateResourceHandler: resource.ActivateResourceHandlerFunc(func(params resource.ActivateResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ActivateResource has not yet been implemented")
+		}),
 		PolicyAddPolicyHandler: policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
 		}),
 		ProjectAddProjectHandler: project.AddProjectHandlerFunc(func(params project.AddProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.AddProject has not yet been implemented")
-		}),
-		ResourceAddResourceHandler: resource.AddResourceHandlerFunc(func(params resource.AddResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.AddResource has not yet been implemented")
 		}),
 		UsageAddResourceUsageHandler: usage.AddResourceUsageHandlerFunc(func(params usage.AddResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.AddResourceUsage has not yet been implemented")
@@ -64,17 +70,32 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		TemplateAddTemplateHandler: template.AddTemplateHandlerFunc(func(params template.AddTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.AddTemplate has not yet been implemented")
 		}),
+		VmtempAddVMTempHandler: vmtemp.AddVMTempHandlerFunc(func(params vmtemp.AddVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.AddVMTemp has not yet been implemented")
+		}),
 		UsageAddVMUsageHandler: usage.AddVMUsageHandlerFunc(func(params usage.AddVMUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.AddVMUsage has not yet been implemented")
+		}),
+		VappAddVappHandler: vapp.AddVappHandlerFunc(func(params vapp.AddVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.AddVapp has not yet been implemented")
+		}),
+		ResourceAddVcdResourceHandler: resource.AddVcdResourceHandlerFunc(func(params resource.AddVcdResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.AddVcdResource has not yet been implemented")
+		}),
+		VendorSwaggerAddVendorHandler: vendor_swagger.AddVendorHandlerFunc(func(params vendor_swagger.AddVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.AddVendor has not yet been implemented")
+		}),
+		ResourceAddVsphereResourceHandler: resource.AddVsphereResourceHandlerFunc(func(params resource.AddVsphereResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.AddVsphereResource has not yet been implemented")
 		}),
 		ResourceAssignPolicyHandler: resource.AssignPolicyHandlerFunc(func(params resource.AssignPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.AssignPolicy has not yet been implemented")
 		}),
+		ResourceContributeResourceHandler: resource.ContributeResourceHandlerFunc(func(params resource.ContributeResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ContributeResource has not yet been implemented")
+		}),
 		ProjectDeleteProjectHandler: project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
-		}),
-		ResourceDeleteResourceHandler: resource.DeleteResourceHandlerFunc(func(params resource.DeleteResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.DeleteResource has not yet been implemented")
 		}),
 		UsageDeleteResourceUsageHandler: usage.DeleteResourceUsageHandlerFunc(func(params usage.DeleteResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.DeleteResourceUsage has not yet been implemented")
@@ -82,23 +103,68 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		TemplateDeleteTemplateHandler: template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
 		}),
+		VMDeleteVMHandler: vm.DeleteVMHandlerFunc(func(params vm.DeleteVMParams) middleware.Responder {
+			return middleware.NotImplemented("operation vm.DeleteVM has not yet been implemented")
+		}),
+		VmtempDeleteVMTempHandler: vmtemp.DeleteVMTempHandlerFunc(func(params vmtemp.DeleteVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.DeleteVMTemp has not yet been implemented")
+		}),
+		VappDeleteVappHandler: vapp.DeleteVappHandlerFunc(func(params vapp.DeleteVappParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.DeleteVapp has not yet been implemented")
+		}),
+		ResourceDeleteVcdResourceHandler: resource.DeleteVcdResourceHandlerFunc(func(params resource.DeleteVcdResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.DeleteVcdResource has not yet been implemented")
+		}),
+		VendorSwaggerDeleteVendorHandler: vendor_swagger.DeleteVendorHandlerFunc(func(params vendor_swagger.DeleteVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.DeleteVendor has not yet been implemented")
+		}),
 		ResourceDestroyVMHandler: resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
 			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
+		}),
+		UsageGetPastUsageHandler: usage.GetPastUsageHandlerFunc(func(params usage.GetPastUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.GetPastUsage has not yet been implemented")
+		}),
+		PolicyGetPolicyHandler: policy.GetPolicyHandlerFunc(func(params policy.GetPolicyParams) middleware.Responder {
+			return middleware.NotImplemented("operation policy.GetPolicy has not yet been implemented")
+		}),
+		UsageGetResourceUsageHandler: usage.GetResourceUsageHandlerFunc(func(params usage.GetResourceUsageParams) middleware.Responder {
+			return middleware.NotImplemented("operation usage.GetResourceUsage has not yet been implemented")
+		}),
+		UserGetUserProfileHandler: user.GetUserProfileHandlerFunc(func(params user.GetUserProfileParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.GetUserProfile has not yet been implemented")
+		}),
+		ResourceGetVcdResourceHandler: resource.GetVcdResourceHandlerFunc(func(params resource.GetVcdResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.GetVcdResource has not yet been implemented")
 		}),
 		PolicyListPolicyHandler: policy.ListPolicyHandlerFunc(func(params policy.ListPolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.ListPolicy has not yet been implemented")
 		}),
+		PortListPortsHandler: port.ListPortsHandlerFunc(func(params port.ListPortsParams) middleware.Responder {
+			return middleware.NotImplemented("operation port.ListPorts has not yet been implemented")
+		}),
 		ProjectListProjectHandler: project.ListProjectHandlerFunc(func(params project.ListProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
-		}),
-		ResourceListResourceHandler: resource.ListResourceHandlerFunc(func(params resource.ListResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ListResource has not yet been implemented")
 		}),
 		TemplateListTemplateHandler: template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
 			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
 		}),
-		ResourceOverviewStatsHandler: resource.OverviewStatsHandlerFunc(func(params resource.OverviewStatsParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.OverviewStats has not yet been implemented")
+		VMListVMHandler: vm.ListVMHandlerFunc(func(params vm.ListVMParams) middleware.Responder {
+			return middleware.NotImplemented("operation vm.ListVM has not yet been implemented")
+		}),
+		VmtempListVMTempHandler: vmtemp.ListVMTempHandlerFunc(func(params vmtemp.ListVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.ListVMTemp has not yet been implemented")
+		}),
+		VappListVappsHandler: vapp.ListVappsHandlerFunc(func(params vapp.ListVappsParams) middleware.Responder {
+			return middleware.NotImplemented("operation vapp.ListVapps has not yet been implemented")
+		}),
+		ResourceListVcdResourceHandler: resource.ListVcdResourceHandlerFunc(func(params resource.ListVcdResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ListVcdResource has not yet been implemented")
+		}),
+		VendorSwaggerListVendorHandler: vendor_swagger.ListVendorHandlerFunc(func(params vendor_swagger.ListVendorParams) middleware.Responder {
+			return middleware.NotImplemented("operation vendor_swagger.ListVendor has not yet been implemented")
+		}),
+		ResourceListVsphereResourceHandler: resource.ListVsphereResourceHandlerFunc(func(params resource.ListVsphereResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ListVsphereResource has not yet been implemented")
 		}),
 		UserRegisterUserHandler: user.RegisterUserHandlerFunc(func(params user.RegisterUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.RegisterUser has not yet been implemented")
@@ -106,41 +172,29 @@ func NewCloudTidesAPI(spec *loads.Document) *CloudTidesAPI {
 		PolicyRemovePolicyHandler: policy.RemovePolicyHandlerFunc(func(params policy.RemovePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.RemovePolicy has not yet been implemented")
 		}),
-		ResourceResourceInfoHandler: resource.ResourceInfoHandlerFunc(func(params resource.ResourceInfoParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ResourceInfo has not yet been implemented")
-		}),
-		UsageResourcePastUsageHandler: usage.ResourcePastUsageHandlerFunc(func(params usage.ResourcePastUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.ResourcePastUsage has not yet been implemented")
-		}),
-		ResourceResourceVMsInfoHandler: resource.ResourceVMsInfoHandlerFunc(func(params resource.ResourceVMsInfoParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ResourceVMsInfo has not yet been implemented")
-		}),
-		ResourceToggleActiveHandler: resource.ToggleActiveHandlerFunc(func(params resource.ToggleActiveParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ToggleActive has not yet been implemented")
-		}),
 		PolicyUpdatePolicyHandler: policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {
 			return middleware.NotImplemented("operation policy.UpdatePolicy has not yet been implemented")
 		}),
 		ProjectUpdateProjectHandler: project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
 		}),
-		ResourceUpdateResourceHandler: resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
-		}),
 		UsageUpdateResourceUsageHandler: usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
 			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
 		}),
-		ResourceUpdateStatusHandler: resource.UpdateStatusHandlerFunc(func(params resource.UpdateStatusParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateStatus has not yet been implemented")
+		UserUpdateUserProfileHandler: user.UpdateUserProfileHandlerFunc(func(params user.UpdateUserProfileParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.UpdateUserProfile has not yet been implemented")
 		}),
-		UserUserDetailsHandler: user.UserDetailsHandlerFunc(func(params user.UserDetailsParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.UserDetails has not yet been implemented")
+		VmtempUpdateVMTempHandler: vmtemp.UpdateVMTempHandlerFunc(func(params vmtemp.UpdateVMTempParams) middleware.Responder {
+			return middleware.NotImplemented("operation vmtemp.UpdateVMTemp has not yet been implemented")
 		}),
 		UserUserLoginHandler: user.UserLoginHandlerFunc(func(params user.UserLoginParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UserLogin has not yet been implemented")
 		}),
-		ResourceValidateResourceHandler: resource.ValidateResourceHandlerFunc(func(params resource.ValidateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ValidateResource has not yet been implemented")
+		ResourceValidateVcdResourceHandler: resource.ValidateVcdResourceHandlerFunc(func(params resource.ValidateVcdResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ValidateVcdResource has not yet been implemented")
+		}),
+		ResourceValidateVsphereResourceHandler: resource.ValidateVsphereResourceHandlerFunc(func(params resource.ValidateVsphereResourceParams) middleware.Responder {
+			return middleware.NotImplemented("operation resource.ValidateVsphereResource has not yet been implemented")
 		}),
 	}
 }
@@ -156,13 +210,16 @@ type CloudTidesAPI struct {
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
+	useSwaggerUI    bool
 
 	// BasicAuthenticator generates a runtime.Authenticator from the supplied basic auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BasicAuthenticator func(security.UserPassAuthentication) runtime.Authenticator
+
 	// APIKeyAuthenticator generates a runtime.Authenticator from the supplied token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	APIKeyAuthenticator func(string, string, security.TokenAuthentication) runtime.Authenticator
+
 	// BearerAuthenticator generates a runtime.Authenticator from the supplied bearer token auth function.
 	// It has a default implementation in the security package, however you can replace it for your particular usage.
 	BearerAuthenticator func(string, security.ScopedTokenAuthentication) runtime.Authenticator
@@ -178,68 +235,101 @@ type CloudTidesAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// ResourceActivateResourceHandler sets the operation handler for the activate resource operation
+	ResourceActivateResourceHandler resource.ActivateResourceHandler
 	// PolicyAddPolicyHandler sets the operation handler for the add policy operation
 	PolicyAddPolicyHandler policy.AddPolicyHandler
 	// ProjectAddProjectHandler sets the operation handler for the add project operation
 	ProjectAddProjectHandler project.AddProjectHandler
-	// ResourceAddResourceHandler sets the operation handler for the add resource operation
-	ResourceAddResourceHandler resource.AddResourceHandler
 	// UsageAddResourceUsageHandler sets the operation handler for the add resource usage operation
 	UsageAddResourceUsageHandler usage.AddResourceUsageHandler
 	// TemplateAddTemplateHandler sets the operation handler for the add template operation
 	TemplateAddTemplateHandler template.AddTemplateHandler
+	// VmtempAddVMTempHandler sets the operation handler for the add VM temp operation
+	VmtempAddVMTempHandler vmtemp.AddVMTempHandler
 	// UsageAddVMUsageHandler sets the operation handler for the add VM usage operation
 	UsageAddVMUsageHandler usage.AddVMUsageHandler
+	// VappAddVappHandler sets the operation handler for the add vapp operation
+	VappAddVappHandler vapp.AddVappHandler
+	// ResourceAddVcdResourceHandler sets the operation handler for the add vcd resource operation
+	ResourceAddVcdResourceHandler resource.AddVcdResourceHandler
+	// VendorSwaggerAddVendorHandler sets the operation handler for the add vendor operation
+	VendorSwaggerAddVendorHandler vendor_swagger.AddVendorHandler
+	// ResourceAddVsphereResourceHandler sets the operation handler for the add vsphere resource operation
+	ResourceAddVsphereResourceHandler resource.AddVsphereResourceHandler
 	// ResourceAssignPolicyHandler sets the operation handler for the assign policy operation
 	ResourceAssignPolicyHandler resource.AssignPolicyHandler
+	// ResourceContributeResourceHandler sets the operation handler for the contribute resource operation
+	ResourceContributeResourceHandler resource.ContributeResourceHandler
 	// ProjectDeleteProjectHandler sets the operation handler for the delete project operation
 	ProjectDeleteProjectHandler project.DeleteProjectHandler
-	// ResourceDeleteResourceHandler sets the operation handler for the delete resource operation
-	ResourceDeleteResourceHandler resource.DeleteResourceHandler
 	// UsageDeleteResourceUsageHandler sets the operation handler for the delete resource usage operation
 	UsageDeleteResourceUsageHandler usage.DeleteResourceUsageHandler
 	// TemplateDeleteTemplateHandler sets the operation handler for the delete template operation
 	TemplateDeleteTemplateHandler template.DeleteTemplateHandler
+	// VMDeleteVMHandler sets the operation handler for the delete VM operation
+	VMDeleteVMHandler vm.DeleteVMHandler
+	// VmtempDeleteVMTempHandler sets the operation handler for the delete VM temp operation
+	VmtempDeleteVMTempHandler vmtemp.DeleteVMTempHandler
+	// VappDeleteVappHandler sets the operation handler for the delete vapp operation
+	VappDeleteVappHandler vapp.DeleteVappHandler
+	// ResourceDeleteVcdResourceHandler sets the operation handler for the delete vcd resource operation
+	ResourceDeleteVcdResourceHandler resource.DeleteVcdResourceHandler
+	// VendorSwaggerDeleteVendorHandler sets the operation handler for the delete vendor operation
+	VendorSwaggerDeleteVendorHandler vendor_swagger.DeleteVendorHandler
 	// ResourceDestroyVMHandler sets the operation handler for the destroy VM operation
 	ResourceDestroyVMHandler resource.DestroyVMHandler
+	// UsageGetPastUsageHandler sets the operation handler for the get past usage operation
+	UsageGetPastUsageHandler usage.GetPastUsageHandler
+	// PolicyGetPolicyHandler sets the operation handler for the get policy operation
+	PolicyGetPolicyHandler policy.GetPolicyHandler
+	// UsageGetResourceUsageHandler sets the operation handler for the get resource usage operation
+	UsageGetResourceUsageHandler usage.GetResourceUsageHandler
+	// UserGetUserProfileHandler sets the operation handler for the get user profile operation
+	UserGetUserProfileHandler user.GetUserProfileHandler
+	// ResourceGetVcdResourceHandler sets the operation handler for the get vcd resource operation
+	ResourceGetVcdResourceHandler resource.GetVcdResourceHandler
 	// PolicyListPolicyHandler sets the operation handler for the list policy operation
 	PolicyListPolicyHandler policy.ListPolicyHandler
+	// PortListPortsHandler sets the operation handler for the list ports operation
+	PortListPortsHandler port.ListPortsHandler
 	// ProjectListProjectHandler sets the operation handler for the list project operation
 	ProjectListProjectHandler project.ListProjectHandler
-	// ResourceListResourceHandler sets the operation handler for the list resource operation
-	ResourceListResourceHandler resource.ListResourceHandler
 	// TemplateListTemplateHandler sets the operation handler for the list template operation
 	TemplateListTemplateHandler template.ListTemplateHandler
-	// ResourceOverviewStatsHandler sets the operation handler for the overview stats operation
-	ResourceOverviewStatsHandler resource.OverviewStatsHandler
+	// VMListVMHandler sets the operation handler for the list VM operation
+	VMListVMHandler vm.ListVMHandler
+	// VmtempListVMTempHandler sets the operation handler for the list VM temp operation
+	VmtempListVMTempHandler vmtemp.ListVMTempHandler
+	// VappListVappsHandler sets the operation handler for the list vapps operation
+	VappListVappsHandler vapp.ListVappsHandler
+	// ResourceListVcdResourceHandler sets the operation handler for the list vcd resource operation
+	ResourceListVcdResourceHandler resource.ListVcdResourceHandler
+	// VendorSwaggerListVendorHandler sets the operation handler for the list vendor operation
+	VendorSwaggerListVendorHandler vendor_swagger.ListVendorHandler
+	// ResourceListVsphereResourceHandler sets the operation handler for the list vsphere resource operation
+	ResourceListVsphereResourceHandler resource.ListVsphereResourceHandler
 	// UserRegisterUserHandler sets the operation handler for the register user operation
 	UserRegisterUserHandler user.RegisterUserHandler
 	// PolicyRemovePolicyHandler sets the operation handler for the remove policy operation
 	PolicyRemovePolicyHandler policy.RemovePolicyHandler
-	// ResourceResourceInfoHandler sets the operation handler for the resource info operation
-	ResourceResourceInfoHandler resource.ResourceInfoHandler
-	// UsageResourcePastUsageHandler sets the operation handler for the resource past usage operation
-	UsageResourcePastUsageHandler usage.ResourcePastUsageHandler
-	// ResourceResourceVMsInfoHandler sets the operation handler for the resource v ms info operation
-	ResourceResourceVMsInfoHandler resource.ResourceVMsInfoHandler
-	// ResourceToggleActiveHandler sets the operation handler for the toggle active operation
-	ResourceToggleActiveHandler resource.ToggleActiveHandler
 	// PolicyUpdatePolicyHandler sets the operation handler for the update policy operation
 	PolicyUpdatePolicyHandler policy.UpdatePolicyHandler
 	// ProjectUpdateProjectHandler sets the operation handler for the update project operation
 	ProjectUpdateProjectHandler project.UpdateProjectHandler
-	// ResourceUpdateResourceHandler sets the operation handler for the update resource operation
-	ResourceUpdateResourceHandler resource.UpdateResourceHandler
 	// UsageUpdateResourceUsageHandler sets the operation handler for the update resource usage operation
 	UsageUpdateResourceUsageHandler usage.UpdateResourceUsageHandler
-	// ResourceUpdateStatusHandler sets the operation handler for the update status operation
-	ResourceUpdateStatusHandler resource.UpdateStatusHandler
-	// UserUserDetailsHandler sets the operation handler for the user details operation
-	UserUserDetailsHandler user.UserDetailsHandler
+	// UserUpdateUserProfileHandler sets the operation handler for the update user profile operation
+	UserUpdateUserProfileHandler user.UpdateUserProfileHandler
+	// VmtempUpdateVMTempHandler sets the operation handler for the update VM temp operation
+	VmtempUpdateVMTempHandler vmtemp.UpdateVMTempHandler
 	// UserUserLoginHandler sets the operation handler for the user login operation
 	UserUserLoginHandler user.UserLoginHandler
-	// ResourceValidateResourceHandler sets the operation handler for the validate resource operation
-	ResourceValidateResourceHandler resource.ValidateResourceHandler
+	// ResourceValidateVcdResourceHandler sets the operation handler for the validate vcd resource operation
+	ResourceValidateVcdResourceHandler resource.ValidateVcdResourceHandler
+	// ResourceValidateVsphereResourceHandler sets the operation handler for the validate vsphere resource operation
+	ResourceValidateVsphereResourceHandler resource.ValidateVsphereResourceHandler
+
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
 	ServeError func(http.ResponseWriter, *http.Request, error)
@@ -257,6 +347,16 @@ type CloudTidesAPI struct {
 
 	// User defined logger function.
 	Logger func(string, ...interface{})
+}
+
+// UseRedoc for documentation at /docs
+func (o *CloudTidesAPI) UseRedoc() {
+	o.useSwaggerUI = false
+}
+
+// UseSwaggerUI for documentation at /docs
+func (o *CloudTidesAPI) UseSwaggerUI() {
+	o.useSwaggerUI = true
 }
 
 // SetDefaultProduces sets the default produces media type
@@ -309,14 +409,14 @@ func (o *CloudTidesAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.ResourceActivateResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ActivateResourceHandler")
+	}
 	if o.PolicyAddPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.AddPolicyHandler")
 	}
 	if o.ProjectAddProjectHandler == nil {
 		unregistered = append(unregistered, "project.AddProjectHandler")
-	}
-	if o.ResourceAddResourceHandler == nil {
-		unregistered = append(unregistered, "resource.AddResourceHandler")
 	}
 	if o.UsageAddResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.AddResourceUsageHandler")
@@ -324,17 +424,32 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.TemplateAddTemplateHandler == nil {
 		unregistered = append(unregistered, "template.AddTemplateHandler")
 	}
+	if o.VmtempAddVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.AddVMTempHandler")
+	}
 	if o.UsageAddVMUsageHandler == nil {
 		unregistered = append(unregistered, "usage.AddVMUsageHandler")
+	}
+	if o.VappAddVappHandler == nil {
+		unregistered = append(unregistered, "vapp.AddVappHandler")
+	}
+	if o.ResourceAddVcdResourceHandler == nil {
+		unregistered = append(unregistered, "resource.AddVcdResourceHandler")
+	}
+	if o.VendorSwaggerAddVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.AddVendorHandler")
+	}
+	if o.ResourceAddVsphereResourceHandler == nil {
+		unregistered = append(unregistered, "resource.AddVsphereResourceHandler")
 	}
 	if o.ResourceAssignPolicyHandler == nil {
 		unregistered = append(unregistered, "resource.AssignPolicyHandler")
 	}
+	if o.ResourceContributeResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ContributeResourceHandler")
+	}
 	if o.ProjectDeleteProjectHandler == nil {
 		unregistered = append(unregistered, "project.DeleteProjectHandler")
-	}
-	if o.ResourceDeleteResourceHandler == nil {
-		unregistered = append(unregistered, "resource.DeleteResourceHandler")
 	}
 	if o.UsageDeleteResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.DeleteResourceUsageHandler")
@@ -342,23 +457,68 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.TemplateDeleteTemplateHandler == nil {
 		unregistered = append(unregistered, "template.DeleteTemplateHandler")
 	}
+	if o.VMDeleteVMHandler == nil {
+		unregistered = append(unregistered, "vm.DeleteVMHandler")
+	}
+	if o.VmtempDeleteVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.DeleteVMTempHandler")
+	}
+	if o.VappDeleteVappHandler == nil {
+		unregistered = append(unregistered, "vapp.DeleteVappHandler")
+	}
+	if o.ResourceDeleteVcdResourceHandler == nil {
+		unregistered = append(unregistered, "resource.DeleteVcdResourceHandler")
+	}
+	if o.VendorSwaggerDeleteVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.DeleteVendorHandler")
+	}
 	if o.ResourceDestroyVMHandler == nil {
 		unregistered = append(unregistered, "resource.DestroyVMHandler")
+	}
+	if o.UsageGetPastUsageHandler == nil {
+		unregistered = append(unregistered, "usage.GetPastUsageHandler")
+	}
+	if o.PolicyGetPolicyHandler == nil {
+		unregistered = append(unregistered, "policy.GetPolicyHandler")
+	}
+	if o.UsageGetResourceUsageHandler == nil {
+		unregistered = append(unregistered, "usage.GetResourceUsageHandler")
+	}
+	if o.UserGetUserProfileHandler == nil {
+		unregistered = append(unregistered, "user.GetUserProfileHandler")
+	}
+	if o.ResourceGetVcdResourceHandler == nil {
+		unregistered = append(unregistered, "resource.GetVcdResourceHandler")
 	}
 	if o.PolicyListPolicyHandler == nil {
 		unregistered = append(unregistered, "policy.ListPolicyHandler")
 	}
+	if o.PortListPortsHandler == nil {
+		unregistered = append(unregistered, "port.ListPortsHandler")
+	}
 	if o.ProjectListProjectHandler == nil {
 		unregistered = append(unregistered, "project.ListProjectHandler")
-	}
-	if o.ResourceListResourceHandler == nil {
-		unregistered = append(unregistered, "resource.ListResourceHandler")
 	}
 	if o.TemplateListTemplateHandler == nil {
 		unregistered = append(unregistered, "template.ListTemplateHandler")
 	}
-	if o.ResourceOverviewStatsHandler == nil {
-		unregistered = append(unregistered, "resource.OverviewStatsHandler")
+	if o.VMListVMHandler == nil {
+		unregistered = append(unregistered, "vm.ListVMHandler")
+	}
+	if o.VmtempListVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.ListVMTempHandler")
+	}
+	if o.VappListVappsHandler == nil {
+		unregistered = append(unregistered, "vapp.ListVappsHandler")
+	}
+	if o.ResourceListVcdResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ListVcdResourceHandler")
+	}
+	if o.VendorSwaggerListVendorHandler == nil {
+		unregistered = append(unregistered, "vendor_swagger.ListVendorHandler")
+	}
+	if o.ResourceListVsphereResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ListVsphereResourceHandler")
 	}
 	if o.UserRegisterUserHandler == nil {
 		unregistered = append(unregistered, "user.RegisterUserHandler")
@@ -366,41 +526,29 @@ func (o *CloudTidesAPI) Validate() error {
 	if o.PolicyRemovePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.RemovePolicyHandler")
 	}
-	if o.ResourceResourceInfoHandler == nil {
-		unregistered = append(unregistered, "resource.ResourceInfoHandler")
-	}
-	if o.UsageResourcePastUsageHandler == nil {
-		unregistered = append(unregistered, "usage.ResourcePastUsageHandler")
-	}
-	if o.ResourceResourceVMsInfoHandler == nil {
-		unregistered = append(unregistered, "resource.ResourceVMsInfoHandler")
-	}
-	if o.ResourceToggleActiveHandler == nil {
-		unregistered = append(unregistered, "resource.ToggleActiveHandler")
-	}
 	if o.PolicyUpdatePolicyHandler == nil {
 		unregistered = append(unregistered, "policy.UpdatePolicyHandler")
 	}
 	if o.ProjectUpdateProjectHandler == nil {
 		unregistered = append(unregistered, "project.UpdateProjectHandler")
 	}
-	if o.ResourceUpdateResourceHandler == nil {
-		unregistered = append(unregistered, "resource.UpdateResourceHandler")
-	}
 	if o.UsageUpdateResourceUsageHandler == nil {
 		unregistered = append(unregistered, "usage.UpdateResourceUsageHandler")
 	}
-	if o.ResourceUpdateStatusHandler == nil {
-		unregistered = append(unregistered, "resource.UpdateStatusHandler")
+	if o.UserUpdateUserProfileHandler == nil {
+		unregistered = append(unregistered, "user.UpdateUserProfileHandler")
 	}
-	if o.UserUserDetailsHandler == nil {
-		unregistered = append(unregistered, "user.UserDetailsHandler")
+	if o.VmtempUpdateVMTempHandler == nil {
+		unregistered = append(unregistered, "vmtemp.UpdateVMTempHandler")
 	}
 	if o.UserUserLoginHandler == nil {
 		unregistered = append(unregistered, "user.UserLoginHandler")
 	}
-	if o.ResourceValidateResourceHandler == nil {
-		unregistered = append(unregistered, "resource.ValidateResourceHandler")
+	if o.ResourceValidateVcdResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ValidateVcdResourceHandler")
+	}
+	if o.ResourceValidateVsphereResourceHandler == nil {
+		unregistered = append(unregistered, "resource.ValidateVsphereResourceHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -492,50 +640,90 @@ func (o *CloudTidesAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/policy/add"] = policy.NewAddPolicy(o.context, o.PolicyAddPolicyHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/project/add"] = project.NewAddProject(o.context, o.ProjectAddProjectHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/resource/add"] = resource.NewAddResource(o.context, o.ResourceAddResourceHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/usage/add_resource"] = usage.NewAddResourceUsage(o.context, o.UsageAddResourceUsageHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/template/add"] = template.NewAddTemplate(o.context, o.TemplateAddTemplateHandler)
-	if o.handlers["POST"] == nil {
-		o.handlers["POST"] = make(map[string]http.Handler)
-	}
-	o.handlers["POST"]["/usage/addVM"] = usage.NewAddVMUsage(o.context, o.UsageAddVMUsageHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/resource/assign_policy"] = resource.NewAssignPolicy(o.context, o.ResourceAssignPolicyHandler)
+	o.handlers["PUT"]["/resource/activate/{id}"] = resource.NewActivateResource(o.context, o.ResourceActivateResourceHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/policy"] = policy.NewAddPolicy(o.context, o.PolicyAddPolicyHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/project"] = project.NewAddProject(o.context, o.ProjectAddProjectHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/usage"] = usage.NewAddResourceUsage(o.context, o.UsageAddResourceUsageHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/template"] = template.NewAddTemplate(o.context, o.TemplateAddTemplateHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/vmtemp"] = vmtemp.NewAddVMTemp(o.context, o.VmtempAddVMTempHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/usage/vm"] = usage.NewAddVMUsage(o.context, o.UsageAddVMUsageHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/vapp"] = vapp.NewAddVapp(o.context, o.VappAddVappHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/resource/vcd"] = resource.NewAddVcdResource(o.context, o.ResourceAddVcdResourceHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/vendors"] = vendor_swagger.NewAddVendor(o.context, o.VendorSwaggerAddVendorHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/resource/vsphere"] = resource.NewAddVsphereResource(o.context, o.ResourceAddVsphereResourceHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/policy/{id}"] = resource.NewAssignPolicy(o.context, o.ResourceAssignPolicyHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/resource/contribute/{id}"] = resource.NewContributeResource(o.context, o.ResourceContributeResourceHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/project/delete"] = project.NewDeleteProject(o.context, o.ProjectDeleteProjectHandler)
+	o.handlers["DELETE"]["/project/{id}"] = project.NewDeleteProject(o.context, o.ProjectDeleteProjectHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/resource/delete"] = resource.NewDeleteResource(o.context, o.ResourceDeleteResourceHandler)
+	o.handlers["DELETE"]["/usage/{id}"] = usage.NewDeleteResourceUsage(o.context, o.UsageDeleteResourceUsageHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/usage/delete_resource"] = usage.NewDeleteResourceUsage(o.context, o.UsageDeleteResourceUsageHandler)
+	o.handlers["DELETE"]["/template/{id}"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/template/delete"] = template.NewDeleteTemplate(o.context, o.TemplateDeleteTemplateHandler)
+	o.handlers["DELETE"]["/vm/{id}"] = vm.NewDeleteVM(o.context, o.VMDeleteVMHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vmtemp/{id}"] = vmtemp.NewDeleteVMTemp(o.context, o.VmtempDeleteVMTempHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vapp/{id}"] = vapp.NewDeleteVapp(o.context, o.VappDeleteVappHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/resource/vcd/{id}"] = resource.NewDeleteVcdResource(o.context, o.ResourceDeleteVcdResourceHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/vendors/{id}"] = vendor_swagger.NewDeleteVendor(o.context, o.VendorSwaggerDeleteVendorHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
@@ -543,23 +731,63 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/policy/list"] = policy.NewListPolicy(o.context, o.PolicyListPolicyHandler)
+	o.handlers["GET"]["/usage/past/{id}"] = usage.NewGetPastUsage(o.context, o.UsageGetPastUsageHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/project/list"] = project.NewListProject(o.context, o.ProjectListProjectHandler)
+	o.handlers["GET"]["/policy/{id}"] = policy.NewGetPolicy(o.context, o.PolicyGetPolicyHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/resource/list"] = resource.NewListResource(o.context, o.ResourceListResourceHandler)
+	o.handlers["GET"]["/usage/{id}"] = usage.NewGetResourceUsage(o.context, o.UsageGetResourceUsageHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/template/list"] = template.NewListTemplate(o.context, o.TemplateListTemplateHandler)
+	o.handlers["GET"]["/users/profile"] = user.NewGetUserProfile(o.context, o.UserGetUserProfileHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/resource/overview"] = resource.NewOverviewStats(o.context, o.ResourceOverviewStatsHandler)
+	o.handlers["GET"]["/resource/vcd/{id}"] = resource.NewGetVcdResource(o.context, o.ResourceGetVcdResourceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/policy"] = policy.NewListPolicy(o.context, o.PolicyListPolicyHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vm/ports/{id}"] = port.NewListPorts(o.context, o.PortListPortsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/project"] = project.NewListProject(o.context, o.ProjectListProjectHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/template"] = template.NewListTemplate(o.context, o.TemplateListTemplateHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vapp/vm/{id}"] = vm.NewListVM(o.context, o.VMListVMHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/template/vmtemp/{id}"] = vmtemp.NewListVMTemp(o.context, o.VmtempListVMTempHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vapp"] = vapp.NewListVapps(o.context, o.VappListVappsHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/resource/vcd"] = resource.NewListVcdResource(o.context, o.ResourceListVcdResourceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/vendors"] = vendor_swagger.NewListVendor(o.context, o.VendorSwaggerListVendorHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/resource/vsphere"] = resource.NewListVsphereResource(o.context, o.ResourceListVsphereResourceHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -567,47 +795,27 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["DELETE"] == nil {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
-	o.handlers["DELETE"]["/policy/remove"] = policy.NewRemovePolicy(o.context, o.PolicyRemovePolicyHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/resource/get_details"] = resource.NewResourceInfo(o.context, o.ResourceResourceInfoHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/usage/getUsage"] = usage.NewResourcePastUsage(o.context, o.UsageResourcePastUsageHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/resource/get_vm_details"] = resource.NewResourceVMsInfo(o.context, o.ResourceResourceVMsInfoHandler)
+	o.handlers["DELETE"]["/policy/{id}"] = policy.NewRemovePolicy(o.context, o.PolicyRemovePolicyHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/resource/toggle_active"] = resource.NewToggleActive(o.context, o.ResourceToggleActiveHandler)
+	o.handlers["PUT"]["/policy/{id}"] = policy.NewUpdatePolicy(o.context, o.PolicyUpdatePolicyHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/policy/update"] = policy.NewUpdatePolicy(o.context, o.PolicyUpdatePolicyHandler)
+	o.handlers["PUT"]["/project/{id}"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/project/update"] = project.NewUpdateProject(o.context, o.ProjectUpdateProjectHandler)
+	o.handlers["PUT"]["/usage/{id}"] = usage.NewUpdateResourceUsage(o.context, o.UsageUpdateResourceUsageHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/resource/update"] = resource.NewUpdateResource(o.context, o.ResourceUpdateResourceHandler)
+	o.handlers["PUT"]["/users/profile"] = user.NewUpdateUserProfile(o.context, o.UserUpdateUserProfileHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/usage/update_resource"] = usage.NewUpdateResourceUsage(o.context, o.UsageUpdateResourceUsageHandler)
-	if o.handlers["PUT"] == nil {
-		o.handlers["PUT"] = make(map[string]http.Handler)
-	}
-	o.handlers["PUT"]["/resource/update_status"] = resource.NewUpdateStatus(o.context, o.ResourceUpdateStatusHandler)
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
-	o.handlers["GET"]["/users/get_details"] = user.NewUserDetails(o.context, o.UserUserDetailsHandler)
+	o.handlers["PUT"]["/vmtemp"] = vmtemp.NewUpdateVMTemp(o.context, o.VmtempUpdateVMTempHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
@@ -615,7 +823,11 @@ func (o *CloudTidesAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/resource/validate"] = resource.NewValidateResource(o.context, o.ResourceValidateResourceHandler)
+	o.handlers["GET"]["/resource/vcd/validate"] = resource.NewValidateVcdResource(o.context, o.ResourceValidateVcdResourceHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/resource/vsphere/validate"] = resource.NewValidateVsphereResource(o.context, o.ResourceValidateVsphereResourceHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP
@@ -625,6 +837,9 @@ func (o *CloudTidesAPI) Serve(builder middleware.Builder) http.Handler {
 
 	if o.Middleware != nil {
 		return o.Middleware(builder)
+	}
+	if o.useSwaggerUI {
+		return o.context.APIHandlerSwaggerUI(builder)
 	}
 	return o.context.APIHandler(builder)
 }

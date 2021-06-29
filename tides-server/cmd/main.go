@@ -6,23 +6,21 @@
 package main
 
 import (
-	config "tides-server/pkg/config"
-	operations "tides-server/pkg/restapi/operations"
+	"strconv"
+	"tides-server/pkg/config"
+	"tides-server/pkg/controller"
+	"tides-server/pkg/restapi/operations"
 
-	loads "github.com/go-openapi/loads"
+	"github.com/go-openapi/loads"
 
-	// middleware "github.com/go-openapi/runtime/middleware"
-	// swag "github.com/go-openapi/swag"
-	restapi "tides-server/pkg/restapi"
-	// models "tides-server/pkg/models"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
+	"tides-server/pkg/restapi"
 )
 
 func main() {
-	config := config.GetConfig()
+	config.GetConfig()
 	swaggerSpec, err := loads.Analyzed(restapi.SwaggerJSON, "")
 	if err != nil {
 		log.Fatalln(err)
@@ -33,33 +31,14 @@ func main() {
 	server.ConfigureAPI()
 	defer server.Shutdown()
 
-	server.Port, _ = strconv.Atoi(config.Port)
-	fmt.Println(server.Port)
+	server.Host = os.Getenv("SERVER_IP")
+	server.Port, err = strconv.Atoi(os.Getenv("SERVER_PORT"))
 
 	name, err := os.Hostname()
 	fmt.Println(name)
 
-	server.Host = "0.0.0.0"
+	controller.InitController()
 
-	/*
-		// Implement the handler functionality.
-		// As all we need to do is give an implementation to the interface
-		// we can just override the `api` method giving it a method with a valid
-		// signature (we didn't need to have this implementation here, it could
-		// even come from a different package).
-		api.GetHostnameHandler = operations.GetHostnameHandlerFunc(
-			func(params operations.GetHostnameParams) middleware.Responder {
-				response, err := os.Hostname()
-				if err != nil {
-					return operations.NewGetHostnameDefault(500).WithPayload(&models.Error{
-						Code: 500,
-						Message: swag.String("failed to retrieve hostname"),
-					})
-				}
-
-				return operations.NewGetHostnameOK().WithPayload(response)
-			})
-	*/
 	// Start listening using having the handlers and port
 	// already set up.
 	if err := server.Serve(); err != nil {

@@ -63,6 +63,11 @@ const UpdatePolicyBadRequestCode int = 400
 swagger:response updatePolicyBadRequest
 */
 type UpdatePolicyBadRequest struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *UpdatePolicyBadRequestBody `json:"body,omitempty"`
 }
 
 // NewUpdatePolicyBadRequest creates UpdatePolicyBadRequest with default headers values
@@ -71,12 +76,27 @@ func NewUpdatePolicyBadRequest() *UpdatePolicyBadRequest {
 	return &UpdatePolicyBadRequest{}
 }
 
+// WithPayload adds the payload to the update policy bad request response
+func (o *UpdatePolicyBadRequest) WithPayload(payload *UpdatePolicyBadRequestBody) *UpdatePolicyBadRequest {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the update policy bad request response
+func (o *UpdatePolicyBadRequest) SetPayload(payload *UpdatePolicyBadRequestBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *UpdatePolicyBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // UpdatePolicyUnauthorizedCode is the HTTP code returned for type UpdatePolicyUnauthorized
@@ -87,6 +107,11 @@ const UpdatePolicyUnauthorizedCode int = 401
 swagger:response updatePolicyUnauthorized
 */
 type UpdatePolicyUnauthorized struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *UpdatePolicyUnauthorizedBody `json:"body,omitempty"`
 }
 
 // NewUpdatePolicyUnauthorized creates UpdatePolicyUnauthorized with default headers values
@@ -95,12 +120,51 @@ func NewUpdatePolicyUnauthorized() *UpdatePolicyUnauthorized {
 	return &UpdatePolicyUnauthorized{}
 }
 
+// WithPayload adds the payload to the update policy unauthorized response
+func (o *UpdatePolicyUnauthorized) WithPayload(payload *UpdatePolicyUnauthorizedBody) *UpdatePolicyUnauthorized {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the update policy unauthorized response
+func (o *UpdatePolicyUnauthorized) SetPayload(payload *UpdatePolicyUnauthorizedBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *UpdatePolicyUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
+	rw.WriteHeader(401)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
+// UpdatePolicyForbiddenCode is the HTTP code returned for type UpdatePolicyForbidden
+const UpdatePolicyForbiddenCode int = 403
+
+/*UpdatePolicyForbidden Forbidden
+
+swagger:response updatePolicyForbidden
+*/
+type UpdatePolicyForbidden struct {
+}
+
+// NewUpdatePolicyForbidden creates UpdatePolicyForbidden with default headers values
+func NewUpdatePolicyForbidden() *UpdatePolicyForbidden {
+
+	return &UpdatePolicyForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdatePolicyForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(401)
+	rw.WriteHeader(403)
 }
 
 // UpdatePolicyNotFoundCode is the HTTP code returned for type UpdatePolicyNotFound

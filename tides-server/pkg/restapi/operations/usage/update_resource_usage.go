@@ -6,14 +6,12 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
+	"context"
 	"net/http"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // UpdateResourceUsageHandlerFunc turns a function with the right signature into a update resource usage handler
@@ -34,7 +32,7 @@ func NewUpdateResourceUsage(ctx *middleware.Context, handler UpdateResourceUsage
 	return &UpdateResourceUsage{Context: ctx, Handler: handler}
 }
 
-/*UpdateResourceUsage swagger:route PUT /usage/update_resource usage updateResourceUsage
+/* UpdateResourceUsage swagger:route PUT /usage/{id} usage updateResourceUsage
 
 update datacenter usage info
 
@@ -50,14 +48,12 @@ func (o *UpdateResourceUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 		r = rCtx
 	}
 	var Params = NewUpdateResourceUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -70,17 +66,17 @@ type UpdateResourceUsageBody struct {
 	// current CPU
 	CurrentCPU float64 `json:"currentCPU,omitempty"`
 
+	// current disk
+	CurrentDisk float64 `json:"currentDisk,omitempty"`
+
 	// current RAM
 	CurrentRAM float64 `json:"currentRAM,omitempty"`
 
-	// host address
-	HostAddress string `json:"hostAddress,omitempty"`
-
-	// name
-	Name string `json:"name,omitempty"`
-
 	// total CPU
 	TotalCPU float64 `json:"totalCPU,omitempty"`
+
+	// total disk
+	TotalDisk float64 `json:"totalDisk,omitempty"`
 
 	// total RAM
 	TotalRAM float64 `json:"totalRAM,omitempty"`
@@ -88,6 +84,11 @@ type UpdateResourceUsageBody struct {
 
 // Validate validates this update resource usage body
 func (o *UpdateResourceUsageBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update resource usage body based on context it is used
+func (o *UpdateResourceUsageBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -115,61 +116,16 @@ func (o *UpdateResourceUsageBody) UnmarshalBinary(b []byte) error {
 type UpdateResourceUsageOKBody struct {
 
 	// message
-	// Enum: [resource usage recorded]
 	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this update resource usage o k body
 func (o *UpdateResourceUsageOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateMessage(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-var updateResourceUsageOKBodyTypeMessagePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["resource usage recorded"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		updateResourceUsageOKBodyTypeMessagePropEnum = append(updateResourceUsageOKBodyTypeMessagePropEnum, v)
-	}
-}
-
-const (
-
-	// UpdateResourceUsageOKBodyMessageResourceUsageRecorded captures enum value "resource usage recorded"
-	UpdateResourceUsageOKBodyMessageResourceUsageRecorded string = "resource usage recorded"
-)
-
-// prop value enum
-func (o *UpdateResourceUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, updateResourceUsageOKBodyTypeMessagePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *UpdateResourceUsageOKBody) validateMessage(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Message) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateMessageEnum("updateResourceUsageOK"+"."+"message", "body", o.Message); err != nil {
-		return err
-	}
-
+// ContextValidate validates this update resource usage o k body based on context it is used
+func (o *UpdateResourceUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

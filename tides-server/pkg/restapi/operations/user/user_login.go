@@ -6,6 +6,7 @@ package user
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewUserLogin(ctx *middleware.Context, handler UserLoginHandler) *UserLogin 
 	return &UserLogin{Context: ctx, Handler: handler}
 }
 
-/*UserLogin swagger:route POST /users/login user userLogin
+/* UserLogin swagger:route POST /users/login user userLogin
 
 user login
 
@@ -50,14 +51,12 @@ func (o *UserLogin) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewUserLoginParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -76,6 +75,11 @@ type UserLoginBody struct {
 
 // Validate validates this user login body
 func (o *UserLoginBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this user login body based on context it is used
+func (o *UserLoginBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -124,13 +128,40 @@ func (o *UserLoginOKBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *UserLoginOKBody) validateUserInfo(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.UserInfo) { // not required
 		return nil
 	}
 
 	if o.UserInfo != nil {
 		if err := o.UserInfo.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("userLoginOK" + "." + "userInfo")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this user login o k body based on the context it is used
+func (o *UserLoginOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateUserInfo(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *UserLoginOKBody) contextValidateUserInfo(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.UserInfo != nil {
+		if err := o.UserInfo.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("userLoginOK" + "." + "userInfo")
 			}
@@ -212,14 +243,13 @@ const (
 
 // prop value enum
 func (o *UserLoginOKBodyUserInfo) validatePriorityEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, userLoginOKBodyUserInfoTypePriorityPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, userLoginOKBodyUserInfoTypePriorityPropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *UserLoginOKBodyUserInfo) validatePriority(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Priority) { // not required
 		return nil
 	}
@@ -229,6 +259,11 @@ func (o *UserLoginOKBodyUserInfo) validatePriority(formats strfmt.Registry) erro
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this user login o k body user info based on context it is used
+func (o *UserLoginOKBodyUserInfo) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -294,14 +329,13 @@ const (
 
 // prop value enum
 func (o *UserLoginUnauthorizedBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, userLoginUnauthorizedBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, userLoginUnauthorizedBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *UserLoginUnauthorizedBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -311,6 +345,11 @@ func (o *UserLoginUnauthorizedBody) validateMessage(formats strfmt.Registry) err
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this user login unauthorized body based on context it is used
+func (o *UserLoginUnauthorizedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -31,9 +31,9 @@ func NewUpdateResource(ctx *middleware.Context, handler UpdateResourceHandler) *
 	return &UpdateResource{Context: ctx, Handler: handler}
 }
 
-/*UpdateResource swagger:route PUT /resource/update resource updateResource
+/*UpdateResource swagger:route PUT /resource/{id} resource updateResource
 
-update usage info of resource
+toggle active, assign policy
 
 */
 type UpdateResource struct {
@@ -64,17 +64,11 @@ func (o *UpdateResource) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model UpdateResourceBody
 type UpdateResourceBody struct {
 
-	// current CPU
-	CurrentCPU float64 `json:"currentCPU,omitempty"`
+	// active
+	Active bool `json:"active,omitempty"`
 
-	// current RAM
-	CurrentRAM float64 `json:"currentRAM,omitempty"`
-
-	// host address
-	HostAddress string `json:"hostAddress,omitempty"`
-
-	// name
-	Name string `json:"name,omitempty"`
+	// policy
+	Policy int64 `json:"policy,omitempty"`
 }
 
 // Validate validates this update resource body

@@ -1,12 +1,88 @@
-<button class="btn btn-primary" (click)="this.add()">
+<button class="btn btn-primary" (click)="this.opened=true">
   <clr-icon shape="plus"></clr-icon>
-  Add Resource
+  {{ "HOME.RESOURCE.ADD_RESOURCE" | translate:{} }}
 </button>
 
 <div *ngIf="this.list$ | async as list">
-  <div class="clr-row" *ngFor="let item of list">
+  <!--div class="clr-row" *ngFor="let item of list">
     <div class="clr-col-12">
       <tide-resource-card [item]="item"></tide-resource-card>
     </div>
-  </div>
+  </div-->
+  <!--clr-datagrid [(clrDgSelected)]="selected"-->
+  <clr-datagrid>
+    <!--clr-dg-action-bar>
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="this.opened=true">
+          <clr-icon shape="plus"></clr-icon>
+        </button>
+      </div>
+    </clr-dg-action-bar-->
+    <clr-dg-column>
+      <div class="key">Vendor Name</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Tenant</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">DataCenter</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Type</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Total CPU</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Total Memory</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Total Disk</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">CPU Usage</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Memory Usage</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Disk Usage</div>
+    </clr-dg-column>
+
+    <!--clr-dg-row *ngFor="let item of list"-->
+    <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
+      <clr-dg-action-overflow>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.activate(item.id)"
+          *ngIf="this.loginService.inAdminView()"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.ACTIVATE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.contribute(item.id)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.CONTRIBUTE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.delete(item.vcdId)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+      </clr-dg-action-overflow>
+      <clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.organization}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.resType}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.cpu}} GHz</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.mem}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.disk}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["cpu"]}}GHz ({{ item?.usage ? item?.usage["cpu%"] : "-" }}%)</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["mem"]}}GB ({{ item?.usage ? item?.usage["mem%"] : "-"  }}%)</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.usage["disk"]}}GB ({{ item?.usage ? item?.usage["disk%"] : "-"  }}%)</div></clr-dg-cell>
+    </clr-dg-row>
+  </clr-datagrid>
 </div>
+
+<tide-resource-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-resource-dialog>

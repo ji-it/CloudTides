@@ -6,14 +6,12 @@ package template
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"encoding/json"
+	"context"
 	"net/http"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // AddTemplateHandlerFunc turns a function with the right signature into a add template handler
@@ -34,7 +32,7 @@ func NewAddTemplate(ctx *middleware.Context, handler AddTemplateHandler) *AddTem
 	return &AddTemplate{Context: ctx, Handler: handler}
 }
 
-/*AddTemplate swagger:route POST /template/add template addTemplate
+/* AddTemplate swagger:route POST /template template addTemplate
 
 upload a VM template
 
@@ -50,14 +48,12 @@ func (o *AddTemplate) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddTemplateParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -67,27 +63,23 @@ func (o *AddTemplate) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // swagger:model AddTemplateBody
 type AddTemplateBody struct {
 
-	// compat
-	Compat string `json:"compat,omitempty"`
-
-	// memsize
-	Memsize float64 `json:"memsize,omitempty"`
+	// description
+	Description string `json:"description,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
 
-	// os
-	Os string `json:"os,omitempty"`
-
-	// source
-	Source string `json:"source,omitempty"`
-
-	// space
-	Space float64 `json:"space,omitempty"`
+	// tag
+	Tag string `json:"tag,omitempty"`
 }
 
 // Validate validates this add template body
 func (o *AddTemplateBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add template body based on context it is used
+func (o *AddTemplateBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -114,62 +106,20 @@ func (o *AddTemplateBody) UnmarshalBinary(b []byte) error {
 // swagger:model AddTemplateOKBody
 type AddTemplateOKBody struct {
 
+	// id
+	ID int64 `json:"id,omitempty"`
+
 	// message
-	// Enum: [success]
 	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this add template o k body
 func (o *AddTemplateOKBody) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateMessage(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-var addTemplateOKBodyTypeMessagePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["success"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		addTemplateOKBodyTypeMessagePropEnum = append(addTemplateOKBodyTypeMessagePropEnum, v)
-	}
-}
-
-const (
-
-	// AddTemplateOKBodyMessageSuccess captures enum value "success"
-	AddTemplateOKBodyMessageSuccess string = "success"
-)
-
-// prop value enum
-func (o *AddTemplateOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addTemplateOKBodyTypeMessagePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *AddTemplateOKBody) validateMessage(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.Message) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateMessageEnum("addTemplateOK"+"."+"message", "body", o.Message); err != nil {
-		return err
-	}
-
+// ContextValidate validates this add template o k body based on context it is used
+func (o *AddTemplateOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

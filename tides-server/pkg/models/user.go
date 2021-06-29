@@ -7,11 +7,10 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-// User user
-
+// User schema
 type User struct {
 	gorm.Model
 
@@ -35,6 +34,9 @@ type User struct {
 
 	// password
 	Password string `json:"password,omitempty"`
+
+	// phone
+	Phone string `json:"phone,omitempty"`
 
 	// position
 	Position string `json:"position,omitempty"`

@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
+import { ChartsModule } from 'ng2-charts';
 
 import { SharedModule } from '@tide-shared/shared.module';
 
 import { HomeRoutingModule, declarations, providers } from './home-routing.module';
-
 
 @NgModule({
   declarations: [
@@ -14,7 +14,8 @@ import { HomeRoutingModule, declarations, providers } from './home-routing.modul
   ],
   imports: [
     SharedModule,
-    HomeRoutingModule
-  ]
+    HomeRoutingModule,
+    ChartsModule,
+  ],
 })
-export class HomeModule { }
+export class HomeModule {}

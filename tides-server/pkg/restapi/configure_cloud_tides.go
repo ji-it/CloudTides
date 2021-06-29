@@ -5,14 +5,16 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"tides-server/pkg/restapi/operations/port"
+	"tides-server/pkg/restapi/operations/vapp"
+	"tides-server/pkg/restapi/operations/vendor_swagger"
+	"tides-server/pkg/restapi/operations/vm"
+	"tides-server/pkg/restapi/operations/vmtemp"
 
-	// "strings"
-	// "fmt"
-	// "io/ioutil"
-
+	interpose "github.com/carbocation/interpose/middleware"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/runtime/middleware"
+	"github.com/rs/cors"
 
 	"tides-server/pkg/restapi/operations"
 	"tides-server/pkg/restapi/operations/policy"
@@ -45,217 +47,95 @@ func configureAPI(api *operations.CloudTidesAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.UsageAddResourceUsageHandler == nil {
-		api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(func(params usage.AddResourceUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.AddResourceUsage has not yet been implemented")
-		})
-	} else {
-		api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(handler.AddResourceUsageHandler)
-	}
-	if api.PolicyAddPolicyHandler == nil {
-		api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(func(params policy.AddPolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation policy.AddPolicy has not yet been implemented")
-		})
-	} else {
-		api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(handler.AddPolicyHandler)
-	}
-	if api.ResourceAddResourceHandler == nil {
-		api.ResourceAddResourceHandler = resource.AddResourceHandlerFunc(func(params resource.AddResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.AddResource has not yet been implemented")
-		})
-	} else {
-		api.ResourceAddResourceHandler = resource.AddResourceHandlerFunc(handler.AddResourceHandler)
-	}
-	if api.TemplateAddTemplateHandler == nil {
-		api.TemplateAddTemplateHandler = template.AddTemplateHandlerFunc(func(params template.AddTemplateParams) middleware.Responder {
-			return middleware.NotImplemented("operation template.AddTemplate has not yet been implemented")
-		})
-	} else {
-		api.TemplateAddTemplateHandler = template.AddTemplateHandlerFunc(handler.AddTemplateHandler)
-	}
-	if api.UsageAddVMUsageHandler == nil {
-		api.UsageAddVMUsageHandler = usage.AddVMUsageHandlerFunc(func(params usage.AddVMUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.AddVMUsage has not yet been implemented")
-		})
-	} else {
-		api.UsageAddVMUsageHandler = usage.AddVMUsageHandlerFunc(handler.AddVMUsageHandler)
-	}
-	if api.ResourceAssignPolicyHandler == nil {
-		api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(func(params resource.AssignPolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.AssignPolicy has not yet been implemented")
-		})
-	} else {
-		api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(handler.AssignPolicyHandler)
-	}
-	if api.UsageDeleteResourceUsageHandler == nil {
-		api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(func(params usage.DeleteResourceUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.DeleteResourceUsage has not yet been implemented")
-		})
-	} else {
-		api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(handler.DeleteResourceUsageHandler)
-	}
-	if api.ResourceDeleteResourceHandler == nil {
-		api.ResourceDeleteResourceHandler = resource.DeleteResourceHandlerFunc(func(params resource.DeleteResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.DeleteResource has not yet been implemented")
-		})
-	} else {
-		api.ResourceDeleteResourceHandler = resource.DeleteResourceHandlerFunc(handler.DeleteResourceHandler)
-	}
-	if api.TemplateDeleteTemplateHandler == nil {
-		api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(func(params template.DeleteTemplateParams) middleware.Responder {
-			return middleware.NotImplemented("operation template.DeleteTemplate has not yet been implemented")
-		})
-	} else {
-		api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(handler.DeleteTemplateHandler)
-	}
-	if api.ResourceDestroyVMHandler == nil {
-		api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(func(params resource.DestroyVMParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.DestroyVM has not yet been implemented")
-		})
-	} else {
-		api.ResourceDestroyVMHandler = resource.DestroyVMHandlerFunc(handler.DestroyVMHandler)
-	}
-	if api.UsageResourcePastUsageHandler == nil {
-		api.UsageResourcePastUsageHandler = usage.ResourcePastUsageHandlerFunc(func(params usage.ResourcePastUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.ResourcePastUsage has not yet been implemented")
-		})
-	}
-	if api.PolicyListPolicyHandler == nil {
-		api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(func(params policy.ListPolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation policy.ListPolicy has not yet been implemented")
-		})
-	} else {
-		api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(handler.ListPolicyHandler)
-	}
-	if api.ResourceListResourceHandler == nil {
-		api.ResourceListResourceHandler = resource.ListResourceHandlerFunc(func(params resource.ListResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ListResource has not yet been implemented")
-		})
-	} else {
-		api.ResourceListResourceHandler = resource.ListResourceHandlerFunc(handler.ListResourceHandler)
-	}
-	if api.TemplateListTemplateHandler == nil {
-		api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(func(params template.ListTemplateParams) middleware.Responder {
-			return middleware.NotImplemented("operation template.ListTemplate has not yet been implemented")
-		})
-	} else {
-		api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(handler.ListTemplateHandler)
-	}
-	if api.ResourceOverviewStatsHandler == nil {
-		api.ResourceOverviewStatsHandler = resource.OverviewStatsHandlerFunc(func(params resource.OverviewStatsParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.OverviewStats has not yet been implemented")
-		})
-	}
-	if api.UserRegisterUserHandler == nil {
-		api.UserRegisterUserHandler = user.RegisterUserHandlerFunc(func(params user.RegisterUserParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.RegisterUser has not yet been implemented")
-		})
-	} else {
-		api.UserRegisterUserHandler = user.RegisterUserHandlerFunc(handler.RegisterUserHandler)
-	}
-	if api.PolicyRemovePolicyHandler == nil {
-		api.PolicyRemovePolicyHandler = policy.RemovePolicyHandlerFunc(func(params policy.RemovePolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation policy.RemovePolicy has not yet been implemented")
-		})
-	} else {
-		api.PolicyRemovePolicyHandler = policy.RemovePolicyHandlerFunc(handler.RemovePolicyHandler)
-	}
-	if api.ResourceResourceInfoHandler == nil {
-		api.ResourceResourceInfoHandler = resource.ResourceInfoHandlerFunc(func(params resource.ResourceInfoParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ResourceInfo has not yet been implemented")
-		})
-	} else {
-		api.ResourceResourceInfoHandler = resource.ResourceInfoHandlerFunc(handler.ResourceInfoHandler)
-	}
-	if api.ResourceResourceVMsInfoHandler == nil {
-		api.ResourceResourceVMsInfoHandler = resource.ResourceVMsInfoHandlerFunc(func(params resource.ResourceVMsInfoParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ResourceVMsInfo has not yet been implemented")
-		})
-	} else {
-		api.ResourceResourceVMsInfoHandler = resource.ResourceVMsInfoHandlerFunc(handler.ResourceVMsInfoHandler)
-	}
-	if api.ResourceToggleActiveHandler == nil {
-		api.ResourceToggleActiveHandler = resource.ToggleActiveHandlerFunc(func(params resource.ToggleActiveParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ToggleActive has not yet been implemented")
-		})
-	} else {
-		api.ResourceToggleActiveHandler = resource.ToggleActiveHandlerFunc(handler.ToggleActiveHandler)
-	}
-	if api.ResourceUpdateResourceHandler == nil {
-		api.ResourceUpdateResourceHandler = resource.UpdateResourceHandlerFunc(func(params resource.UpdateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateResource has not yet been implemented")
-		})
-	}
-	if api.UsageUpdateResourceUsageHandler == nil {
-		api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(func(params usage.UpdateResourceUsageParams) middleware.Responder {
-			return middleware.NotImplemented("operation usage.UpdateResourceUsage has not yet been implemented")
-		})
-	} else {
-		api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(handler.UpdateResourceUsageHandler)
-	}
-	if api.PolicyUpdatePolicyHandler == nil {
-		api.PolicyUpdatePolicyHandler = policy.UpdatePolicyHandlerFunc(func(params policy.UpdatePolicyParams) middleware.Responder {
-			return middleware.NotImplemented("operation policy.UpdatePolicy has not yet been implemented")
-		})
-	} else {
-		api.PolicyUpdatePolicyHandler = policy.UpdatePolicyHandlerFunc(handler.UpdatePolicyHandler)
-	}
-	if api.UserUserDetailsHandler == nil {
-		api.UserUserDetailsHandler = user.UserDetailsHandlerFunc(func(params user.UserDetailsParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.UserDetails has not yet been implemented")
-		})
-	} else {
-		api.UserUserDetailsHandler = user.UserDetailsHandlerFunc(handler.UserDetailsHandler)
-	}
-	if api.UserUserLoginHandler == nil {
-		api.UserUserLoginHandler = user.UserLoginHandlerFunc(func(params user.UserLoginParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.UserLogin has not yet been implemented")
-		})
-	} else {
-		api.UserUserLoginHandler = user.UserLoginHandlerFunc(handler.UserLoginHandler)
-	}
-	if api.ResourceValidateResourceHandler == nil {
-		api.ResourceValidateResourceHandler = resource.ValidateResourceHandlerFunc(func(params resource.ValidateResourceParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.ValidateResource has not yet been implemented")
-		})
-	} else {
-		api.ResourceValidateResourceHandler = resource.ValidateResourceHandlerFunc(handler.ValidateResourceHandler)
-	}
-	if api.ResourceUpdateStatusHandler == nil {
-		api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(func(params resource.UpdateStatusParams) middleware.Responder {
-			return middleware.NotImplemented("operation resource.UpdateStatus has not yet been implemented")
-		})
-	} else {
-		api.ResourceUpdateStatusHandler = resource.UpdateStatusHandlerFunc(handler.UpdateStatusHandler)
-	}
-	if api.ProjectAddProjectHandler == nil {
-		api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(func(params project.AddProjectParams) middleware.Responder {
-			return middleware.NotImplemented("operation project.AddProject has not yet been implemented")
-		})
-	} else {
-		api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(handler.AddProjectHandler)
-	}
-	if api.ProjectListProjectHandler == nil {
-		api.ProjectListProjectHandler = project.ListProjectHandlerFunc(func(params project.ListProjectParams) middleware.Responder {
-			return middleware.NotImplemented("operation project.ListProject has not yet been implemented")
-		})
-	} else {
-		api.ProjectListProjectHandler = project.ListProjectHandlerFunc(handler.ListProjectHandler)
-	}
-	if api.ProjectUpdateProjectHandler == nil {
-		api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(func(params project.UpdateProjectParams) middleware.Responder {
-			return middleware.NotImplemented("operation project.UpdateProject has not yet been implemented")
-		})
-	} else {
-		api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(handler.UpdateProjectHandler)
-	}
-	if api.ProjectDeleteProjectHandler == nil {
-		api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(func(params project.DeleteProjectParams) middleware.Responder {
-			return middleware.NotImplemented("operation project.DeleteProject has not yet been implemented")
-		})
-	} else {
-		api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(handler.DeleteProjectHandler)
-	}
+	api.UsageAddResourceUsageHandler = usage.AddResourceUsageHandlerFunc(handler.AddResourceUsageHandler)
+
+	api.PolicyAddPolicyHandler = policy.AddPolicyHandlerFunc(handler.AddPolicyHandler)
+
+	api.ResourceAddVsphereResourceHandler = resource.AddVsphereResourceHandlerFunc(handler.AddVsphereResourceHandler)
+
+	api.TemplateAddTemplateHandler = template.AddTemplateHandlerFunc(handler.AddTemplateHandler)
+
+	api.UsageAddVMUsageHandler = usage.AddVMUsageHandlerFunc(handler.AddVMUsageHandler)
+
+	api.UsageDeleteResourceUsageHandler = usage.DeleteResourceUsageHandlerFunc(handler.DeleteResourceUsageHandler)
+
+	api.TemplateDeleteTemplateHandler = template.DeleteTemplateHandlerFunc(handler.DeleteTemplateHandler)
+
+	api.PolicyListPolicyHandler = policy.ListPolicyHandlerFunc(handler.ListPolicyHandler)
+
+	api.ResourceListVsphereResourceHandler = resource.ListVsphereResourceHandlerFunc(handler.ListVsphereResourceHandler)
+
+	api.TemplateListTemplateHandler = template.ListTemplateHandlerFunc(handler.ListTemplateHandler)
+
+	api.UserRegisterUserHandler = user.RegisterUserHandlerFunc(handler.RegisterUserHandler)
+
+	api.PolicyRemovePolicyHandler = policy.RemovePolicyHandlerFunc(handler.RemovePolicyHandler)
+
+	api.UsageUpdateResourceUsageHandler = usage.UpdateResourceUsageHandlerFunc(handler.UpdateResourceUsageHandler)
+
+	api.PolicyUpdatePolicyHandler = policy.UpdatePolicyHandlerFunc(handler.UpdatePolicyHandler)
+
+	api.UserGetUserProfileHandler = user.GetUserProfileHandlerFunc(handler.GetUserProfileHandler)
+
+	api.UserUpdateUserProfileHandler = user.UpdateUserProfileHandlerFunc(handler.UpdateUserProfileHandler)
+
+	api.UserUserLoginHandler = user.UserLoginHandlerFunc(handler.UserLoginHandler)
+
+	api.ResourceValidateVsphereResourceHandler = resource.ValidateVsphereResourceHandlerFunc(handler.ValidateVsphereResourceHandler)
+
+	api.ProjectAddProjectHandler = project.AddProjectHandlerFunc(handler.AddProjectHandler)
+
+	api.ProjectListProjectHandler = project.ListProjectHandlerFunc(handler.ListProjectHandler)
+
+	api.ProjectUpdateProjectHandler = project.UpdateProjectHandlerFunc(handler.UpdateProjectHandler)
+
+	api.ProjectDeleteProjectHandler = project.DeleteProjectHandlerFunc(handler.DeleteProjectHandler)
+
+	api.ResourceValidateVcdResourceHandler = resource.ValidateVcdResourceHandlerFunc(handler.ValidateVcdResourceHandler)
+
+	api.ResourceAddVcdResourceHandler = resource.AddVcdResourceHandlerFunc(handler.AddVcdResourceHandler)
+
+	api.ResourceListVcdResourceHandler = resource.ListVcdResourceHandlerFunc(handler.ListVcdResourceHandler)
+
+	api.ResourceGetVcdResourceHandler = resource.GetVcdResourceHandlerFunc(handler.GetVcdResourceHandler)
+
+	api.ResourceDeleteVcdResourceHandler = resource.DeleteVcdResourceHandlerFunc(handler.DeleteVcdResourceHandler)
+
+	api.ResourceAssignPolicyHandler = resource.AssignPolicyHandlerFunc(handler.AssignPolicyHandler)
+
+	api.PolicyGetPolicyHandler = policy.GetPolicyHandlerFunc(handler.GetPolicyHandler)
+
+	api.UsageGetResourceUsageHandler = usage.GetResourceUsageHandlerFunc(handler.GetResourceUsageHandler)
+
+	api.UsageGetPastUsageHandler = usage.GetPastUsageHandlerFunc(handler.GetPastUsageHandler)
+
+	api.ResourceActivateResourceHandler = resource.ActivateResourceHandlerFunc(handler.ActivateResourceHandler)
+
+	api.ResourceContributeResourceHandler = resource.ContributeResourceHandlerFunc(handler.ContributeResourceHandler)
+
+	api.VendorSwaggerListVendorHandler = vendor_swagger.ListVendorHandlerFunc(handler.ListVendorsHandler)
+
+	api.VendorSwaggerAddVendorHandler = vendor_swagger.AddVendorHandlerFunc(handler.AddVendorHandler)
+
+	api.VendorSwaggerDeleteVendorHandler = vendor_swagger.DeleteVendorHandlerFunc((handler.DeleteVendorHandler))
+
+	api.VappAddVappHandler = vapp.AddVappHandlerFunc(handler.AddVAPPHandler)
+
+	api.VappListVappsHandler = vapp.ListVappsHandlerFunc(handler.ListVappHandler)
+
+	api.VappDeleteVappHandler = vapp.DeleteVappHandlerFunc(handler.DeleteVAPPHandler)
+
+	api.VmtempAddVMTempHandler = vmtemp.AddVMTempHandlerFunc(handler.AddVMTemplateHandler)
+
+	api.VmtempListVMTempHandler = vmtemp.ListVMTempHandlerFunc(handler.ListVMTemplateHandler)
+
+	api.VmtempDeleteVMTempHandler = vmtemp.DeleteVMTempHandlerFunc(handler.DeleteVMTemplateHandler)
+
+	api.VmtempUpdateVMTempHandler = vmtemp.UpdateVMTempHandlerFunc(handler.UpdateVMTemplateHandler)
+
+	api.VMListVMHandler = vm.ListVMHandlerFunc(handler.ListVMHandler)
+
+	api.PortListPortsHandler = port.ListPortsHandlerFunc(handler.ListPortsHandler)
 
 	api.PreServerShutdown = func() {}
 
@@ -285,5 +165,18 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4200", "http://www.cloudtides.org.cn", "http://106.15.92.155"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Authorization", "Content-Type"},
+		AllowedMethods:   []string{"PUT", "GET", "POST", "PATCH", "DELETE"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: false,
+	})
+
+	// Insert the middleware
+	handler = c.Handler(handler)
+	logViaLogrus := interpose.NegroniLogrus()
+
+	return logViaLogrus(handler)
 }

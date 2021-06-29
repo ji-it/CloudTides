@@ -6,6 +6,7 @@ package policy
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewUpdatePolicy(ctx *middleware.Context, handler UpdatePolicyHandler) *Upda
 	return &UpdatePolicy{Context: ctx, Handler: handler}
 }
 
-/*UpdatePolicy swagger:route PUT /policy/update policy updatePolicy
+/* UpdatePolicy swagger:route PUT /policy/{id} policy updatePolicy
 
 update a policy
 
@@ -50,35 +51,57 @@ func (o *UpdatePolicy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewUpdatePolicyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
+}
+
+// UpdatePolicyBadRequestBody update policy bad request body
+//
+// swagger:model UpdatePolicyBadRequestBody
+type UpdatePolicyBadRequestBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update policy bad request body
+func (o *UpdatePolicyBadRequestBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update policy bad request body based on context it is used
+func (o *UpdatePolicyBadRequestBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdatePolicyBadRequestBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdatePolicyBadRequestBody) UnmarshalBinary(b []byte) error {
+	var res UpdatePolicyBadRequestBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
 }
 
 // UpdatePolicyBody update policy body
 //
 // swagger:model UpdatePolicyBody
 type UpdatePolicyBody struct {
-
-	// Id
-	ID int64 `json:"Id,omitempty"`
-
-	// account type
-	// Enum: [accManager boinc]
-	AccountType string `json:"accountType,omitempty"`
-
-	// boinc password
-	BoincPassword string `json:"boincPassword,omitempty"`
-
-	// boinc username
-	BoincUsername string `json:"boincUsername,omitempty"`
 
 	// deploy type
 	// Enum: [K8S VM]
@@ -93,9 +116,6 @@ type UpdatePolicyBody struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// project Id
-	ProjectID int64 `json:"projectId,omitempty"`
-
 	// template Id
 	TemplateID int64 `json:"templateId,omitempty"`
 
@@ -107,10 +127,6 @@ type UpdatePolicyBody struct {
 func (o *UpdatePolicyBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := o.validateAccountType(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := o.validateDeployType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -118,49 +134,6 @@ func (o *UpdatePolicyBody) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-var updatePolicyBodyTypeAccountTypePropEnum []interface{}
-
-func init() {
-	var res []string
-	if err := json.Unmarshal([]byte(`["accManager","boinc"]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		updatePolicyBodyTypeAccountTypePropEnum = append(updatePolicyBodyTypeAccountTypePropEnum, v)
-	}
-}
-
-const (
-
-	// UpdatePolicyBodyAccountTypeAccManager captures enum value "accManager"
-	UpdatePolicyBodyAccountTypeAccManager string = "accManager"
-
-	// UpdatePolicyBodyAccountTypeBoinc captures enum value "boinc"
-	UpdatePolicyBodyAccountTypeBoinc string = "boinc"
-)
-
-// prop value enum
-func (o *UpdatePolicyBody) validateAccountTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, updatePolicyBodyTypeAccountTypePropEnum); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (o *UpdatePolicyBody) validateAccountType(formats strfmt.Registry) error {
-
-	if swag.IsZero(o.AccountType) { // not required
-		return nil
-	}
-
-	// value enum
-	if err := o.validateAccountTypeEnum("reqBody"+"."+"accountType", "body", o.AccountType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -187,14 +160,13 @@ const (
 
 // prop value enum
 func (o *UpdatePolicyBody) validateDeployTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, updatePolicyBodyTypeDeployTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, updatePolicyBodyTypeDeployTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *UpdatePolicyBody) validateDeployType(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.DeployType) { // not required
 		return nil
 	}
@@ -204,6 +176,11 @@ func (o *UpdatePolicyBody) validateDeployType(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update policy body based on context it is used
+func (o *UpdatePolicyBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -269,14 +246,13 @@ const (
 
 // prop value enum
 func (o *UpdatePolicyOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, updatePolicyOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, updatePolicyOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *UpdatePolicyOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -286,6 +262,11 @@ func (o *UpdatePolicyOKBody) validateMessage(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this update policy o k body based on context it is used
+func (o *UpdatePolicyOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -300,6 +281,43 @@ func (o *UpdatePolicyOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *UpdatePolicyOKBody) UnmarshalBinary(b []byte) error {
 	var res UpdatePolicyOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// UpdatePolicyUnauthorizedBody update policy unauthorized body
+//
+// swagger:model UpdatePolicyUnauthorizedBody
+type UpdatePolicyUnauthorizedBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this update policy unauthorized body
+func (o *UpdatePolicyUnauthorizedBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update policy unauthorized body based on context it is used
+func (o *UpdatePolicyUnauthorizedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *UpdatePolicyUnauthorizedBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *UpdatePolicyUnauthorizedBody) UnmarshalBinary(b []byte) error {
+	var res UpdatePolicyUnauthorizedBody
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

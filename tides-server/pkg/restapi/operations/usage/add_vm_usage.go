@@ -6,6 +6,7 @@ package usage
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -34,7 +35,7 @@ func NewAddVMUsage(ctx *middleware.Context, handler AddVMUsageHandler) *AddVMUsa
 	return &AddVMUsage{Context: ctx, Handler: handler}
 }
 
-/*AddVMUsage swagger:route POST /usage/addVM usage addVmUsage
+/* AddVMUsage swagger:route POST /usage/vm usage addVmUsage
 
 add VM usage info into database
 
@@ -50,14 +51,12 @@ func (o *AddVMUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewAddVMUsageParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -68,7 +67,7 @@ func (o *AddVMUsage) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 type AddVMUsageBody struct {
 
 	// v ms
-	VMs map[string]VMsAnon `json:"VMs,omitempty"`
+	VMs map[string]AddVMUsageParamsBodyVMsAnon `json:"VMs,omitempty"`
 
 	// name
 	Name string `json:"name,omitempty"`
@@ -89,7 +88,6 @@ func (o *AddVMUsageBody) Validate(formats strfmt.Registry) error {
 }
 
 func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.VMs) { // not required
 		return nil
 	}
@@ -101,6 +99,35 @@ func (o *AddVMUsageBody) validateVMs(formats strfmt.Registry) error {
 		}
 		if val, ok := o.VMs[k]; ok {
 			if err := val.Validate(formats); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this add VM usage body based on the context it is used
+func (o *AddVMUsageBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateVMs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *AddVMUsageBody) contextValidateVMs(ctx context.Context, formats strfmt.Registry) error {
+
+	for k := range o.VMs {
+
+		if val, ok := o.VMs[k]; ok {
+			if err := val.ContextValidate(ctx, formats); err != nil {
 				return err
 			}
 		}
@@ -172,14 +199,13 @@ const (
 
 // prop value enum
 func (o *AddVMUsageOKBody) validateMessageEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, addVmUsageOKBodyTypeMessagePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, addVmUsageOKBodyTypeMessagePropEnum, true); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (o *AddVMUsageOKBody) validateMessage(formats strfmt.Registry) error {
-
 	if swag.IsZero(o.Message) { // not required
 		return nil
 	}
@@ -189,6 +215,11 @@ func (o *AddVMUsageOKBody) validateMessage(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this add VM usage o k body based on context it is used
+func (o *AddVMUsageOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -210,10 +241,10 @@ func (o *AddVMUsageOKBody) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// VMsAnon v ms anon
+// AddVMUsageParamsBodyVMsAnon add VM usage params body v ms anon
 //
-// swagger:model VMsAnon
-type VMsAnon struct {
+// swagger:model AddVMUsageParamsBodyVMsAnon
+type AddVMUsageParamsBodyVMsAnon struct {
 
 	// boinc start time
 	BoincStartTime string `json:"boincStartTime,omitempty"`
@@ -249,13 +280,18 @@ type VMsAnon struct {
 	TotalRAM float64 `json:"totalRAM,omitempty"`
 }
 
-// Validate validates this v ms anon
-func (o *VMsAnon) Validate(formats strfmt.Registry) error {
+// Validate validates this add VM usage params body v ms anon
+func (o *AddVMUsageParamsBodyVMsAnon) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add VM usage params body v ms anon based on context it is used
+func (o *AddVMUsageParamsBodyVMsAnon) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (o *VMsAnon) MarshalBinary() ([]byte, error) {
+func (o *AddVMUsageParamsBodyVMsAnon) MarshalBinary() ([]byte, error) {
 	if o == nil {
 		return nil, nil
 	}
@@ -263,8 +299,8 @@ func (o *VMsAnon) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (o *VMsAnon) UnmarshalBinary(b []byte) error {
-	var res VMsAnon
+func (o *AddVMUsageParamsBodyVMsAnon) UnmarshalBinary(b []byte) error {
+	var res AddVMUsageParamsBodyVMsAnon
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

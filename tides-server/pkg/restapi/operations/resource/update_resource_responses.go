@@ -14,7 +14,7 @@ import (
 // UpdateResourceOKCode is the HTTP code returned for type UpdateResourceOK
 const UpdateResourceOKCode int = 200
 
-/*UpdateResourceOK returns success message
+/*UpdateResourceOK success
 
 swagger:response updateResourceOK
 */
@@ -53,6 +53,54 @@ func (o *UpdateResourceOK) WriteResponse(rw http.ResponseWriter, producer runtim
 			panic(err) // let the recovery middleware deal with this
 		}
 	}
+}
+
+// UpdateResourceUnauthorizedCode is the HTTP code returned for type UpdateResourceUnauthorized
+const UpdateResourceUnauthorizedCode int = 401
+
+/*UpdateResourceUnauthorized Unauthorized
+
+swagger:response updateResourceUnauthorized
+*/
+type UpdateResourceUnauthorized struct {
+}
+
+// NewUpdateResourceUnauthorized creates UpdateResourceUnauthorized with default headers values
+func NewUpdateResourceUnauthorized() *UpdateResourceUnauthorized {
+
+	return &UpdateResourceUnauthorized{}
+}
+
+// WriteResponse to the client
+func (o *UpdateResourceUnauthorized) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(401)
+}
+
+// UpdateResourceForbiddenCode is the HTTP code returned for type UpdateResourceForbidden
+const UpdateResourceForbiddenCode int = 403
+
+/*UpdateResourceForbidden Forbidden
+
+swagger:response updateResourceForbidden
+*/
+type UpdateResourceForbidden struct {
+}
+
+// NewUpdateResourceForbidden creates UpdateResourceForbidden with default headers values
+func NewUpdateResourceForbidden() *UpdateResourceForbidden {
+
+	return &UpdateResourceForbidden{}
+}
+
+// WriteResponse to the client
+func (o *UpdateResourceForbidden) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(403)
 }
 
 // UpdateResourceNotFoundCode is the HTTP code returned for type UpdateResourceNotFound

@@ -6,6 +6,7 @@ package project
 // Editing this file might prove futile when you re-run the generate command
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -31,7 +32,7 @@ func NewUpdateProject(ctx *middleware.Context, handler UpdateProjectHandler) *Up
 	return &UpdateProject{Context: ctx, Handler: handler}
 }
 
-/*UpdateProject swagger:route PUT /project/update project updateProject
+/* UpdateProject swagger:route PUT /project/{id} project updateProject
 
 update boinc project
 
@@ -47,14 +48,12 @@ func (o *UpdateProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r = rCtx
 	}
 	var Params = NewUpdateProjectParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }
@@ -63,9 +62,6 @@ func (o *UpdateProject) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 //
 // swagger:model UpdateProjectBody
 type UpdateProjectBody struct {
-
-	// ID
-	ID int64 `json:"ID,omitempty"`
 
 	// has account manager
 	HasAccountManager bool `json:"hasAccountManager,omitempty"`
@@ -79,6 +75,11 @@ type UpdateProjectBody struct {
 
 // Validate validates this update project body
 func (o *UpdateProjectBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update project body based on context it is used
+func (o *UpdateProjectBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
@@ -111,6 +112,11 @@ type UpdateProjectOKBody struct {
 
 // Validate validates this update project o k body
 func (o *UpdateProjectOKBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this update project o k body based on context it is used
+func (o *UpdateProjectOKBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

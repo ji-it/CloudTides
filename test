@@ -1,0 +1,22 @@
+* feature/KubeFATE/automation
+  feature/api/Vapp
+  feature/api/vendors
+  feature/api/vm
+  feature/monitor
+  feature/ui/template
+  feature/vm/monitor
+  fix/api/VApp
+  fix/api/vendors
+  master
+  modification/monitor
+  modification/ui/resource
+doc
+docker-compose.yml
+docs
+LICENSE
+package-lock.json
+postgres
+README.md
+test
+tides-server
+ui

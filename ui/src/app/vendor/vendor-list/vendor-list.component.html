@@ -1,0 +1,50 @@
+<button class="btn btn-primary" (click)="this.opened=true">
+  <clr-icon shape="plus"></clr-icon>
+  Add Vendor
+</button>
+  
+<div *ngIf="this.list$ | async as list">
+      <!--div class="clr-row" *ngFor="let item of list">
+      <div class="clr-col-12">
+        <tide-resource-card [item]="item"></tide-resource-card>
+      </div>
+    </div-->
+  <clr-datagrid>
+    <clr-dg-column>
+      <div class="key">ID</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Vendor Name</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">URL</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Type</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Version</div>
+    </clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
+      <clr-dg-action-overflow>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.delete(item?.id)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+      </clr-dg-action-overflow>
+      <clr-dg-cell><div class="value">{{item?.id}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.url}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.vendorType}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.version}}</div></clr-dg-cell>
+    </clr-dg-row>
+  </clr-datagrid>
+</div>
+
+<tide-vendor-dialog
+  *ngIf="this.opened"
+  [opened]="this.opened"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-vendor-dialog>

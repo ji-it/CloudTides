@@ -1,9 +1,15 @@
-<button class="btn btn-primary action-btn" (click)="this.add()">
+<button class="btn btn-primary" (click)="this.opened = true">
   <clr-icon shape="plus"></clr-icon>
-  Add Template
+  {{ "HOME.TEMPLATE.ADD_TEMPLATE" | translate:{} }}
 </button>
 
-<div class="cards-container clr-row">
+<!--button class="btn btn-primary" (click)="this.VMopened = true">
+  <clr-icon shape="plus"></clr-icon>
+  ADD VM TEMPLATE
+</button-->
+
+
+<!--div class="cards-container clr-row">
   <div class="clr-col-md-6 clr-col-lg-4"
     *ngFor="let item of (this.list$ | async)">
     <tide-template-card
@@ -12,4 +18,102 @@
       (delete)="this.onEdit($event)">
     </tide-template-card>
   </div>
+</div-->
+
+<div *ngIf="this.list$ | async as list">
+      <!--div class="clr-row" *ngFor="let item of list">
+      <div class="clr-col-12">
+        <tide-resource-card [item]="item"></tide-resource-card>
+      </div>
+    </div-->
+  <clr-datagrid>
+    <clr-dg-column>
+      <div class="key">ID</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Template Name</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Description</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Tag</div>
+    </clr-dg-column>
+    <!--clr-dg-column>
+      <div class="key">Vendor</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Datacenter</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">GuestOS</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Memory Size</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">Storage Size</div>
+    </clr-dg-column>
+    <clr-dg-column>
+      <div class="key">CPUs</div>
+    </clr-dg-column-->
+    <clr-dg-column>
+      <div class="key">Create Time</div>
+    </clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let item of list" [clrDgItem]="item">
+      <clr-dg-action-overflow>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.delete(item?.id)"
+        >{{ "HOME.RESOURCE.CARD.FOOTER.DELETE" | translate:{} }}</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.add(item?.id)"
+        >ADD VM TEMPLATE</button>
+        <button
+          class="btn btn-sm btn-link"
+          (click)="this.displayVM(item?.id)"
+        >DISPLAY VM TEMPLATE</button>
+        <button
+        class="btn btn-sm btn-link"
+        (click)="this.publish(item?.id)"
+      >Publish</button>
+      </clr-dg-action-overflow>
+      <clr-dg-cell><div class="value">{{item?.id}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.name}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.description}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.tag}}</div></clr-dg-cell>
+      <!--clr-dg-cell><div class="value">{{item?.vendor}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.datacenter}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.guestOS}}</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.memorySize}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.provisionedSpace}} GB</div></clr-dg-cell>
+      <clr-dg-cell><div class="value">{{item?.vcpu}}</div></clr-dg-cell-->
+      <clr-dg-cell><div class="value">{{item?.dateAdded}}</div></clr-dg-cell>
+    </clr-dg-row>
+  </clr-datagrid>
 </div>
+
+<tide-template-dialog
+    *ngIf="this.opened"
+    [opened]="this.opened"
+    (save)="this.save()"
+    (cancel)="this.cancel()">
+  </tide-template-dialog>
+
+<tide-template-dialogvm
+  *ngIf="this.VMopened"
+  [opened]="this.VMopened"
+  [templateid]="this.TemplateID"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-template-dialogvm>
+
+<tide-vm-card
+  *ngIf="this.displayOpened"
+  [opened]="this.displayOpened"
+  [templateid]="this.TemplateID"
+  (save)="this.save()"
+  (cancel)="this.cancel()">
+</tide-vm-card>

@@ -9,11 +9,18 @@ import (
 	"errors"
 	"net/url"
 	golangswaggerpaths "path"
+	"strings"
+
+	"github.com/go-openapi/swag"
 )
 
 // UpdateResourceUsageURL generates an URL for the update resource usage operation
 type UpdateResourceUsageURL struct {
+	ID int64
+
 	_basePath string
+	// avoid unkeyed usage
+	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
@@ -35,11 +42,18 @@ func (o *UpdateResourceUsageURL) SetBasePath(bp string) {
 func (o *UpdateResourceUsageURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/usage/update_resource"
+	var _path = "/usage/{id}"
+
+	id := swag.FormatInt64(o.ID)
+	if id != "" {
+		_path = strings.Replace(_path, "{id}", id, -1)
+	} else {
+		return nil, errors.New("id is required on UpdateResourceUsageURL")
+	}
 
 	_basePath := o._basePath
 	if _basePath == "" {
-		_basePath = "/v1"
+		_basePath = "/api/v1"
 	}
 	_result.Path = golangswaggerpaths.Join(_basePath, _path)
 
