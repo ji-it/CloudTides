@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-	"tides-server/pkg/restapi/operations/vapp"
 	"tides-server/pkg/restapi/operations/vmtemp"
 	"time"
 
@@ -27,7 +25,7 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 		Description: body.Description,
 	}
 
-	db := config.GetDB()
+	/*db := config.GetDB()
 	db.Create(&newTem)
 	var vendor models.Vendor
 	var res models.Resource
@@ -92,13 +90,13 @@ func AddTemplateHandler(params template.AddTemplateParams) middleware.Responder 
 		VMDB.VMem = 20
 		VMDB.VCPU = 8
 		db.Create(&VMDB)
-	}
-	/*db := config.GetDB()
+	}*/
+	db := config.GetDB()
 	err := db.Create(&newTem).Error
 	if err != nil {
 		return template.NewAddTemplateBadRequest()
 	}
-	*/
+	
 	return template.NewAddTemplateOK().WithPayload(&template.AddTemplateOKBody{
 		Message: "success",
 		ID:      int64(newTem.Model.ID),
@@ -248,7 +246,7 @@ func UpdateVMTemplateHandler(params vmtemp.UpdateVMTempParams) middleware.Respon
 	return vmtemp.NewUpdateVMTempOK().WithPayload(&vmtemp.UpdateVMTempOKBody{ID: int64(VMTemp.ID), Message: "success"})
 }
 
-//
+// DeleteVMTemplateHandler is API handler for /vmtemp/{id} DELETE
 func DeleteVMTemplateHandler(params vmtemp.DeleteVMTempParams) middleware.Responder {
 	if !VerifyUser(params.HTTPRequest) {
 		return vmtemp.NewDeleteVMTempUnauthorized()
